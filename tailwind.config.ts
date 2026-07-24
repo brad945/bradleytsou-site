@@ -125,7 +125,7 @@ const config: Config = {
          * path from visibly looping. Travel distances assume a 150px avatar
          * and a 62x35 logo; they must change together.
          *
-         * Step counts are duration x 20, which pins the motion to 20fps — the
+         * Step counts are duration x 10, which pins the motion to 10fps — the
          * chunky cadence of the original screensaver. Change a duration and
          * you must change its step count to keep that framerate.
          */
@@ -152,9 +152,9 @@ const config: Config = {
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
-        // 3.1s x 20fps = 62 steps; 2.3s x 20fps = 46 steps.
-        "dvd-x": "dvd-x 3.1s steps(62) infinite alternate",
-        "dvd-y": "dvd-y 2.3s steps(46) infinite alternate",
+        // 3.1s x 10fps = 31 steps; 2.3s x 10fps = 23 steps.
+        "dvd-x": "dvd-x 3.1s steps(31) infinite alternate",
+        "dvd-y": "dvd-y 2.3s steps(23) infinite alternate",
         "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
     },

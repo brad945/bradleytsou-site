@@ -81,9 +81,9 @@ rule below). Don't bump either without updating this file.
   The bounce needs two nested spans (one element carries one transform
   animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
   are hard-coded against a 150px avatar and the 62x35 logo — **resize one
-  and you must resize the other**. The bounce runs on `steps(62)` /
-  `steps(46)`, i.e. duration x 20, which pins it to the original
-  screensaver's chunky 20fps; change a duration and you must change its
+  and you must resize the other**. The bounce runs on `steps(31)` /
+  `steps(23)`, i.e. duration x 10, which pins it to the original
+  screensaver's chunky 10fps; change a duration and you must change its
   step count to hold that framerate. `DvdLogo` is drawn from SVG primitives
   (skewed wordmark over an ellipse) rather than embedding the real logo
   file, and paints entirely with `currentColor` so one animated `color`
