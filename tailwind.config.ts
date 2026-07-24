@@ -26,12 +26,14 @@ const tokens = {
   /** Left stop of the panel header gradient. */
   teal: "#2f5d6e",
   /**
-   * Avatar frame band. Neutral grey on purpose — any blue tint reads wrong
-   * against the reference, which is a plain light-to-dark grey gradient.
+   * Avatar frame band. Four stops of a cool grey, spanning a wide range —
+   * the reference goes from a bright highlight at the top-left to a genuinely
+   * dark grey at the bottom-right, not a narrow mid-grey wash.
    */
-  steel: "#a8a8a8",
-  steelLight: "#d2d2d2",
-  steelDark: "#828282",
+  steelLight: "#d6d9dc",
+  steel: "#9ea2a6",
+  steelMid: "#6b6f73",
+  steelDark: "#4a4d51",
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
 };
@@ -109,11 +111,11 @@ const config: Config = {
         "panel-sheen": `linear-gradient(180deg, ${tokens.panel2} 0%, ${tokens.panel} 100%)`,
         "xp-fill": `linear-gradient(90deg, ${tokens.nebula} 0%, ${tokens.accent} 100%)`,
         /*
-         * Avatar frame: a plain diagonal light-to-dark grey gradient, per the
-         * reference. Deliberately NOT a bevel — no dark mid-stop, or it reads
-         * as a groove cut into the band. Neutral greys, no blue tint.
+         * Avatar frame: a RADIAL gradient with its light source off the
+         * top-left corner, falling away to a dark grey at the bottom-right —
+         * not a linear sweep, and not a bevel. Matches the reference.
          */
-        "avatar-frame": `linear-gradient(135deg, ${tokens.steelLight} 0%, ${tokens.steel} 50%, ${tokens.steelDark} 100%)`,
+        "avatar-frame": `radial-gradient(125% 125% at 6% 4%, ${tokens.steelLight} 0%, ${tokens.steel} 34%, ${tokens.steelMid} 66%, ${tokens.steelDark} 100%)`,
       },
       boxShadow: {
         panel: `0 1px 0 0 ${tokens.line}, 0 18px 40px -28px #000000`,
@@ -138,7 +140,8 @@ const config: Config = {
          * elements with different periods and `alternate` — one element can
          * only carry one transform animation, and mismatched periods keep the
          * path from visibly looping. Travel distances assume a 150px avatar
-         * and a 62x35 logo; they must change together.
+         * and an 84x46 logo (150-84=66, 150-46=104); they must change
+         * together.
          *
          * Step counts are duration x 10, which pins the motion to 10fps — the
          * chunky cadence of the original screensaver. Change a duration and
@@ -146,11 +149,11 @@ const config: Config = {
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(88px)" },
+          to: { transform: "translateX(66px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
-          to: { transform: "translateY(115px)" },
+          to: { transform: "translateY(104px)" },
         },
         /*
          * The logo is the only thing that changes colour. steps(1) so it snaps

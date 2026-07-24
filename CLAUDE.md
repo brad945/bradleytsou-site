@@ -71,16 +71,29 @@ rule below). Don't bump either without updating this file.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
-  The avatar frame is a **static neutral-grey band** — a plain 135°
-  light-to-dark gradient with a hairline dark edge inside and out. No
-  bevel: a dark mid-stop reads as a groove cut into the band, and any
-  blue tint reads wrong against the reference. The only thing that moves
-  or changes colour is the DVD logo bouncing screensaver-style inside the
-  150px box, stepping through accent → link → live → nebula → ink on
-  `dvd-tint`. Pure CSS, no JS.
+  The avatar frame is a **static grey band**, matched to the reference on
+  three points that are easy to get wrong:
+  1. **The bands are asymmetric** — left/right are ~1.4x thicker than
+     top/bottom (22px vs 15px here, from ≈38 vs ≈28 against the
+     reference's ≈244x255 photo). Equal padding looks obviously wrong.
+  2. **The gradient is radial, not linear** — light source off the
+     top-left corner, falling to a genuinely dark grey at the
+     bottom-right. Four stops spanning #d6d9dc → #4a4d51; a narrow
+     mid-grey wash doesn't read.
+  3. **No bevel.** A dark mid-stop on a linear sweep looks like a groove
+     cut into the band.
+  Plus a hairline dark edge inside and out, so the band touches neither
+  the page nor the photo.
+  The only thing that moves or changes colour is the DVD logo bouncing
+  screensaver-style inside the 150px box, cycling the vivid `dvd.*`
+  colours on `dvd-tint`. Pure CSS, no JS.
+  In `DvdLogo` the wordmark must **dominate** — 900 weight at a large
+  size with the ellipse tucked under its baseline. Sizing the ellipse
+  comparably to the text makes it read as "a badge with an oval" rather
+  than the logo.
   The bounce needs two nested spans (one element carries one transform
   animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
-  are hard-coded against a 150px avatar and the 62x35 logo — **resize one
+  are hard-coded against a 150px avatar and the 84x46 logo — **resize one
   and you must resize the other**. The bounce runs on `steps(31)` /
   `steps(23)`, i.e. duration x 10, which pins it to the original
   screensaver's chunky 10fps; change a duration and you must change its

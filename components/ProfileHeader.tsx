@@ -18,37 +18,45 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="62"
-      height="35"
-      viewBox="0 0 46 26"
+      width="84"
+      height="46"
+      viewBox="0 0 100 55"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
       aria-hidden
     >
-      <g transform="skewX(-12) translate(4 0)">
+      {/*
+        The wordmark dominates the mark — it's heavy (900) and large, and the
+        ellipse tucks under its baseline rather than sitting beside it at a
+        similar size. Getting that hierarchy wrong is what made earlier passes
+        read as "a badge with an oval" instead of the logo.
+      */}
+      <g transform="skewX(-11)">
         <text
-          x="20"
-          y="14"
+          x="58"
+          y="38"
           textAnchor="middle"
           fill="currentColor"
-          fontSize="14"
-          fontWeight="800"
+          fontSize="42"
+          fontWeight="900"
           fontFamily="var(--font-sans), sans-serif"
-          letterSpacing="-0.5"
+          letterSpacing="-2.5"
         >
           DVD
         </text>
       </g>
-      <ellipse cx="23" cy="19" rx="16" ry="4.6" stroke="currentColor" strokeWidth="2.4" />
+
+      {/* Ellipse overlaps the letters' baseline, as on the real mark. */}
+      <ellipse cx="50" cy="41" rx="30" ry="8" stroke="currentColor" strokeWidth="4" />
       <text
-        x="23"
-        y="21.2"
+        x="50"
+        y="44.5"
         textAnchor="middle"
         fill="currentColor"
-        fontSize="4.6"
-        fontWeight="700"
+        fontSize="8.5"
+        fontWeight="800"
         fontFamily="var(--font-sans), sans-serif"
-        letterSpacing="0.3"
+        letterSpacing="0.2"
       >
         VIDEO
       </text>
@@ -76,9 +84,14 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           <div className="shrink-0">
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
-            {/* Hairline dark edge outside and inside the grey band, as in the
-                reference — the band never touches the page or the photo. */}
-            <div className="w-fit bg-avatar-frame p-[10px] ring-1 ring-base/90">
+            {/*
+              Asymmetric on purpose: in the reference the left/right bands are
+              ~1.4x thicker than the top/bottom (≈38px vs ≈28px against a
+              ~244x255 photo). Scaled to this 150px avatar that's 22 / 15.
+              Hairline dark edge outside and inside, so the band never touches
+              the page or the photo.
+            */}
+            <div className="w-fit bg-avatar-frame px-[22px] py-[15px] ring-1 ring-base/90">
               <div className="relative h-[150px] w-[150px] overflow-hidden bg-base ring-1 ring-base/90">
                 {avatar ? (
                   <Image
