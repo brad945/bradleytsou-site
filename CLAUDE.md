@@ -46,9 +46,11 @@ rule below). Don't bump either without updating this file.
 ## Current file structure
 
 - `lib/profile-data.ts` — all editable content (name, badges, projects,
-  GitHub username). **Bradley still needs to fill in his real GitHub
-  username and real project links here** — placeholders are in as
-  `your-github-username` (exported as `PLACEHOLDER_GITHUB_USERNAME`).
+  GitHub username). `githubUsername` is set to `brad945`, so the live
+  data layer is on. **Still to fill in: real project links, real badge
+  dates, and the LinkedIn URL** — those are marked `TODO(bradley)`.
+  `PLACEHOLDER_GITHUB_USERNAME` is still exported as the "not configured"
+  sentinel the empty states check against.
   `githubUsername` carries an explicit `: string` annotation — without it
   TypeScript infers the literal type and the placeholder comparisons
   elsewhere become "no overlap" build errors the moment it's edited.

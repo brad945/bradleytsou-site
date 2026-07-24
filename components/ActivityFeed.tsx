@@ -196,7 +196,9 @@ export default function ActivityFeed({ snapshot }: ActivityFeedProps) {
           Recent Activity
         </h2>
         <span className="panel-bar-meta">
-          {stats ? `${eventCount} events past 2 weeks` : "no data"}
+          {stats
+            ? `${eventCount} ${eventCount === 1 ? "event" : "events"} past 2 weeks`
+            : "no data"}
         </span>
       </div>
 

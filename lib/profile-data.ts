@@ -54,7 +54,7 @@ export const PLACEHOLDER_GITHUB_USERNAME = "your-github-username";
  * becomes a "these types have no overlap" build error the moment this is
  * edited. Keep the annotation.
  */
-export const githubUsername: string = PLACEHOLDER_GITHUB_USERNAME;
+export const githubUsername: string = "brad945";
 
 export const profile = {
   name: "Bradley Tsou",
