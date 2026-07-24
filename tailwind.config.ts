@@ -25,6 +25,10 @@ const tokens = {
   wine: "#2b1526",
   /** Left stop of the panel header gradient. */
   teal: "#2f5d6e",
+  /** Brushed-grey avatar frame band. */
+  steel: "#8e9199",
+  /** Slate background of the alias dropdown. */
+  menu: "#464c58",
 };
 
 /**
@@ -37,10 +41,6 @@ const rarity = {
   major: tokens.nebula,
   side: tokens.muted,
 };
-
-/** One frame-border gradient, tinted. Used by the `frame-tint` keyframes. */
-const frameGradient = (colour: string) =>
-  `linear-gradient(135deg, ${colour} 0%, ${colour}55 28%, ${colour} 52%, ${colour}44 76%, ${colour} 100%)`;
 
 /** Sparse starfield, tiled. Static — it does not move or react to scroll. */
 const starfield = [
@@ -88,9 +88,9 @@ const config: Config = {
         "panel-header": `linear-gradient(to right, ${tokens.teal}e6 0%, ${tokens.plum}66 55%, ${tokens.plum}00 100%)`,
         "panel-sheen": `linear-gradient(180deg, ${tokens.panel2} 0%, ${tokens.panel} 100%)`,
         "xp-fill": `linear-gradient(90deg, ${tokens.nebula} 0%, ${tokens.accent} 100%)`,
-        // Avatar frame, built from the palette rather than lifted art. The
-        // `frame-tint` animation cycles this through the same colours.
-        "avatar-frame": frameGradient(tokens.accent),
+        // Brushed-metal avatar frame. Static grey — only the bouncing logo
+        // inside it changes colour.
+        "avatar-frame": `linear-gradient(180deg, #a6a9b1 0%, ${tokens.steel} 45%, #7c7f87 70%, #9ca0a8 100%)`,
       },
       boxShadow: {
         panel: `0 1px 0 0 ${tokens.line}, 0 18px 40px -28px #000000`,
@@ -111,42 +111,38 @@ const config: Config = {
         },
 
         /*
-         * DVD-screensaver bounce for the animated avatar frame, replicating
-         * Steam's animated frames. Two axes on two nested elements with
-         * different periods and `alternate` — one element can only carry one
-         * transform animation, and mismatched periods keep the path from
-         * visibly looping. Travel distances assume a 150px avatar and a
-         * 42x20 badge; they must change together.
+         * DVD-screensaver bounce inside the avatar. Two axes on two nested
+         * elements with different periods and `alternate` — one element can
+         * only carry one transform animation, and mismatched periods keep the
+         * path from visibly looping. Travel distances assume a 150px avatar
+         * and a 46x26 logo; they must change together.
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(108px)" },
+          to: { transform: "translateX(104px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
-          to: { transform: "translateY(130px)" },
+          to: { transform: "translateY(124px)" },
         },
-        // steps(1) so the colour snaps the way it does on a real wall hit.
+        /*
+         * The logo is the only thing that changes colour. steps(1) so it snaps
+         * the way it does on a real wall hit rather than crossfading. The SVG
+         * paints with currentColor, so animating `color` is enough.
+         */
         "dvd-tint": {
-          "0%": { color: tokens.accent, borderColor: tokens.accent },
-          "25%": { color: tokens.link, borderColor: tokens.link },
-          "50%": { color: tokens.live, borderColor: tokens.live },
-          "75%": { color: tokens.nebula, borderColor: tokens.nebula },
-        },
-        // The frame itself swaps to the same colour on the same beat.
-        "frame-tint": {
-          "0%": { backgroundImage: frameGradient(tokens.accent) },
-          "25%": { backgroundImage: frameGradient(tokens.link) },
-          "50%": { backgroundImage: frameGradient(tokens.live) },
-          "75%": { backgroundImage: frameGradient(tokens.nebula) },
+          "0%": { color: tokens.accent },
+          "20%": { color: tokens.link },
+          "40%": { color: tokens.live },
+          "60%": { color: tokens.nebula },
+          "80%": { color: tokens.ink },
         },
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
         "dvd-x": "dvd-x 3.1s linear infinite alternate",
         "dvd-y": "dvd-y 2.3s linear infinite alternate",
-        "dvd-tint": "dvd-tint 5.9s steps(1) infinite",
-        "frame-tint": "frame-tint 5.9s steps(1) infinite",
+        "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
     },
   },

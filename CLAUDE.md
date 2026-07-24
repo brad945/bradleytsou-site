@@ -71,18 +71,25 @@ rule below). Don't bump either without updating this file.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
-  The avatar frame is animated, replicating Steam's animated frames: a
-  badge bounces DVD-screensaver style inside the 150px box while the
-  frame and badge snap through accent → link → live → nebula on the
-  `frame-tint` / `dvd-tint` beat. Pure CSS, no JS. The bounce needs two
-  nested spans (one element carries one transform animation) and the
-  travel distances in the `dvd-x` / `dvd-y` keyframes are hard-coded
-  against a 150px avatar and a 42x20 badge — **resize one and you must
-  resize the other**.
+  The avatar frame is a **static brushed-grey band** with a dark inner
+  edge. The only thing that moves or changes colour is the DVD logo
+  bouncing screensaver-style inside the 150px box, stepping through
+  accent → link → live → nebula → ink on `dvd-tint`. Pure CSS, no JS.
+  The bounce needs two nested spans (one element carries one transform
+  animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
+  are hard-coded against a 150px avatar and the 46x26 logo — **resize one
+  and you must resize the other**. `DvdLogo` is drawn from SVG primitives
+  (skewed wordmark over an ellipse) rather than embedding the real logo
+  file, and paints entirely with `currentColor` so one animated `color`
+  drives it.
+  The header must **not** get `overflow-hidden` — it would clip the alias
+  dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
 - `components/NameHistory.tsx` — client component for the caret next to
-  the name that opens Steam's alias history. Closes on Escape (returning
-  focus to the caret) and on outside click. Content comes from `aliases`
-  in `lib/profile-data.ts` and is still placeholder.
+  the name that opens Steam's alias history ("This user has also played
+  as:"). Closes on Escape (returning focus to the caret) and on outside
+  click. "Clear previous aliases" genuinely empties the list for the
+  session rather than being a dead button; a reload restores it. Content
+  comes from `aliases` in `lib/profile-data.ts` and is still placeholder.
 - `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
   is Steam's "Favorite Game" slot (capsule, copy, one oversized stat) for
   the highest-rarity project; the default export is the square inventory
@@ -123,6 +130,7 @@ Dark theme, not a generic AI-slop palette:
 - `link` #66c0f4 (links and repo names)
 - `plum` #3f2350, `wine` #2b1526 (profile-background gradient)
 - `teal` #2f5d6e (left stop of the panel header bar)
+- `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
 - Fonts: Mulish (display + body — stands in for Steam's Motiva Sans, and
   has the light weights the big numbers need), JetBrains Mono (killfeed
   and `.label` chrome only)

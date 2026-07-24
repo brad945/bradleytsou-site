@@ -7,12 +7,61 @@ interface ProfileHeaderProps {
   stats: GitHubStats | null;
 }
 
+/**
+ * The bouncing screensaver mark. Drawn here from primitives — skewed wordmark
+ * over a flattened ellipse — rather than embedding the real logo file.
+ * Everything paints with `currentColor`, so the `dvd-tint` animation on the
+ * wrapper is what changes its colour, and nothing else on the frame moves.
+ */
+function DvdLogo() {
+  return (
+    <svg
+      width="46"
+      height="26"
+      viewBox="0 0 46 26"
+      fill="none"
+      className="block animate-dvd-tint drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]"
+      aria-hidden
+    >
+      <g transform="skewX(-12) translate(4 0)">
+        <text
+          x="20"
+          y="14"
+          textAnchor="middle"
+          fill="currentColor"
+          fontSize="14"
+          fontWeight="800"
+          fontFamily="var(--font-sans), sans-serif"
+          letterSpacing="-0.5"
+        >
+          DVD
+        </text>
+      </g>
+      <ellipse cx="23" cy="19" rx="16" ry="4.6" stroke="currentColor" strokeWidth="2.4" />
+      <text
+        x="23"
+        y="21.2"
+        textAnchor="middle"
+        fill="currentColor"
+        fontSize="4.6"
+        fontWeight="700"
+        fontFamily="var(--font-sans), sans-serif"
+        letterSpacing="0.3"
+      >
+        VIDEO
+      </text>
+    </svg>
+  );
+}
+
 export default function ProfileHeader({ stats }: ProfileHeaderProps) {
   const { level, progress, sinceYear } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
+  // The header deliberately has no `overflow-hidden`: it would clip the alias
+  // dropdown. The gradient overlay is absolute inset-0, so it can't spill.
   return (
-    <header className="relative overflow-hidden bg-profile-hero">
+    <header className="relative bg-profile-hero">
       {/* Darkens the left half so the name always has contrast over the art. */}
       <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-r from-base/70 via-base/20 to-transparent"
@@ -23,11 +72,10 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
           <div className="shrink-0">
-            {/* Animated frame, replicating Steam's. Built from palette
-                gradients, not lifted artwork. w-fit keeps it square when the
-                header stacks on mobile. */}
-            <div className="w-fit rounded-[2px] bg-avatar-frame p-[5px] shadow-[0_0_18px_-4px_theme(colors.accent)] animate-frame-tint">
-              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base">
+            {/* Static brushed-grey frame with a dark inner edge, per the
+                reference. w-fit keeps it square when the header stacks. */}
+            <div className="w-fit bg-avatar-frame p-[9px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base ring-1 ring-inset ring-base/90">
                 {avatar ? (
                   <Image
                     src={avatar}
@@ -46,14 +94,15 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                 {/*
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
-                  baked into the keyframes against this 150px box — resize one
-                  and you must resize the other.
+                  baked into the keyframes against this 150px box and the 46x26
+                  logo — resize one and you must resize the other.
                 */}
-                <span className="pointer-events-none absolute left-0 top-0 animate-dvd-x" aria-hidden>
+                <span
+                  className="pointer-events-none absolute left-0 top-0 animate-dvd-x"
+                  aria-hidden
+                >
                   <span className="block animate-dvd-y">
-                    <span className="flex h-[20px] w-[42px] items-center justify-center border bg-base/70 text-[11px] font-semibold tracking-[0.12em] animate-dvd-tint">
-                      {profile.initials}
-                    </span>
+                    <DvdLogo />
                   </span>
                 </span>
               </div>

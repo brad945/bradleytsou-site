@@ -81,7 +81,12 @@ export const profile = {
  * name. TODO(bradley): replace with your real previous handles, or set this
  * to `[]` and the dropdown says "No previous aliases".
  */
-export const aliases: string[] = ["brad945", "bradoom"];
+export const aliases: string[] = [
+  "brad945",
+  "bradoom",
+  "bradleytsou",
+  "bt",
+];
 
 export const socials: SocialLink[] = [
   // Resolves off `githubUsername` above.
