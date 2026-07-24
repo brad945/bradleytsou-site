@@ -18,8 +18,8 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="84"
-      height="46"
+      width="62"
+      height="34"
       viewBox="0 0 100 55"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
@@ -85,14 +85,18 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
             {/*
-              Asymmetric on purpose: in the reference the left/right bands are
-              ~1.4x thicker than the top/bottom (≈38px vs ≈28px against a
-              ~244x255 photo). Scaled to this 150px avatar that's 22 / 15.
-              Hairline dark edge outside and inside, so the band never touches
-              the page or the photo.
+              Measured off the reference: side bands are 10.6% of the photo's
+              width, top/bottom 6.1% of its height (76px and 43.5px against a
+              720x717 photo) — a 1.75 ratio. On this 150px avatar that's
+              a 16 / 9 total band. The 1px bevel border counts toward that, so
+              the padding is 15 / 8. Bigger and it stops reading as a frame.
+
+              The band is not flat: it's a raised bevel. Light on the top and
+              left edges, dark on the bottom and right, with the photo sitting
+              in a sunken well (the reverse) below it.
             */}
-            <div className="w-fit bg-avatar-frame px-[22px] py-[15px] ring-1 ring-base/90">
-              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base ring-1 ring-base/90">
+            <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[15px] py-[8px]">
+              <div className="relative h-[150px] w-[150px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
                 {avatar ? (
                   <Image
                     src={avatar}

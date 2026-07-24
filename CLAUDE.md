@@ -73,17 +73,23 @@ rule below). Don't bump either without updating this file.
   computed from `profile.codingSince`, so it counts up on its own.
   The avatar frame is a **static grey band**, matched to the reference on
   three points that are easy to get wrong:
-  1. **The bands are asymmetric** — left/right are ~1.4x thicker than
-     top/bottom (22px vs 15px here, from ≈38 vs ≈28 against the
-     reference's ≈244x255 photo). Equal padding looks obviously wrong.
-  2. **The gradient is radial, not linear** — light source off the
-     top-left corner, falling to a genuinely dark grey at the
-     bottom-right. Four stops spanning #d6d9dc → #4a4d51; a narrow
-     mid-grey wash doesn't read.
-  3. **No bevel.** A dark mid-stop on a linear sweep looks like a groove
-     cut into the band.
-  Plus a hairline dark edge inside and out, so the band touches neither
-  the page nor the photo.
+  1. **The bands are asymmetric, and thinner than they look.** Measured
+     off the reference: sides are **10.6%** of the photo's width,
+     top/bottom **6.1%** of its height (76px and 43.5px against a
+     720x717 photo) — a 1.75 ratio. On the 150px avatar that's a 16 / 9
+     band, which with the 1px bevel means `px-[15px] py-[8px]`. Equal
+     padding is obviously wrong, and anything thicker stops reading as
+     a frame.
+  2. **The gradient is radial, not linear**, with the light source off
+     the top-left. But the range is **narrow** — medium greys
+     (#8a8e94 → #575b61) throughout. A wide light-to-dark sweep reads as
+     a completely different object.
+  3. **It's a 3D bevel, not a flat band.** Light on the top/left edges,
+     dark on the bottom/right, with the photo in a sunken well below it
+     (the reverse: dark top/left, light bottom/right). `frameHi` /
+     `frameLo` are those two edge colours.
+  The DVD logo is sized off the reference too — **42%** of the photo
+  width, i.e. 62x34 here.
   The only thing that moves or changes colour is the DVD logo bouncing
   screensaver-style inside the 150px box, cycling the vivid `dvd.*`
   colours on `dvd-tint`. Pure CSS, no JS.
