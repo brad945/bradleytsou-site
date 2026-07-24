@@ -18,8 +18,8 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="62"
-      height="35"
+      width="60"
+      height="34"
       viewBox="0 0 110 62"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
@@ -117,14 +117,18 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                 {/*
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
-                  baked into the keyframes against this 150px box and the 46x26
-                  62x35 logo — resize one and you must resize the other.
+                  baked into the keyframes against this box's 148px padding
+                  area and the 60x34 logo — resize one and you must resize the
+                  other, and the travel has to stay divisible by the step count
+                  or the logo jitters. See the keyframes for why.
                 */}
+                {/* will-change promotes each axis to its own layer, so a step
+                    composites rather than repainting the SVG. */}
                 <span
-                  className="pointer-events-none absolute left-0 top-0 animate-dvd-x"
+                  className="pointer-events-none absolute left-0 top-0 animate-dvd-x will-change-transform"
                   aria-hidden
                 >
-                  <span className="block animate-dvd-y">
+                  <span className="block animate-dvd-y will-change-transform">
                     <DvdLogo />
                   </span>
                 </span>

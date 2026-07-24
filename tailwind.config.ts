@@ -150,10 +150,15 @@ const config: Config = {
          * Step counts are duration x 10, which pins the motion to 10fps — the
          * chunky cadence of the original screensaver. Change a duration and
          * you must change its step count to keep that framerate.
+         *
+         * Travel MUST divide evenly by its step count: 88/22 = 4px and
+         * 114/19 = 6px. A fractional step (86/25 = 3.44px) lands the logo on
+         * a different subpixel phase every frame, so the browser re-antialiases
+         * the letterforms and the whole thing visibly jitters.
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(86px)" },
+          to: { transform: "translateX(88px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
@@ -174,10 +179,8 @@ const config: Config = {
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
-        // 2.5s x 10fps = 25 steps; 1.9s x 10fps = 19 steps. Durations must
-        // stay whole tenths so the step count comes out an integer, and the
-        // two should share no common factor or the path visibly loops.
-        "dvd-x": "dvd-x 2.5s steps(25) infinite alternate",
+        // 2.2s x 10fps = 22 steps; 1.9s x 10fps = 19 steps.
+        "dvd-x": "dvd-x 2.2s steps(22) infinite alternate",
         "dvd-y": "dvd-y 1.9s steps(19) infinite alternate",
         "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
