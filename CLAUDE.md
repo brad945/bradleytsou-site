@@ -106,9 +106,10 @@ rule below). Don't bump either without updating this file.
 - `components/NameHistory.tsx` — client component for the caret next to
   the name that opens Steam's alias history ("This user has also played
   as:"). Closes on Escape (returning focus to the caret) and on outside
-  click. "Clear previous aliases" genuinely empties the list for the
-  session rather than being a dead button; a reload restores it. Content
-  comes from `aliases` in `lib/profile-data.ts` and is still placeholder.
+  click. The dropdown anchors to the **caret**, not the name — the caret
+  sits in its own `relative` span so that span is the containing block,
+  putting the box's top-left directly under the arrow. Content comes from
+  `aliases` in `lib/profile-data.ts` and is still placeholder.
 - `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
   is Steam's "Favorite Game" slot (capsule, copy, one oversized stat) for
   the highest-rarity project; the default export is the square inventory

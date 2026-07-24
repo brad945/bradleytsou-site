@@ -11,18 +11,11 @@ interface NameHistoryProps {
 /**
  * Steam's persona name with the caret beside it that opens the alias history.
  * Real behaviour, placeholder content — see `aliases` in lib/profile-data.ts.
- *
- * "Clear previous aliases" does what it says: it empties the list for this
- * session, the same as Steam's. It's client-side only, so a reload restores
- * it — no fake button that does nothing.
  */
 export default function NameHistory({ name, aliases }: NameHistoryProps) {
   const [open, setOpen] = useState(false);
-  const [cleared, setCleared] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-
-  const visible = cleared ? [] : aliases;
 
   useEffect(() => {
     if (!open) return;
@@ -83,9 +76,9 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
               This user has also played as:
             </p>
 
-            {visible.length > 0 ? (
-              <ul className="py-1">
-                {visible.map((alias) => (
+            {aliases.length > 0 ? (
+              <ul className="py-1 pb-3">
+                {aliases.map((alias) => (
                   <li key={alias} className="px-4 py-[7px] text-[15px] text-ink/90">
                     {alias}
                   </li>
@@ -93,18 +86,6 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
               </ul>
             ) : (
               <p className="px-4 py-3 text-[14px] text-ink/50">No previous aliases</p>
-            )}
-
-            {visible.length > 0 && (
-              <div className="flex justify-end px-4 pb-3 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setCleared(true)}
-                  className="text-[13px] text-ink/60 transition-colors hover:text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  Clear previous aliases
-                </button>
-              </div>
             )}
           </div>
         )}
