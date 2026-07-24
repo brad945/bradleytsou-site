@@ -38,6 +38,10 @@ const rarity = {
   side: tokens.muted,
 };
 
+/** One frame-border gradient, tinted. Used by the `frame-tint` keyframes. */
+const frameGradient = (colour: string) =>
+  `linear-gradient(135deg, ${colour} 0%, ${colour}55 28%, ${colour} 52%, ${colour}44 76%, ${colour} 100%)`;
+
 /** Sparse starfield, tiled. Static — it does not move or react to scroll. */
 const starfield = [
   "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.40), transparent)",
@@ -84,8 +88,9 @@ const config: Config = {
         "panel-header": `linear-gradient(to right, ${tokens.teal}e6 0%, ${tokens.plum}66 55%, ${tokens.plum}00 100%)`,
         "panel-sheen": `linear-gradient(180deg, ${tokens.panel2} 0%, ${tokens.panel} 100%)`,
         "xp-fill": `linear-gradient(90deg, ${tokens.nebula} 0%, ${tokens.accent} 100%)`,
-        // Ornate-ish avatar frame, built from the palette rather than lifted art.
-        "avatar-frame": `linear-gradient(135deg, ${tokens.accent} 0%, #8a5f1e 25%, ${tokens.accent} 50%, #6d4a17 75%, ${tokens.accent} 100%)`,
+        // Avatar frame, built from the palette rather than lifted art. The
+        // `frame-tint` animation cycles this through the same colours.
+        "avatar-frame": frameGradient(tokens.accent),
       },
       boxShadow: {
         panel: `0 1px 0 0 ${tokens.line}, 0 18px 40px -28px #000000`,
@@ -99,15 +104,49 @@ const config: Config = {
         profile: "940px",
       },
       keyframes: {
-        // The only motion on the site: a status pulse tied to real "is the
-        // GitHub feed live" state. No scroll-triggered decoration.
+        // Status pulse, tied to real "is the GitHub feed live" state.
         "pulse-live": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.45" },
         },
+
+        /*
+         * DVD-screensaver bounce for the animated avatar frame, replicating
+         * Steam's animated frames. Two axes on two nested elements with
+         * different periods and `alternate` — one element can only carry one
+         * transform animation, and mismatched periods keep the path from
+         * visibly looping. Travel distances assume a 150px avatar and a
+         * 42x20 badge; they must change together.
+         */
+        "dvd-x": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(108px)" },
+        },
+        "dvd-y": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(130px)" },
+        },
+        // steps(1) so the colour snaps the way it does on a real wall hit.
+        "dvd-tint": {
+          "0%": { color: tokens.accent, borderColor: tokens.accent },
+          "25%": { color: tokens.link, borderColor: tokens.link },
+          "50%": { color: tokens.live, borderColor: tokens.live },
+          "75%": { color: tokens.nebula, borderColor: tokens.nebula },
+        },
+        // The frame itself swaps to the same colour on the same beat.
+        "frame-tint": {
+          "0%": { backgroundImage: frameGradient(tokens.accent) },
+          "25%": { backgroundImage: frameGradient(tokens.link) },
+          "50%": { backgroundImage: frameGradient(tokens.live) },
+          "75%": { backgroundImage: frameGradient(tokens.nebula) },
+        },
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
+        "dvd-x": "dvd-x 3.1s linear infinite alternate",
+        "dvd-y": "dvd-y 2.3s linear infinite alternate",
+        "dvd-tint": "dvd-tint 5.9s steps(1) infinite",
+        "frame-tint": "frame-tint 5.9s steps(1) infinite",
       },
     },
   },

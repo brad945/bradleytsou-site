@@ -1,6 +1,7 @@
 import Image from "next/image";
+import NameHistory from "@/components/NameHistory";
 import type { GitHubStats } from "@/lib/github";
-import { experience, profile } from "@/lib/profile-data";
+import { aliases, experience, profile } from "@/lib/profile-data";
 
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
@@ -22,10 +23,11 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
           <div className="shrink-0">
-            {/* Frame is built from palette gradients, not lifted artwork.
-                w-fit keeps it square when the header stacks on mobile. */}
-            <div className="w-fit rounded-[2px] bg-avatar-frame p-[3px] shadow-[0_0_18px_-4px_theme(colors.accent)]">
-              <div className="h-[150px] w-[150px] overflow-hidden bg-base">
+            {/* Animated frame, replicating Steam's. Built from palette
+                gradients, not lifted artwork. w-fit keeps it square when the
+                header stacks on mobile. */}
+            <div className="w-fit rounded-[2px] bg-avatar-frame p-[5px] shadow-[0_0_18px_-4px_theme(colors.accent)] animate-frame-tint">
+              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base">
                 {avatar ? (
                   <Image
                     src={avatar}
@@ -40,12 +42,26 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                     {profile.initials}
                   </div>
                 )}
+
+                {/*
+                  DVD-screensaver bounce. Two nested spans because one element
+                  can carry only one transform animation. Travel distances are
+                  baked into the keyframes against this 150px box — resize one
+                  and you must resize the other.
+                */}
+                <span className="pointer-events-none absolute left-0 top-0 animate-dvd-x" aria-hidden>
+                  <span className="block animate-dvd-y">
+                    <span className="flex h-[20px] w-[42px] items-center justify-center border bg-base/70 text-[11px] font-semibold tracking-[0.12em] animate-dvd-tint">
+                      {profile.initials}
+                    </span>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h1 className="text-[28px] font-light leading-tight text-ink">{profile.name}</h1>
+            <NameHistory name={profile.name} aliases={aliases} />
 
             <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[14px] text-ink/70">
               <span>{profile.handle}</span>

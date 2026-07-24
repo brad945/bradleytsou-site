@@ -76,6 +76,13 @@ export const profile = {
   },
 };
 
+/**
+ * Steam lists every persona name you've used, behind the caret next to the
+ * name. TODO(bradley): replace with your real previous handles, or set this
+ * to `[]` and the dropdown says "No previous aliases".
+ */
+export const aliases: string[] = ["brad945", "bradoom"];
+
 export const socials: SocialLink[] = [
   // Resolves off `githubUsername` above.
   { label: "GitHub", href: `https://github.com/${githubUsername}` },

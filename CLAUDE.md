@@ -71,6 +71,18 @@ rule below). Don't bump either without updating this file.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
+  The avatar frame is animated, replicating Steam's animated frames: a
+  badge bounces DVD-screensaver style inside the 150px box while the
+  frame and badge snap through accent → link → live → nebula on the
+  `frame-tint` / `dvd-tint` beat. Pure CSS, no JS. The bounce needs two
+  nested spans (one element carries one transform animation) and the
+  travel distances in the `dvd-x` / `dvd-y` keyframes are hard-coded
+  against a 150px avatar and a 42x20 badge — **resize one and you must
+  resize the other**.
+- `components/NameHistory.tsx` — client component for the caret next to
+  the name that opens Steam's alias history. Closes on Escape (returning
+  focus to the caret) and on outside click. Content comes from `aliases`
+  in `lib/profile-data.ts` and is still placeholder.
 - `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
   is Steam's "Favorite Game" slot (capsule, copy, one oversized stat) for
   the highest-rarity project; the default export is the square inventory
@@ -154,7 +166,11 @@ ever hits the unauthenticated rate limit.
 ## Things to avoid
 
 - No fake/decorative animations — every interactive element should be real
-  data or a real mechanic, per Bradley's explicit brief.
+  data or a real mechanic, per Bradley's explicit brief. Two deliberate
+  exceptions, both replications of actual Steam features Bradley asked
+  for: the animated avatar frame (DVD-screensaver bounce) and the status
+  pulse. Neither is scroll-triggered and neither is a hover effect. Don't
+  read these as licence to add decorative motion elsewhere.
 - **Close visual fidelity to Steam's profile layout is intentional** —
   Bradley asked for it directly, superseding the earlier "inspired by the
   structure of, not a literal skin" note. Don't undo it. The carve-out
