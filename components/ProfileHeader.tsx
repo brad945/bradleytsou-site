@@ -18,8 +18,8 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="60"
-      height="34"
+      width="63"
+      height="36"
       viewBox="0 0 110 62"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
@@ -118,7 +118,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
                   baked into the keyframes against this box's 148px padding
-                  area and the 60x34 logo — resize one and you must resize the
+                  area and the 63x36 logo — resize one and you must resize the
                   other, and the travel has to stay divisible by the step count
                   or the logo jitters. See the keyframes for why.
                 */}

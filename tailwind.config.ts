@@ -151,18 +151,22 @@ const config: Config = {
          * chunky cadence of the original screensaver. Change a duration and
          * you must change its step count to keep that framerate.
          *
-         * Travel MUST divide evenly by its step count: 88/22 = 4px and
-         * 114/19 = 6px. A fractional step (86/25 = 3.44px) lands the logo on
+         * Travel MUST divide evenly by its step count: 85/17 = 5px and
+         * 112/16 = 7px. A fractional step (86/25 = 3.44px) lands the logo on
          * a different subpixel phase every frame, so the browser re-antialiases
          * the letterforms and the whole thing visibly jitters.
+         *
+         * Between those two rules, speed can only be a multiple of 10 px/s
+         * (speed = 10 x px-per-step). To change it, pick the next whole
+         * px-per-step and re-derive the logo size so the travel still divides.
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(88px)" },
+          to: { transform: "translateX(85px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
-          to: { transform: "translateY(114px)" },
+          to: { transform: "translateY(112px)" },
         },
         /*
          * The logo is the only thing that changes colour. steps(1) so it snaps
@@ -179,9 +183,9 @@ const config: Config = {
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
-        // 2.2s x 10fps = 22 steps; 1.9s x 10fps = 19 steps.
-        "dvd-x": "dvd-x 2.2s steps(22) infinite alternate",
-        "dvd-y": "dvd-y 1.9s steps(19) infinite alternate",
+        // 1.7s x 10fps = 17 steps; 1.6s x 10fps = 16 steps.
+        "dvd-x": "dvd-x 1.7s steps(17) infinite alternate",
+        "dvd-y": "dvd-y 1.6s steps(16) infinite alternate",
         "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
     },
