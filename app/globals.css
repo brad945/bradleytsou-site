@@ -15,7 +15,6 @@
     @apply bg-accent/30 text-ink;
   }
 
-  /* Scrollbar tuned to the panel palette so it doesn't read as OS chrome. */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -35,13 +34,52 @@
 }
 
 @layer components {
-  /* Small uppercase mono label used above every panel. */
+  /* Small uppercase mono label. Used for killfeed chrome only. */
   .label {
     @apply font-mono text-[10px] uppercase tracking-[0.18em] text-muted;
   }
 
+  /*
+   * The showcase panel. Semi-transparent so the profile background reads
+   * through it, the way Steam's panels sit over an equipped background.
+   */
   .panel {
-    @apply rounded-panel border border-line bg-panel;
+    @apply bg-panel/70 backdrop-blur-[2px];
+  }
+
+  /* Steam's showcase header: gradient bar, title left, meta right. */
+  .panel-bar {
+    @apply flex flex-wrap items-center justify-between gap-2 bg-panel-header px-4 py-2.5;
+  }
+
+  .panel-bar-title {
+    @apply text-[17px] font-normal leading-tight text-ink;
+  }
+
+  .panel-bar-meta {
+    @apply text-[15px] font-light text-ink/70;
+  }
+
+  /* Sidebar stat row: grey label, large light number. */
+  .stat-row {
+    @apply flex items-baseline gap-2 py-[7px];
+  }
+
+  .stat-label {
+    @apply text-[15px] text-muted;
+  }
+
+  .stat-value {
+    @apply text-[22px] font-light leading-none text-ink/85;
+  }
+
+  .steam-link {
+    @apply text-link transition-colors hover:text-ink;
+  }
+
+  /* Flat translucent button, Steam's secondary action style. */
+  .steam-button {
+    @apply inline-flex items-center justify-center rounded-[2px] bg-ink/[0.12] px-4 py-1.5 text-[14px] text-ink/90 transition-colors hover:bg-ink/20 hover:text-ink;
   }
 }
 

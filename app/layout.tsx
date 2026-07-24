@@ -1,17 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { JetBrains_Mono, Mulish } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/profile-data";
 
-const display = Space_Grotesk({
+/**
+ * Mulish stands in for Steam's Motiva Sans — closest free match on
+ * proportions, and it carries the light weights the big numbers need.
+ * One family for display and body, same as Steam.
+ */
+const sans = Mulish({
   subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const body = Inter({
-  subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -37,10 +36,24 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      className={`${sans.variable} ${mono.variable}`}
+      style={
+        {
+          "--font-display": "var(--font-sans)",
+          "--font-body": "var(--font-sans)",
+        } as React.CSSProperties
+      }
+    >
       <body className="min-h-screen bg-base">
-        {/* Static ambient gradient. Does not move, does not react to scroll. */}
-        <div className="pointer-events-none fixed inset-0 bg-nebula-glow" aria-hidden />
+        {/* Static background layers: nebula glow, then a sparse starfield. */}
+        <div className="pointer-events-none fixed inset-0 bg-page-glow" aria-hidden />
+        <div
+          className="pointer-events-none fixed inset-0 bg-starfield opacity-70"
+          style={{ backgroundSize: "760px 760px" }}
+          aria-hidden
+        />
         <div className="relative">{children}</div>
       </body>
     </html>

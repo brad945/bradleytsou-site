@@ -2,9 +2,10 @@
  * Everything editable about the site lives here.
  *
  * TODO(bradley): replace `githubUsername` and the project links below with the
- * real ones. The activity feed, the metrics strip and the avatar are all driven
- * off `githubUsername` — until it's real, the feed renders its empty state
- * instead of crashing.
+ * real ones. The activity feed, the repo rows, the sidebar counts and the
+ * avatar are all driven off `githubUsername` — until it's real, the feed
+ * renders its empty state and the data-backed sidebar panels hide themselves
+ * rather than crashing.
  */
 
 export type Rarity = "core" | "major" | "side";
@@ -178,27 +179,59 @@ export const rarityLabels: Record<Rarity, string> = {
  */
 export const rarityStyles: Record<
   Rarity,
-  { border: string; text: string; dot: string; tint: string }
+  {
+    /** Left accent bar, for wide cards. */
+    border: string;
+    /** Full 1px outline, for the square inventory tiles. */
+    tileBorder: string;
+    text: string;
+    dot: string;
+    tint: string;
+  }
 > = {
   core: {
     border: "border-l-rarity-core",
+    tileBorder: "border-rarity-core/70",
     text: "text-rarity-core",
     dot: "bg-rarity-core",
-    tint: "group-hover:bg-rarity-core/[0.06]",
+    tint: "hover:bg-rarity-core/[0.10]",
   },
   major: {
     border: "border-l-rarity-major",
+    tileBorder: "border-rarity-major/70",
     text: "text-rarity-major",
     dot: "bg-rarity-major",
-    tint: "group-hover:bg-rarity-major/[0.08]",
+    tint: "hover:bg-rarity-major/[0.12]",
   },
   side: {
     border: "border-l-rarity-side",
+    tileBorder: "border-rarity-side/60",
     text: "text-rarity-side",
     dot: "bg-rarity-side",
-    tint: "group-hover:bg-rarity-side/[0.06]",
+    tint: "hover:bg-rarity-side/[0.10]",
   },
 };
+
+/**
+ * One- or two-character stand-in for item art, used on every square tile and
+ * repo capsule. Prefers word initials, then internal capitals ("CodeArena" →
+ * "CA"), then the first two letters.
+ */
+export function monogram(name: string): string {
+  const words = name.replace(/[^A-Za-z0-9 .\-_]/g, "").split(/[ .\-_]+/).filter(Boolean);
+
+  if (words.length >= 2) {
+    return words
+      .slice(0, 2)
+      .map((word) => word[0].toUpperCase())
+      .join("");
+  }
+
+  const word = words[0] ?? "";
+  const capitals = word.match(/[A-Z0-9]/g);
+  if (capitals && capitals.length >= 2) return capitals.slice(0, 2).join("");
+  return word.slice(0, 2).toUpperCase();
+}
 
 /** Level = full years since `codingSince`; XP = progress through the current year. */
 export function experience(now: Date = new Date()) {

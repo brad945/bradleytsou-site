@@ -52,10 +52,33 @@ export interface GitHubStats {
   avatarUrl: string | null;
   profileUrl: string;
   publicRepos: number;
+  publicGists: number;
   followers: number;
   following: number;
+  /** Year the account was created — the "member since" row. */
+  memberSince: number | null;
   /** Public events in the last 14 days — the "hours past 2 weeks" analogue. */
   eventsPast2Weeks: number;
+}
+
+/** A recently-pushed repo, rendered in the "recently played" slot. */
+export interface RepoCard {
+  id: number;
+  name: string;
+  description: string | null;
+  language: string | null;
+  stars: number;
+  forks: number;
+  pushedAt: string;
+  url: string;
+  /** Commits pushed to this repo in the last 14 days, from the events feed. */
+  commitsPast2Weeks: number;
+}
+
+/** Language usage across owned repos — the sidebar's breakdown block. */
+export interface LanguageCount {
+  name: string;
+  repos: number;
 }
 
 export interface GitHubSnapshot {
@@ -64,6 +87,11 @@ export interface GitHubSnapshot {
   error: string | null;
   stats: GitHubStats | null;
   feed: FeedItem[];
+  /** Most recently pushed, for the "recently played" rows. */
+  repos: RepoCard[];
+  /** Most starred, for the sidebar list. */
+  topRepos: RepoCard[];
+  languages: LanguageCount[];
   /** When this snapshot was built, ISO. */
   fetchedAt: string;
 }
@@ -74,8 +102,23 @@ interface GitHubUser {
   avatar_url: string;
   html_url: string;
   public_repos: number;
+  public_gists: number;
   followers: number;
   following: number;
+  created_at: string;
+}
+
+interface GitHubRepo {
+  id: number;
+  name: string;
+  description: string | null;
+  language: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  pushed_at: string;
+  html_url: string;
+  fork: boolean;
+  archived: boolean;
 }
 
 interface GitHubEvent {
@@ -219,34 +262,67 @@ function toFeedItem(event: GitHubEvent): FeedItem | null {
   }
 }
 
+const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
+
 function countPast2Weeks(events: GitHubEvent[], now: number): number {
-  const cutoff = now - 14 * 24 * 60 * 60 * 1000;
+  const cutoff = now - TWO_WEEKS_MS;
   return events.filter((e) => {
     const t = Date.parse(e.created_at);
     return Number.isFinite(t) && t >= cutoff;
   }).length;
 }
 
+/** Commits per repo (short name) pushed in the last 14 days. */
+function commitsByRepo(events: GitHubEvent[], now: number): Map<string, number> {
+  const cutoff = now - TWO_WEEKS_MS;
+  const counts = new Map<string, number>();
+
+  for (const event of events) {
+    if (event.type !== "PushEvent") continue;
+    const t = Date.parse(event.created_at);
+    if (!Number.isFinite(t) || t < cutoff) continue;
+
+    const name = shortRepo(event.repo?.name);
+    const size = event.payload?.size ?? event.payload?.commits?.length ?? 1;
+    counts.set(name, (counts.get(name) ?? 0) + size);
+  }
+
+  return counts;
+}
+
 /**
  * One call for everything the page needs. Never throws.
  *
- * @param username GitHub handle.
- * @param limit    Max killfeed rows to return.
+ * @param username  GitHub handle.
+ * @param limit     Max killfeed rows to return.
+ * @param repoLimit Max recently-pushed repo cards to return.
  */
 export async function getGitHubSnapshot(
   username: string,
   limit = 12,
+  repoLimit = 3,
 ): Promise<GitHubSnapshot> {
   const fetchedAt = new Date().toISOString();
-  const empty: GitHubSnapshot = { ok: false, error: null, stats: null, feed: [], fetchedAt };
+  const empty: GitHubSnapshot = {
+    ok: false,
+    error: null,
+    stats: null,
+    feed: [],
+    repos: [],
+    topRepos: [],
+    languages: [],
+    fetchedAt,
+  };
 
   if (!username || username === PLACEHOLDER_GITHUB_USERNAME) {
     return { ...empty, error: "GitHub username not configured yet" };
   }
 
-  const [user, events] = await Promise.all([
-    getJson<GitHubUser>(`/users/${encodeURIComponent(username)}`),
-    getJson<GitHubEvent[]>(`/users/${encodeURIComponent(username)}/events/public?per_page=100`),
+  const handle = encodeURIComponent(username);
+  const [user, events, repos] = await Promise.all([
+    getJson<GitHubUser>(`/users/${handle}`),
+    getJson<GitHubEvent[]>(`/users/${handle}/events/public?per_page=100`),
+    getJson<GitHubRepo[]>(`/users/${handle}/repos?type=owner&sort=pushed&per_page=12`),
   ]);
 
   if (!user.data) {
@@ -259,6 +335,41 @@ export async function getGitHubSnapshot(
     .filter((item): item is FeedItem => item !== null)
     .slice(0, limit);
 
+  // Forks and archives would dominate the "recently played" slot without
+  // saying anything about what Bradley is actually working on.
+  const commits = commitsByRepo(rawEvents, Date.parse(fetchedAt));
+  const owned: RepoCard[] = (Array.isArray(repos.data) ? repos.data : [])
+    .filter((r) => !r.fork && !r.archived)
+    .map((r) => ({
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      language: r.language,
+      stars: r.stargazers_count,
+      forks: r.forks_count,
+      pushedAt: r.pushed_at,
+      url: r.html_url,
+      commitsPast2Weeks: commits.get(r.name) ?? 0,
+    }));
+
+  // The API already returned these sorted by push date.
+  const repoCards = owned.slice(0, repoLimit);
+  const topRepos = [...owned].sort((a, b) => b.stars - a.stars).slice(0, 6);
+
+  const languageCounts = new Map<string, number>();
+  for (const repo of owned) {
+    if (!repo.language) continue;
+    languageCounts.set(repo.language, (languageCounts.get(repo.language) ?? 0) + 1);
+  }
+  const languages: LanguageCount[] = Array.from(languageCounts, ([name, count]) => ({
+    name,
+    repos: count,
+  }))
+    .sort((a, b) => b.repos - a.repos)
+    .slice(0, 5);
+
+  const createdAt = Date.parse(user.data.created_at);
+
   return {
     ok: true,
     error: events.data ? null : events.error,
@@ -269,10 +380,15 @@ export async function getGitHubSnapshot(
       avatarUrl: user.data.avatar_url,
       profileUrl: user.data.html_url,
       publicRepos: user.data.public_repos,
+      publicGists: user.data.public_gists,
       followers: user.data.followers,
       following: user.data.following,
+      memberSince: Number.isFinite(createdAt) ? new Date(createdAt).getUTCFullYear() : null,
       eventsPast2Weeks: countPast2Weeks(rawEvents, Date.parse(fetchedAt)),
     },
     feed,
+    repos: repoCards,
+    topRepos,
+    languages,
   };
 }
