@@ -16,8 +16,8 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="46"
-      height="26"
+      width="62"
+      height="35"
       viewBox="0 0 46 26"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]"
@@ -74,8 +74,10 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           <div className="shrink-0">
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
-            <div className="w-fit bg-avatar-frame p-[9px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
-              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base ring-1 ring-inset ring-base/90">
+            {/* Hairline dark edge outside and inside the grey band, as in the
+                reference — the band never touches the page or the photo. */}
+            <div className="w-fit bg-avatar-frame p-[10px] ring-1 ring-base/90">
+              <div className="relative h-[150px] w-[150px] overflow-hidden bg-base ring-1 ring-base/90">
                 {avatar ? (
                   <Image
                     src={avatar}
@@ -95,7 +97,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
                   baked into the keyframes against this 150px box and the 46x26
-                  logo — resize one and you must resize the other.
+                  62x35 logo — resize one and you must resize the other.
                 */}
                 <span
                   className="pointer-events-none absolute left-0 top-0 animate-dvd-x"

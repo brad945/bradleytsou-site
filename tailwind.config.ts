@@ -25,8 +25,13 @@ const tokens = {
   wine: "#2b1526",
   /** Left stop of the panel header gradient. */
   teal: "#2f5d6e",
-  /** Brushed-grey avatar frame band. */
-  steel: "#8e9199",
+  /**
+   * Avatar frame band. Neutral grey on purpose — any blue tint reads wrong
+   * against the reference, which is a plain light-to-dark grey gradient.
+   */
+  steel: "#a8a8a8",
+  steelLight: "#d2d2d2",
+  steelDark: "#828282",
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
 };
@@ -88,9 +93,12 @@ const config: Config = {
         "panel-header": `linear-gradient(to right, ${tokens.teal}e6 0%, ${tokens.plum}66 55%, ${tokens.plum}00 100%)`,
         "panel-sheen": `linear-gradient(180deg, ${tokens.panel2} 0%, ${tokens.panel} 100%)`,
         "xp-fill": `linear-gradient(90deg, ${tokens.nebula} 0%, ${tokens.accent} 100%)`,
-        // Brushed-metal avatar frame. Static grey — only the bouncing logo
-        // inside it changes colour.
-        "avatar-frame": `linear-gradient(180deg, #a6a9b1 0%, ${tokens.steel} 45%, #7c7f87 70%, #9ca0a8 100%)`,
+        /*
+         * Avatar frame: a plain diagonal light-to-dark grey gradient, per the
+         * reference. Deliberately NOT a bevel — no dark mid-stop, or it reads
+         * as a groove cut into the band. Neutral greys, no blue tint.
+         */
+        "avatar-frame": `linear-gradient(135deg, ${tokens.steelLight} 0%, ${tokens.steel} 50%, ${tokens.steelDark} 100%)`,
       },
       boxShadow: {
         panel: `0 1px 0 0 ${tokens.line}, 0 18px 40px -28px #000000`,
@@ -115,15 +123,19 @@ const config: Config = {
          * elements with different periods and `alternate` — one element can
          * only carry one transform animation, and mismatched periods keep the
          * path from visibly looping. Travel distances assume a 150px avatar
-         * and a 46x26 logo; they must change together.
+         * and a 62x35 logo; they must change together.
+         *
+         * Step counts are duration x 20, which pins the motion to 20fps — the
+         * chunky cadence of the original screensaver. Change a duration and
+         * you must change its step count to keep that framerate.
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(104px)" },
+          to: { transform: "translateX(88px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
-          to: { transform: "translateY(124px)" },
+          to: { transform: "translateY(115px)" },
         },
         /*
          * The logo is the only thing that changes colour. steps(1) so it snaps
@@ -140,8 +152,9 @@ const config: Config = {
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
-        "dvd-x": "dvd-x 3.1s linear infinite alternate",
-        "dvd-y": "dvd-y 2.3s linear infinite alternate",
+        // 3.1s x 20fps = 62 steps; 2.3s x 20fps = 46 steps.
+        "dvd-x": "dvd-x 3.1s steps(62) infinite alternate",
+        "dvd-y": "dvd-y 2.3s steps(46) infinite alternate",
         "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
     },
