@@ -19,44 +19,46 @@ function DvdLogo() {
   return (
     <svg
       width="62"
-      height="34"
-      viewBox="0 0 100 55"
+      height="35"
+      viewBox="0 0 110 62"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
       aria-hidden
     >
       {/*
-        The wordmark dominates the mark — it's heavy (900) and large, and the
-        ellipse tucks under its baseline rather than sitting beside it at a
-        similar size. Getting that hierarchy wrong is what made earlier passes
-        read as "a badge with an oval" instead of the logo.
+        The glyphs are drawn as paths, not set in a font. The mark's letterforms
+        are squat and slab-heavy with tight counters — no font-weight on a
+        webfont gets close, which is why earlier passes using <text> at 900
+        still read wrong however much they were nudged.
+
+        Each D is one evenodd path: outer shell then counter. skewX(-14) is the
+        italic slant; it shifts lower points left, so the group is translated
+        right to keep the mark inside the viewBox.
       */}
-      <g transform="skewX(-11)">
-        <text
-          x="58"
-          y="38"
-          textAnchor="middle"
-          fill="currentColor"
-          fontSize="42"
-          fontWeight="900"
-          fontFamily="var(--font-sans), sans-serif"
-          letterSpacing="-2.5"
-        >
-          DVD
-        </text>
+      <g transform="skewX(-14) translate(16 3)" fill="currentColor" fillRule="evenodd">
+        <path d="M0 0 H15 C24 0 28 6.5 28 16 C28 25.5 24 32 15 32 H0 Z M8.5 8 H14 C18 8 19.5 11 19.5 16 C19.5 21 18 24 14 24 H8.5 Z" />
+        <path transform="translate(29 0)" d="M0 0 H9.5 L13 19 L16.5 0 H26 L18 32 H8 Z" />
+        <path
+          transform="translate(56 0)"
+          d="M0 0 H15 C24 0 28 6.5 28 16 C28 25.5 24 32 15 32 H0 Z M8.5 8 H14 C18 8 19.5 11 19.5 16 C19.5 21 18 24 14 24 H8.5 Z"
+        />
       </g>
 
-      {/* Ellipse overlaps the letters' baseline, as on the real mark. */}
-      <ellipse cx="50" cy="41" rx="30" ry="8" stroke="currentColor" strokeWidth="4" />
+      {/*
+        A thick ring, not a hairline — at small sizes the open centre plus the
+        VIDEO lettering is what reads as the disc. The wordmark overlaps its
+        top edge.
+      */}
+      <ellipse cx="52" cy="43" rx="41" ry="8.5" stroke="currentColor" strokeWidth="6.5" />
       <text
-        x="50"
-        y="44.5"
+        x="52"
+        y="46.4"
         textAnchor="middle"
         fill="currentColor"
-        fontSize="8.5"
+        fontSize="9.5"
         fontWeight="800"
         fontFamily="var(--font-sans), sans-serif"
-        letterSpacing="0.2"
+        letterSpacing="0.4"
       >
         VIDEO
       </text>

@@ -93,10 +93,14 @@ rule below). Don't bump either without updating this file.
   The only thing that moves or changes colour is the DVD logo bouncing
   screensaver-style inside the 150px box, cycling the vivid `dvd.*`
   colours on `dvd-tint`. Pure CSS, no JS.
-  In `DvdLogo` the wordmark must **dominate** — 900 weight at a large
-  size with the ellipse tucked under its baseline. Sizing the ellipse
-  comparably to the text makes it read as "a badge with an oval" rather
-  than the logo.
+  In `DvdLogo` the glyphs are **drawn as SVG paths, not set in a font**.
+  The mark's letterforms are squat and slab-heavy with tight counters;
+  no webfont at any weight gets close, which is why passes that used
+  `<text>` at 900 kept reading wrong however much they were nudged. Each
+  D is a single `evenodd` path (outer shell then counter), `skewX(-14)`
+  supplies the italic slant, and the ellipse is a thick ring the wordmark
+  overlaps — at small sizes the open centre plus the VIDEO lettering is
+  what reads as a disc.
   The bounce needs two nested spans (one element carries one transform
   animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
   are hard-coded against a 150px avatar and the 84x46 logo — **resize one
