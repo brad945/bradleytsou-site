@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-base text-ink font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-ink;
+  }
+
+  /* Scrollbar tuned to the panel palette so it doesn't read as OS chrome. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-base;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-line rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted/50;
+  }
+}
+
+@layer components {
+  /* Small uppercase mono label used above every panel. */
+  .label {
+    @apply font-mono text-[10px] uppercase tracking-[0.18em] text-muted;
+  }
+
+  .panel {
+    @apply rounded-panel border border-line bg-panel;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
