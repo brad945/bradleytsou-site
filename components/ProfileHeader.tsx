@@ -10,8 +10,10 @@ interface ProfileHeaderProps {
 /**
  * The bouncing screensaver mark. Drawn here from primitives — skewed wordmark
  * over a flattened ellipse — rather than embedding the real logo file.
- * Everything paints with `currentColor`, so the `dvd-tint` animation on the
- * wrapper is what changes its colour, and nothing else on the frame moves.
+ *
+ * Flat fill, nothing else: no gradient, no glow, and only a trace of shadow so
+ * it stays legible over a light avatar. Everything paints with `currentColor`,
+ * so the `dvd-tint` animation is the single thing that changes its colour.
  */
 function DvdLogo() {
   return (
@@ -20,7 +22,7 @@ function DvdLogo() {
       height="35"
       viewBox="0 0 46 26"
       fill="none"
-      className="block animate-dvd-tint drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]"
+      className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
       aria-hidden
     >
       <g transform="skewX(-12) translate(4 0)">

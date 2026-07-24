@@ -47,6 +47,20 @@ const rarity = {
   side: tokens.muted,
 };
 
+/**
+ * Screensaver colours for the bouncing logo. Deliberately vivid and fully
+ * saturated — this is the one place the muted site palette doesn't apply,
+ * because the reference logo is a flat bright fill. Flat colour only: no
+ * gradient, no glow.
+ */
+const dvd = {
+  yellow: "#ffe500",
+  cyan: "#00e0ff",
+  magenta: "#ff3cc8",
+  green: "#3bff78",
+  orange: "#ff7a14",
+};
+
 /** Sparse starfield, tiled. Static — it does not move or react to scroll. */
 const starfield = [
   "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.40), transparent)",
@@ -74,6 +88,7 @@ const config: Config = {
       colors: {
         ...tokens,
         rarity,
+        dvd,
       },
       fontFamily: {
         // Mulish stands in for Steam's Motiva Sans: same humanist-geometric
@@ -143,11 +158,11 @@ const config: Config = {
          * paints with currentColor, so animating `color` is enough.
          */
         "dvd-tint": {
-          "0%": { color: tokens.accent },
-          "20%": { color: tokens.link },
-          "40%": { color: tokens.live },
-          "60%": { color: tokens.nebula },
-          "80%": { color: tokens.ink },
+          "0%": { color: dvd.yellow },
+          "20%": { color: dvd.cyan },
+          "40%": { color: dvd.magenta },
+          "60%": { color: dvd.green },
+          "80%": { color: dvd.orange },
         },
       },
       animation: {
