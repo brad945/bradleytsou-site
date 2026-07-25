@@ -113,7 +113,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                     unoptimized
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-light text-muted">
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-extralight text-muted">
                     {profile.initials}
                   </div>
                 )}
@@ -143,17 +143,17 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           <div className="min-w-0 flex-1">
             <NameHistory name={profile.name} aliases={aliases} />
 
-            <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[14px] text-ink/70">
+            <p className="t-label mt-1 flex flex-wrap items-center gap-x-2">
               <span>{profile.handle}</span>
               <span className="text-muted/60">·</span>
               <span>{profile.location}</span>
             </p>
 
-            <p className="mt-4 max-w-[46ch] text-[14px] leading-relaxed text-ink/80">
+            <p className="t-body mt-4 max-w-[46ch]">
               {profile.tagline}
             </p>
 
-            <p className="mt-2 text-[14px] leading-relaxed text-ink/60">
+            <p className="t-body mt-2 text-muted">
               Currently: {profile.currentFocus}
             </p>
           </div>
@@ -162,19 +162,19 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
         {/* Level + service badge, mirroring Steam's right-hand header block */}
         <div className="lg:pl-2">
           <div className="flex items-center gap-3">
-            <span className="text-[26px] font-light leading-none text-ink/90">Level</span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-ink">
+            <span className="t-stat">Level</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
               {level}
             </span>
           </div>
 
           <div className="mt-4 flex items-center gap-3 bg-base/45 p-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-light text-accent">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
               {level}
             </span>
             <div className="min-w-0">
-              <p className="text-[14px] leading-tight text-ink/90">Years of Service</p>
-              <p className="text-[13px] leading-tight text-muted">
+              <p className="text-[14px] leading-tight text-copy">Years of Service</p>
+              <p className="t-meta leading-tight">
                 {progress}% to {level + 1} · since {sinceYear}
               </p>
             </div>

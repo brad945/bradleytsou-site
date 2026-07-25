@@ -44,10 +44,10 @@ export default function Sidebar({ snapshot }: SidebarProps) {
   return (
     <div className="flex flex-col gap-4">
       <section className="panel px-4 py-4">
-        <h2 className="text-[22px] font-light leading-tight text-live">
+        <h2 className="text-[24px] font-light leading-tight text-live">
           Currently {profile.status.label}
         </h2>
-        <p className="mt-0.5 text-[14px] text-muted">{profile.status.detail}</p>
+        <p className="t-label mt-1">{profile.status.detail}</p>
 
         <div className="mt-5">
           <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
@@ -84,7 +84,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
           <div className="stat-row">
             <span className="stat-label">Focus</span>
           </div>
-          <p className="text-[14px] leading-snug text-ink/75">{profile.currentFocus}</p>
+          <p className="t-body leading-snug">{profile.currentFocus}</p>
         </div>
       </section>
 
@@ -98,8 +98,8 @@ export default function Sidebar({ snapshot }: SidebarProps) {
             {languages.map((language) => (
               <li key={language.name}>
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-[14px] text-ink/80">{language.name}</span>
-                  <span className="text-[12px] text-muted">
+                  <span className="t-body">{language.name}</span>
+                  <span className="t-meta">
                     {language.repos} {language.repos === 1 ? "repo" : "repos"}
                   </span>
                 </div>
@@ -137,12 +137,12 @@ export default function Sidebar({ snapshot }: SidebarProps) {
                     <span className="steam-link block truncate text-[14px] leading-tight">
                       {repo.name}
                     </span>
-                    <span className="block text-[12px] leading-tight text-muted">
+                    <span className="t-meta block leading-tight">
                       {daysAgo(repo.pushedAt, now)}
                     </span>
                   </span>
                   <span
-                    className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[12px] text-accent"
+                    className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[13px] text-accent"
                     title={`${repo.stars} stars`}
                   >
                     {repo.stars.toLocaleString()}
@@ -166,7 +166,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
                 href={link.href}
                 target={link.href.startsWith("mailto:") ? undefined : "_blank"}
                 rel="noreferrer"
-                className="steam-link block py-1.5 text-[15px]"
+                className="steam-link block py-1.5 text-[14px]"
               >
                 {link.label}
               </a>

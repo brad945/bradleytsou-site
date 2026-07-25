@@ -41,7 +41,7 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
 
   return (
     <div ref={root} className="relative inline-flex items-center gap-2">
-      <h1 className="text-[28px] font-light leading-tight text-ink">{name}</h1>
+      <h1 className="t-display">{name}</h1>
 
       {/*
         The dropdown anchors to the caret, not to the name: in the reference
@@ -72,20 +72,20 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
 
         {open && (
           <div className="absolute left-0 top-full z-20 mt-1 w-[250px] bg-menu shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
-            <p className="px-4 pb-1 pt-3 text-[15px] text-ink">
+            <p className="px-4 pb-1 pt-3 text-[15px] text-bright">
               This user has also played as:
             </p>
 
             {aliases.length > 0 ? (
               <ul className="py-1 pb-3">
                 {aliases.map((alias) => (
-                  <li key={alias} className="px-4 py-[7px] text-[15px] text-ink/90">
+                  <li key={alias} className="px-4 py-[7px] text-[15px] text-copy">
                     {alias}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-4 py-3 text-[14px] text-ink/50">No previous aliases</p>
+              <p className="px-4 py-3 text-[14px] text-muted">No previous aliases</p>
             )}
           </div>
         )}

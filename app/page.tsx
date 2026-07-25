@@ -32,7 +32,7 @@ export default async function Home() {
         <Sidebar snapshot={snapshot} />
       </div>
 
-      <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[12px] text-muted/60">
+      <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
         <span>Every number on this page is fetched, not written.</span>
         <span>Layout inspired by Steam profiles. Not affiliated with Valve.</span>
       </footer>

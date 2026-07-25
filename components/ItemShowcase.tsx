@@ -31,7 +31,8 @@ export function FavoriteProject() {
         <h2 id="favorite-heading" className="panel-bar-title">
           Favorite Project
         </h2>
-        <span className={`text-[13px] uppercase tracking-wider ${style.text}`}>
+        {/* No uppercase or tracking — Steam's panel bars use plain sentence case. */}
+        <span className={`text-[15px] font-light ${style.text}`}>
           {rarityLabels[featured.rarity]}
         </span>
       </div>
@@ -48,8 +49,8 @@ export function FavoriteProject() {
           </div>
 
           <div className="min-w-0 flex-1">
-            <h3 className="text-[19px] font-light leading-tight text-ink">{featured.name}</h3>
-            <p className="mt-1.5 text-[14px] leading-relaxed text-ink/75">{featured.blurb}</p>
+            <h3 className="text-[19px] font-light leading-tight text-bright">{featured.name}</h3>
+            <p className="t-body mt-1.5">{featured.blurb}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {featured.tags.map((tag) => (
                 <li
@@ -64,8 +65,8 @@ export function FavoriteProject() {
         </div>
 
         <div className="mt-4 bg-base/40 p-4">
-          <p className="text-[34px] font-light leading-none text-ink/90">{featured.period}</p>
-          <p className="mt-1.5 text-[14px] text-muted">In development</p>
+          <p className="t-stat-lg text-[34px]">{featured.period}</p>
+          <p className="t-label mt-1.5">In development</p>
         </div>
 
         {link && (
@@ -89,7 +90,7 @@ function Tile({ project }: { project: Project }) {
       <span className={`text-[22px] font-light leading-none ${style.text}`}>
         {monogram(project.name)}
       </span>
-      <span className="mt-1.5 line-clamp-2 px-1 text-center text-[10px] leading-tight text-muted">
+      <span className="mt-1.5 line-clamp-2 px-1 text-center text-[11px] leading-tight text-muted">
         {project.name}
       </span>
     </>
@@ -131,7 +132,7 @@ export default function ItemShowcase() {
           {TIER_ORDER.map((tier) => (
             <li key={tier} className="flex items-center gap-1.5">
               <span className={`h-2 w-2 ${rarityStyles[tier].dot}`} aria-hidden />
-              <span className="text-[12px] uppercase tracking-wider text-ink/60">
+              <span className="t-meta">
                 {rarityLabels[tier]}
               </span>
             </li>
@@ -147,14 +148,14 @@ export default function ItemShowcase() {
 
           {/* Steam puts the "N Items Owned" counter in the grid's leftover space. */}
           <li className="col-span-2 flex flex-col justify-center px-2 lg:col-span-3">
-            <span className="text-[40px] font-light leading-none text-ink/90">
+            <span className="t-stat-lg">
               {projects.length}
             </span>
-            <span className="mt-1 text-[15px] text-muted">Projects Shown</span>
+            <span className="t-label mt-1">Projects Shown</span>
           </li>
         </ul>
 
-        <p className="mt-3 text-[12px] text-muted/70">
+        <p className="t-meta mt-3">
           Rarity is how central the project is to my work — not how shiny it is.
         </p>
 
@@ -181,14 +182,14 @@ export default function ItemShowcase() {
                       {project.name}
                     </a>
                   ) : (
-                    <span className="text-[13px] text-ink/85">{project.name}</span>
+                    <span className="text-[13px] text-copy">{project.name}</span>
                   )}
-                  <span className="text-[12px] text-muted/70">{project.period}</span>
+                  <span className="t-meta">{project.period}</span>
                   <span className="ml-auto font-mono text-[10px] text-muted/60">
                     {project.tags.join(" · ")}
                   </span>
                 </div>
-                <p className="mt-0.5 pl-4 text-[12px] leading-snug text-muted">{project.blurb}</p>
+                <p className="t-meta mt-0.5 pl-4 leading-snug">{project.blurb}</p>
               </li>
             );
           })}

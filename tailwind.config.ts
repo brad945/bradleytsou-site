@@ -10,8 +10,15 @@ const tokens = {
   panel: "#15171e",
   panel2: "#1c1f29",
   line: "#2a2d3a",
-  ink: "#e9e7e2",
-  muted: "#8b90a0",
+  /**
+   * Text ramp, tuned to Steam's. Steam runs cool blue-greys, not warm creams,
+   * and reserves pure white for headings — `ink` was #e9e7e2 and read warm
+   * against everything else.
+   */
+  bright: "#ffffff",
+  ink: "#e5e8ea",
+  copy: "#c6d4df",
+  muted: "#8f98a0",
   accent: "#de9b35",
   nebula: "#5b3fae",
   live: "#5cc98f",

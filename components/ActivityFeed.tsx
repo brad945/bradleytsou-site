@@ -86,7 +86,7 @@ function RepoRow({ repo, busiest, now }: { repo: RepoCard; busiest: number; now:
             >
               {repo.name}
             </a>
-            <div className="text-right text-[13px] leading-tight text-muted">
+            <div className="t-meta text-right leading-tight">
               <p>
                 {repo.stars.toLocaleString()} {repo.stars === 1 ? "star" : "stars"} on record
               </p>
@@ -95,15 +95,15 @@ function RepoRow({ repo, busiest, now }: { repo: RepoCard; busiest: number; now:
           </div>
 
           {repo.description && (
-            <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-ink/65">
+            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
               {repo.description}
             </p>
           )}
 
           <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <span className="text-[13px] text-ink/70">Commits past 2 weeks</span>
-              <span className="text-[13px] text-muted">
+              <span className="t-label text-copy">Commits past 2 weeks</span>
+              <span className="t-meta">
                 {repo.commitsPast2Weeks} · {repo.language ?? "—"} ·{" "}
                 {relativeTime(repo.pushedAt, now)} ago
               </span>
@@ -169,9 +169,9 @@ function EmptyState({ error }: { error: string | null }) {
 
   return (
     <div className="bg-base/40 px-5 py-10 text-center">
-      <p className="text-[14px] text-muted">{error ?? "No public activity in range"}</p>
+      <p className="t-label">{error ?? "No public activity in range"}</p>
       {unconfigured && (
-        <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-muted/70">
+        <p className="t-meta mx-auto mt-2 max-w-sm leading-relaxed">
           Set <code className="font-mono text-ink/70">githubUsername</code> in{" "}
           <code className="font-mono text-ink/70">lib/profile-data.ts</code> and this feed fills
           itself in.

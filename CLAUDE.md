@@ -185,9 +185,32 @@ Dark theme, not a generic AI-slop palette:
 - `plum` #3f2350, `wine` #2b1526 (profile-background gradient)
 - `teal` #2f5d6e (left stop of the panel header bar)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- Fonts: Mulish (display + body — stands in for Steam's Motiva Sans, and
-  has the light weights the big numbers need), JetBrains Mono (killfeed
-  and `.label` chrome only)
+- Text ramp: `bright` #ffffff (headings), `ink` #e5e8ea, `copy` #c6d4df
+  (body), `muted` #8f98a0. Steam runs cool blue-greys — the old warm
+  #e9e7e2 `ink` read wrong against everything else.
+- Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
+  chrome only)
+
+## Typography
+
+Steam's own face is **Motiva Sans** (Typotheque, licensed — not on Google
+Fonts and not bundleable). Mulish is the standard free substitute and is
+what's loaded, as a variable font so weights 200-300 are actually
+available rather than being synthesised.
+
+The scale lives as `.t-*` classes in `app/globals.css` and is measured off
+the reference screenshots against a 940px column. Four traits carry most
+of the resemblance, and all four are easy to lose:
+- **very light weights** (200-300) on anything large — sidebar counts and
+  the showcase counter are weight 200, the persona name 300
+- **no letter-spacing and no uppercase** outside the tiny mono `.label`
+  used by the killfeed. Tracked uppercase is the single most un-Steam
+  thing you can add
+- **pure white for headings, blue-grey for copy** — not one flat colour
+- **tight leading on headings, ~1.5 on body**
+
+`.panel-bar-title` / `.panel-bar-meta` / `.stat-label` / `.stat-value`
+are aliases onto that scale, so restyling the scale restyles the page.
 
 Composite gradients are tokens too, under `backgroundImage`: `page-glow`,
 `starfield`, `profile-hero`, `panel-header`, `avatar-frame`, `xp-fill`.

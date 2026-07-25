@@ -8,7 +8,9 @@
   }
 
   body {
-    @apply bg-base text-ink font-body antialiased;
+    @apply bg-base text-copy font-body antialiased;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   ::selection {
@@ -34,7 +36,49 @@
 }
 
 @layer components {
-  /* Small uppercase mono label. Used for killfeed chrome only. */
+  /*
+   * Steam's type scale. Measured off the reference screenshots against a
+   * 940px content column. The defining traits, all easy to lose:
+   *   - very light weights (200-300) on anything large
+   *   - no letter-spacing and no uppercase outside tiny labels
+   *   - pure white reserved for headings, blue-grey for copy
+   *   - tight leading on headings, ~1.5 on body
+   */
+  .t-display {
+    @apply text-[28px] font-light leading-tight text-bright;
+  }
+
+  .t-panel-title {
+    @apply text-[17px] font-normal leading-tight text-bright;
+  }
+
+  .t-panel-meta {
+    @apply text-[15px] font-light text-copy/80;
+  }
+
+  /* Sidebar counts, the showcase counter, level numbers. */
+  .t-stat {
+    @apply text-[26px] font-extralight leading-none text-ink;
+  }
+
+  .t-stat-lg {
+    @apply text-[42px] font-extralight leading-none text-ink;
+  }
+
+  .t-label {
+    @apply text-[14px] font-normal text-muted;
+  }
+
+  .t-body {
+    @apply text-[14px] font-normal leading-[1.5] text-copy;
+  }
+
+  .t-meta {
+    @apply text-[13px] font-normal text-muted;
+  }
+
+  /* Small uppercase mono label. Used for killfeed chrome only — Steam has
+     nothing like it, so it stays scoped to the CS2-flavoured feed. */
   .label {
     @apply font-mono text-[10px] uppercase tracking-[0.18em] text-muted;
   }
@@ -53,11 +97,11 @@
   }
 
   .panel-bar-title {
-    @apply text-[17px] font-normal leading-tight text-ink;
+    @apply t-panel-title;
   }
 
   .panel-bar-meta {
-    @apply text-[15px] font-light text-ink/70;
+    @apply t-panel-meta;
   }
 
   /* Sidebar stat row: grey label, large light number. */
@@ -66,11 +110,11 @@
   }
 
   .stat-label {
-    @apply text-[15px] text-muted;
+    @apply t-label;
   }
 
   .stat-value {
-    @apply text-[22px] font-light leading-none text-ink/85;
+    @apply t-stat;
   }
 
   .steam-link {
