@@ -18,9 +18,13 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="63"
+      width="64"
       height="36"
-      viewBox="0 0 110 62"
+      /* Cropped to the mark's actual ink bounds. A 0-0-110-62 box carries ~4px
+         of transparent padding under the ellipse and ~6px right of the last D,
+         so the element could touch a wall while the logo visibly stopped short.
+         Recompute this if any glyph, the skew, or the ellipse stroke changes. */
+      viewBox="7.27 3 92 51.75"
       fill="none"
       className="block animate-dvd-tint drop-shadow-[0_1px_1px_rgba(0,0,0,0.075)]"
       aria-hidden

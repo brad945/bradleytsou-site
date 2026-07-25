@@ -162,7 +162,7 @@ const config: Config = {
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(85px)" },
+          to: { transform: "translateX(84px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
@@ -183,9 +183,10 @@ const config: Config = {
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
-        // 1.7s x 10fps = 17 steps; 1.6s x 10fps = 16 steps.
-        "dvd-x": "dvd-x 1.7s steps(17) infinite alternate",
-        "dvd-y": "dvd-y 1.6s steps(16) infinite alternate",
+        // jump-none, not the default jump-end — see the keyframe note.
+        // fps = steps / duration, so both of these are 10fps.
+        "dvd-x": "dvd-x 1.5s steps(15, jump-none) infinite alternate",
+        "dvd-y": "dvd-y 1.7s steps(17, jump-none) infinite alternate",
         "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
       },
     },

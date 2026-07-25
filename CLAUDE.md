@@ -89,7 +89,7 @@ rule below). Don't bump either without updating this file.
      (the reverse: dark top/left, light bottom/right). `frameHi` /
      `frameLo` are those two edge colours.
   The DVD logo is sized off the reference too — ~42% of the photo width.
-  Here that's 63x36 (42.6%), rounded to the nearest size whose travel
+  Here that's 64x36 (43.2%), rounded to the nearest size whose travel
   divides evenly by the step count; see the jitter note below.
   The only thing that moves or changes colour is the DVD logo bouncing
   screensaver-style inside the 150px box, cycling the vivid `dvd.*`
@@ -104,16 +104,25 @@ rule below). Don't bump either without updating this file.
   what reads as a disc.
   The bounce needs two nested spans (one element carries one transform
   animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
-  are hard-coded against the avatar's 148px padding box and the 63x36
-  logo — **resize one and you must resize the other**. The bounce runs on `steps(17)` /
-  `steps(16)`, i.e. duration x 10, which pins it to the original
+  are hard-coded against the avatar's 148px padding box and the 64x36
+  logo — **resize one and you must resize the other**. The bounce runs on `steps(15, jump-none)` /
+  `steps(17, jump-none)`, i.e. duration x 10, which pins it to the original
   screensaver's chunky 10fps; change a duration and you must change its
   step count to hold that framerate. Keep durations at whole tenths so
   the step count stays an integer, and keep the two sharing no common
   factor or the path visibly loops. **Travel must divide evenly by its
-  step count** (85/17 = 5px, 112/16 = 7px) — a fractional step lands the
+  step count** (84/14 = 6px, 112/16 = 7px) — a fractional step lands the
   logo on a new subpixel phase each frame, so the browser re-antialiases
-  the letterforms and it visibly jitters. `DvdLogo` is drawn from SVG primitives
+  the letterforms and it visibly jitters.
+  Two things make the logo actually touch the walls, and it silently
+  stops short if either regresses: the timing function must be
+  **`jump-none`** (the default `jump-end` emits k/n for k=0..n-1 and so
+  never reaches 1, leaving it one step short), and the SVG's **viewBox
+  must be cropped to the mark's ink bounds** — a 0-0-110-62 box carries
+  ~4px of transparent padding under the ellipse, so the element box can
+  touch a wall while the logo visibly doesn't. Recompute the viewBox if
+  a glyph, the skew, or the ellipse stroke changes.
+  `DvdLogo` is drawn from SVG primitives
   (skewed wordmark over an ellipse) rather than embedding the real logo
   file, and paints entirely with `currentColor` so one animated `color`
   drives it.
