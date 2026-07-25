@@ -84,7 +84,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
         aria-hidden
       />
 
-      <div className="relative grid gap-6 p-5 lg:grid-cols-[2fr_1fr]">
+      <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
           <div className="shrink-0">

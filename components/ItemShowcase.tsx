@@ -37,7 +37,7 @@ export function FavoriteProject() {
         </span>
       </div>
 
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex flex-col gap-4 sm:flex-row">
           {/* Capsule — generated from the palette, not lifted art. */}
           <div
@@ -140,7 +140,7 @@ export default function ItemShowcase() {
         </ul>
       </div>
 
-      <div className="p-4">
+      <div className="p-5">
         <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
           {projects.map((project) => (
             <Tile key={project.id} project={project} />

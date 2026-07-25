@@ -45,7 +45,7 @@
    *   - tight leading on headings, ~1.5 on body
    */
   .t-display {
-    @apply text-[28px] font-light leading-tight text-bright;
+    @apply text-[32px] font-light leading-tight text-bright;
   }
 
   .t-panel-title {
@@ -58,11 +58,11 @@
 
   /* Sidebar counts, the showcase counter, level numbers. */
   .t-stat {
-    @apply text-[26px] font-extralight leading-none text-ink;
+    @apply text-[28px] font-extralight leading-none text-ink;
   }
 
   .t-stat-lg {
-    @apply text-[42px] font-extralight leading-none text-ink;
+    @apply text-[48px] font-extralight leading-none text-ink;
   }
 
   .t-label {
@@ -93,7 +93,7 @@
 
   /* Steam's showcase header: gradient bar, title left, meta right. */
   .panel-bar {
-    @apply flex flex-wrap items-center justify-between gap-2 bg-panel-header px-4 py-2.5;
+    @apply flex min-h-[36px] flex-wrap items-center justify-between gap-2 bg-panel-header px-4 py-2;
   }
 
   .panel-bar-title {
@@ -106,7 +106,7 @@
 
   /* Sidebar stat row: grey label, large light number. */
   .stat-row {
-    @apply flex items-baseline gap-2 py-[7px];
+    @apply flex items-baseline gap-2.5 py-[10px];
   }
 
   .stat-label {

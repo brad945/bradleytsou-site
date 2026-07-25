@@ -202,7 +202,7 @@ export default function ActivityFeed({ snapshot }: ActivityFeedProps) {
         </span>
       </div>
 
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-4 p-5">
         {repos.length > 0 && (
           <ul className="flex flex-col gap-3">
             {repos.map((repo) => (

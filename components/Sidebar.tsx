@@ -43,13 +43,13 @@ export default function Sidebar({ snapshot }: SidebarProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="panel px-4 py-4">
+      <section className="panel px-5 py-5">
         <h2 className="text-[24px] font-light leading-tight text-live">
           Currently {profile.status.label}
         </h2>
         <p className="t-label mt-1">{profile.status.detail}</p>
 
-        <div className="mt-5">
+        <div className="mt-7">
           <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
           <Stat label="Followers" value={stats?.followers ?? "—"} />
           <Stat label="Following" value={stats?.following ?? "—"} />
@@ -57,7 +57,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
           <Stat label="Member Since" value={stats?.memberSince ?? "—"} />
         </div>
 
-        <div className="mt-5">
+        <div className="mt-7">
           <div className="stat-row">
             <span className="stat-label">Badges</span>
             <span className="stat-value">{badges.length}</span>
@@ -80,7 +80,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
           </ul>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-7">
           <div className="stat-row">
             <span className="stat-label">Focus</span>
           </div>
@@ -89,7 +89,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
       </section>
 
       {languages.length > 0 && (
-        <section className="panel px-4 py-4">
+        <section className="panel px-5 py-5">
           <div className="stat-row">
             <span className="stat-label">Languages</span>
             <span className="stat-value">{languages.length}</span>
@@ -116,7 +116,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
       )}
 
       {topRepos.length > 0 && (
-        <section className="panel px-4 py-4">
+        <section className="panel px-5 py-5">
           <div className="stat-row">
             <span className="stat-label">Top Repositories</span>
             <span className="stat-value">{topRepos.length}</span>
@@ -154,7 +154,7 @@ export default function Sidebar({ snapshot }: SidebarProps) {
         </section>
       )}
 
-      <section className="panel px-4 py-4">
+      <section className="panel px-5 py-5">
         <div className="stat-row">
           <span className="stat-label">Links</span>
           <span className="stat-value">{socials.length}</span>
