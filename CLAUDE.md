@@ -92,8 +92,17 @@ rule below). Don't bump either without updating this file.
   Here that's 64x36 (43.2%), rounded to the nearest size whose travel
   divides evenly by the step count; see the jitter note below.
   The only thing that moves or changes colour is the DVD logo bouncing
-  screensaver-style inside the 150px box, cycling the vivid `dvd.*`
-  colours on `dvd-tint`. Pure CSS, no JS.
+  screensaver-style inside the 150px box. It changes colour **only on
+  wall contact**, like the real screensaver. `tintKeyframes()` builds
+  that: with `alternate`, each axis ends an iteration against a wall,
+  so hits land every 1.5s (x) and 1.7s (y), and the pattern repeats
+  every 51s — the lcm of the two full there-and-back cycles. That's
+  62 hits, two of them corners (25.5s and 51s) where both axes land
+  at once. Each hit gets a keyframe stop carrying `steps(1)` so the
+  colour holds flat until the next one instead of interpolating.
+  **The x/y durations and `HIT_CYCLE` are load-bearing** — change a
+  bounce duration without recomputing the lcm and the tint drifts off
+  the walls. Pure CSS, no JS.
   In `DvdLogo` the glyphs are **drawn as SVG paths, not set in a font**.
   The mark's letterforms are squat and slab-heavy with tight counters;
   no webfont at any weight gets close, which is why passes that used

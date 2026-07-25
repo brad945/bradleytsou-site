@@ -66,6 +66,58 @@ const dvd = {
   orange: "#ff7a14",
 };
 
+/**
+ * Bounce timing. `alternate` means each iteration ends against a wall, so an
+ * axis hits one every `duration` — 1.5s on x, 1.7s on y.
+ */
+const X_HIT = 1.5;
+const Y_HIT = 1.7;
+/**
+ * Both axes only realign after the lcm of their full there-and-back cycles
+ * (3.0s and 3.4s), so the hit pattern repeats every 51s. That's the tint
+ * animation's period: 62 hits, of which two — 25.5s and 51s — are corners
+ * where both axes land at once.
+ */
+const HIT_CYCLE = 51;
+
+/**
+ * Colour changes on wall contact and nowhere else, the way the screensaver
+ * does. Rather than run a timer that drifts against the bounce, this lays a
+ * keyframe stop at every moment an axis reverses. `steps(1)` on each stop
+ * holds the colour flat until the next hit instead of interpolating toward it.
+ */
+function tintKeyframes(palette: string[]) {
+  const hits = Array.from(
+    new Set([
+      ...Array.from({ length: Math.round(HIT_CYCLE / X_HIT) }, (_, i) => (i + 1) * X_HIT),
+      ...Array.from({ length: Math.round(HIT_CYCLE / Y_HIT) }, (_, i) => (i + 1) * Y_HIT),
+    ].map((t) => Number(t.toFixed(6)))),
+  ).sort((a, b) => a - b);
+
+  const frames: Record<string, Record<string, string>> = {
+    "0%": { color: palette[0], animationTimingFunction: "steps(1)" },
+  };
+
+  // The final hit lands exactly on the loop point, where the wrap back to
+  // palette[0] supplies that corner's colour change.
+  hits.slice(0, -1).forEach((t, i) => {
+    // Six decimals keeps each stop within ~0.001ms of the true hit; four
+    // leaves it visibly late under fine sampling.
+    frames[`${((t / HIT_CYCLE) * 100).toFixed(6)}%`] = {
+      color: palette[(i + 1) % palette.length],
+      animationTimingFunction: "steps(1)",
+    };
+  });
+
+  const last = hits.length - 1;
+  frames["100%"] = {
+    color: palette[last % palette.length],
+    animationTimingFunction: "steps(1)",
+  };
+
+  return frames;
+}
+
 /** Sparse starfield, tiled. Static — it does not move or react to scroll. */
 const starfield = [
   "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.40), transparent)",
@@ -169,25 +221,26 @@ const config: Config = {
           to: { transform: "translateY(112px)" },
         },
         /*
-         * The logo is the only thing that changes colour. steps(1) so it snaps
-         * the way it does on a real wall hit rather than crossfading. The SVG
-         * paints with currentColor, so animating `color` is enough.
+         * The logo is the only thing that changes colour, and it changes only
+         * on wall contact — see tintKeyframes. The SVG paints with
+         * currentColor, so animating `color` is enough.
          */
-        "dvd-tint": {
-          "0%": { color: dvd.yellow },
-          "20%": { color: dvd.cyan },
-          "40%": { color: dvd.magenta },
-          "60%": { color: dvd.green },
-          "80%": { color: dvd.orange },
-        },
+        "dvd-tint": tintKeyframes([
+          dvd.yellow,
+          dvd.cyan,
+          dvd.magenta,
+          dvd.green,
+          dvd.orange,
+        ]),
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
         // jump-none, not the default jump-end — see the keyframe note.
         // fps = steps / duration, so both of these are 10fps.
-        "dvd-x": "dvd-x 1.5s steps(15, jump-none) infinite alternate",
-        "dvd-y": "dvd-y 1.7s steps(17, jump-none) infinite alternate",
-        "dvd-tint": "dvd-tint 7.3s steps(1) infinite",
+        // Durations must stay X_HIT / Y_HIT or the tint desyncs from the walls.
+        "dvd-x": `dvd-x ${X_HIT}s steps(15, jump-none) infinite alternate`,
+        "dvd-y": `dvd-y ${Y_HIT}s steps(17, jump-none) infinite alternate`,
+        "dvd-tint": `dvd-tint ${HIT_CYCLE}s linear infinite`,
       },
     },
   },
