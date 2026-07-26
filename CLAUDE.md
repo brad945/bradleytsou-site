@@ -139,12 +139,13 @@ rule below). Don't bump either without updating this file.
   dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
 - `components/HeaderActions.tsx` — Steam's profile action row, sat where
   Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
-  Steam's other-profile set rather than Edit — pared to **More ⋯ /
-  Message**, since mailing Bradley is the action a visitor is actually
+  Steam's other-profile set rather than Edit — pared to **Message /
+  More ⋯**, since mailing Bradley is the action a visitor is actually
   likely to want, and three top-level buttons made none of them read as
   primary. Follow lives inside the menu. The menu anchors to the More
-  button's own `relative` span, not the row, so it drops under the button
-  instead of off the row's right edge.
+  button's own `relative` span, not the row, and is right-aligned to it —
+  More is the rightmost control, so a left-aligned panel would overhang
+  the column.
   The ⋯ menu deliberately does NOT ape Steam's contents (Add to
   favorites, Block all communication, Report violation) — none have a
   real equivalent, and a menu of dead entries is the fake chrome this

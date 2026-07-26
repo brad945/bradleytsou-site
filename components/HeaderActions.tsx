@@ -16,7 +16,7 @@ interface HeaderActionsProps {
 }
 
 /**
- * Steam's profile action row, pared down to More / Message. Follow sits inside
+ * Steam's profile action row, pared down to Message / More. Follow sits inside
  * the menu rather than on the row: mailing Bradley is the action a visitor is
  * actually likely to want, and three top-level buttons made none of them read
  * as primary.
@@ -68,8 +68,13 @@ export default function HeaderActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* The menu anchors to this span, not the whole row, so it drops
-          directly under the button rather than off the row's right edge. */}
+      <a href={`mailto:${email}`} className="steam-button">
+        Message
+      </a>
+
+      {/* The menu anchors to this span, not the whole row. More is the
+          rightmost control, so the panel is right-aligned to it and grows
+          leftward — left-aligned it would overhang the column. */}
       <span ref={root} className="relative flex items-center">
         <button
           ref={trigger}
@@ -84,7 +89,7 @@ export default function HeaderActions({
         </button>
 
         {open && (
-          <div className="absolute left-0 top-full z-20 mt-1 w-[220px] bg-menu py-1 shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
+          <div className="absolute right-0 top-full z-20 mt-1 w-[220px] bg-menu py-1 shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
             {profileUrl && (
               <a href={profileUrl} target="_blank" rel="noreferrer" className={menuItem}>
                 Follow on GitHub
@@ -123,10 +128,6 @@ export default function HeaderActions({
           </div>
         )}
       </span>
-
-      <a href={`mailto:${email}`} className="steam-button">
-        Message
-      </a>
     </div>
   );
 }
