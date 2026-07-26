@@ -42,9 +42,16 @@ function DvdLogo() {
         italic slant; it shifts lower points left, so the group is translated
         right to keep the mark inside the viewBox.
       */}
-      <g transform="skewX(-14) translate(16 3)" fill="currentColor" fillRule="evenodd">
+      <g
+        transform="skewX(-14) translate(16 3)"
+        fill="currentColor"
+        fillRule="evenodd"
+      >
         <path d="M0 0 H15 C24 0 28 6.5 28 16 C28 25.5 24 32 15 32 H0 Z M8.5 8 H14 C18 8 19.5 11 19.5 16 C19.5 21 18 24 14 24 H8.5 Z" />
-        <path transform="translate(29 0)" d="M0 0 H9.5 L13 19 L16.5 0 H26 L18 32 H8 Z" />
+        <path
+          transform="translate(29 0)"
+          d="M0 0 H9.5 L13 19 L16.5 0 H26 L18 32 H8 Z"
+        />
         <path
           transform="translate(56 0)"
           d="M0 0 H15 C24 0 28 6.5 28 16 C28 25.5 24 32 15 32 H0 Z M8.5 8 H14 C18 8 19.5 11 19.5 16 C19.5 21 18 24 14 24 H8.5 Z"
@@ -56,7 +63,14 @@ function DvdLogo() {
         VIDEO lettering is what reads as the disc. The wordmark overlaps its
         top edge.
       */}
-      <ellipse cx="52" cy="43" rx="41" ry="8.5" stroke="currentColor" strokeWidth="6.5" />
+      <ellipse
+        cx="52"
+        cy="43"
+        rx="41"
+        ry="8.5"
+        stroke="currentColor"
+        strokeWidth="6.5"
+      />
       <text
         x="52"
         y="46.4"
@@ -73,8 +87,11 @@ function DvdLogo() {
   );
 }
 
-export default function ProfileHeader({ stats, sourceUrl }: ProfileHeaderProps) {
-  const { level, progress, sinceYear } = experience();
+export default function ProfileHeader({
+  stats,
+  sourceUrl,
+}: ProfileHeaderProps) {
+  const { level, sinceYear } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
@@ -152,9 +169,7 @@ export default function ProfileHeader({ stats, sourceUrl }: ProfileHeaderProps) 
               <span>{profile.location}</span>
             </p>
 
-            <p className="t-body mt-4 max-w-[46ch]">
-              {profile.tagline}
-            </p>
+            <p className="t-body mt-4 max-w-[46ch]">{profile.tagline}</p>
 
             <p className="t-body mt-2 text-muted">
               Currently: {profile.currentFocus}
@@ -162,29 +177,39 @@ export default function ProfileHeader({ stats, sourceUrl }: ProfileHeaderProps) 
           </div>
         </div>
 
-        {/* Level + service badge, mirroring Steam's right-hand header block */}
+        {/*
+          Steam's right-hand header block. Matched to the reference on the
+          things that carry it: the level word is large and light with the
+          circle roughly 1.25x its font size, the badge card is a near-black
+          panel rather than a bordered box, and the badge itself is a rounded
+          tile with a metallic bevel and a gold glyph — not a flat square.
+        */}
         <div className="lg:pl-2">
           <div className="flex items-center gap-3">
-            <span className="t-stat">Level</span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
+            <span className="text-[34px] font-light leading-none text-ink">
+              Level
+            </span>
+            <span className="flex h-[44px] w-[44px] items-center justify-center rounded-full border-[3px] border-accent text-[19px] font-light text-bright">
               {level}
             </span>
           </div>
 
-          <div className="mt-4 flex items-center gap-3 bg-base/45 p-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
-              {level}
+          <div className="mt-5 flex items-center gap-3.5 bg-base/55 p-3.5">
+            {/* Beveled badge tile: grey frame, sunken dark well, gold numeral. */}
+            <span className="shrink-0 rounded-[6px] bg-avatar-frame p-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+              <span className="flex h-[50px] w-[50px] items-center justify-center rounded-[4px] bg-base text-[22px] font-light text-accent ring-1 ring-inset ring-base">
+                {level}
+              </span>
             </span>
             <div className="min-w-0">
-              <p className="text-[14px] leading-tight text-copy">Years of Service</p>
-              <p className="t-meta leading-tight">
-                {progress}% to {level + 1} · since {sinceYear}
+              <p className="text-[17px] leading-snug text-bright">
+                Years of Service
+              </p>
+              {/* Steam shows XP here; ours is the real thing it's counting. */}
+              <p className="text-[15px] leading-snug text-muted">
+                Since {sinceYear}
               </p>
             </div>
-          </div>
-
-          <div className="mt-3 h-[3px] overflow-hidden bg-base/60">
-            <div className="h-full bg-xp-fill" style={{ width: `${progress}%` }} />
           </div>
 
           {/* Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is. */}

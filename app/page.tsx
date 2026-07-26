@@ -18,6 +18,7 @@ import {
 } from "@/lib/github";
 import {
   githubUsername,
+  FAVORITE_REPO,
   featuredRepos,
   SITE_REPO_NAME,
   siteRepoUrl,
@@ -33,6 +34,9 @@ export default async function Home() {
     getContributions(githubUsername),
     getFeaturedRepos(featuredRepos),
   ]);
+
+  const favorite =
+    featured.find((r) => r.nameWithOwner === FAVORITE_REPO) ?? null;
 
   // Only offer "View source" once the repo is actually public — the API only
   // lists public repos, so this flips on by itself the day it's flipped there.
@@ -50,7 +54,7 @@ export default async function Home() {
         {/* 616 / 16 / 308 at ≥lg — Steam's column split. Stacks below that. */}
         <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
           <div className="flex min-w-0 flex-col gap-4">
-            <FavoriteProject />
+            <FavoriteProject repo={favorite} />
             <ActivityFeed snapshot={snapshot} featured={featured} />
             {contributions && (
               <ContributionChart contributions={contributions} />

@@ -98,6 +98,8 @@ export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
  * exception to `namedPrivateRepos` below: these are hand-picked. Don't add
  * coursework repos.
  */
+export const FAVORITE_REPO = "sennaicodes/codearenamvp";
+
 export const featuredRepos: string[] = [
   "sennaicodes/codearenamvp",
   "brad945/visionotes",

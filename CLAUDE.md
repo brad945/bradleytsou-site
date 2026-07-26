@@ -112,6 +112,12 @@ rule below). Don't bump either without updating this file.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
+  The right-hand block is matched to the reference: large light "Level"
+  with a ring circle ~1.25x its size, a near-black card (not a bordered
+  box), and a **rounded, bevelled badge tile** with a gold numeral rather
+  than a flat square. There is deliberately **no XP bar** between the card
+  and the buttons — the reference has none, and it was another meter
+  without a meaningful denominator.
   The avatar frame is a **static grey band**, matched to the reference on
   three points that are easy to get wrong:
   1. **The bands are asymmetric, and thinner than they look.** Measured
@@ -222,8 +228,14 @@ rule below). Don't bump either without updating this file.
   putting the box's top-left directly under the arrow. Content comes from
   `aliases` in `lib/profile-data.ts` and is still placeholder.
 - `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
-  is Steam's "Favorite Game" slot (capsule, copy, one oversized stat) for
-  the highest-rarity project; the default export is the square inventory
+  is Steam's "Favorite Game" slot, given to CodeArena (`FAVORITE_REPO`).
+  Its copy comes from the **live repo description**, not `profile-data` —
+  the hand-written blurb had drifted to "competitive programming platform"
+  while the repo itself said "evidence-first technical interviews". The
+  oversized stat is commits contributed, shown as "of N" so a shared repo
+  can't read as sole authorship. Tags stay hand-curated; the API has no
+  equivalent. Falls back to the `profile-data` entry without a token.
+  The default export is the default export is the square inventory
   grid with rarity-coloured tile outlines and the "N Projects Shown"
   counter in the grid's leftover space. Tile detail lives in `title`.
 - `components/ActivityFeed.tsx` — Steam's Recent Activity panel: the

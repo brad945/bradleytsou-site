@@ -1,3 +1,4 @@
+import type { FeaturedRepo } from "@/lib/github";
 import {
   monogram,
   projects,
@@ -15,15 +16,23 @@ function tileTitle(project: Project): string {
 }
 
 /**
- * Steam's "Favorite Game" slot: one oversized entry with a capsule, a headline
- * stat, and room for real copy. Takes the highest-rarity project.
+ * Steam's "Favorite Game" slot, given to CodeArena.
+ *
+ * Driven by the live repo rather than hand-written copy: the description here
+ * used to say "competitive programming platform", which the repo itself had
+ * long since contradicted. Pulling it from GitHub means it can't go stale.
+ *
+ * Falls back to the `profile-data` entry when there's no token, so the panel
+ * never empties. Tags stay hand-curated — the API has no equivalent.
  */
-export function FavoriteProject() {
-  const featured = projects.find((p) => p.rarity === "core") ?? projects[0];
-  if (!featured) return null;
+export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
+  const entry = projects.find((p) => p.rarity === "core") ?? projects[0];
+  if (!entry && !repo) return null;
 
-  const style = rarityStyles[featured.rarity];
-  const link = featured.href ?? featured.repo;
+  const style = rarityStyles[entry?.rarity ?? "core"];
+  const name = entry?.name ?? repo?.name ?? "";
+  const blurb = repo?.description ?? entry?.blurb ?? "";
+  const tags = entry?.tags ?? [];
 
   return (
     <section aria-labelledby="favorite-heading" className="panel">
@@ -33,7 +42,7 @@ export function FavoriteProject() {
         </h2>
         {/* No uppercase or tracking — Steam's panel bars use plain sentence case. */}
         <span className={`text-[15px] font-light ${style.text}`}>
-          {rarityLabels[featured.rarity]}
+          {rarityLabels[entry?.rarity ?? "core"]}
         </span>
       </div>
 
@@ -43,16 +52,20 @@ export function FavoriteProject() {
           <div
             className={`flex h-[87px] w-full shrink-0 items-center justify-center border-l-2 bg-base/60 sm:w-[184px] ${style.border}`}
           >
-            <span className={`text-[30px] font-light leading-none ${style.text}`}>
-              {monogram(featured.name)}
+            <span
+              className={`text-[30px] font-light leading-none ${style.text}`}
+            >
+              {monogram(name)}
             </span>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h3 className="text-[19px] font-light leading-tight text-bright">{featured.name}</h3>
-            <p className="t-body mt-1.5">{featured.blurb}</p>
+            <h3 className="text-[19px] font-light leading-tight text-bright">
+              {name}
+            </h3>
+            <p className="t-body mt-1.5">{blurb}</p>
             <ul className="mt-3 flex flex-wrap gap-1.5">
-              {featured.tags.map((tag) => (
+              {tags.map((tag) => (
                 <li
                   key={tag}
                   className="border border-line bg-base/50 px-1.5 py-0.5 font-mono text-[10px] text-muted"
@@ -64,15 +77,35 @@ export function FavoriteProject() {
           </div>
         </div>
 
+        {/*
+          Steam's oversized "Hours played" stat. Here it's commits contributed —
+          "of N" so a shared repo can't read as sole authorship.
+        */}
         <div className="mt-4 bg-base/40 p-4">
-          <p className="t-stat-lg text-[34px]">{featured.period}</p>
-          <p className="t-label mt-1.5">In development</p>
+          {repo ? (
+            <>
+              <p className="t-stat-lg">{repo.myCommits.toLocaleString()}</p>
+              <p className="t-label mt-1.5">
+                Commits contributed, of {repo.totalCommits.toLocaleString()}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="t-stat-lg text-[34px]">{entry?.period}</p>
+              <p className="t-label mt-1.5">In development</p>
+            </>
+          )}
         </div>
 
-        {link && (
+        {repo && !repo.isPrivate && (
           <div className="mt-3 flex justify-end border-t border-line/60 pt-3">
-            <a href={link} target="_blank" rel="noreferrer" className="steam-link text-[14px]">
-              {featured.href ? "Visit" : "View source"}
+            <a
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+              className="steam-link text-[14px]"
+            >
+              View source
             </a>
           </div>
         )}
@@ -131,10 +164,11 @@ export default function ItemShowcase() {
         <ul className="flex flex-wrap items-center gap-3">
           {TIER_ORDER.map((tier) => (
             <li key={tier} className="flex items-center gap-1.5">
-              <span className={`h-2 w-2 ${rarityStyles[tier].dot}`} aria-hidden />
-              <span className="t-meta">
-                {rarityLabels[tier]}
-              </span>
+              <span
+                className={`h-2 w-2 ${rarityStyles[tier].dot}`}
+                aria-hidden
+              />
+              <span className="t-meta">{rarityLabels[tier]}</span>
             </li>
           ))}
         </ul>
@@ -148,9 +182,7 @@ export default function ItemShowcase() {
 
           {/* Steam puts the "N Items Owned" counter in the grid's leftover space. */}
           <li className="col-span-2 flex flex-col justify-center px-2 lg:col-span-3">
-            <span className="t-stat-lg">
-              {projects.length}
-            </span>
+            <span className="t-stat-lg">{projects.length}</span>
             <span className="t-label mt-1">Projects Shown</span>
           </li>
         </ul>
@@ -171,7 +203,10 @@ export default function ItemShowcase() {
             return (
               <li key={project.id} className="py-2">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className={`h-2 w-2 shrink-0 ${style.dot}`} aria-hidden />
+                  <span
+                    className={`h-2 w-2 shrink-0 ${style.dot}`}
+                    aria-hidden
+                  />
                   {link ? (
                     <a
                       href={link}
@@ -182,14 +217,18 @@ export default function ItemShowcase() {
                       {project.name}
                     </a>
                   ) : (
-                    <span className="text-[13px] text-copy">{project.name}</span>
+                    <span className="text-[13px] text-copy">
+                      {project.name}
+                    </span>
                   )}
                   <span className="t-meta">{project.period}</span>
                   <span className="ml-auto font-mono text-[10px] text-muted/60">
                     {project.tags.join(" · ")}
                   </span>
                 </div>
-                <p className="t-meta mt-0.5 pl-4 leading-snug">{project.blurb}</p>
+                <p className="t-meta mt-0.5 pl-4 leading-snug">
+                  {project.blurb}
+                </p>
               </li>
             );
           })}
