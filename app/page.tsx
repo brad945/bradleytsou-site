@@ -51,11 +51,11 @@ export default async function Home() {
         <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
           <div className="flex min-w-0 flex-col gap-4">
             <FavoriteProject />
-            <ItemShowcase />
+            <ActivityFeed snapshot={snapshot} featured={featured} />
             {contributions && (
               <ContributionChart contributions={contributions} />
             )}
-            <ActivityFeed snapshot={snapshot} featured={featured} />
+            <ItemShowcase />
             {/* <Comments /> */}
           </div>
 

@@ -18,17 +18,18 @@ is real, not decorative:
   central the project is to his work, with an always-visible detail list
   underneath (a monogram tile isn't self-describing the way item art is,
   and `title` never fires on touch)
-- Recent Activity = recently-pushed repos in the "recently played" slot,
-  then a live killfeed of his actual GitHub activity (commits, merged PRs,
-  new repos) styled like a CS2 kill feed, refreshing every 5 min. The
-  events-past-2-weeks count sits in the header bar, exactly where Steam
-  shows "X hours past 2 weeks"
+- Recent Activity = hand-picked repos in Steam's "recently played" slot,
+  each with a commits-past-2-weeks strip where Steam puts achievement
+  progress. The same figure, summed, sits in the header bar exactly where
+  Steam shows "X hours past 2 weeks". A CS2-style killfeed lived here and
+  was **removed** at Bradley's request — it duplicated what the repo rows
+  already said
 - Right sidebar = status, real GitHub counts (repos / followers /
   following / gists / member since), milestone badge tiles, a language
   breakdown, and a stars-ranked repo list in Steam's friends-list slot
 
-Bradley's favorite games are CS2 and Valorant — that's where the killfeed
-and future bhop mechanic come from. He explicitly does NOT want fake
+Bradley's favorite games are CS2 and Valorant — that's where the future
+bhop mechanic comes from. He explicitly does NOT want fake
 scroll-triggered animations or decorative hover effects; every interactive
 element should either be real data or a real mechanic.
 
@@ -225,12 +226,15 @@ rule below). Don't bump either without updating this file.
   the highest-rarity project; the default export is the square inventory
   grid with rarity-coloured tile outlines and the "N Projects Shown"
   counter in the grid's leftover space. Tile detail lives in `title`.
-- `components/ActivityFeed.tsx` — Steam's Recent Activity panel: "N events
-  past 2 weeks" in the header bar, then recently-pushed repos as
-  "recently played" rows (capsule + stars on record + last pushed + a
-  commits-past-2-weeks bar scaled against the busiest repo on screen),
-  then the CS2-style killfeed, then the View / All Activity | Repositories
-  | Stars footer.
+- `components/ActivityFeed.tsx` — Steam's Recent Activity panel: the
+  commits-past-2-weeks total in the header bar, then a row per featured
+  repo. Each row's progress strip is **commits in the last two weeks**,
+  author-scoped — it replaced a "your share of commits" bar that measured
+  the wrong thing, since what fraction of a repo someone wrote says
+  nothing about whether they're working on it now. The header count is
+  summed from the rows rather than using `stats.eventsPast2Weeks`, which
+  sees only public events and reads near-zero for a mostly-private
+  account. `PublicRepoRow` is the no-token fallback.
 - `components/Sidebar.tsx` — the right column: status heading, stat rows
   (repos / followers / following / gists / member since), badge tiles,
   focus, a language breakdown, and a stars-ranked Top Repositories list
@@ -243,9 +247,11 @@ rule below). Don't bump either without updating this file.
   (deliberately parked). Uses giscus (GitHub Discussions-backed comments,
   not a fake widget). Needs `data-repo-id` / `data-category-id` from
   giscus.app once Discussions are enabled on the repo.
-- `app/page.tsx` — full-width ProfileHeader, then a `lg:grid-cols-[2fr_1fr]`
-  split (616 / 16 / 308 at `max-w-profile`, Steam's column widths) that
-  stacks below `lg`. Comments import is commented out on purpose.
+- `app/page.tsx` — SiteNav, full-width ProfileHeader, then a
+  `lg:grid-cols-[2fr_1fr]` split (616 / 16 / 308 at `max-w-profile`,
+  Steam's column widths) that stacks below `lg`. Main column order is
+  fixed by Bradley: **Favorite Project, Recent Activity, Contributions,
+  Item Showcase**. Comments import is commented out on purpose.
 - `app/layout.tsx` — fonts (next/font), metadata, and the two fixed
   background layers (nebula glow, then a tiled starfield).
 

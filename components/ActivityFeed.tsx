@@ -1,40 +1,11 @@
-import type {
-  FeedItem,
-  FeedKind,
-  GitHubSnapshot,
-  FeaturedRepo,
-  RepoCard,
-} from "@/lib/github";
-import { REVALIDATE_SECONDS } from "@/lib/github";
-import {
-  githubUsername,
-  monogram,
-  PLACEHOLDER_GITHUB_USERNAME,
-  profile,
-} from "@/lib/profile-data";
+import type { FeaturedRepo, GitHubSnapshot, RepoCard } from "@/lib/github";
+import { monogram } from "@/lib/profile-data";
 
 interface ActivityFeedProps {
   snapshot: GitHubSnapshot;
   /** Hand-picked repos. Empty without a token — falls back to the public list. */
   featured: FeaturedRepo[];
 }
-
-/**
- * Killfeed colour by event kind. Every value comes from the token palette —
- * `accent` for "you did work", `live` for "something landed", `muted` for
- * ambient noise.
- */
-const KIND_STYLE: Record<FeedKind, { chip: string; rail: string }> = {
-  push: { chip: "border-accent/40 text-accent", rail: "bg-accent" },
-  pr: { chip: "border-nebula/50 text-nebula", rail: "bg-nebula" },
-  "pr-merged": { chip: "border-live/40 text-live", rail: "bg-live" },
-  repo: { chip: "border-live/40 text-live", rail: "bg-live" },
-  release: { chip: "border-accent/40 text-accent", rail: "bg-accent" },
-  issue: { chip: "border-line text-muted", rail: "bg-line" },
-  star: { chip: "border-line text-muted", rail: "bg-line" },
-  fork: { chip: "border-line text-muted", rail: "bg-line" },
-  other: { chip: "border-line text-muted", rail: "bg-line" },
-};
 
 function relativeTime(iso: string, now: number): string {
   const then = Date.parse(iso);
@@ -63,11 +34,105 @@ function shortDate(iso: string): string {
 }
 
 /**
- * A repo in the "recently played game" slot: capsule, name, headline numbers
- * on the right, and Steam's achievement-progress strip underneath — here it's
- * this repo's share of the commits pushed across all shown repos.
+ * A featured repo in Steam's "recently played" slot.
+ *
+ * The progress strip is commits in the last two weeks — the direct analogue of
+ * the hours-past-2-weeks figure Steam puts here. It replaced a "your share of
+ * commits" bar that measured the wrong thing: what fraction of a repo someone
+ * wrote says nothing about whether they're working on it now, which is the
+ * question "Recent Activity" is asking.
+ *
+ * The headline still reads "yours / total" so a shared repo can't imply sole
+ * authorship. Private repos aren't linked — a visitor would get a 404.
  */
-function RepoRow({
+function FeaturedRepoRow({
+  repo,
+  busiest,
+  now,
+}: {
+  repo: FeaturedRepo;
+  busiest: number;
+  now: number;
+}) {
+  const share =
+    busiest > 0 ? Math.round((repo.myCommitsPast2Weeks / busiest) * 100) : 0;
+
+  const title = repo.isPrivate ? (
+    <span className="text-[17px] font-light leading-tight text-copy">
+      {repo.name}
+    </span>
+  ) : (
+    <a
+      href={repo.url}
+      target="_blank"
+      rel="noreferrer"
+      className="steam-link text-[17px] font-light leading-tight"
+    >
+      {repo.name}
+    </a>
+  );
+
+  return (
+    <li className="bg-base/45">
+      <div className="flex flex-col gap-3 p-3 sm:flex-row">
+        <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
+          <span
+            className={`text-[26px] font-light leading-none ${
+              repo.isPrivate ? "text-muted" : "text-link/80"
+            }`}
+          >
+            {monogram(repo.name)}
+          </span>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+            <span className="flex flex-wrap items-center gap-2">
+              {title}
+              {repo.isPrivate && (
+                <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
+                  Private
+                </span>
+              )}
+            </span>
+            <div className="t-meta text-right leading-tight">
+              <p>
+                {repo.myCommits.toLocaleString()} of{" "}
+                {repo.totalCommits.toLocaleString()} commits
+              </p>
+              <p>last pushed on {shortDate(repo.pushedAt)}</p>
+            </div>
+          </div>
+
+          {repo.description && (
+            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
+              {repo.description}
+            </p>
+          )}
+
+          <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+              <span className="t-label text-copy">Commits past 2 weeks</span>
+              <span className="t-meta">
+                {repo.myCommitsPast2Weeks} · {repo.language ?? "—"} ·{" "}
+                {relativeTime(repo.pushedAt, now)} ago
+              </span>
+            </div>
+            <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
+              <div
+                className="h-full bg-link/60"
+                style={{ width: `${share}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/** Fallback row, used only when there's no token to fetch the featured repos. */
+function PublicRepoRow({
   repo,
   busiest,
   now,
@@ -139,171 +204,28 @@ function RepoRow({
   );
 }
 
-/**
- * A featured repo in the "recently played" slot.
- *
- * Commits read "yours / total" rather than just the repo total: on a shared
- * repo the total says nothing about this person's contribution, and the bar
- * shows that share honestly instead of implying they wrote all of it.
- *
- * Private repos aren't linked — a visitor following one gets a 404.
- */
-function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
-  const share =
-    repo.totalCommits > 0
-      ? Math.round((repo.myCommits / repo.totalCommits) * 100)
-      : 0;
-
-  const title = repo.isPrivate ? (
-    <span className="text-[17px] font-light leading-tight text-copy">
-      {repo.name}
-    </span>
-  ) : (
-    <a
-      href={repo.url}
-      target="_blank"
-      rel="noreferrer"
-      className="steam-link text-[17px] font-light leading-tight"
-    >
-      {repo.name}
-    </a>
-  );
-
-  return (
-    <li className="bg-base/45">
-      <div className="flex flex-col gap-3 p-3 sm:flex-row">
-        <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
-          <span
-            className={`text-[26px] font-light leading-none ${repo.isPrivate ? "text-muted" : "text-link/80"}`}
-          >
-            {monogram(repo.name)}
-          </span>
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-            <span className="flex flex-wrap items-center gap-2">
-              {title}
-              {repo.isPrivate && (
-                <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
-                  Private
-                </span>
-              )}
-            </span>
-            <div className="t-meta text-right leading-tight">
-              <p>
-                {repo.myCommits.toLocaleString()} of{" "}
-                {repo.totalCommits.toLocaleString()} commits
-              </p>
-              <p>last pushed on {shortDate(repo.pushedAt)}</p>
-            </div>
-          </div>
-
-          {repo.description && (
-            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
-              {repo.description}
-            </p>
-          )}
-
-          <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <span className="t-label text-copy">Your share of commits</span>
-              <span className="t-meta">
-                {share}% · {repo.language ?? "—"} ·{" "}
-                {relativeTime(repo.pushedAt, now)} ago
-              </span>
-            </div>
-            <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
-              <div
-                className="h-full bg-link/60"
-                style={{ width: `${share}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </li>
-  );
-}
-
-function KillfeedRow({ item, now }: { item: FeedItem; now: number }) {
-  const style = KIND_STYLE[item.kind] ?? KIND_STYLE.other;
-
-  return (
-    <li>
-      <a
-        href={item.url}
-        target="_blank"
-        rel="noreferrer"
-        className="flex items-center gap-3 border-b border-line/40 px-3 py-2 transition-colors last:border-b-0 hover:bg-panel2/70 focus-visible:outline focus-visible:-outline-offset-2 focus-visible:outline-accent"
-      >
-        <span className={`h-5 w-[2px] shrink-0 ${style.rail}`} aria-hidden />
-
-        <span className="shrink-0 font-mono text-[11px] text-ink/90">
-          {profile.handle.replace("@", "")}
-        </span>
-
-        <span
-          className={`shrink-0 border bg-base/70 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${style.chip}`}
-        >
-          {item.verb}
-          {item.count && item.count > 1 ? ` ×${item.count}` : ""}
-        </span>
-
-        {item.headshot && (
-          <span
-            className="shrink-0 font-mono text-[10px] text-live"
-            title="Landed"
-          >
-            ✦
-          </span>
-        )}
-
-        <span className="shrink-0 font-mono text-[11px] text-muted">
-          {item.target}
-        </span>
-
-        {item.detail && (
-          <span className="hidden min-w-0 flex-1 truncate text-[12px] text-muted/70 md:block">
-            {item.detail}
-          </span>
-        )}
-
-        <span className="ml-auto shrink-0 pl-2 font-mono text-[10px] text-muted/70">
-          {relativeTime(item.at, now)}
-        </span>
-      </a>
-    </li>
-  );
-}
-
-function EmptyState({ error }: { error: string | null }) {
-  const unconfigured = githubUsername === PLACEHOLDER_GITHUB_USERNAME;
-
-  return (
-    <div className="bg-base/40 px-5 py-10 text-center">
-      <p className="t-label">{error ?? "No public activity in range"}</p>
-      {unconfigured && (
-        <p className="t-meta mx-auto mt-2 max-w-sm leading-relaxed">
-          Set <code className="font-mono text-ink/70">githubUsername</code> in{" "}
-          <code className="font-mono text-ink/70">lib/profile-data.ts</code> and
-          this feed fills itself in.
-        </p>
-      )}
-    </div>
-  );
-}
-
 export default function ActivityFeed({
   snapshot,
   featured,
 }: ActivityFeedProps) {
-  const { stats, feed, repos, error, fetchedAt } = snapshot;
+  const { stats, repos, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
-  const isLive = snapshot.ok && feed.length > 0;
-  const eventCount = stats?.eventsPast2Weeks ?? 0;
-  /** Scale every repo's commit bar against the busiest repo on screen. */
-  const busiest = Math.max(...repos.map((r) => r.commitsPast2Weeks), 0);
+  const useFeatured = featured.length > 0;
+
+  /*
+   * The header count is summed from the rows on screen. The snapshot's own
+   * eventsPast2Weeks only counts *public* events, which for a mostly-private
+   * account reads as near-zero and badly understates the work.
+   */
+  const commitsPast2Weeks = useFeatured
+    ? featured.reduce((sum, repo) => sum + repo.myCommitsPast2Weeks, 0)
+    : repos.reduce((sum, repo) => sum + repo.commitsPast2Weeks, 0);
+
+  const busiest = useFeatured
+    ? Math.max(...featured.map((r) => r.myCommitsPast2Weeks), 0)
+    : Math.max(...repos.map((r) => r.commitsPast2Weeks), 0);
+
+  const hasRows = useFeatured || repos.length > 0;
 
   return (
     <section aria-labelledby="activity-heading" className="panel">
@@ -312,100 +234,71 @@ export default function ActivityFeed({
           Recent Activity
         </h2>
         <span className="panel-bar-meta">
-          {stats
-            ? `${eventCount} ${eventCount === 1 ? "event" : "events"} past 2 weeks`
-            : "no data"}
+          {commitsPast2Weeks.toLocaleString()}{" "}
+          {commitsPast2Weeks === 1 ? "commit" : "commits"} past 2 weeks
         </span>
       </div>
 
       <div className="flex flex-col gap-4 p-5">
-        {featured.length > 0 ? (
+        {hasRows ? (
           <ul className="flex flex-col gap-3">
-            {featured.map((repo) => (
-              <FeaturedRepoRow key={repo.nameWithOwner} repo={repo} now={now} />
-            ))}
+            {useFeatured
+              ? featured.map((repo) => (
+                  <FeaturedRepoRow
+                    key={repo.nameWithOwner}
+                    repo={repo}
+                    busiest={busiest}
+                    now={now}
+                  />
+                ))
+              : repos.map((repo) => (
+                  <PublicRepoRow
+                    key={repo.id}
+                    repo={repo}
+                    busiest={busiest}
+                    now={now}
+                  />
+                ))}
           </ul>
         ) : (
-          /* No token — fall back to whatever the public API can see. */
-          repos.length > 0 && (
-            <ul className="flex flex-col gap-3">
-              {repos.map((repo) => (
-                <RepoRow
-                  key={repo.id}
-                  repo={repo}
-                  busiest={busiest}
-                  now={now}
-                />
-              ))}
-            </ul>
-          )
+          <div className="bg-base/45 px-5 py-10 text-center">
+            <p className="t-label">
+              {snapshot.error ?? "No repository activity to show"}
+            </p>
+          </div>
         )}
 
-        {/* The killfeed. Every row is a real public GitHub event. */}
-        <div className="bg-base/45">
-          <div className="flex items-center justify-between border-b border-line/50 px-3 py-2">
-            <span className="label">Killfeed</span>
-            <span className="flex items-center gap-1.5">
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${isLive ? "bg-live animate-pulse-live" : "bg-muted/50"}`}
-                aria-hidden
-              />
-              <span
-                className={`font-mono text-[10px] uppercase tracking-[0.14em] ${isLive ? "text-live" : "text-muted"}`}
-              >
-                {isLive ? "Live" : "Idle"}
-              </span>
-            </span>
+        {stats && (
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-1 text-[14px] text-muted">
+            <span>View</span>
+            <a
+              href={stats.profileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="steam-link"
+            >
+              All Activity
+            </a>
+            <span className="text-muted/50">|</span>
+            <a
+              href={`${stats.profileUrl}?tab=repositories`}
+              target="_blank"
+              rel="noreferrer"
+              className="steam-link"
+            >
+              Repositories
+            </a>
+            <span className="text-muted/50">|</span>
+            <a
+              href={`${stats.profileUrl}?tab=stars`}
+              target="_blank"
+              rel="noreferrer"
+              className="steam-link"
+            >
+              Stars
+            </a>
           </div>
-
-          {feed.length === 0 ? (
-            <EmptyState error={error} />
-          ) : (
-            <ul>
-              {feed.map((item) => (
-                <KillfeedRow key={item.id} item={item} now={now} />
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center justify-end gap-2 pt-1 text-[14px] text-muted">
-          {stats ? (
-            <>
-              <span>View</span>
-              <a
-                href={stats.profileUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="steam-link"
-              >
-                All Activity
-              </a>
-              <span className="text-muted/50">|</span>
-              <a
-                href={`${stats.profileUrl}?tab=repositories`}
-                target="_blank"
-                rel="noreferrer"
-                className="steam-link"
-              >
-                Repositories
-              </a>
-              <span className="text-muted/50">|</span>
-              <a
-                href={`${stats.profileUrl}?tab=stars`}
-                target="_blank"
-                rel="noreferrer"
-                className="steam-link"
-              >
-                Stars
-              </a>
-            </>
-          ) : (
-            <span className="text-muted/60">
-              refreshes every {REVALIDATE_SECONDS / 60} minutes
-            </span>
-          )}
-        </div>
+        )}
       </div>
     </section>
   );

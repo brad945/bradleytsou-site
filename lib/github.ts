@@ -521,6 +521,8 @@ export interface FeaturedRepo {
   myCommits: number;
   /** Commits in the repo by everyone. */
   totalCommits: number;
+  /** Commits the profile owner pushed here in the last 14 days. */
+  myCommitsPast2Weeks: number;
 }
 
 /**
@@ -532,7 +534,8 @@ export interface FeaturedRepo {
  *
  * Commits are reported as "yours / total", never just the repo total: on a
  * shared repo the total says nothing about his contribution, and overstating
- * it is the kind of thing a reader can check.
+ * it is the kind of thing a reader can check. Recent commits are author-scoped
+ * too, so the "past 2 weeks" figure is his activity, not the repo's.
  *
  * Needs `GITHUB_TOKEN` (private repos and the author filter both require auth).
  * Returns an empty array without one, and the caller falls back to the public
@@ -580,7 +583,7 @@ export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]>
       .join("\n");
 
     const body = await gql(
-      `query($who: ID!) {
+      `query($who: ID!, $since: GitTimestamp!) {
          ${fields}
        }
        fragment S on Repository {
@@ -589,9 +592,10 @@ export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]>
          defaultBranchRef { target { ... on Commit {
            all: history { totalCount }
            mine: history(author: {id: $who}) { totalCount }
+           recent: history(author: {id: $who}, since: $since) { totalCount }
          } } }
        }`,
-      { who: viewerId },
+      { who: viewerId, since: new Date(Date.now() - TWO_WEEKS_MS).toISOString() },
     );
 
     const data = body?.data;
@@ -614,6 +618,7 @@ export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]>
         stars: r.stargazerCount ?? 0,
         myCommits: target?.mine?.totalCount ?? 0,
         totalCommits: target?.all?.totalCount ?? 0,
+        myCommitsPast2Weeks: target?.recent?.totalCount ?? 0,
       });
     });
     return out;
