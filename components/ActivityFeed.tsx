@@ -87,8 +87,12 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
               <p>
                 {repo.myCommits.toLocaleString()}{" "}
                 {repo.myCommits === 1 ? "commit" : "commits"}
+                {repo.language ? ` · ${repo.language}` : ""}
               </p>
-              <p>last pushed on {shortDate(repo.pushedAt)}</p>
+              <p>
+                last pushed on {shortDate(repo.pushedAt)} ·{" "}
+                {relativeTime(repo.pushedAt, now)} ago
+              </p>
             </div>
           </div>
 
@@ -98,20 +102,19 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
             </p>
           )}
 
-          <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          {/*
+            Only shown when there is recent activity. A row reading
+            "Commits past 2 weeks: 0" is noise — and because the count is live,
+            the strip reappears by itself on the next commit.
+          */}
+          {repo.myCommitsPast2Weeks > 0 && (
+            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-panel2/50 px-2.5 py-2">
               <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="flex items-baseline gap-2">
-                <span className="text-[17px] font-light leading-none text-ink">
-                  {repo.myCommitsPast2Weeks}
-                </span>
-                <span className="t-meta">
-                  {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)}{" "}
-                  ago
-                </span>
+              <span className="text-[17px] font-light leading-none text-ink">
+                {repo.myCommitsPast2Weeks}
               </span>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </li>
@@ -148,8 +151,12 @@ function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
               <p>
                 {repo.stars.toLocaleString()}{" "}
                 {repo.stars === 1 ? "star" : "stars"} on record
+                {repo.language ? ` · ${repo.language}` : ""}
               </p>
-              <p>last pushed on {shortDate(repo.pushedAt)}</p>
+              <p>
+                last pushed on {shortDate(repo.pushedAt)} ·{" "}
+                {relativeTime(repo.pushedAt, now)} ago
+              </p>
             </div>
           </div>
 
@@ -159,20 +166,14 @@ function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
             </p>
           )}
 
-          <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          {repo.commitsPast2Weeks > 0 && (
+            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-panel2/50 px-2.5 py-2">
               <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="flex items-baseline gap-2">
-                <span className="text-[17px] font-light leading-none text-ink">
-                  {repo.commitsPast2Weeks}
-                </span>
-                <span className="t-meta">
-                  {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)}{" "}
-                  ago
-                </span>
+              <span className="text-[17px] font-light leading-none text-ink">
+                {repo.commitsPast2Weeks}
               </span>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </li>

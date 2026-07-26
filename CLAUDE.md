@@ -20,7 +20,10 @@ is real, not decorative:
   and `title` never fires on touch)
 - Recent Activity = hand-picked repos in Steam's "recently played" slot,
   each with a commits-past-2-weeks strip where Steam puts achievement
-  progress. The same figure, summed, sits in the header bar exactly where
+  progress — **hidden entirely when that count is 0**, since a row reading
+  "Commits past 2 weeks: 0" is noise. It's live, so it reappears by itself
+  on the next commit. Language and recency moved into the right-hand meta
+  so they survive when the strip is hidden. The same figure, summed, sits in the header bar exactly where
   Steam shows "X hours past 2 weeks". A CS2-style killfeed lived here and
   was **removed** at Bradley's request — it duplicated what the repo rows
   already said
