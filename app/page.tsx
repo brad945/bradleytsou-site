@@ -13,12 +13,12 @@ import { getCodeArenaStats } from "@/lib/codearena";
 import {
   getContributions,
   getGitHubSnapshot,
-  getPrivateActivity,
+  getFeaturedRepos,
   REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
   githubUsername,
-  namedPrivateRepos,
+  featuredRepos,
   SITE_REPO_NAME,
   siteRepoUrl,
 } from "@/lib/profile-data";
@@ -27,13 +27,12 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, codearena, contributions, privateActivity] =
-    await Promise.all([
-      getGitHubSnapshot(githubUsername),
-      getCodeArenaStats(),
-      getContributions(githubUsername),
-      getPrivateActivity(namedPrivateRepos, githubUsername),
-    ]);
+  const [snapshot, codearena, contributions, featured] = await Promise.all([
+    getGitHubSnapshot(githubUsername),
+    getCodeArenaStats(),
+    getContributions(githubUsername),
+    getFeaturedRepos(featuredRepos),
+  ]);
 
   // Only offer "View source" once the repo is actually public — the API only
   // lists public repos, so this flips on by itself the day it's flipped there.
@@ -56,14 +55,15 @@ export default async function Home() {
             {contributions && (
               <ContributionChart contributions={contributions} />
             )}
-            <ActivityFeed
-              snapshot={snapshot}
-              privateActivity={privateActivity}
-            />
+            <ActivityFeed snapshot={snapshot} featured={featured} />
             {/* <Comments /> */}
           </div>
 
-          <Sidebar snapshot={snapshot} codearena={codearena} />
+          <Sidebar
+            snapshot={snapshot}
+            codearena={codearena}
+            featured={featured}
+          />
         </div>
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">

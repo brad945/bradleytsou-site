@@ -1,11 +1,13 @@
 import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
-import type { GitHubSnapshot } from "@/lib/github";
+import type { FeaturedRepo, GitHubSnapshot } from "@/lib/github";
 import { badges, monogram, profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
   /** Null when CODEARENA_STATS_URL isn't set or the endpoint is unreachable. */
   codearena: CodeArenaStats | null;
+  /** Hand-picked repos. Empty without a token — falls back to the starred list. */
+  featured: FeaturedRepo[];
 }
 
 /**
@@ -30,16 +32,28 @@ function daysAgo(iso: string, now: number): string {
 }
 
 /** A grey label with a large light number, Steam's sidebar stat row. */
-function Stat({ label, value }: { label: string; value?: number | string | null }) {
+function Stat({
+  label,
+  value,
+}: {
+  label: string;
+  value?: number | string | null;
+}) {
   return (
     <div className="stat-row">
       <span className="stat-label">{label}</span>
-      {value !== null && value !== undefined && <span className="stat-value">{value}</span>}
+      {value !== null && value !== undefined && (
+        <span className="stat-value">{value}</span>
+      )}
     </div>
   );
 }
 
-export default function Sidebar({ snapshot, codearena }: SidebarProps) {
+export default function Sidebar({
+  snapshot,
+  codearena,
+  featured,
+}: SidebarProps) {
   const { stats, topRepos, languages, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
   const maxLanguageRepos = Math.max(...languages.map((l) => l.repos), 1);
@@ -72,7 +86,10 @@ export default function Sidebar({ snapshot, codearena }: SidebarProps) {
                 title={`${badge.name} — ${badge.description} · ${formatEarned(badge.earned)}`}
                 className="flex h-[52px] w-[52px] flex-col items-center justify-center gap-0.5 border border-line bg-base/60"
               >
-                <span className="text-[17px] leading-none text-accent" aria-hidden>
+                <span
+                  className="text-[17px] leading-none text-accent"
+                  aria-hidden
+                >
                   {badge.glyph}
                 </span>
                 <span className="px-1 text-center text-[8px] uppercase leading-tight tracking-wide text-muted">
@@ -99,9 +116,14 @@ export default function Sidebar({ snapshot, codearena }: SidebarProps) {
       {codearena && (
         <section className="panel px-5 py-5">
           <div className="flex items-baseline justify-between gap-2">
-            <h2 className="text-[17px] font-normal leading-tight text-bright">CodeArena</h2>
+            <h2 className="text-[17px] font-normal leading-tight text-bright">
+              CodeArena
+            </h2>
             <span className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-live animate-pulse-live" aria-hidden />
+              <span
+                className="h-1.5 w-1.5 rounded-full bg-live animate-pulse-live"
+                aria-hidden
+              />
               <span className="t-meta text-live">Live</span>
             </span>
           </div>
@@ -112,7 +134,9 @@ export default function Sidebar({ snapshot, codearena }: SidebarProps) {
               codearena[key] === undefined ? null : (
                 <div key={key} className="stat-row">
                   <span className="stat-label">{label}</span>
-                  <span className="stat-value">{codearena[key]!.toLocaleString()}</span>
+                  <span className="stat-value">
+                    {codearena[key]!.toLocaleString()}
+                  </span>
                 </div>
               ),
             )}
@@ -138,7 +162,9 @@ export default function Sidebar({ snapshot, codearena }: SidebarProps) {
                 <div className="mt-1 h-[5px] overflow-hidden bg-base/70">
                   <div
                     className="h-full bg-link/55"
-                    style={{ width: `${Math.round((language.repos / maxLanguageRepos) * 100)}%` }}
+                    style={{
+                      width: `${Math.round((language.repos / maxLanguageRepos) * 100)}%`,
+                    }}
                   />
                 </div>
               </li>
@@ -147,7 +173,57 @@ export default function Sidebar({ snapshot, codearena }: SidebarProps) {
         </section>
       )}
 
-      {topRepos.length > 0 && (
+      {/*
+        Ranked by Bradley's own commits, not stars — every public repo he owns
+        has zero stars, so a stars ranking just surfaced years-old intro
+        projects. Falls back to the starred list without a token.
+      */}
+      {featured.length > 0 ? (
+        <section className="panel px-5 py-5">
+          <div className="stat-row">
+            <span className="stat-label">Active Repositories</span>
+            <span className="stat-value">{featured.length}</span>
+          </div>
+          <ul className="mt-2 flex flex-col gap-2">
+            {[...featured]
+              .sort((a, b) => b.myCommits - a.myCommits)
+              .map((repo) => (
+                <li key={repo.nameWithOwner}>
+                  <span className="group flex items-center gap-2.5 py-1">
+                    <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center border border-line bg-base/60 text-[12px] text-link/80">
+                      {monogram(repo.name)}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      {repo.isPrivate ? (
+                        <span className="block truncate text-[14px] leading-tight text-copy">
+                          {repo.name}
+                        </span>
+                      ) : (
+                        <a
+                          href={repo.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="steam-link block truncate text-[14px] leading-tight"
+                        >
+                          {repo.name}
+                        </a>
+                      )}
+                      <span className="t-meta block leading-tight">
+                        {daysAgo(repo.pushedAt, now)}
+                      </span>
+                    </span>
+                    <span
+                      className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[13px] text-accent"
+                      title={`${repo.myCommits} of ${repo.totalCommits} commits are yours`}
+                    >
+                      {repo.myCommits.toLocaleString()}
+                    </span>
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ) : (
         <section className="panel px-5 py-5">
           <div className="stat-row">
             <span className="stat-label">Top Repositories</span>

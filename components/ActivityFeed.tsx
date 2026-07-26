@@ -2,8 +2,7 @@ import type {
   FeedItem,
   FeedKind,
   GitHubSnapshot,
-  PrivateActivity,
-  PrivateRepoCard,
+  FeaturedRepo,
   RepoCard,
 } from "@/lib/github";
 import { REVALIDATE_SECONDS } from "@/lib/github";
@@ -16,8 +15,8 @@ import {
 
 interface ActivityFeedProps {
   snapshot: GitHubSnapshot;
-  /** Null without a `repo`-scoped GITHUB_TOKEN. */
-  privateActivity: PrivateActivity | null;
+  /** Hand-picked repos. Empty without a token — falls back to the public list. */
+  featured: FeaturedRepo[];
 }
 
 /**
@@ -141,42 +140,84 @@ function RepoRow({
 }
 
 /**
- * An allowlisted private repo. Deliberately NOT a link: a visitor following it
- * gets a 404, and the public API can't supply stars or a description either, so
- * the row carries only what's true — name, total commits, language, last push.
+ * A featured repo in the "recently played" slot.
+ *
+ * Commits read "yours / total" rather than just the repo total: on a shared
+ * repo the total says nothing about this person's contribution, and the bar
+ * shows that share honestly instead of implying they wrote all of it.
+ *
+ * Private repos aren't linked — a visitor following one gets a 404.
  */
-function PrivateRepoRow({ repo, now }: { repo: PrivateRepoCard; now: number }) {
+function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
+  const share =
+    repo.totalCommits > 0
+      ? Math.round((repo.myCommits / repo.totalCommits) * 100)
+      : 0;
+
+  const title = repo.isPrivate ? (
+    <span className="text-[17px] font-light leading-tight text-copy">
+      {repo.name}
+    </span>
+  ) : (
+    <a
+      href={repo.url}
+      target="_blank"
+      rel="noreferrer"
+      className="steam-link text-[17px] font-light leading-tight"
+    >
+      {repo.name}
+    </a>
+  );
+
   return (
     <li className="bg-base/45">
       <div className="flex flex-col gap-3 p-3 sm:flex-row">
         <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
-          <span className="text-[26px] font-light leading-none text-muted">
+          <span
+            className={`text-[26px] font-light leading-none ${repo.isPrivate ? "text-muted" : "text-link/80"}`}
+          >
             {monogram(repo.name)}
           </span>
         </div>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-            <span className="flex items-center gap-2">
-              <span className="text-[17px] font-light leading-tight text-copy">
-                {repo.name}
-              </span>
-              <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
-                Private
-              </span>
+            <span className="flex flex-wrap items-center gap-2">
+              {title}
+              {repo.isPrivate && (
+                <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
+                  Private
+                </span>
+              )}
             </span>
             <div className="t-meta text-right leading-tight">
-              <p>{repo.commits.toLocaleString()} commits on record</p>
+              <p>
+                {repo.myCommits.toLocaleString()} of{" "}
+                {repo.totalCommits.toLocaleString()} commits
+              </p>
               <p>last pushed on {shortDate(repo.pushedAt)}</p>
             </div>
           </div>
 
+          {repo.description && (
+            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
+              {repo.description}
+            </p>
+          )}
+
           <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <span className="t-label text-copy">Total commits</span>
+              <span className="t-label text-copy">Your share of commits</span>
               <span className="t-meta">
-                {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)} ago
+                {share}% · {repo.language ?? "—"} ·{" "}
+                {relativeTime(repo.pushedAt, now)} ago
               </span>
+            </div>
+            <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
+              <div
+                className="h-full bg-link/60"
+                style={{ width: `${share}%` }}
+              />
             </div>
           </div>
         </div>
@@ -255,7 +296,7 @@ function EmptyState({ error }: { error: string | null }) {
 
 export default function ActivityFeed({
   snapshot,
-  privateActivity,
+  featured,
 }: ActivityFeedProps) {
   const { stats, feed, repos, error, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
@@ -278,26 +319,26 @@ export default function ActivityFeed({
       </div>
 
       <div className="flex flex-col gap-4 p-5">
-        {(repos.length > 0 || privateActivity) && (
+        {featured.length > 0 ? (
           <ul className="flex flex-col gap-3">
-            {privateActivity?.named.map((repo) => (
-              <PrivateRepoRow key={repo.name} repo={repo} now={now} />
-            ))}
-            {repos.map((repo) => (
-              <RepoRow key={repo.id} repo={repo} busiest={busiest} now={now} />
+            {featured.map((repo) => (
+              <FeaturedRepoRow key={repo.nameWithOwner} repo={repo} now={now} />
             ))}
           </ul>
-        )}
-
-        {/* Private repos not on the allowlist are counted but never named. */}
-        {privateActivity && privateActivity.otherRepos > 0 && (
-          <p className="t-meta bg-base/45 px-3 py-2.5">
-            + {privateActivity.otherRepos}{" "}
-            {privateActivity.otherRepos === 1
-              ? "other private repo"
-              : "other private repos"}{" "}
-            · {privateActivity.otherCommits.toLocaleString()} commits, not shown
-          </p>
+        ) : (
+          /* No token — fall back to whatever the public API can see. */
+          repos.length > 0 && (
+            <ul className="flex flex-col gap-3">
+              {repos.map((repo) => (
+                <RepoRow
+                  key={repo.id}
+                  repo={repo}
+                  busiest={busiest}
+                  now={now}
+                />
+              ))}
+            </ul>
+          )
         )}
 
         {/* The killfeed. Every row is a real public GitHub event. */}

@@ -504,78 +504,45 @@ export async function getContributions(username: string): Promise<Contributions 
 }
 
 /* ------------------------------------------------------------------ *
- * Private repository activity
+ * Featured repositories
  * ------------------------------------------------------------------ */
 
-export interface PrivateRepoCard {
+export interface FeaturedRepo {
+  nameWithOwner: string;
   name: string;
-  commits: number;
-  pushedAt: string;
+  owner: string;
+  isPrivate: boolean;
+  url: string;
+  description: string | null;
   language: string | null;
-}
-
-export interface PrivateActivity {
-  /** Allowlisted repos, safe to name publicly. */
-  named: PrivateRepoCard[];
-  /** Everything else, counted but never named. */
-  otherRepos: number;
-  otherCommits: number;
-  totalRepos: number;
+  pushedAt: string;
+  stars: number;
+  /** Commits authored by the profile owner. */
+  myCommits: number;
+  /** Commits in the repo by everyone. */
   totalCommits: number;
 }
 
-const PRIVATE_QUERY = `
-  query {
-    viewer {
-      repositories(first: 100, ownerAffiliations: OWNER, privacy: PRIVATE,
-                   orderBy: {field: PUSHED_AT, direction: DESC}) {
-        nodes {
-          name
-          pushedAt
-          primaryLanguage { name }
-          defaultBranchRef { target { ... on Commit { history { totalCount } } } }
-        }
-      }
-    }
-  }
-`;
-
-interface PrivateResponse {
-  data?: {
-    viewer?: {
-      repositories?: {
-        nodes?: {
-          name?: string;
-          pushedAt?: string;
-          primaryLanguage?: { name?: string } | null;
-          defaultBranchRef?: { target?: { history?: { totalCount?: number } } } | null;
-        }[];
-      };
-    };
-  };
-}
-
 /**
- * Private repo activity, for the part of the work the public API can't see.
+ * Hand-picked repos for the "recently played" slot.
  *
- * Needs `GITHUB_TOKEN` with `repo` scope — a bigger ask than the rest of this
- * file, which works with no scopes at all. Returns null without it.
+ * Needed because the automatic list can only see public repos Bradley *owns*,
+ * which misses both his private work and the repos he contributes to as a
+ * collaborator — i.e. almost everything that matters.
  *
- * Only repos named in `allowlist` are identified. Everything else is folded
- * into `otherRepos` / `otherCommits`, so creating a private repo never
- * publishes its name by accident. It queries `viewer`, i.e. whoever owns the
- * token — if that isn't Bradley, the numbers would be someone else's, which is
- * why the caller checks the login matches.
+ * Commits are reported as "yours / total", never just the repo total: on a
+ * shared repo the total says nothing about his contribution, and overstating
+ * it is the kind of thing a reader can check.
+ *
+ * Needs `GITHUB_TOKEN` (private repos and the author filter both require auth).
+ * Returns an empty array without one, and the caller falls back to the public
+ * list rather than showing nothing.
  */
-export async function getPrivateActivity(
-  allowlist: string[],
-  expectedLogin: string,
-): Promise<PrivateActivity | null> {
+export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]> {
   const token = process.env.GITHUB_TOKEN;
-  if (!token || !expectedLogin || expectedLogin === PLACEHOLDER_GITHUB_USERNAME) return null;
+  if (!token || names.length === 0) return [];
 
-  let body: PrivateResponse;
-  try {
+  const gql = async (query: string, variables?: Record<string, unknown>) => {
     const res = await fetch(`${API}/graphql`, {
       method: "POST",
       headers: {
@@ -583,42 +550,74 @@ export async function getPrivateActivity(
         "Content-Type": "application/json",
         "User-Agent": "bradleytsou-site",
       },
-      body: JSON.stringify({ query: PRIVATE_QUERY }),
+      body: JSON.stringify({ query, variables }),
       next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) return null;
-    body = (await res.json()) as PrivateResponse;
-  } catch {
-    return null;
-  }
+    return (await res.json()) as { data?: Record<string, any> };
+  };
 
-  const nodes = body.data?.viewer?.repositories?.nodes;
-  if (!Array.isArray(nodes) || nodes.length === 0) return null;
+  try {
+    // The author filter takes a node id, which can't be derived in the same
+    // document, so the viewer lookup is a separate (cached) round trip.
+    const me = await gql(`query { viewer { id } }`);
+    const viewerId = me?.data?.viewer?.id;
+    if (!viewerId) return [];
 
-  const allowed = new Set(allowlist.map((name) => name.toLowerCase()));
-  const named: PrivateRepoCard[] = [];
-  let otherRepos = 0;
-  let otherCommits = 0;
-  let totalCommits = 0;
+    const parsed = names
+      .map((full) => {
+        const [owner, name] = full.split("/");
+        return owner && name ? { owner, name } : null;
+      })
+      .filter((x): x is { owner: string; name: string } => x !== null);
+    if (parsed.length === 0) return [];
 
-  for (const node of nodes) {
-    const name = node.name;
-    if (!name) continue;
-    const commits = node.defaultBranchRef?.target?.history?.totalCount ?? 0;
-    totalCommits += commits;
+    const fields = parsed
+      .map(
+        (r, i) =>
+          `r${i}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) { ...S }`,
+      )
+      .join("\n");
 
-    if (allowed.has(name.toLowerCase())) {
-      named.push({
-        name,
-        commits,
-        pushedAt: node.pushedAt ?? "",
-        language: node.primaryLanguage?.name ?? null,
+    const body = await gql(
+      `query($who: ID!) {
+         ${fields}
+       }
+       fragment S on Repository {
+         nameWithOwner name owner { login } isPrivate url description pushedAt stargazerCount
+         primaryLanguage { name }
+         defaultBranchRef { target { ... on Commit {
+           all: history { totalCount }
+           mine: history(author: {id: $who}) { totalCount }
+         } } }
+       }`,
+      { who: viewerId },
+    );
+
+    const data = body?.data;
+    if (!data) return [];
+
+    const out: FeaturedRepo[] = [];
+    parsed.forEach((_, i) => {
+      const r = data[`r${i}`];
+      if (!r) return; // repo renamed, deleted, or no longer visible to the token
+      const target = r.defaultBranchRef?.target;
+      out.push({
+        nameWithOwner: r.nameWithOwner,
+        name: r.name,
+        owner: r.owner?.login ?? "",
+        isPrivate: Boolean(r.isPrivate),
+        url: r.url,
+        description: r.description ?? null,
+        language: r.primaryLanguage?.name ?? null,
+        pushedAt: r.pushedAt ?? "",
+        stars: r.stargazerCount ?? 0,
+        myCommits: target?.mine?.totalCount ?? 0,
+        totalCommits: target?.all?.totalCount ?? 0,
       });
-    } else {
-      otherRepos += 1;
-      otherCommits += commits;
-    }
+    });
+    return out;
+  } catch {
+    return [];
   }
-
-  return { named, otherRepos, otherCommits, totalRepos: nodes.length, totalCommits };
 }

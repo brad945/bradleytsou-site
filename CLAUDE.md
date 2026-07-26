@@ -67,19 +67,24 @@ rule below). Don't bump either without updating this file.
   present (raises the rate limit from 60/hr/IP to 5000/hr) but works fine
   without one. Forks and archived repos are filtered out — they'd
   dominate the "recently played" slot without saying anything.
-- Private repo activity — `getPrivateActivity()` in `lib/github.ts` plus
-  `PrivateRepoRow` in `ActivityFeed`. Public API can't see private repos at
-  all, so this is GraphQL over `viewer` and needs a **`repo`-scoped**
-  `GITHUB_TOKEN` — a real escalation from the rest of the file, which works
-  with no scopes. Returns null without it and the rows vanish.
-  **Only repos listed in `namedPrivateRepos` are named.** Everything else is
-  counted into an aggregate row ("N other private repos — M commits, not
-  shown"), so creating a private repo never publishes its name by accident.
-  The allowlist ships empty on purpose. Named rows are deliberately **not
-  links** — a visitor following one gets a 404 — and carry only what's true
-  for a private repo: name, total commits, language, last push. No stars, no
-  description, no past-2-weeks bar, because the events feed excludes private
-  activity entirely.
+- Featured repos — `getFeaturedRepos()` in `lib/github.ts`, driven by
+  `featuredRepos` in `profile-data.ts`, rendered by `FeaturedRepoRow` in
+  `ActivityFeed` and by the sidebar's Active Repositories block.
+  **This replaced the automatic "most recently pushed public repo" list**,
+  which was structurally incapable of showing the real work: it could only
+  see public repos Bradley *owns*, so it surfaced years-old intro projects
+  while missing both his private repos and the ones he contributes to as a
+  collaborator. (Watch for this — a `ownerAffiliations: OWNER` query hides
+  collaborations entirely.)
+  Commits are always reported as **"yours / total"**, never the repo total
+  alone: on `sennaicodes/codearenamvp` that's 155 of 2,782, and quoting
+  2,782 would overstate his part 18x on a page a reader can check. The
+  sidebar list ranks by *his* commits, not stars, because every public repo
+  he owns has zero stars.
+  Private entries are named deliberately (they're hand-picked) but are
+  **not linked** — a visitor gets a 404. Needs `GITHUB_TOKEN`; without one
+  both blocks fall back to the public/starred lists rather than emptying.
+  Don't add coursework repos to `featuredRepos`.
 - `components/ContributionChart.tsx` — GitHub's contribution calendar as a
   playtime-style weekly bar chart, the closest honest analogue to Steam's
   hours graph. Fed by `getContributions()` in `lib/github.ts`, which is

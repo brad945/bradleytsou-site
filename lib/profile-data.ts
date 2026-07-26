@@ -61,7 +61,8 @@ export const profile = {
   /** Shown under the name, mono. */
   handle: "@bradleytsou",
   /** One sentence. Real, not a mission statement. */
-  tagline: "CS student building CodeArena. Mostly backend, systems, and dev tooling.",
+  tagline:
+    "CS student building CodeArena. Mostly backend, systems, and dev tooling.",
   location: "United States", // TODO(bradley): city if you want it public
   /** Drives the level card — level = full years since this date. */
   codingSince: "2019-09-01",
@@ -83,25 +84,25 @@ export const profile = {
  * name. TODO(bradley): replace with your real previous handles, or set this
  * to `[]` and the dropdown says "No previous aliases".
  */
-export const aliases: string[] = [
-  "brad945",
-  "bradoom",
-  "bradleytsou",
-  "bt",
-];
+export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 
 /**
- * Private repos you're willing to name on a PUBLIC page.
+ * The repos Recent Activity actually features, in order, as "owner/name".
  *
- * Anything private that isn't listed here is still counted, but only in an
- * aggregate row ("N other private repos — M commits"). That way a private repo
- * you create later never publishes its name by accident, which matters because
- * repo names leak things — coursework names especially.
+ * Replaces the automatic "most recently pushed public repo" list, which
+ * surfaced years-old intro projects while missing the real work — most of that
+ * lives in private repos or in repos Bradley is a collaborator on rather than
+ * owner of, and neither shows up in the public API.
  *
- * TODO(bradley): add names here as you decide they're safe to show, e.g.
- * ["visionotes"]. Requires GITHUB_TOKEN to have `repo` scope.
+ * Naming a private repo here DOES publish its name. That's the deliberate
+ * exception to `namedPrivateRepos` below: these are hand-picked. Don't add
+ * coursework repos.
  */
-export const namedPrivateRepos: string[] = [];
+export const featuredRepos: string[] = [
+  "sennaicodes/codearenamvp",
+  "brad945/visionotes",
+  "ronoktanvir/Orca",
+];
 
 /** This site's own repo. Used by the header ⋯ menu and the showcase entry. */
 export const SITE_REPO_NAME = "bradleytsou-site";
@@ -153,7 +154,8 @@ export const projects: Project[] = [
   {
     id: "codearena",
     name: "CodeArena",
-    blurb: "Competitive programming platform — matchmaking, live judging, ranked ladders.",
+    blurb:
+      "Competitive programming platform — matchmaking, live judging, ranked ladders.",
     rarity: "core",
     tags: ["Next.js", "TypeScript", "Postgres", "Docker"],
     href: undefined, // TODO(bradley): live URL
@@ -163,7 +165,8 @@ export const projects: Project[] = [
   {
     id: "site",
     name: "bradleytsou.com",
-    blurb: "This site. Steam-profile structure, but every stat on it is a real number.",
+    blurb:
+      "This site. Steam-profile structure, but every stat on it is a real number.",
     rarity: "major",
     tags: ["Next.js", "Tailwind", "GitHub API"],
     href: undefined,
@@ -248,7 +251,10 @@ export const rarityStyles: Record<
  * "CA"), then the first two letters.
  */
 export function monogram(name: string): string {
-  const words = name.replace(/[^A-Za-z0-9 .\-_]/g, "").split(/[ .\-_]+/).filter(Boolean);
+  const words = name
+    .replace(/[^A-Za-z0-9 .\-_]/g, "")
+    .split(/[ .\-_]+/)
+    .filter(Boolean);
 
   if (words.length >= 2) {
     return words
