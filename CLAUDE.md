@@ -92,18 +92,19 @@ rule below). Don't bump either without updating this file.
   **not linked** — a visitor gets a 404. Needs `GITHUB_TOKEN`; without one
   both blocks fall back to the public/starred lists rather than emptying.
   Don't add coursework repos to `featuredRepos`.
-- `components/ContributionChart.tsx` — GitHub's contribution calendar as a
-  playtime-style weekly bar chart, the closest honest analogue to Steam's
-  hours graph. Fed by `getContributions()` in `lib/github.ts`, which is
-  **GraphQL and therefore auth-only** — no `GITHUB_TOKEN`, no panel. Bars
-  scale against the busiest week rather than a fixed ceiling so a quiet
-  year still reads; a calendar with no activity at all returns null so it
-  can never render a row of flat bars.
-  Two things must both hold for this to show anything meaningful: the
-  token, and **"Include private contributions on my profile"** enabled on
-  the account. With that off, a mostly-private account reports only its
-  public activity — for brad945 that was 10 contributions for the year
-  versus 440 with it on.
+- `components/ContributionSummary.tsx` — contributions as counts, not a
+  chart. A weekly bar chart lived here first; it showed *when* the work
+  happened but never what it was, which is the question a reader actually
+  has. Fed by `getContributions()` in `lib/github.ts` — **GraphQL, so
+  auth-only**: no `GITHUB_TOKEN`, no panel.
+  The type breakdown comes from **author-scoped search**, not from
+  `contributionsCollection.total*Contributions`. Those count public
+  contributions only, so for this account they report "0 pull requests"
+  while search finds 6 — 442 of 452 contributions are private and the
+  typed fields simply don't see them. Don't switch back to them.
+  Requires **"Include private contributions on my profile"** enabled, or
+  the total collapses to public activity alone (10 vs 452).
+
 - `lib/codearena.ts` — live stats from Bradley's *own* product, not
   someone else's API. This is the block that makes "every number is
   fetched, not written" say something about him. Configured by
@@ -238,7 +239,8 @@ rule below). Don't bump either without updating this file.
   putting the box's top-left directly under the arrow. Content comes from
   `aliases` in `lib/profile-data.ts` and is still placeholder.
 - `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
-  is Steam's "Favorite Game" slot, given to CodeArena (`FAVORITE_REPO`).
+  is Steam's "Favorite Game" slot. `FAVORITE_REPO` picks which repo, and
+  the matching `projects` entry is found by id == repo name lowercased.
   Its copy comes from the **live repo description**, not `profile-data` —
   the hand-written blurb had drifted to "competitive programming platform"
   while the repo itself said "evidence-first technical interviews". The

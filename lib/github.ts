@@ -406,31 +406,41 @@ export async function getGitHubSnapshot(
  * Contribution calendar
  * ------------------------------------------------------------------ */
 
-/** One week of the contribution calendar. */
-export interface ContributionWeek {
-  /** ISO date of the week's first day. */
-  start: string;
-  count: number;
-}
-
 export interface Contributions {
   /** Total contributions in the trailing year. */
   total: number;
-  weeks: ContributionWeek[];
-  /** Busiest single week, used to scale the bars. */
-  busiest: number;
+  /** How many of those landed in private repos. */
+  private: number;
+  pullRequests: number;
+  pullRequestsMerged: number;
+  issues: number;
+  reviews: number;
+  repositoriesCreated: number;
 }
 
+/*
+ * One document for the year's total plus what those contributions actually
+ * were.
+ *
+ * The `total*Contributions` fields can't supply the breakdown: they count
+ * PUBLIC contributions only, and for a mostly-private account that reads
+ * "0 pull requests" while the person has opened plenty. The author-scoped
+ * search counts do see private repos the token can read, so the breakdown
+ * comes from there instead.
+ */
 const CONTRIBUTIONS_QUERY = `
-  query($login: String!) {
+  query($login: String!, $prs: String!, $merged: String!, $issues: String!, $reviews: String!) {
     user(login: $login) {
       contributionsCollection {
-        contributionCalendar {
-          totalContributions
-          weeks { contributionDays { date contributionCount } }
-        }
+        contributionCalendar { totalContributions }
+        restrictedContributionsCount
+        totalRepositoryContributions
       }
     }
+    prs:      search(query: $prs,     type: ISSUE, first: 1) { issueCount }
+    merged:   search(query: $merged,  type: ISSUE, first: 1) { issueCount }
+    issues:   search(query: $issues,  type: ISSUE, first: 1) { issueCount }
+    reviews:  search(query: $reviews, type: ISSUE, first: 1) { issueCount }
   }
 `;
 
@@ -438,12 +448,15 @@ interface CalendarResponse {
   data?: {
     user?: {
       contributionsCollection?: {
-        contributionCalendar?: {
-          totalContributions?: number;
-          weeks?: { contributionDays?: { date?: string; contributionCount?: number }[] }[];
-        };
+        contributionCalendar?: { totalContributions?: number };
+        restrictedContributionsCount?: number;
+        totalRepositoryContributions?: number;
       };
     };
+    prs?: { issueCount?: number };
+    merged?: { issueCount?: number };
+    issues?: { issueCount?: number };
+    reviews?: { issueCount?: number };
   };
 }
 
@@ -472,7 +485,16 @@ export async function getContributions(username: string): Promise<Contributions 
         "Content-Type": "application/json",
         "User-Agent": "bradleytsou-site",
       },
-      body: JSON.stringify({ query: CONTRIBUTIONS_QUERY, variables: { login: username } }),
+      body: JSON.stringify({
+        query: CONTRIBUTIONS_QUERY,
+        variables: {
+          login: username,
+          prs: `author:${username} is:pr`,
+          merged: `author:${username} is:pr is:merged`,
+          issues: `author:${username} is:issue`,
+          reviews: `reviewed-by:${username} is:pr`,
+        },
+      }),
       next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) return null;
@@ -481,25 +503,18 @@ export async function getContributions(username: string): Promise<Contributions 
     return null;
   }
 
-  const calendar = body.data?.user?.contributionsCollection?.contributionCalendar;
-  const rawWeeks = calendar?.weeks;
-  if (!Array.isArray(rawWeeks) || rawWeeks.length === 0) return null;
-
-  const weeks: ContributionWeek[] = rawWeeks.map((week) => {
-    const days = Array.isArray(week.contributionDays) ? week.contributionDays : [];
-    return {
-      start: days[0]?.date ?? "",
-      count: days.reduce((sum, day) => sum + (day.contributionCount ?? 0), 0),
-    };
-  });
-
-  const busiest = weeks.reduce((max, week) => Math.max(max, week.count), 0);
-  if (busiest === 0) return null; // a flat chart says nothing — show nothing
+  const collection = body.data?.user?.contributionsCollection;
+  const total = collection?.contributionCalendar?.totalContributions;
+  if (typeof total !== "number" || total === 0) return null;
 
   return {
-    total: calendar?.totalContributions ?? weeks.reduce((s, w) => s + w.count, 0),
-    weeks,
-    busiest,
+    total,
+    private: collection?.restrictedContributionsCount ?? 0,
+    pullRequests: body.data?.prs?.issueCount ?? 0,
+    pullRequestsMerged: body.data?.merged?.issueCount ?? 0,
+    issues: body.data?.issues?.issueCount ?? 0,
+    reviews: body.data?.reviews?.issueCount ?? 0,
+    repositoriesCreated: collection?.totalRepositoryContributions ?? 0,
   };
 }
 

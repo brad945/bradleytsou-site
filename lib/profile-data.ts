@@ -98,7 +98,11 @@ export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
  * exception to `namedPrivateRepos` below: these are hand-picked. Don't add
  * coursework repos.
  */
-export const FAVORITE_REPO = "sennaicodes/codearenamvp";
+/**
+ * The repo the "Favorite Project" panel features. Its `id` in `projects`
+ * below must match the repo name, lowercased.
+ */
+export const FAVORITE_REPO = "ronoktanvir/Orca";
 
 export const featuredRepos: string[] = [
   "sennaicodes/codearenamvp",

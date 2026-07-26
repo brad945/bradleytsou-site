@@ -211,7 +211,7 @@ export default function Sidebar({
                     </span>
                     <span
                       className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[13px] text-accent"
-                      title={`${repo.myCommits} of ${repo.totalCommits} commits are yours`}
+                      title={`${repo.myCommits} commits by you`}
                     >
                       {repo.myCommits.toLocaleString()}
                     </span>

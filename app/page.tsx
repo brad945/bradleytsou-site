@@ -1,6 +1,6 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
-import ContributionChart from "@/components/ContributionChart";
+import ContributionSummary from "@/components/ContributionSummary";
 import ItemShowcase, { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
@@ -57,7 +57,7 @@ export default async function Home() {
             <FavoriteProject repo={favorite} />
             <ActivityFeed snapshot={snapshot} featured={featured} />
             {contributions && (
-              <ContributionChart contributions={contributions} />
+              <ContributionSummary contributions={contributions} />
             )}
             <ItemShowcase />
             {/* <Comments /> */}

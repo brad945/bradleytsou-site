@@ -41,8 +41,8 @@ function shortDate(iso: string): string {
  * a bar scaled against whichever featured repo was busiest, which is an
  * arbitrary comparison that conveys nothing — decoration dressed as data.
  *
- * The headline still reads "yours / total" so a shared repo can't imply sole
- * authorship. Private repos aren't linked — a visitor would get a 404.
+ * The headline commit count is author-scoped, so it's this person's work
+ * rather than the repo's. Private repos aren't linked — a visitor gets a 404.
  */
 function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
   const title = repo.isPrivate ? (
@@ -85,8 +85,8 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
             </span>
             <div className="t-meta text-right leading-tight">
               <p>
-                {repo.myCommits.toLocaleString()} of{" "}
-                {repo.totalCommits.toLocaleString()} commits
+                {repo.myCommits.toLocaleString()}{" "}
+                {repo.myCommits === 1 ? "commit" : "commits"}
               </p>
               <p>last pushed on {shortDate(repo.pushedAt)}</p>
             </div>

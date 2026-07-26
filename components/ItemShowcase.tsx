@@ -26,7 +26,11 @@ function tileTitle(project: Project): string {
  * never empties. Tags stay hand-curated — the API has no equivalent.
  */
 export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
-  const entry = projects.find((p) => p.rarity === "core") ?? projects[0];
+  // Match on the repo name so changing FAVORITE_REPO is a one-line edit.
+  const entry =
+    (repo && projects.find((p) => p.id === repo.name.toLowerCase())) ??
+    projects.find((p) => p.rarity === "core") ??
+    projects[0];
   if (!entry && !repo) return null;
 
   const style = rarityStyles[entry?.rarity ?? "core"];
@@ -85,9 +89,7 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
           {repo ? (
             <>
               <p className="t-stat-lg">{repo.myCommits.toLocaleString()}</p>
-              <p className="t-label mt-1.5">
-                Commits contributed, of {repo.totalCommits.toLocaleString()}
-              </p>
+              <p className="t-label mt-1.5">Commits contributed</p>
             </>
           ) : (
             <>
