@@ -90,6 +90,10 @@ export const aliases: string[] = [
   "bt",
 ];
 
+/** This site's own repo. Used by the header ⋯ menu and the showcase entry. */
+export const SITE_REPO_NAME = "bradleytsou-site";
+export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;
+
 export const socials: SocialLink[] = [
   // Resolves off `githubUsername` above.
   { label: "GitHub", href: `https://github.com/${githubUsername}` },
@@ -150,8 +154,7 @@ export const projects: Project[] = [
     rarity: "major",
     tags: ["Next.js", "Tailwind", "GitHub API"],
     href: undefined,
-    // Resolves off `githubUsername` above — becomes a real link once that's set.
-    repo: `https://github.com/${githubUsername}/bradleytsou-site`,
+    repo: siteRepoUrl,
     period: "2026",
   },
   {

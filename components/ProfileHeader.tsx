@@ -6,6 +6,8 @@ import { aliases, experience, profile } from "@/lib/profile-data";
 
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
+  /** Null while this site's repo is private. */
+  sourceUrl: string | null;
 }
 
 /**
@@ -71,7 +73,7 @@ function DvdLogo() {
   );
 }
 
-export default function ProfileHeader({ stats }: ProfileHeaderProps) {
+export default function ProfileHeader({ stats, sourceUrl }: ProfileHeaderProps) {
   const { level, progress, sinceYear } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
@@ -190,6 +192,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             <HeaderActions
               profileUrl={stats?.profileUrl ?? null}
               login={stats?.login ?? null}
+              sourceUrl={sourceUrl}
               email={profile.email}
             />
           </div>

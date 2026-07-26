@@ -8,7 +8,7 @@ import Sidebar from "@/components/Sidebar";
 // import Comments from "@/components/Comments";
 
 import { getGitHubSnapshot, REVALIDATE_SECONDS } from "@/lib/github";
-import { githubUsername } from "@/lib/profile-data";
+import { githubUsername, SITE_REPO_NAME, siteRepoUrl } from "@/lib/profile-data";
 
 /** ISR window for the whole page — matches the feed's fetch revalidate. */
 export const revalidate = 300;
@@ -16,9 +16,13 @@ export const revalidate = 300;
 export default async function Home() {
   const snapshot = await getGitHubSnapshot(githubUsername);
 
+  // Only offer "View source" once the repo is actually public — the API only
+  // lists public repos, so this flips on by itself the day it's flipped there.
+  const sourceUrl = snapshot.publicRepoNames.includes(SITE_REPO_NAME) ? siteRepoUrl : null;
+
   return (
     <main className="mx-auto w-full max-w-profile px-3 py-6 sm:px-4 sm:py-8">
-      <ProfileHeader stats={snapshot.stats} />
+      <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
       {/* 616 / 16 / 308 at ≥lg — Steam's column split. Stacks below that. */}
       <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">

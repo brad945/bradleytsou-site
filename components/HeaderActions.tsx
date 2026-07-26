@@ -7,6 +7,11 @@ interface HeaderActionsProps {
   profileUrl: string | null;
   /** GitHub login, used to build the API and feed URLs. */
   login: string | null;
+  /**
+   * This site's own repo — null when it isn't publicly visible, in which case
+   * the row is omitted rather than linking somewhere a visitor gets a 404.
+   */
+  sourceUrl: string | null;
   email: string;
 }
 
@@ -18,11 +23,21 @@ interface HeaderActionsProps {
  * The ⋯ menu deliberately doesn't ape Steam's contents (Add to favorites,
  * Block all communication, Report violation) because none of those have a
  * real equivalent, and a menu of dead entries is exactly the kind of fake
- * chrome this site avoids. Every item here is a working link.
+ * chrome this site avoids.
+ *
+ * All three items point at the machinery behind the page. A "copy profile
+ * link" entry lived here briefly and was cut: Steam needs one because its
+ * profile URLs are long numeric strings, but this is a single page whose URL
+ * is already in the address bar, so it was filling a slot rather than earning
+ * one.
  */
-export default function HeaderActions({ profileUrl, login, email }: HeaderActionsProps) {
+export default function HeaderActions({
+  profileUrl,
+  login,
+  sourceUrl,
+  email,
+}: HeaderActionsProps) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState<"idle" | "done" | "failed">("idle");
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
 
@@ -47,47 +62,8 @@ export default function HeaderActions({ profileUrl, login, email }: HeaderAction
     };
   }, [open]);
 
-  // Reset the copy confirmation so the menu doesn't reopen still saying "Copied".
-  useEffect(() => {
-    if (copied === "idle") return;
-    const id = window.setTimeout(() => setCopied("idle"), 2000);
-    return () => window.clearTimeout(id);
-  }, [copied]);
-
-  /**
-   * The async Clipboard API needs a secure context AND a focused document, so
-   * it throws NotAllowedError in cases a user can genuinely hit (window not
-   * focused, older Safari). Fall back to the execCommand trick rather than
-   * telling them it failed.
-   */
-  async function copyLink() {
-    const url = window.location.href;
-
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied("done");
-      return;
-    } catch {
-      // fall through
-    }
-
-    try {
-      const field = document.createElement("textarea");
-      field.value = url;
-      field.setAttribute("readonly", "");
-      field.style.cssText = "position:fixed;top:0;left:-9999px;opacity:0";
-      document.body.appendChild(field);
-      field.select();
-      const ok = document.execCommand("copy");
-      document.body.removeChild(field);
-      setCopied(ok ? "done" : "failed");
-    } catch {
-      setCopied("failed");
-    }
-  }
-
   const menuItem =
-    "block w-full px-4 py-[7px] text-left text-[14px] text-copy transition-colors hover:bg-ink/10 hover:text-bright focus-visible:outline focus-visible:-outline-offset-2 focus-visible:outline-accent";
+    "block px-4 py-[7px] text-left text-[14px] text-copy transition-colors hover:bg-ink/10 hover:text-bright focus-visible:outline focus-visible:-outline-offset-2 focus-visible:outline-accent";
 
   return (
     <div ref={root} className="relative flex flex-wrap items-center gap-2">
@@ -115,17 +91,16 @@ export default function HeaderActions({ profileUrl, login, email }: HeaderAction
 
       {open && (
         <div className="absolute right-0 top-full z-20 mt-1 w-[220px] bg-menu py-1 shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
-          <button type="button" onClick={copyLink} className={menuItem}>
-            {copied === "done"
-              ? "Copied"
-              : copied === "failed"
-                ? "Copy failed"
-                : "Copy profile link"}
-          </button>
+          {/* How the page is built. Hidden while the repo is private. */}
+          {sourceUrl && (
+            <a href={sourceUrl} target="_blank" rel="noreferrer" className={menuItem}>
+              View source
+            </a>
+          )}
 
           {login && (
             <>
-              {/* The JSON this page is actually built from. */}
+              {/* The JSON the page is built from. */}
               <a
                 href={`https://api.github.com/users/${login}`}
                 target="_blank"

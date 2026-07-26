@@ -143,13 +143,21 @@ rule below). Don't bump either without updating this file.
   The ⋯ menu deliberately does NOT ape Steam's contents (Add to
   favorites, Block all communication, Report violation) — none have a
   real equivalent, and a menu of dead entries is the fake chrome this
-  site avoids. Instead: Copy profile link, View raw API response
-  (`api.github.com/users/:login` — the JSON the page is built from), and
-  Activity feed (`github.com/:login.atom` — the same events as the
-  killfeed). Closes on Escape and outside click like NameHistory.
-  Copy falls back to the execCommand textarea trick: the async Clipboard
-  API needs a *focused* document as well as a secure context, and throws
-  NotAllowedError otherwise.
+  site avoids. All three items point at the machinery behind the page:
+  **View source**, **View raw API response** (`api.github.com/users/:login`
+  — the JSON the page is built from) and **Activity feed**
+  (`github.com/:login.atom` — the same events as the killfeed). Closes on
+  Escape and outside click like NameHistory.
+  A "Copy profile link" entry was tried and cut: Steam needs one because
+  its profile URLs are long numeric strings, but this is one page whose
+  URL is already in the address bar, so it filled a slot rather than
+  earning one. Removing it also removed the clipboard code, which needed
+  a focused document and so could never be verified headlessly.
+  **View source only renders when the repo is actually public.** The
+  unauthenticated `/users/:u/repos` endpoint returns public repos only, so
+  `snapshot.publicRepoNames` is a truthful visibility check — the row
+  appears by itself the day the repo is flipped public, and until then it
+  can't send visitors to a 404.
 - `components/NameHistory.tsx` — client component for the caret next to
   the name that opens Steam's alias history ("This user has also played
   as:"). Closes on Escape (returning focus to the caret) and on outside

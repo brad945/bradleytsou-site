@@ -91,6 +91,13 @@ export interface GitHubSnapshot {
   repos: RepoCard[];
   /** Most starred, for the sidebar list. */
   topRepos: RepoCard[];
+  /**
+   * Names of the owner's repos that came back from the public API. The
+   * unauthenticated endpoint only returns public repos, so membership here is
+   * a reliable "is this repo visible to a visitor" check — which is what stops
+   * the header linking a private repo nobody else can open.
+   */
+  publicRepoNames: string[];
   languages: LanguageCount[];
   /** When this snapshot was built, ISO. */
   fetchedAt: string;
@@ -310,6 +317,7 @@ export async function getGitHubSnapshot(
     feed: [],
     repos: [],
     topRepos: [],
+    publicRepoNames: [],
     languages: [],
     fetchedAt,
   };
@@ -389,6 +397,7 @@ export async function getGitHubSnapshot(
     feed,
     repos: repoCards,
     topRepos,
+    publicRepoNames: (Array.isArray(repos.data) ? repos.data : []).map((r) => r.name),
     languages,
   };
 }
