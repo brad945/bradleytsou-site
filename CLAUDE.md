@@ -117,9 +117,9 @@ rule below). Don't bump either without updating this file.
   the diameter, numeral 0.44x the diameter, gap 0.20x. At 34px that's
   37 / 2 / 16 / 7. The circle being roughly the *same size as the word* is
   the load-bearing part — an earlier pass at 1.29x read as obviously
-  oversized. The card is a near-black panel (not a bordered box) and the
-  badge is a **rounded, bevelled tile** with a gold numeral, not a flat
-  square. There is deliberately **no XP bar** between the card
+  oversized. The Years of Service card is deliberately the **plain flat
+  version** — a near-black panel with a bevelled rounded badge tile was
+  tried and reverted at Bradley's request. Don't reintroduce it. There is deliberately **no XP bar** between the card
   and the buttons — the reference has none, and it was another meter
   without a meaningful denominator.
   The avatar frame is a **static grey band**, matched to the reference on

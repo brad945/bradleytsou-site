@@ -91,7 +91,7 @@ export default function ProfileHeader({
   stats,
   sourceUrl,
 }: ProfileHeaderProps) {
-  const { level, sinceYear } = experience();
+  const { level, progress, sinceYear } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
@@ -178,11 +178,9 @@ export default function ProfileHeader({
         </div>
 
         {/*
-          Steam's right-hand header block. Matched to the reference on the
-          things that carry it: the level word is large and light with the
-          circle roughly 1.25x its font size, the badge card is a near-black
-          panel rather than a bordered box, and the badge itself is a rounded
-          tile with a metallic bevel and a gold glyph — not a flat square.
+          Steam's right-hand header block. The Level line is sized from the
+          reference (see below); the Years of Service card is deliberately the
+          plain flat version — a bevelled-tile treatment was tried and reverted.
         */}
         <div className="lg:pl-2">
           {/*
@@ -202,20 +200,16 @@ export default function ProfileHeader({
             </span>
           </div>
 
-          <div className="mt-5 flex items-center gap-3.5 bg-base/55 p-3.5">
-            {/* Beveled badge tile: grey frame, sunken dark well, gold numeral. */}
-            <span className="shrink-0 rounded-[6px] bg-avatar-frame p-[3px] shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
-              <span className="flex h-[50px] w-[50px] items-center justify-center rounded-[4px] bg-base text-[22px] font-light text-accent ring-1 ring-inset ring-base">
-                {level}
-              </span>
+          <div className="mt-4 flex items-center gap-3 bg-base/45 p-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
+              {level}
             </span>
             <div className="min-w-0">
-              <p className="text-[17px] leading-snug text-bright">
+              <p className="text-[14px] leading-tight text-copy">
                 Years of Service
               </p>
-              {/* Steam shows XP here; ours is the real thing it's counting. */}
-              <p className="text-[15px] leading-snug text-muted">
-                Since {sinceYear}
+              <p className="t-meta leading-tight">
+                {progress}% to {level + 1} · since {sinceYear}
               </p>
             </div>
           </div>
