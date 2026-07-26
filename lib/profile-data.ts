@@ -69,6 +69,8 @@ export const profile = {
   currentFocus: "CodeArena — competitive programming platform",
   /** Fallback avatar initials, used before/if the GitHub avatar resolves. */
   initials: "BT",
+  /** Canonical contact address — drives both the Message button and Links. */
+  email: "bradley_tsou@berkeley.edu",
   status: {
     label: "Online",
     /** Sub-label under the status dot, Steam-style. */
@@ -92,7 +94,7 @@ export const socials: SocialLink[] = [
   // Resolves off `githubUsername` above.
   { label: "GitHub", href: `https://github.com/${githubUsername}` },
   { label: "LinkedIn", href: "https://linkedin.com/in/your-linkedin" }, // TODO(bradley)
-  { label: "Email", href: "mailto:bradoomm8@gmail.com" },
+  { label: "Email", href: `mailto:${profile.email}` },
 ];
 
 /**

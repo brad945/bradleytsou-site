@@ -1,4 +1,5 @@
 import Image from "next/image";
+import HeaderActions from "@/components/HeaderActions";
 import NameHistory from "@/components/NameHistory";
 import type { GitHubStats } from "@/lib/github";
 import { aliases, experience, profile } from "@/lib/profile-data";
@@ -184,16 +185,14 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             <div className="h-full bg-xp-fill" style={{ width: `${progress}%` }} />
           </div>
 
-          {stats && (
-            <a
-              href={stats.profileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="steam-button mt-4"
-            >
-              View on GitHub
-            </a>
-          )}
+          {/* Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is. */}
+          <div className="mt-4">
+            <HeaderActions
+              profileUrl={stats?.profileUrl ?? null}
+              login={stats?.login ?? null}
+              email={profile.email}
+            />
+          </div>
         </div>
       </div>
     </header>

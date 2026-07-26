@@ -137,6 +137,19 @@ rule below). Don't bump either without updating this file.
   drives it.
   The header must **not** get `overflow-hidden` — it would clip the alias
   dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
+- `components/HeaderActions.tsx` — Steam's profile action row, sat where
+  Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
+  Steam's other-profile set: **Follow / Message / ⋯** rather than Edit.
+  The ⋯ menu deliberately does NOT ape Steam's contents (Add to
+  favorites, Block all communication, Report violation) — none have a
+  real equivalent, and a menu of dead entries is the fake chrome this
+  site avoids. Instead: Copy profile link, View raw API response
+  (`api.github.com/users/:login` — the JSON the page is built from), and
+  Activity feed (`github.com/:login.atom` — the same events as the
+  killfeed). Closes on Escape and outside click like NameHistory.
+  Copy falls back to the execCommand textarea trick: the async Clipboard
+  API needs a *focused* document as well as a secure context, and throws
+  NotAllowedError otherwise.
 - `components/NameHistory.tsx` — client component for the caret next to
   the name that opens Steam's alias history ("This user has also played
   as:"). Closes on Escape (returning focus to the caret) and on outside
