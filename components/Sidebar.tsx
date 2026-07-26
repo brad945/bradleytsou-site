@@ -56,7 +56,6 @@ export default function Sidebar({
 }: SidebarProps) {
   const { stats, topRepos, languages, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
-  const maxLanguageRepos = Math.max(...languages.map((l) => l.repos), 1);
 
   return (
     <div className="flex flex-col gap-4">
@@ -150,23 +149,21 @@ export default function Sidebar({
             <span className="stat-label">Languages</span>
             <span className="stat-value">{languages.length}</span>
           </div>
-          <ul className="mt-2 flex flex-col gap-2">
+          {/*
+            A plain list, not bars. Bars here were scaled against the most-used
+            language, which is an arbitrary denominator that conveys nothing —
+            the repo count already says everything the bar was implying.
+          */}
+          <ul className="mt-2 flex flex-col">
             {languages.map((language) => (
-              <li key={language.name}>
-                <div className="flex items-baseline justify-between gap-2">
-                  <span className="t-body">{language.name}</span>
-                  <span className="t-meta">
-                    {language.repos} {language.repos === 1 ? "repo" : "repos"}
-                  </span>
-                </div>
-                <div className="mt-1 h-[5px] overflow-hidden bg-base/70">
-                  <div
-                    className="h-full bg-link/55"
-                    style={{
-                      width: `${Math.round((language.repos / maxLanguageRepos) * 100)}%`,
-                    }}
-                  />
-                </div>
+              <li
+                key={language.name}
+                className="flex items-baseline justify-between gap-2 py-1"
+              >
+                <span className="t-body">{language.name}</span>
+                <span className="t-meta">
+                  {language.repos} {language.repos === 1 ? "repo" : "repos"}
+                </span>
               </li>
             ))}
           </ul>

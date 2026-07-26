@@ -330,6 +330,18 @@ Optional: add `GITHUB_TOKEN` (a fine-grained PAT with no scopes — it only
 needs to be a valid token) as a Vercel environment variable if the feed
 ever hits the unauthenticated rate limit.
 
+## No decorative meters
+
+Two progress bars were removed for the same reason and the rule now stands:
+**a bar needs a denominator that means something.** Both the repo-row bar
+(scaled against whichever featured repo was busiest) and the sidebar
+language bars (scaled against the most-used language) were shapes that
+looked like progress while measuring nothing — decoration dressed as data,
+which is exactly what this site exists not to do. Both are plain numbers now.
+
+The one surviving bar is the XP fill under Years of Service, because "90%
+to 7" is a real fraction of a real year. Apply that test to any new meter.
+
 ## Things to avoid
 
 - No fake/decorative animations — every interactive element should be real
