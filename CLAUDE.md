@@ -67,6 +67,16 @@ rule below). Don't bump either without updating this file.
   present (raises the rate limit from 60/hr/IP to 5000/hr) but works fine
   without one. Forks and archived repos are filtered out — they'd
   dominate the "recently played" slot without saying anything.
+- `lib/codearena.ts` — live stats from Bradley's *own* product, not
+  someone else's API. This is the block that makes "every number is
+  fetched, not written" say something about him. Configured by
+  `CODEARENA_STATS_URL` (see `.env.example`); the endpoint should return
+  JSON with any subset of `submissions` / `matches` / `players` /
+  `problems`. Unknown keys are ignored and non-finite values dropped, so
+  a malformed or half-migrated response loses rows rather than rendering
+  NaN. Unset, unreachable, non-OK, unparseable, or carrying no usable
+  number -> returns null and the sidebar block **hides itself entirely**.
+  It never invents a number. All four failure paths are verified.
 - `components/ProfileHeader.tsx` — full-width identity block over the
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is

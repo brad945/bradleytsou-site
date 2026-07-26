@@ -1,8 +1,11 @@
+import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
 import type { GitHubSnapshot } from "@/lib/github";
 import { badges, monogram, profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
+  /** Null when CODEARENA_STATS_URL isn't set or the endpoint is unreachable. */
+  codearena: CodeArenaStats | null;
 }
 
 /**
@@ -36,7 +39,7 @@ function Stat({ label, value }: { label: string; value?: number | string | null 
   );
 }
 
-export default function Sidebar({ snapshot }: SidebarProps) {
+export default function Sidebar({ snapshot, codearena }: SidebarProps) {
   const { stats, topRepos, languages, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
   const maxLanguageRepos = Math.max(...languages.map((l) => l.repos), 1);
@@ -87,6 +90,35 @@ export default function Sidebar({ snapshot }: SidebarProps) {
           <p className="t-body leading-snug">{profile.currentFocus}</p>
         </div>
       </section>
+
+      {/*
+        The one block on this page fed by Bradley's own product rather than
+        someone else's API. Absent entirely when the endpoint isn't configured
+        or is down — never a placeholder number.
+      */}
+      {codearena && (
+        <section className="panel px-5 py-5">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="text-[17px] font-normal leading-tight text-bright">CodeArena</h2>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-live animate-pulse-live" aria-hidden />
+              <span className="t-meta text-live">Live</span>
+            </span>
+          </div>
+          <p className="t-meta mt-1">Straight off the CodeArena API.</p>
+
+          <div className="mt-4">
+            {CODEARENA_ROWS.map(({ key, label }) =>
+              codearena[key] === undefined ? null : (
+                <div key={key} className="stat-row">
+                  <span className="stat-label">{label}</span>
+                  <span className="stat-value">{codearena[key]!.toLocaleString()}</span>
+                </div>
+              ),
+            )}
+          </div>
+        </section>
+      )}
 
       {languages.length > 0 && (
         <section className="panel px-5 py-5">

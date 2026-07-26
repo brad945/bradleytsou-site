@@ -8,6 +8,7 @@ import Sidebar from "@/components/Sidebar";
 // See components/Comments.tsx.
 // import Comments from "@/components/Comments";
 
+import { getCodeArenaStats } from "@/lib/codearena";
 import { getGitHubSnapshot, REVALIDATE_SECONDS } from "@/lib/github";
 import {
   githubUsername,
@@ -19,7 +20,10 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const snapshot = await getGitHubSnapshot(githubUsername);
+  const [snapshot, codearena] = await Promise.all([
+    getGitHubSnapshot(githubUsername),
+    getCodeArenaStats(),
+  ]);
 
   // Only offer "View source" once the repo is actually public — the API only
   // lists public repos, so this flips on by itself the day it's flipped there.
@@ -43,7 +47,7 @@ export default async function Home() {
             {/* <Comments /> */}
           </div>
 
-          <Sidebar snapshot={snapshot} />
+          <Sidebar snapshot={snapshot} codearena={codearena} />
         </div>
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
