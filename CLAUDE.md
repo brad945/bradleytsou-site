@@ -112,10 +112,14 @@ rule below). Don't bump either without updating this file.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Service" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
-  The right-hand block is matched to the reference: large light "Level"
-  with a ring circle ~1.25x its size, a near-black card (not a bordered
-  box), and a **rounded, bevelled badge tile** with a gold numeral rather
-  than a flat square. There is deliberately **no XP bar** between the card
+  The right-hand block is matched to the reference by ratio, not by eye.
+  Against the "Level" font-size: **circle diameter 1.08x**, ring 6.4% of
+  the diameter, numeral 0.44x the diameter, gap 0.20x. At 34px that's
+  37 / 2 / 16 / 7. The circle being roughly the *same size as the word* is
+  the load-bearing part — an earlier pass at 1.29x read as obviously
+  oversized. The card is a near-black panel (not a bordered box) and the
+  badge is a **rounded, bevelled tile** with a gold numeral, not a flat
+  square. There is deliberately **no XP bar** between the card
   and the buttons — the reference has none, and it was another meter
   without a meaningful denominator.
   The avatar frame is a **static grey band**, matched to the reference on

@@ -185,11 +185,19 @@ export default function ProfileHeader({
           tile with a metallic bevel and a gold glyph — not a flat square.
         */}
         <div className="lg:pl-2">
-          <div className="flex items-center gap-3">
+          {/*
+            Measured off the reference rather than eyeballed. Against the
+            "Level" font-size, the ring there is:
+              diameter 1.08x   ring 6.4% of diameter   numeral 0.44x   gap 0.20x
+            At 34px that's 37 / 2 / 16 / 7. The circle is very nearly the same
+            size as the word — an earlier pass had it at 1.29x, which is what
+            made it read as oversized.
+          */}
+          <div className="flex items-center gap-[7px]">
             <span className="text-[34px] font-light leading-none text-ink">
               Level
             </span>
-            <span className="flex h-[44px] w-[44px] items-center justify-center rounded-full border-[3px] border-accent text-[19px] font-light text-bright">
+            <span className="flex h-[37px] w-[37px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
               {level}
             </span>
           </div>
