@@ -13,10 +13,12 @@ import { getCodeArenaStats } from "@/lib/codearena";
 import {
   getContributions,
   getGitHubSnapshot,
+  getPrivateActivity,
   REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
   githubUsername,
+  namedPrivateRepos,
   SITE_REPO_NAME,
   siteRepoUrl,
 } from "@/lib/profile-data";
@@ -25,11 +27,13 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, codearena, contributions] = await Promise.all([
-    getGitHubSnapshot(githubUsername),
-    getCodeArenaStats(),
-    getContributions(githubUsername),
-  ]);
+  const [snapshot, codearena, contributions, privateActivity] =
+    await Promise.all([
+      getGitHubSnapshot(githubUsername),
+      getCodeArenaStats(),
+      getContributions(githubUsername),
+      getPrivateActivity(namedPrivateRepos, githubUsername),
+    ]);
 
   // Only offer "View source" once the repo is actually public — the API only
   // lists public repos, so this flips on by itself the day it's flipped there.
@@ -52,7 +56,10 @@ export default async function Home() {
             {contributions && (
               <ContributionChart contributions={contributions} />
             )}
-            <ActivityFeed snapshot={snapshot} />
+            <ActivityFeed
+              snapshot={snapshot}
+              privateActivity={privateActivity}
+            />
             {/* <Comments /> */}
           </div>
 

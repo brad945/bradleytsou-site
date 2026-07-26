@@ -502,3 +502,123 @@ export async function getContributions(username: string): Promise<Contributions 
     busiest,
   };
 }
+
+/* ------------------------------------------------------------------ *
+ * Private repository activity
+ * ------------------------------------------------------------------ */
+
+export interface PrivateRepoCard {
+  name: string;
+  commits: number;
+  pushedAt: string;
+  language: string | null;
+}
+
+export interface PrivateActivity {
+  /** Allowlisted repos, safe to name publicly. */
+  named: PrivateRepoCard[];
+  /** Everything else, counted but never named. */
+  otherRepos: number;
+  otherCommits: number;
+  totalRepos: number;
+  totalCommits: number;
+}
+
+const PRIVATE_QUERY = `
+  query {
+    viewer {
+      repositories(first: 100, ownerAffiliations: OWNER, privacy: PRIVATE,
+                   orderBy: {field: PUSHED_AT, direction: DESC}) {
+        nodes {
+          name
+          pushedAt
+          primaryLanguage { name }
+          defaultBranchRef { target { ... on Commit { history { totalCount } } } }
+        }
+      }
+    }
+  }
+`;
+
+interface PrivateResponse {
+  data?: {
+    viewer?: {
+      repositories?: {
+        nodes?: {
+          name?: string;
+          pushedAt?: string;
+          primaryLanguage?: { name?: string } | null;
+          defaultBranchRef?: { target?: { history?: { totalCount?: number } } } | null;
+        }[];
+      };
+    };
+  };
+}
+
+/**
+ * Private repo activity, for the part of the work the public API can't see.
+ *
+ * Needs `GITHUB_TOKEN` with `repo` scope — a bigger ask than the rest of this
+ * file, which works with no scopes at all. Returns null without it.
+ *
+ * Only repos named in `allowlist` are identified. Everything else is folded
+ * into `otherRepos` / `otherCommits`, so creating a private repo never
+ * publishes its name by accident. It queries `viewer`, i.e. whoever owns the
+ * token — if that isn't Bradley, the numbers would be someone else's, which is
+ * why the caller checks the login matches.
+ */
+export async function getPrivateActivity(
+  allowlist: string[],
+  expectedLogin: string,
+): Promise<PrivateActivity | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token || !expectedLogin || expectedLogin === PLACEHOLDER_GITHUB_USERNAME) return null;
+
+  let body: PrivateResponse;
+  try {
+    const res = await fetch(`${API}/graphql`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "bradleytsou-site",
+      },
+      body: JSON.stringify({ query: PRIVATE_QUERY }),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return null;
+    body = (await res.json()) as PrivateResponse;
+  } catch {
+    return null;
+  }
+
+  const nodes = body.data?.viewer?.repositories?.nodes;
+  if (!Array.isArray(nodes) || nodes.length === 0) return null;
+
+  const allowed = new Set(allowlist.map((name) => name.toLowerCase()));
+  const named: PrivateRepoCard[] = [];
+  let otherRepos = 0;
+  let otherCommits = 0;
+  let totalCommits = 0;
+
+  for (const node of nodes) {
+    const name = node.name;
+    if (!name) continue;
+    const commits = node.defaultBranchRef?.target?.history?.totalCount ?? 0;
+    totalCommits += commits;
+
+    if (allowed.has(name.toLowerCase())) {
+      named.push({
+        name,
+        commits,
+        pushedAt: node.pushedAt ?? "",
+        language: node.primaryLanguage?.name ?? null,
+      });
+    } else {
+      otherRepos += 1;
+      otherCommits += commits;
+    }
+  }
+
+  return { named, otherRepos, otherCommits, totalRepos: nodes.length, totalCommits };
+}

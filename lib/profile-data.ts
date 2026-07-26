@@ -90,6 +90,19 @@ export const aliases: string[] = [
   "bt",
 ];
 
+/**
+ * Private repos you're willing to name on a PUBLIC page.
+ *
+ * Anything private that isn't listed here is still counted, but only in an
+ * aggregate row ("N other private repos — M commits"). That way a private repo
+ * you create later never publishes its name by accident, which matters because
+ * repo names leak things — coursework names especially.
+ *
+ * TODO(bradley): add names here as you decide they're safe to show, e.g.
+ * ["visionotes"]. Requires GITHUB_TOKEN to have `repo` scope.
+ */
+export const namedPrivateRepos: string[] = [];
+
 /** This site's own repo. Used by the header ⋯ menu and the showcase entry. */
 export const SITE_REPO_NAME = "bradleytsou-site";
 export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;

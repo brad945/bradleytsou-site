@@ -1,4 +1,11 @@
-import type { FeedItem, FeedKind, GitHubSnapshot, RepoCard } from "@/lib/github";
+import type {
+  FeedItem,
+  FeedKind,
+  GitHubSnapshot,
+  PrivateActivity,
+  PrivateRepoCard,
+  RepoCard,
+} from "@/lib/github";
 import { REVALIDATE_SECONDS } from "@/lib/github";
 import {
   githubUsername,
@@ -9,6 +16,8 @@ import {
 
 interface ActivityFeedProps {
   snapshot: GitHubSnapshot;
+  /** Null without a `repo`-scoped GITHUB_TOKEN. */
+  privateActivity: PrivateActivity | null;
 }
 
 /**
@@ -59,8 +68,17 @@ function shortDate(iso: string): string {
  * on the right, and Steam's achievement-progress strip underneath — here it's
  * this repo's share of the commits pushed across all shown repos.
  */
-function RepoRow({ repo, busiest, now }: { repo: RepoCard; busiest: number; now: number }) {
-  const share = busiest > 0 ? Math.round((repo.commitsPast2Weeks / busiest) * 100) : 0;
+function RepoRow({
+  repo,
+  busiest,
+  now,
+}: {
+  repo: RepoCard;
+  busiest: number;
+  now: number;
+}) {
+  const share =
+    busiest > 0 ? Math.round((repo.commitsPast2Weeks / busiest) * 100) : 0;
 
   return (
     <li className="bg-base/45">
@@ -88,7 +106,8 @@ function RepoRow({ repo, busiest, now }: { repo: RepoCard; busiest: number; now:
             </a>
             <div className="t-meta text-right leading-tight">
               <p>
-                {repo.stars.toLocaleString()} {repo.stars === 1 ? "star" : "stars"} on record
+                {repo.stars.toLocaleString()}{" "}
+                {repo.stars === 1 ? "star" : "stars"} on record
               </p>
               <p>last pushed on {shortDate(repo.pushedAt)}</p>
             </div>
@@ -109,7 +128,55 @@ function RepoRow({ repo, busiest, now }: { repo: RepoCard; busiest: number; now:
               </span>
             </div>
             <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
-              <div className="h-full bg-link/60" style={{ width: `${share}%` }} />
+              <div
+                className="h-full bg-link/60"
+                style={{ width: `${share}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/**
+ * An allowlisted private repo. Deliberately NOT a link: a visitor following it
+ * gets a 404, and the public API can't supply stars or a description either, so
+ * the row carries only what's true — name, total commits, language, last push.
+ */
+function PrivateRepoRow({ repo, now }: { repo: PrivateRepoCard; now: number }) {
+  return (
+    <li className="bg-base/45">
+      <div className="flex flex-col gap-3 p-3 sm:flex-row">
+        <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
+          <span className="text-[26px] font-light leading-none text-muted">
+            {monogram(repo.name)}
+          </span>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+            <span className="flex items-center gap-2">
+              <span className="text-[17px] font-light leading-tight text-copy">
+                {repo.name}
+              </span>
+              <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
+                Private
+              </span>
+            </span>
+            <div className="t-meta text-right leading-tight">
+              <p>{repo.commits.toLocaleString()} commits on record</p>
+              <p>last pushed on {shortDate(repo.pushedAt)}</p>
+            </div>
+          </div>
+
+          <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+              <span className="t-label text-copy">Total commits</span>
+              <span className="t-meta">
+                {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)} ago
+              </span>
             </div>
           </div>
         </div>
@@ -143,12 +210,17 @@ function KillfeedRow({ item, now }: { item: FeedItem; now: number }) {
         </span>
 
         {item.headshot && (
-          <span className="shrink-0 font-mono text-[10px] text-live" title="Landed">
+          <span
+            className="shrink-0 font-mono text-[10px] text-live"
+            title="Landed"
+          >
             ✦
           </span>
         )}
 
-        <span className="shrink-0 font-mono text-[11px] text-muted">{item.target}</span>
+        <span className="shrink-0 font-mono text-[11px] text-muted">
+          {item.target}
+        </span>
 
         {item.detail && (
           <span className="hidden min-w-0 flex-1 truncate text-[12px] text-muted/70 md:block">
@@ -173,15 +245,18 @@ function EmptyState({ error }: { error: string | null }) {
       {unconfigured && (
         <p className="t-meta mx-auto mt-2 max-w-sm leading-relaxed">
           Set <code className="font-mono text-ink/70">githubUsername</code> in{" "}
-          <code className="font-mono text-ink/70">lib/profile-data.ts</code> and this feed fills
-          itself in.
+          <code className="font-mono text-ink/70">lib/profile-data.ts</code> and
+          this feed fills itself in.
         </p>
       )}
     </div>
   );
 }
 
-export default function ActivityFeed({ snapshot }: ActivityFeedProps) {
+export default function ActivityFeed({
+  snapshot,
+  privateActivity,
+}: ActivityFeedProps) {
   const { stats, feed, repos, error, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
   const isLive = snapshot.ok && feed.length > 0;
@@ -203,12 +278,26 @@ export default function ActivityFeed({ snapshot }: ActivityFeedProps) {
       </div>
 
       <div className="flex flex-col gap-4 p-5">
-        {repos.length > 0 && (
+        {(repos.length > 0 || privateActivity) && (
           <ul className="flex flex-col gap-3">
+            {privateActivity?.named.map((repo) => (
+              <PrivateRepoRow key={repo.name} repo={repo} now={now} />
+            ))}
             {repos.map((repo) => (
               <RepoRow key={repo.id} repo={repo} busiest={busiest} now={now} />
             ))}
           </ul>
+        )}
+
+        {/* Private repos not on the allowlist are counted but never named. */}
+        {privateActivity && privateActivity.otherRepos > 0 && (
+          <p className="t-meta bg-base/45 px-3 py-2.5">
+            + {privateActivity.otherRepos}{" "}
+            {privateActivity.otherRepos === 1
+              ? "other private repo"
+              : "other private repos"}{" "}
+            · {privateActivity.otherCommits.toLocaleString()} commits, not shown
+          </p>
         )}
 
         {/* The killfeed. Every row is a real public GitHub event. */}
@@ -243,7 +332,12 @@ export default function ActivityFeed({ snapshot }: ActivityFeedProps) {
           {stats ? (
             <>
               <span>View</span>
-              <a href={stats.profileUrl} target="_blank" rel="noreferrer" className="steam-link">
+              <a
+                href={stats.profileUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="steam-link"
+              >
                 All Activity
               </a>
               <span className="text-muted/50">|</span>
