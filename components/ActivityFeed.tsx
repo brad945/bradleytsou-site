@@ -36,27 +36,15 @@ function shortDate(iso: string): string {
 /**
  * A featured repo in Steam's "recently played" slot.
  *
- * The progress strip is commits in the last two weeks — the direct analogue of
- * the hours-past-2-weeks figure Steam puts here. It replaced a "your share of
- * commits" bar that measured the wrong thing: what fraction of a repo someone
- * wrote says nothing about whether they're working on it now, which is the
- * question "Recent Activity" is asking.
+ * Commits in the last two weeks is the direct analogue of the hours-past-2-weeks
+ * figure Steam puts here. It's shown as a plain number: an earlier version drew
+ * a bar scaled against whichever featured repo was busiest, which is an
+ * arbitrary comparison that conveys nothing — decoration dressed as data.
  *
  * The headline still reads "yours / total" so a shared repo can't imply sole
  * authorship. Private repos aren't linked — a visitor would get a 404.
  */
-function FeaturedRepoRow({
-  repo,
-  busiest,
-  now,
-}: {
-  repo: FeaturedRepo;
-  busiest: number;
-  now: number;
-}) {
-  const share =
-    busiest > 0 ? Math.round((repo.myCommitsPast2Weeks / busiest) * 100) : 0;
-
+function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
   const title = repo.isPrivate ? (
     <span className="text-[17px] font-light leading-tight text-copy">
       {repo.name}
@@ -113,16 +101,15 @@ function FeaturedRepoRow({
           <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="t-meta">
-                {repo.myCommitsPast2Weeks} · {repo.language ?? "—"} ·{" "}
-                {relativeTime(repo.pushedAt, now)} ago
+              <span className="flex items-baseline gap-2">
+                <span className="text-[17px] font-light leading-none text-ink">
+                  {repo.myCommitsPast2Weeks}
+                </span>
+                <span className="t-meta">
+                  {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)}{" "}
+                  ago
+                </span>
               </span>
-            </div>
-            <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
-              <div
-                className="h-full bg-link/60"
-                style={{ width: `${share}%` }}
-              />
             </div>
           </div>
         </div>
@@ -132,18 +119,7 @@ function FeaturedRepoRow({
 }
 
 /** Fallback row, used only when there's no token to fetch the featured repos. */
-function PublicRepoRow({
-  repo,
-  busiest,
-  now,
-}: {
-  repo: RepoCard;
-  busiest: number;
-  now: number;
-}) {
-  const share =
-    busiest > 0 ? Math.round((repo.commitsPast2Weeks / busiest) * 100) : 0;
-
+function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
   return (
     <li className="bg-base/45">
       <div className="flex flex-col gap-3 p-3 sm:flex-row">
@@ -186,16 +162,15 @@ function PublicRepoRow({
           <div className="mt-2.5 bg-panel2/50 px-2.5 py-2">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="t-meta">
-                {repo.commitsPast2Weeks} · {repo.language ?? "—"} ·{" "}
-                {relativeTime(repo.pushedAt, now)} ago
+              <span className="flex items-baseline gap-2">
+                <span className="text-[17px] font-light leading-none text-ink">
+                  {repo.commitsPast2Weeks}
+                </span>
+                <span className="t-meta">
+                  {repo.language ?? "—"} · {relativeTime(repo.pushedAt, now)}{" "}
+                  ago
+                </span>
               </span>
-            </div>
-            <div className="mt-1.5 h-[6px] overflow-hidden bg-base/80">
-              <div
-                className="h-full bg-link/60"
-                style={{ width: `${share}%` }}
-              />
             </div>
           </div>
         </div>
@@ -221,10 +196,6 @@ export default function ActivityFeed({
     ? featured.reduce((sum, repo) => sum + repo.myCommitsPast2Weeks, 0)
     : repos.reduce((sum, repo) => sum + repo.commitsPast2Weeks, 0);
 
-  const busiest = useFeatured
-    ? Math.max(...featured.map((r) => r.myCommitsPast2Weeks), 0)
-    : Math.max(...repos.map((r) => r.commitsPast2Weeks), 0);
-
   const hasRows = useFeatured || repos.length > 0;
 
   return (
@@ -247,17 +218,11 @@ export default function ActivityFeed({
                   <FeaturedRepoRow
                     key={repo.nameWithOwner}
                     repo={repo}
-                    busiest={busiest}
                     now={now}
                   />
                 ))
               : repos.map((repo) => (
-                  <PublicRepoRow
-                    key={repo.id}
-                    repo={repo}
-                    busiest={busiest}
-                    now={now}
-                  />
+                  <PublicRepoRow key={repo.id} repo={repo} now={now} />
                 ))}
           </ul>
         ) : (
