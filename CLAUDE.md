@@ -67,6 +67,18 @@ rule below). Don't bump either without updating this file.
   present (raises the rate limit from 60/hr/IP to 5000/hr) but works fine
   without one. Forks and archived repos are filtered out — they'd
   dominate the "recently played" slot without saying anything.
+- `components/ContributionChart.tsx` — GitHub's contribution calendar as a
+  playtime-style weekly bar chart, the closest honest analogue to Steam's
+  hours graph. Fed by `getContributions()` in `lib/github.ts`, which is
+  **GraphQL and therefore auth-only** — no `GITHUB_TOKEN`, no panel. Bars
+  scale against the busiest week rather than a fixed ceiling so a quiet
+  year still reads; a calendar with no activity at all returns null so it
+  can never render a row of flat bars.
+  Two things must both hold for this to show anything meaningful: the
+  token, and **"Include private contributions on my profile"** enabled on
+  the account. With that off, a mostly-private account reports only its
+  public activity — for brad945 that was 10 contributions for the year
+  versus 440 with it on.
 - `lib/codearena.ts` — live stats from Bradley's *own* product, not
   someone else's API. This is the block that makes "every number is
   fetched, not written" say something about him. Configured by

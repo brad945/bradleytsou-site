@@ -1,5 +1,6 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
+import ContributionChart from "@/components/ContributionChart";
 import ItemShowcase, { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
@@ -9,7 +10,11 @@ import Sidebar from "@/components/Sidebar";
 // import Comments from "@/components/Comments";
 
 import { getCodeArenaStats } from "@/lib/codearena";
-import { getGitHubSnapshot, REVALIDATE_SECONDS } from "@/lib/github";
+import {
+  getContributions,
+  getGitHubSnapshot,
+  REVALIDATE_SECONDS,
+} from "@/lib/github";
 import {
   githubUsername,
   SITE_REPO_NAME,
@@ -20,9 +25,10 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, codearena] = await Promise.all([
+  const [snapshot, codearena, contributions] = await Promise.all([
     getGitHubSnapshot(githubUsername),
     getCodeArenaStats(),
+    getContributions(githubUsername),
   ]);
 
   // Only offer "View source" once the repo is actually public — the API only
@@ -43,6 +49,9 @@ export default async function Home() {
           <div className="flex min-w-0 flex-col gap-4">
             <FavoriteProject />
             <ItemShowcase />
+            {contributions && (
+              <ContributionChart contributions={contributions} />
+            )}
             <ActivityFeed snapshot={snapshot} />
             {/* <Comments /> */}
           </div>

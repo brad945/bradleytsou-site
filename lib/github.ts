@@ -401,3 +401,104 @@ export async function getGitHubSnapshot(
     languages,
   };
 }
+
+/* ------------------------------------------------------------------ *
+ * Contribution calendar
+ * ------------------------------------------------------------------ */
+
+/** One week of the contribution calendar. */
+export interface ContributionWeek {
+  /** ISO date of the week's first day. */
+  start: string;
+  count: number;
+}
+
+export interface Contributions {
+  /** Total contributions in the trailing year. */
+  total: number;
+  weeks: ContributionWeek[];
+  /** Busiest single week, used to scale the bars. */
+  busiest: number;
+}
+
+const CONTRIBUTIONS_QUERY = `
+  query($login: String!) {
+    user(login: $login) {
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
+          weeks { contributionDays { date contributionCount } }
+        }
+      }
+    }
+  }
+`;
+
+interface CalendarResponse {
+  data?: {
+    user?: {
+      contributionsCollection?: {
+        contributionCalendar?: {
+          totalContributions?: number;
+          weeks?: { contributionDays?: { date?: string; contributionCount?: number }[] }[];
+        };
+      };
+    };
+  };
+}
+
+/**
+ * The contribution calendar, GitHub's closest thing to Steam's "hours played".
+ *
+ * Only available over GraphQL, which is auth-only — so this needs
+ * `GITHUB_TOKEN` and returns null without it. Private contributions are
+ * included only when the account has "Include private contributions on my
+ * profile" enabled; with it off the total collapses to public activity alone,
+ * which for a mostly-private account is a near-flat chart.
+ *
+ * Never throws: no token, non-OK, GraphQL errors, or an unexpected shape all
+ * return null and the panel hides itself.
+ */
+export async function getContributions(username: string): Promise<Contributions | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token || !username || username === PLACEHOLDER_GITHUB_USERNAME) return null;
+
+  let body: CalendarResponse;
+  try {
+    const res = await fetch(`${API}/graphql`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "bradleytsou-site",
+      },
+      body: JSON.stringify({ query: CONTRIBUTIONS_QUERY, variables: { login: username } }),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return null;
+    body = (await res.json()) as CalendarResponse;
+  } catch {
+    return null;
+  }
+
+  const calendar = body.data?.user?.contributionsCollection?.contributionCalendar;
+  const rawWeeks = calendar?.weeks;
+  if (!Array.isArray(rawWeeks) || rawWeeks.length === 0) return null;
+
+  const weeks: ContributionWeek[] = rawWeeks.map((week) => {
+    const days = Array.isArray(week.contributionDays) ? week.contributionDays : [];
+    return {
+      start: days[0]?.date ?? "",
+      count: days.reduce((sum, day) => sum + (day.contributionCount ?? 0), 0),
+    };
+  });
+
+  const busiest = weeks.reduce((max, week) => Math.max(max, week.count), 0);
+  if (busiest === 0) return null; // a flat chart says nothing — show nothing
+
+  return {
+    total: calendar?.totalContributions ?? weeks.reduce((s, w) => s + w.count, 0),
+    weeks,
+    busiest,
+  };
+}
