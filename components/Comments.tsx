@@ -50,8 +50,11 @@ export default function Comments() {
   }, []);
 
   return (
-    <section aria-labelledby="comments-heading" className="panel bg-panel-sheen p-5 sm:p-6">
-      <h2 id="comments-heading" className="font-display text-lg font-medium tracking-tight">
+    <section aria-labelledby="comments-heading" className="panel p-5 sm:p-6">
+      <h2
+        id="comments-heading"
+        className="font-display text-lg font-medium tracking-tight"
+      >
         Comments
       </h2>
       <p className="mt-1 text-xs text-muted">

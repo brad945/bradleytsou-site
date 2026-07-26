@@ -91,9 +91,9 @@
     @apply bg-panel/70 backdrop-blur-[2px];
   }
 
-  /* Steam's showcase header: gradient bar, title left, meta right. */
+  /* Steam's showcase header: flat bar, title left, meta right. */
   .panel-bar {
-    @apply flex min-h-[36px] flex-wrap items-center justify-between gap-2 bg-panel-header px-4 py-2;
+    @apply flex min-h-[36px] flex-wrap items-center justify-between gap-2 bg-teal/60 px-4 py-2;
   }
 
   .panel-bar-title {

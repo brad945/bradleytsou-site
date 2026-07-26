@@ -34,7 +34,11 @@ export const viewport: Viewport = {
   themeColor: "#0c0d11",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
@@ -47,8 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }
     >
       <body className="min-h-screen bg-base">
-        {/* Static background layers: nebula glow, then a sparse starfield. */}
-        <div className="pointer-events-none fixed inset-0 bg-page-glow" aria-hidden />
+        {/* Starfield only. The nebula glow was a stack of radial gradients
+            and went with the rest of them. */}
         <div
           className="pointer-events-none fixed inset-0 bg-starfield opacity-70"
           style={{ backgroundSize: "760px 760px" }}

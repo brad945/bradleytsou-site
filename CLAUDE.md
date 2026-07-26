@@ -316,8 +316,14 @@ of the resemblance, and all four are easy to lose:
 `.panel-bar-title` / `.panel-bar-meta` / `.stat-label` / `.stat-value`
 are aliases onto that scale, so restyling the scale restyles the page.
 
-Composite gradients are tokens too, under `backgroundImage`: `page-glow`,
-`starfield`, `profile-hero`, `panel-header`, `avatar-frame`, `xp-fill`.
+**No gradients.** Every decorative gradient was removed — the page glow,
+the profile-hero sweep, the teal-to-purple panel bars, the panel sheen and
+the xp fill are all gone, replaced by flat fills (`hero`, `teal/60`).
+Two things under `backgroundImage` survive and neither is decoration:
+`starfield` (12 radial-gradients that each paint a single 1px dot) and
+`avatar-frame` (material shading — the reference frame is genuinely lit
+from the top-left, and flattening it makes the bevel vanish). Don't add
+new ones.
 Reusable Steam-shaped classes (`.panel`, `.panel-bar`, `.stat-row`,
 `.steam-link`, `.steam-button`) live in `app/globals.css`.
 

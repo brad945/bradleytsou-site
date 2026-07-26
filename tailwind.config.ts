@@ -30,8 +30,10 @@ const tokens = {
   plum: "#3f2350",
   /** Profile-background magenta-maroon. */
   wine: "#2b1526",
-  /** Left stop of the panel header gradient. */
+  /** Panel header bar — flat, was the left stop of a teal->purple gradient. */
   teal: "#2f5d6e",
+  /** Profile header background — flat, was a five-stop purple sweep. */
+  hero: "#33203b",
   /**
    * Avatar frame band. A NARROW range of medium greys — the reference band
    * is mid-grey throughout with only a gentle top-left-to-bottom-right fall.
@@ -97,10 +99,18 @@ const HIT_CYCLE = 51;
  */
 function tintKeyframes(palette: string[]) {
   const hits = Array.from(
-    new Set([
-      ...Array.from({ length: Math.round(HIT_CYCLE / X_HIT) }, (_, i) => (i + 1) * X_HIT),
-      ...Array.from({ length: Math.round(HIT_CYCLE / Y_HIT) }, (_, i) => (i + 1) * Y_HIT),
-    ].map((t) => Number(t.toFixed(6)))),
+    new Set(
+      [
+        ...Array.from(
+          { length: Math.round(HIT_CYCLE / X_HIT) },
+          (_, i) => (i + 1) * X_HIT,
+        ),
+        ...Array.from(
+          { length: Math.round(HIT_CYCLE / Y_HIT) },
+          (_, i) => (i + 1) * Y_HIT,
+        ),
+      ].map((t) => Number(t.toFixed(6))),
+    ),
   ).sort((a, b) => a - b);
 
   const frames: Record<string, Record<string, string>> = {
@@ -127,7 +137,11 @@ function tintKeyframes(palette: string[]) {
   return frames;
 }
 
-/** Sparse starfield, tiled. Static — it does not move or react to scroll. */
+/**
+ * Sparse starfield, tiled. Static — it does not move or react to scroll.
+ * These are radial-gradients only in the CSS sense: each one paints a single
+ * 1px dot, not a colour transition. Kept when the decorative gradients went.
+ */
 const starfield = [
   "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.40), transparent)",
   "radial-gradient(1px 1px at 27% 62%, rgba(255,255,255,0.22), transparent)",
@@ -159,25 +173,28 @@ const config: Config = {
       fontFamily: {
         // Mulish stands in for Steam's Motiva Sans: same humanist-geometric
         // proportions, and it has the light weights the big numbers need.
-        display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: [
+          "var(--font-display)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
         body: ["var(--font-body)", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+        mono: [
+          "var(--font-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
       },
       backgroundImage: {
         starfield,
-        // Ambient depth behind the whole page. Static, not animated.
-        "page-glow": `radial-gradient(70rem 50rem at 50% -15%, ${tokens.plum}cc, transparent 65%), radial-gradient(50rem 60rem at 108% 30%, ${tokens.wine}dd, transparent 60%), radial-gradient(45rem 55rem at -10% 45%, ${tokens.nebula}33, transparent 60%)`,
-        // The "equipped profile background" behind the identity header.
-        "profile-hero": `linear-gradient(102deg, #1b1420 0%, #2e1a38 32%, ${tokens.plum} 62%, #5b2a5e 80%, #2c1830 100%)`,
-        // Steam's showcase header bar: teal on the left, fading into the
-        // profile background on the right.
-        "panel-header": `linear-gradient(to right, ${tokens.teal}e6 0%, ${tokens.plum}66 55%, ${tokens.plum}00 100%)`,
-        "panel-sheen": `linear-gradient(180deg, ${tokens.panel2} 0%, ${tokens.panel} 100%)`,
-        "xp-fill": `linear-gradient(90deg, ${tokens.nebula} 0%, ${tokens.accent} 100%)`,
         /*
-         * Avatar frame: a RADIAL gradient with its light source off the
-         * top-left corner, falling away to a dark grey at the bottom-right —
-         * not a linear sweep, and not a bevel. Matches the reference.
+         * Avatar frame. The one gradient left on the site: it's material
+         * shading, not decoration — the reference frame is genuinely lit from
+         * the top-left, and flattening it makes the bevel disappear. Every
+         * decorative gradient (page glow, profile hero, panel bars, panel
+         * sheen, xp fill) was removed.
          */
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },
