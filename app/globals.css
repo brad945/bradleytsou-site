@@ -123,7 +123,7 @@
 
   /* Flat translucent button, Steam's secondary action style. */
   .steam-button {
-    @apply inline-flex items-center justify-center rounded-[2px] bg-ink/[0.12] px-3 py-1 text-[13px] text-ink/90 transition-colors hover:bg-ink/20 hover:text-ink;
+    @apply inline-flex items-center justify-center rounded-[2px] bg-ink/[0.12] px-3.5 py-[5px] text-[13px] text-ink/90 transition-colors hover:bg-ink/20 hover:text-ink;
   }
 }
 
