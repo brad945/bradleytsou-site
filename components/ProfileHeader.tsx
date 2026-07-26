@@ -80,7 +80,7 @@ export default function ProfileHeader({ stats, sourceUrl }: ProfileHeaderProps) 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. The gradient overlay is absolute inset-0, so it can't spill.
   return (
-    <header className="relative bg-profile-hero">
+    <header id="profile" className="relative bg-profile-hero">
       {/* Darkens the left half so the name always has contrast over the art. */}
       <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-r from-base/70 via-base/20 to-transparent"

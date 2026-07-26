@@ -137,6 +137,15 @@ rule below). Don't bump either without updating this file.
   drives it.
   The header must **not** get `overflow-hidden` — it would clip the alias
   dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
+- `components/SiteNav.tsx` — Steam's global header: dark full-width bar
+  (`chrome` #171a21), wordmark left, uppercase nav items beside it,
+  signed-in user + avatar right. Uppercase with tracking is wrong nearly
+  everywhere else here but it's exactly what Steam's nav does, so it
+  stays. The links are real in-page anchors rather than dead tabs — this
+  is one page, and a nav of hrefs going nowhere is the fake chrome the
+  site avoids. They target section heading ids (`#profile`,
+  `#showcase-heading`, `#activity-heading`), so renaming those breaks
+  them.
 - `components/HeaderActions.tsx` — Steam's profile action row, sat where
   Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
   Steam's other-profile set rather than Edit — pared to **Message /

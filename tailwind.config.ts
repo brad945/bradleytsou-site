@@ -46,6 +46,8 @@ const tokens = {
   frameLo: "#484c51",
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
+  /** Global nav bar — Steam's header sits darker and bluer than the page. */
+  chrome: "#171a21",
 };
 
 /**
