@@ -48,8 +48,14 @@ rule below). Don't bump either without updating this file.
 
 - `lib/profile-data.ts` — all editable content (name, badges, projects,
   GitHub username). `githubUsername` is set to `brad945`, so the live
-  data layer is on. **Still to fill in: real project links, real badge
-  dates, and the LinkedIn URL** — those are marked `TODO(bradley)`.
+  data layer is on. Projects are real now — every `blurb` is the repo's
+  own GitHub description, copied verbatim so it can be checked.
+  **Two invented values remain and they undercut the site's whole claim:**
+  `profile.codingSince` (2019-09-01) is a placeholder from the original
+  scaffold and it is what `Level` counts from, and all four `badges` dates
+  are made up. Everything else on the page is fetched. Also outstanding:
+  the LinkedIn URL, real project start dates, and the `tags` marked
+  `TODO(bradley)` as inferred rather than known.
   `PLACEHOLDER_GITHUB_USERNAME` is still exported as the "not configured"
   sentinel the empty states check against.
   `githubUsername` carries an explicit `: string` annotation — without it

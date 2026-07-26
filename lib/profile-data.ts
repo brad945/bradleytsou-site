@@ -67,7 +67,7 @@ export const profile = {
   /** Drives the level card — level = full years since this date. */
   codingSince: "2019-09-01",
   /** What you're actually working on right now. Shown in the header. */
-  currentFocus: "CodeArena — competitive programming platform",
+  currentFocus: "CodeArena — evidence-first technical interviews",
   /** Fallback avatar initials, used before/if the GitHub avatar resolves. */
   initials: "BT",
   /** Canonical contact address — drives both the Message button and Links. */
@@ -150,54 +150,68 @@ export const badges: Badge[] = [
 
 /**
  * Ordered by rarity, highest first — the showcase renders them in array order.
- * TODO(bradley): swap these for the real thing. Placeholder copy is marked.
+ *
+ * Every `blurb` here is the repo's own GitHub description, copied verbatim, so
+ * it can be checked. The placeholders that used to live here ("Project Three"
+ * etc.) are gone.
+ *
+ * TODO(bradley): `period` is the year of last activity, not a real start date —
+ * I don't have those. And the `tags` marked below are inferred from the
+ * description or the repo's primary language rather than known; correct them.
  */
 export const projects: Project[] = [
   {
     id: "codearena",
     name: "CodeArena",
     blurb:
-      "Competitive programming platform — matchmaking, live judging, ranked ladders.",
+      "Evidence-first technical interviews for AI-era hiring, with executable tasks, AI Critique, scorecards, replay, and live validation.",
     rarity: "core",
-    tags: ["Next.js", "TypeScript", "Postgres", "Docker"],
+    tags: ["Next.js", "TypeScript", "Postgres", "Docker"], // TODO(bradley): verify — GitHub reports HTML as the primary language
     href: undefined, // TODO(bradley): live URL
-    repo: undefined, // TODO(bradley): repo URL if public
-    period: "2025 — present",
+    repo: undefined, // private
+    period: "2026",
+  },
+  {
+    id: "visionotes",
+    name: "VisionNotes",
+    blurb: "Piano posture analyzer.",
+    rarity: "major",
+    tags: ["JavaScript", "Computer Vision"], // TODO(bradley): "Computer Vision" is inferred from the name
+    href: undefined,
+    repo: undefined, // private
+    period: "2026",
+  },
+  {
+    id: "guardian",
+    name: "Guardian",
+    blurb: "AI-powered fraud detection. Cal Hacks 12.0 winner.",
+    rarity: "major",
+    tags: ["Hackathon", "AI"], // TODO(bradley): real stack
+    href: undefined,
+    repo: "https://github.com/aryan-gupta123/Guardian",
+    period: "2026",
+  },
+  {
+    id: "orca",
+    name: "Orca",
+    blurb: "Hierarchical RL system that orchestrates multi-agent teams.",
+    rarity: "side",
+    tags: ["Python", "Reinforcement Learning", "Multi-agent"],
+    href: undefined,
+    repo: "https://github.com/ronoktanvir/Orca",
+    period: "2026",
   },
   {
     id: "site",
     name: "bradleytsou.com",
     blurb:
       "This site. Steam-profile structure, but every stat on it is a real number.",
-    rarity: "major",
+    rarity: "side",
     tags: ["Next.js", "Tailwind", "GitHub API"],
     href: undefined,
-    repo: siteRepoUrl,
+    // Private for now, so linking it would 404. Set to `siteRepoUrl` once public.
+    repo: undefined,
     period: "2026",
-  },
-  {
-    id: "placeholder-1",
-    name: "Project Three", // TODO(bradley): rename
-    blurb: "Placeholder — replace with a real project.",
-    rarity: "major",
-    tags: ["TODO"],
-    period: "2025",
-  },
-  {
-    id: "placeholder-2",
-    name: "Project Four", // TODO(bradley): rename
-    blurb: "Placeholder — replace with a real project.",
-    rarity: "side",
-    tags: ["TODO"],
-    period: "2024",
-  },
-  {
-    id: "placeholder-3",
-    name: "Project Five", // TODO(bradley): rename
-    blurb: "Placeholder — replace with a real project.",
-    rarity: "side",
-    tags: ["TODO"],
-    period: "2024",
   },
 ];
 
