@@ -27,9 +27,14 @@ is real, not decorative:
   Steam shows "X hours past 2 weeks". A CS2-style killfeed lived here and
   was **removed** at Bradley's request — it duplicated what the repo rows
   already said
-- Experience = the roles from LinkedIn, in Steam's "recently played" row
-  shape. **The one hand-maintained panel on the page** — LinkedIn has no
-  public API, so nothing here is fetched and nothing self-corrects
+- Experience & Projects = roles and built things in **one** panel. They
+  were two, which split the same story in half and listed UCSB and BRI
+  Youth in both. Those two are kept as roles only, since that's where the
+  org and dates live. Order is manual on both lists — Bradley wants
+  MedImpact above Crossing Hurdles despite the later start date, so
+  sorting by date would fight him. Roles are hand-maintained (LinkedIn has
+  no public API); project rows pull live commits and language via
+  `ghRepo`
 - Right sidebar = status, real GitHub counts (repos / followers /
   following / gists / member since), milestone badge tiles, a language
   breakdown, and a stars-ranked repo list in Steam's friends-list slot

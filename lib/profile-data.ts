@@ -140,7 +140,7 @@ export const roles: Role[] = [
   },
   {
     org: "UC Santa Barbara",
-    title: "Behavioral Economics Researcher Intern",
+    title: "Behavioral Economics Research Intern",
     start: "Jun 2024",
     end: "Aug 2025",
     blurb:
@@ -270,26 +270,6 @@ export const projects: Project[] = [
     href: undefined,
     repo: "https://github.com/ronoktanvir/Orca",
     period: "2026",
-  },
-  {
-    id: "ucsb-behavioral",
-    name: "Dining hall waste study",
-    kind: "Research",
-    blurb:
-      "Utility functions and market research modelling human cognition against waste-reduction strategies in UC Santa Barbara's dining halls.",
-    rarity: "side",
-    tags: ["Behavioral Economics", "Modelling"],
-    period: "2024 — 2025",
-  },
-  {
-    id: "bri-client-sites",
-    name: "BRI Youth client sites",
-    kind: "Design",
-    blurb:
-      "Website UI/UX prototyped and shipped for local startups and online services.",
-    rarity: "side",
-    tags: ["UI/UX", "Frontend"],
-    period: "2023 — 2024",
   },
   {
     id: "site",

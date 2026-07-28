@@ -1,7 +1,7 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
 import Experience from "@/components/Experience";
-import ItemShowcase, { FavoriteProject } from "@/components/ItemShowcase";
+import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
@@ -58,9 +58,8 @@ export default async function Home() {
         <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
           <div className="flex min-w-0 flex-col gap-4">
             <FavoriteProject repo={favorite} />
-            <Experience />
+            <Experience featured={featured} />
             <ActivityFeed snapshot={snapshot} featured={featured} />
-            <ItemShowcase featured={featured} />
             {/* <Comments /> */}
           </div>
 
