@@ -1,5 +1,4 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
-import ContributionSummary from "@/components/ContributionSummary";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
 import { linkedinFollowers, profile, socials } from "@/lib/profile-data";
@@ -110,9 +109,35 @@ export default function Sidebar({
           )}
           <Stat label="Member Since" value={stats?.memberSince ?? "—"} />
         </div>
-      </section>
 
-      {contributions && <ContributionSummary contributions={contributions} />}
+        {/*
+          Contributions used to be its own panel. It's the same subject as the
+          status above it — how active he is — so it reads better as a second
+          group in one box than as a second box.
+        */}
+        {contributions && (
+          <div className="mt-7">
+            <div className="stat-row">
+              <span className="stat-label">Contributions</span>
+              <span className="stat-value">
+                {contributions.total.toLocaleString()}
+              </span>
+            </div>
+            <p className="t-meta -mt-1">Past year</p>
+
+            <div className="mt-3">
+              <Stat label="Pull Requests" value={contributions.pullRequests} />
+              <Stat label="Merged" value={contributions.pullRequestsMerged} />
+              <Stat label="Reviews" value={contributions.reviews} />
+              <Stat label="Issues" value={contributions.issues} />
+              <Stat
+                label="Repos Created"
+                value={contributions.repositoriesCreated}
+              />
+            </div>
+          </div>
+        )}
+      </section>
 
       {/*
         The one block on this page fed by Bradley's own product rather than
