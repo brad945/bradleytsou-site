@@ -6,7 +6,9 @@ import { projects, roles, type Project, type Role } from "@/lib/profile-data";
  *
  * They were two panels and split the same story in half — where he worked
  * versus what he built — with UCSB and BRI Youth appearing in both. Merged,
- * with those two kept only as roles since that's where the org and dates live.
+ * and the duplicated entries were folded together rather than dropped: what
+ * the standalone project rows carried (the tags, the framing) now lives on the
+ * role, so one entry holds everything known about it.
  *
  * Order is manual on both lists, not sorted: Bradley wants MedImpact above
  * Crossing Hurdles even though it started a month earlier, so sorting by date
@@ -72,6 +74,7 @@ function roleRow(role: Role) {
       href={role.url}
       subtitle={[role.title, role.location].filter(Boolean).join(" · ")}
       blurb={role.blurb}
+      tags={role.tags}
       meta={`${role.start} — ${role.end ?? "Present"}`}
     />
   );

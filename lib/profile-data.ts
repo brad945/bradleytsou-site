@@ -50,6 +50,12 @@ export interface Role {
   end?: string;
   location?: string;
   blurb?: string;
+  /**
+   * What the work involved. Folded in from the standalone project entries that
+   * used to sit alongside these — an entry should carry everything known about
+   * it, not have half its detail in a second list.
+   */
+  tags?: string[];
   url?: string;
 }
 
@@ -112,6 +118,7 @@ export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 export const roles: Role[] = [
   {
     org: "MedImpact Healthcare Systems",
+    tags: ["Applied AI", "Cybersecurity", "IT Operations"],
     title: "Applied AI & Software Engineer Intern",
     start: "May 2026",
     location: "San Diego, CA",
@@ -119,6 +126,7 @@ export const roles: Role[] = [
   },
   {
     org: "Crossing Hurdles",
+    tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
     title: "Language and Audio Engineer",
     start: "Jun 2026",
     blurb:
@@ -126,6 +134,7 @@ export const roles: Role[] = [
   },
   {
     org: "CodeArena",
+    tags: ["Forward-Deployed", "Software Engineering"],
     title: "Founding Engineer",
     start: "Jan 2026",
     location: "San Francisco, CA",
@@ -134,20 +143,23 @@ export const roles: Role[] = [
   },
   {
     org: "Web Development at Berkeley",
+    tags: ["Fullstack", "Web"],
     title: "Industry Developer",
     start: "Jan 2026",
     blurb: "Building websites and fullstack apps.",
   },
   {
     org: "UC Santa Barbara",
+    tags: ["Behavioral Economics", "Modelling", "Qualitative Research"],
     title: "Behavioral Economics Research Intern",
     start: "Jun 2024",
     end: "Aug 2025",
     blurb:
-      "Devised utility functions and conducted market research to model human cognition and economic theories for waste-reduction strategies at UCSB's dining halls.",
+      "Dining hall waste study: devised utility functions and conducted market research to model human cognition and economic theories against waste-reduction strategies at UCSB's dining halls.",
   },
   {
     org: "The Bay Club Company",
+    tags: ["Lifeguarding", "First Response"],
     title: "Lifeguard",
     start: "Jun 2021",
     end: "Oct 2023",
@@ -157,11 +169,12 @@ export const roles: Role[] = [
   },
   {
     org: "BRI Youth",
+    tags: ["UI/UX", "Frontend", "Tutoring", "Music"],
     title: "Web UI Developer & Lead Tutor",
     start: "Mar 2020",
     end: "Dec 2024",
     blurb:
-      "Prototyped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
+      "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
   },
 ];
 
