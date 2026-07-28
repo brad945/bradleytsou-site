@@ -197,7 +197,7 @@ export const roles: Role[] = [
  * The repo the "Favorite Project" panel features. Its `id` in `projects`
  * below must match the repo name, lowercased.
  */
-export const FAVORITE_REPO = "ronoktanvir/Orca";
+export const FAVORITE_REPO = "sennaicodes/codearenamvp";
 
 export const featuredRepos: string[] = [
   "sennaicodes/codearenamvp",

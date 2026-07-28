@@ -17,9 +17,11 @@ import { projects } from "@/lib/profile-data";
  * never empties. Tags stay hand-curated — the API has no equivalent.
  */
 export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
-  // Match on the repo name so changing FAVORITE_REPO is a one-line edit.
+  // Match on ghRepo, not the repo name: names diverge (CodeArena lives in
+  // `codearenamvp`), and a name match silently fell through to whichever entry
+  // happened to be rarity "core".
   const entry =
-    (repo && projects.find((p) => p.id === repo.name.toLowerCase())) ??
+    (repo && projects.find((p) => p.ghRepo === repo.nameWithOwner)) ??
     projects.find((p) => p.rarity === "core") ??
     projects[0];
   if (!entry && !repo) return null;
