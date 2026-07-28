@@ -1,4 +1,6 @@
 import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
+import ContributionSummary from "@/components/ContributionSummary";
+import type { Contributions } from "@/lib/github";
 import type { FeaturedRepo, GitHubSnapshot } from "@/lib/github";
 import { badges, monogram, profile, socials } from "@/lib/profile-data";
 
@@ -8,6 +10,8 @@ interface SidebarProps {
   codearena: CodeArenaStats | null;
   /** Hand-picked repos. Empty without a token — falls back to the starred list. */
   featured: FeaturedRepo[];
+  /** Null without a token — GraphQL is auth-only. */
+  contributions: Contributions | null;
 }
 
 /**
@@ -53,6 +57,7 @@ export default function Sidebar({
   snapshot,
   codearena,
   featured,
+  contributions,
 }: SidebarProps) {
   const { stats, topRepos, languages, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
@@ -106,6 +111,8 @@ export default function Sidebar({
           <p className="t-body leading-snug">{profile.currentFocus}</p>
         </div>
       </section>
+
+      {contributions && <ContributionSummary contributions={contributions} />}
 
       {/*
         The one block on this page fed by Bradley's own product rather than

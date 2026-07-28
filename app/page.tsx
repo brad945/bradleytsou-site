@@ -1,6 +1,5 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
-import ContributionSummary from "@/components/ContributionSummary";
 import Experience from "@/components/Experience";
 import ItemShowcase, { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
@@ -58,9 +57,6 @@ export default async function Home() {
             <FavoriteProject repo={favorite} />
             <Experience />
             <ActivityFeed snapshot={snapshot} featured={featured} />
-            {contributions && (
-              <ContributionSummary contributions={contributions} />
-            )}
             <ItemShowcase />
             {/* <Comments /> */}
           </div>
@@ -69,6 +65,7 @@ export default async function Home() {
             snapshot={snapshot}
             codearena={codearena}
             featured={featured}
+            contributions={contributions}
           />
         </div>
 

@@ -43,14 +43,18 @@ function RoleRow({ role }: { role: Role }) {
               </span>
             )}
           </span>
-          <div className="t-meta text-right leading-tight">
-            <p>{period}</p>
-            {role.location && <p>{role.location}</p>}
-          </div>
+          {/*
+            One line, always. Location used to sit on a second line here, so
+            cards with one wrapped differently from cards without — most
+            visibly on MedImpact, whose long org name pushed the block around.
+            It lives with the title instead.
+          */}
+          <p className="t-meta shrink-0 leading-tight">{period}</p>
         </div>
 
         <p className="mt-0.5 text-[15px] leading-snug text-copy">
           {role.title}
+          {role.location && <span className="t-meta"> · {role.location}</span>}
         </p>
         {role.blurb && (
           <p className="t-meta mt-1.5 leading-relaxed">{role.blurb}</p>

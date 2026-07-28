@@ -5,6 +5,10 @@
 @layer base {
   html {
     color-scheme: dark;
+    /* Nav links are in-page anchors; ease to the section instead of jumping.
+       scroll-padding clears the 48px nav so a heading isn't left under it. */
+    scroll-behavior: smooth;
+    scroll-padding-top: 64px;
   }
 
   body {
@@ -128,6 +132,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

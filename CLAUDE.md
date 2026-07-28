@@ -212,8 +212,11 @@ rule below). Don't bump either without updating this file.
   stays. The links are real in-page anchors rather than dead tabs — this
   is one page, and a nav of hrefs going nowhere is the fake chrome the
   site avoids. They target section heading ids (`#profile`,
-  `#showcase-heading`, `#activity-heading`), so renaming those breaks
-  them.
+  `#experience-heading`, `#activity-heading`, `#showcase-heading`), so
+  renaming those breaks them. `scroll-behavior: smooth` plus a 64px
+  `scroll-padding-top` on `html` eases to the section and keeps the
+  heading clear of the nav; both are disabled under
+  `prefers-reduced-motion`.
 - `components/HeaderActions.tsx` — Steam's profile action row, sat where
   Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
   Steam's other-profile set rather than Edit — pared to **Message /
@@ -284,8 +287,9 @@ rule below). Don't bump either without updating this file.
 - `app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split (616 / 16 / 308 at `max-w-profile`,
   Steam's column widths) that stacks below `lg`. Main column order:
-  **Favorite Project, Experience, Recent Activity, Contributions, Item
-  Showcase** — Experience sits second because this is a career site. Comments import is commented out on purpose.
+  **Favorite Project, Experience, Recent Activity, Item Showcase**.
+  Contributions moved to the sidebar — as five short counts it never
+  needed the main column's width. Comments import is commented out on purpose.
 - `app/layout.tsx` — fonts (next/font), metadata, and the two fixed
   background layers (nebula glow, then a tiled starfield).
 

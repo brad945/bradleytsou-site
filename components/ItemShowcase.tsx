@@ -82,25 +82,20 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
         </div>
 
         {/*
-          Steam's oversized "Hours played" stat. Here it's commits contributed —
-          "of N" so a shared repo can't read as sole authorship.
+          Steam's "Hours played" line. It used to be a 48px number in its own
+          padded box, which was a lot of furniture around one figure — it now
+          sits inline with the rest of the row.
         */}
-        <div className="mt-4 bg-base/40 p-4">
-          {repo ? (
-            <>
-              <p className="t-stat-lg">{repo.myCommits.toLocaleString()}</p>
-              <p className="t-label mt-1.5">Commits contributed</p>
-            </>
-          ) : (
-            <>
-              <p className="t-stat-lg text-[34px]">{entry?.period}</p>
-              <p className="t-label mt-1.5">In development</p>
-            </>
-          )}
-        </div>
+        {repo && (
+          <p className="t-meta mt-4 border-t border-line/60 pt-3">
+            {repo.myCommits.toLocaleString()}{" "}
+            {repo.myCommits === 1 ? "commit" : "commits"} contributed
+            {repo.language ? ` · ${repo.language}` : ""}
+          </p>
+        )}
 
         {repo && !repo.isPrivate && (
-          <div className="mt-3 flex justify-end border-t border-line/60 pt-3">
+          <div className="mt-2 flex justify-end">
             <a
               href={repo.url}
               target="_blank"

@@ -15,8 +15,9 @@ import { profile } from "@/lib/profile-data";
  */
 const LINKS = [
   { label: "Profile", href: "#profile" },
-  { label: "Showcase", href: "#showcase-heading" },
+  { label: "Experience", href: "#experience-heading" },
   { label: "Activity", href: "#activity-heading" },
+  { label: "Projects", href: "#showcase-heading" },
 ];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {

@@ -1,16 +1,18 @@
 import type { Contributions } from "@/lib/github";
 
 /**
- * Contributions as a set of counts rather than a chart.
+ * Contributions as counts, in the sidebar.
  *
- * The bar chart this replaced showed *when* the work happened but never what
- * it was. These numbers answer the second question, which is the one a reader
- * actually has.
+ * A weekly bar chart lived here first; it showed *when* the work happened but
+ * never what it was, which is the question a reader actually has.
  *
  * The type breakdown comes from author-scoped search, not from
  * `contributionsCollection.total*Contributions` — those count public
  * contributions only, so for a mostly-private account they report
  * "0 pull requests" while the person has opened plenty.
+ *
+ * Labels are short on purpose: this sits in the 308px column alongside
+ * "Public Repos" and "Followers", and long ones wrap.
  */
 export default function ContributionSummary({
   contributions,
@@ -26,46 +28,34 @@ export default function ContributionSummary({
     repositoriesCreated,
   } = contributions;
 
-  const rows: { label: string; value: string }[] = [
-    {
-      label: "Pull requests opened",
-      value:
-        pullRequests > 0 && pullRequestsMerged === pullRequests
-          ? `${pullRequests} — all merged`
-          : pullRequests > 0
-            ? `${pullRequests} — ${pullRequestsMerged} merged`
-            : "0",
-    },
-    { label: "Pull requests reviewed", value: String(reviews) },
-    { label: "Issues opened", value: String(issues) },
-    { label: "Repositories created", value: String(repositoriesCreated) },
+  const rows: { label: string; value: number }[] = [
+    { label: "Pull Requests", value: pullRequests },
+    { label: "Merged", value: pullRequestsMerged },
+    { label: "Reviews", value: reviews },
+    { label: "Issues", value: issues },
+    { label: "Repos Created", value: repositoriesCreated },
   ];
 
   return (
-    <section aria-labelledby="contributions-heading" className="panel">
-      <div className="panel-bar">
-        <h2 id="contributions-heading" className="panel-bar-title">
+    <section
+      aria-labelledby="contributions-heading"
+      className="panel px-5 py-5"
+    >
+      <div className="stat-row">
+        <span id="contributions-heading" className="stat-label">
           Contributions
-        </h2>
-        <span className="panel-bar-meta">
-          {total.toLocaleString()} in the last year
         </span>
+        <span className="stat-value">{total.toLocaleString()}</span>
       </div>
+      <p className="t-meta -mt-1">Past year</p>
 
-      <div className="p-5">
-        <ul className="flex flex-col divide-y divide-line/50">
-          {rows.map((row) => (
-            <li
-              key={row.label}
-              className="flex items-baseline justify-between gap-3 py-2.5"
-            >
-              <span className="t-label">{row.label}</span>
-              <span className="text-[17px] font-light leading-none text-ink">
-                {row.value}
-              </span>
-            </li>
-          ))}
-        </ul>
+      <div className="mt-4">
+        {rows.map((row) => (
+          <div key={row.label} className="stat-row">
+            <span className="stat-label">{row.label}</span>
+            <span className="stat-value">{row.value.toLocaleString()}</span>
+          </div>
+        ))}
       </div>
     </section>
   );
