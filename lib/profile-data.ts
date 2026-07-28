@@ -10,20 +10,15 @@
 
 export type Rarity = "core" | "major" | "side";
 
-export interface Badge {
-  /** Short name shown on the badge chip. */
-  name: string;
-  /** What the badge is actually for — hover title. Must map to a real milestone. */
-  description: string;
-  /** ISO date the milestone happened. */
-  earned: string;
-  /** Single glyph. Kept as text so there are no image deps. */
-  glyph: string;
-}
-
 export interface Project {
   id: string;
   name: string;
+  /**
+   * What kind of thing this is. The showcase is a catalog of everything
+   * Bradley has built, not just repos, so entries with no GitHub presence
+   * (research, design work) are first-class here.
+   */
+  kind: "Software" | "Research" | "Design";
   /** One line. What it is, not how impressive it is. */
   blurb: string;
   /** How central this is to Bradley's work — drives the left-border colour. */
@@ -34,6 +29,13 @@ export interface Project {
   href?: string;
   /** Source. Omit if private. */
   repo?: string;
+  /**
+   * "owner/name" of the backing GitHub repo, when there is one. Used to attach
+   * live commit counts and language in the showcase. Explicit rather than
+   * matched on `id`, because repo names and project names diverge — CodeArena
+   * lives in `codearenamvp`.
+   */
+  ghRepo?: string;
   /** e.g. "2026 — present". Free text. */
   period: string;
 }
@@ -198,37 +200,6 @@ export const socials: SocialLink[] = [
 ];
 
 /**
- * TODO(bradley): every badge below should map to something that actually
- * happened. Delete the ones that don't.
- */
-export const badges: Badge[] = [
-  {
-    name: "First Commit",
-    description: "First line of code pushed to a public repo",
-    earned: "2019-09-01",
-    glyph: "◆",
-  },
-  {
-    name: "Shipped",
-    description: "First project deployed and used by someone other than me",
-    earned: "2023-06-01",
-    glyph: "▲",
-  },
-  {
-    name: "Founder",
-    description: "Started CodeArena",
-    earned: "2025-01-01",
-    glyph: "★",
-  },
-  {
-    name: "Open Source",
-    description: "First pull request merged into someone else's project",
-    earned: "2024-03-01",
-    glyph: "⟡",
-  },
-];
-
-/**
  * Ordered by rarity, highest first — the showcase renders them in array order.
  *
  * Every `blurb` here is the repo's own GitHub description, copied verbatim, so
@@ -242,7 +213,9 @@ export const badges: Badge[] = [
 export const projects: Project[] = [
   {
     id: "codearena",
+    ghRepo: "sennaicodes/codearenamvp",
     name: "CodeArena",
+    kind: "Software",
     blurb:
       "Evidence-first technical interviews for AI-era hiring, with executable tasks, AI Critique, scorecards, replay, and live validation.",
     rarity: "core",
@@ -253,7 +226,9 @@ export const projects: Project[] = [
   },
   {
     id: "visionotes",
+    ghRepo: "brad945/visionotes",
     name: "VisionNotes",
+    kind: "Software",
     blurb: "Piano posture analyzer.",
     rarity: "major",
     tags: ["JavaScript", "Computer Vision"], // TODO(bradley): "Computer Vision" is inferred from the name
@@ -263,7 +238,9 @@ export const projects: Project[] = [
   },
   {
     id: "guardian",
+    ghRepo: "aryan-gupta123/Guardian",
     name: "Guardian",
+    kind: "Software",
     blurb: "AI-powered fraud detection. Cal Hacks 12.0 winner.",
     rarity: "major",
     tags: ["Hackathon", "AI"], // TODO(bradley): real stack
@@ -273,7 +250,9 @@ export const projects: Project[] = [
   },
   {
     id: "orca",
+    ghRepo: "ronoktanvir/Orca",
     name: "Orca",
+    kind: "Software",
     blurb: "Hierarchical RL system that orchestrates multi-agent teams.",
     rarity: "side",
     tags: ["Python", "Reinforcement Learning", "Multi-agent"],
@@ -284,6 +263,7 @@ export const projects: Project[] = [
   {
     id: "site",
     name: "bradleytsou.com",
+    kind: "Software",
     blurb:
       "This site. Steam-profile structure, but every stat on it is a real number.",
     rarity: "side",
@@ -295,7 +275,7 @@ export const projects: Project[] = [
   },
 ];
 
-/** Human labels for each rarity tier, shown in the showcase legend. */
+/** Human labels per tier. Kept for ordering; no longer rendered as a legend. */
 export const rarityLabels: Record<Rarity, string> = {
   core: "Core",
   major: "Major",

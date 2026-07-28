@@ -60,7 +60,7 @@ export default async function Home() {
             <FavoriteProject repo={favorite} />
             <Experience />
             <ActivityFeed snapshot={snapshot} featured={featured} />
-            <ItemShowcase />
+            <ItemShowcase featured={featured} />
             {/* <Comments /> */}
           </div>
 

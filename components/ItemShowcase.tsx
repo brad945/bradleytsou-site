@@ -1,19 +1,5 @@
 import type { FeaturedRepo } from "@/lib/github";
-import {
-  monogram,
-  projects,
-  rarityLabels,
-  rarityStyles,
-  type Project,
-  type Rarity,
-} from "@/lib/profile-data";
-
-const TIER_ORDER: Rarity[] = ["core", "major", "side"];
-
-function tileTitle(project: Project): string {
-  const tags = project.tags.length ? ` · ${project.tags.join(", ")}` : "";
-  return `${project.name} — ${project.blurb}${tags}`;
-}
+import { projects, type Project } from "@/lib/profile-data";
 
 /**
  * Steam's "Favorite Game" slot.
@@ -97,124 +83,97 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
   );
 }
 
-function Tile({ project }: { project: Project }) {
-  const style = rarityStyles[project.rarity];
-  const link = project.href ?? project.repo;
-
-  const inner = (
-    <>
-      <span className={`text-[22px] font-light leading-none ${style.text}`}>
-        {monogram(project.name)}
-      </span>
-      <span className="mt-1.5 line-clamp-2 px-1 text-center text-[11px] leading-tight text-muted">
-        {project.name}
-      </span>
-    </>
-  );
-
-  const shell =
-    "flex aspect-square w-full flex-col items-center justify-center border bg-base/55 transition-colors";
-
-  if (!link) {
-    return (
-      <li title={tileTitle(project)} className={`${shell} ${style.tileBorder}`}>
-        {inner}
-      </li>
-    );
-  }
+/**
+ * The catalog: everything Bradley has built, in one dense list.
+ *
+ * This replaced a grid of square tiles carrying two-letter monograms, a rarity
+ * legend and an "N Projects Shown" counter. All three were furniture — Steam's
+ * grid works because item art is recognisable, and "CA" isn't; the counter
+ * counted five things you could already see; and rarity explained a subjective
+ * axis nobody asked about.
+ *
+ * Rows carry live data where the entry maps to a real repo — commits and
+ * language come from `featured`, so they can't go stale. Entries with no
+ * GitHub presence (research, design) sit alongside them as equals; that's the
+ * point of a catalog rather than a repo list.
+ */
+function CatalogRow({
+  project,
+  repo,
+}: {
+  project: Project;
+  repo?: FeaturedRepo;
+}) {
+  const link =
+    project.href ??
+    project.repo ??
+    (repo && !repo.isPrivate ? repo.url : undefined);
+  const language = repo?.language ?? undefined;
+  const meta = [project.period, language].filter(Boolean).join(" · ");
 
   return (
-    <li title={tileTitle(project)}>
-      <a
-        href={link}
-        target="_blank"
-        rel="noreferrer"
-        className={`${shell} ${style.tileBorder} ${style.tint} focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent`}
-      >
-        {inner}
-      </a>
+    <li className="flex flex-col gap-x-6 gap-y-1 border-t border-line/50 py-3 sm:flex-row">
+      <div className="flex min-w-0 shrink-0 items-baseline gap-2 sm:w-[190px]">
+        {link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            className="steam-link truncate text-[15px]"
+          >
+            {project.name}
+          </a>
+        ) : (
+          <span className="truncate text-[15px] text-copy">{project.name}</span>
+        )}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="t-meta leading-snug">{project.blurb}</p>
+        {project.tags.length > 0 && (
+          <p className="mt-1 font-mono text-[10px] text-muted/60">
+            {project.tags.join(" · ")}
+          </p>
+        )}
+      </div>
+
+      <div className="t-meta shrink-0 leading-snug sm:w-[132px] sm:text-right">
+        <p>{meta}</p>
+        <p className="text-muted/60">
+          {repo
+            ? `${repo.myCommits.toLocaleString()} ${repo.myCommits === 1 ? "commit" : "commits"}`
+            : project.kind}
+        </p>
+      </div>
     </li>
   );
 }
 
-export default function ItemShowcase() {
+export default function ItemShowcase({
+  featured,
+}: {
+  featured: FeaturedRepo[];
+}) {
+  const byRepo = new Map(featured.map((r) => [r.nameWithOwner, r]));
+
   return (
     <section aria-labelledby="showcase-heading" className="panel">
       <div className="panel-bar">
         <h2 id="showcase-heading" className="panel-bar-title">
           Item Showcase
         </h2>
-        <ul className="flex flex-wrap items-center gap-3">
-          {TIER_ORDER.map((tier) => (
-            <li key={tier} className="flex items-center gap-1.5">
-              <span
-                className={`h-2 w-2 ${rarityStyles[tier].dot}`}
-                aria-hidden
-              />
-              <span className="t-meta">{rarityLabels[tier]}</span>
-            </li>
-          ))}
-        </ul>
+        <span className="panel-bar-meta">{projects.length} built</span>
       </div>
 
-      <div className="p-5">
-        <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+      <div className="px-5 pb-5 pt-1">
+        <ul className="flex flex-col">
           {projects.map((project) => (
-            <Tile key={project.id} project={project} />
+            <CatalogRow
+              key={project.id}
+              project={project}
+              repo={project.ghRepo ? byRepo.get(project.ghRepo) : undefined}
+            />
           ))}
-
-          {/* Steam puts the "N Items Owned" counter in the grid's leftover space. */}
-          <li className="col-span-2 flex flex-col justify-center px-2 lg:col-span-3">
-            <span className="t-stat-lg">{projects.length}</span>
-            <span className="t-label mt-1">Projects Shown</span>
-          </li>
-        </ul>
-
-        <p className="t-meta mt-3">
-          Rarity is how central the project is to my work — not how shiny it is.
-        </p>
-
-        {/*
-          A monogram tile isn't self-describing the way Steam's item art is, and
-          `title` never fires on touch. The detail list is always rendered.
-        */}
-        <ul className="mt-3 flex flex-col divide-y divide-line/50 border-t border-line/50">
-          {projects.map((project) => {
-            const style = rarityStyles[project.rarity];
-            const link = project.href ?? project.repo;
-
-            return (
-              <li key={project.id} className="py-2">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span
-                    className={`h-2 w-2 shrink-0 ${style.dot}`}
-                    aria-hidden
-                  />
-                  {link ? (
-                    <a
-                      href={link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="steam-link text-[13px]"
-                    >
-                      {project.name}
-                    </a>
-                  ) : (
-                    <span className="text-[13px] text-copy">
-                      {project.name}
-                    </span>
-                  )}
-                  <span className="t-meta">{project.period}</span>
-                  <span className="ml-auto font-mono text-[10px] text-muted/60">
-                    {project.tags.join(" · ")}
-                  </span>
-                </div>
-                <p className="t-meta mt-0.5 pl-4 leading-snug">
-                  {project.blurb}
-                </p>
-              </li>
-            );
-          })}
         </ul>
       </div>
     </section>
