@@ -758,3 +758,63 @@ export async function getLanguages(limit = 8): Promise<LanguageCount[]> {
     return [];
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Last activity
+ * ------------------------------------------------------------------ */
+
+/**
+ * Timestamp of the most recent push across every repo the token can see.
+ *
+ * Drives the sidebar's online/offline state, which was previously a hardcoded
+ * "Currently Online" that rendered green whether or not anything was true.
+ *
+ * Honest about what it measures: this is when Bradley last *pushed*, not when
+ * he was last working. He can code for hours without pushing, so the label
+ * built on it says "last commit", not "last seen". Swapping in a real
+ * editor-time source (WakaTime) later only needs to change this function.
+ *
+ * Needs `GITHUB_TOKEN` to see private repos; returns null without one and the
+ * status falls back to a plain heading.
+ */
+export async function getLastPush(): Promise<string | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return null;
+
+  const query = `
+    query {
+      viewer {
+        repositories(first: 1, affiliations: [OWNER, COLLABORATOR], isFork: false,
+                     orderBy: {field: PUSHED_AT, direction: DESC}) {
+          nodes { pushedAt }
+        }
+      }
+    }
+  `;
+
+  try {
+    const res = await fetch(`${API}/graphql`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "bradleytsou-site",
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return null;
+
+    const body = (await res.json()) as {
+      data?: {
+        viewer?: { repositories?: { nodes?: { pushedAt?: string }[] } };
+      };
+    };
+    const pushedAt = body.data?.viewer?.repositories?.nodes?.[0]?.pushedAt;
+    return typeof pushedAt === "string" && Number.isFinite(Date.parse(pushedAt))
+      ? pushedAt
+      : null;
+  } catch {
+    return null;
+  }
+}

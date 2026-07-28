@@ -15,6 +15,7 @@ import {
   getGitHubSnapshot,
   getFeaturedRepos,
   getLanguages,
+  getLastPush,
   REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
@@ -29,13 +30,14 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, deveval, contributions, featured, languages] =
+  const [snapshot, deveval, contributions, featured, languages, lastPush] =
     await Promise.all([
       getGitHubSnapshot(githubUsername),
       getDevEvalStats(),
       getContributions(githubUsername),
       getFeaturedRepos(featuredRepos),
       getLanguages(),
+      getLastPush(),
     ]);
 
   const favorite =
@@ -68,6 +70,7 @@ export default async function Home() {
             deveval={deveval}
             contributions={contributions}
             languages={languages}
+            lastPush={lastPush}
           />
         </div>
 

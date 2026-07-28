@@ -12,6 +12,8 @@ interface SidebarProps {
   contributions: Contributions | null;
   /** All-repo breakdown. Empty without a token — falls back to public-only. */
   languages: LanguageCount[];
+  /** ISO timestamp of the most recent push, or null without a token. */
+  lastPush: string | null;
 }
 
 /** A grey label with a large light number, Steam's sidebar stat row. */
@@ -32,13 +34,31 @@ function Stat({
   );
 }
 
+/**
+ * Steam's three presence states, mapped onto push recency. The thresholds are
+ * a judgement call, but every one of them is derived — nothing here asserts
+ * presence the data can't support.
+ */
+function pushStatus(lastPush: string | null, now: number) {
+  const then = lastPush ? Date.parse(lastPush) : NaN;
+  if (!Number.isFinite(then)) {
+    return { label: "Currently Offline", tone: "text-muted" };
+  }
+  const hours = (now - then) / 36e5;
+  if (hours < 6) return { label: "Currently Online", tone: "text-live" };
+  if (hours < 72) return { label: "Recently Active", tone: "text-accent" };
+  return { label: "Currently Offline", tone: "text-muted" };
+}
+
 export default function Sidebar({
   snapshot,
   deveval,
   contributions,
   languages,
+  lastPush,
 }: SidebarProps) {
   const { stats } = snapshot;
+  const status = pushStatus(lastPush, Date.parse(snapshot.fetchedAt));
   // The token-backed breakdown sees private repos and every language per repo;
   // the snapshot's is public-only primaryLanguage and reads far too narrow.
   const langs = languages.length > 0 ? languages : snapshot.languages;
@@ -46,10 +66,12 @@ export default function Sidebar({
   return (
     <div className="flex flex-col gap-4">
       <section className="panel px-5 py-5">
-        {/* Heading only — the focus line lives in the page header, and
-            repeating it here was the redundancy this block already shed. */}
-        <h2 className="text-[24px] font-light leading-tight text-live">
-          Currently {profile.status.label}
+        {/*
+          Derived from the last push, not hardcoded. This used to read
+          "Currently Online" in green permanently, regardless of anything.
+        */}
+        <h2 className={`text-[24px] font-light leading-tight ${status.tone}`}>
+          {status.label}
         </h2>
         {/*
           Zero-value rows are hidden rather than listed. "Following 0 / Gists 0"
