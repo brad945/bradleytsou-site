@@ -27,6 +27,9 @@ is real, not decorative:
   Steam shows "X hours past 2 weeks". A CS2-style killfeed lived here and
   was **removed** at Bradley's request — it duplicated what the repo rows
   already said
+- Experience = the roles from LinkedIn, in Steam's "recently played" row
+  shape. **The one hand-maintained panel on the page** — LinkedIn has no
+  public API, so nothing here is fetched and nothing self-corrects
 - Right sidebar = status, real GitHub counts (repos / followers /
   following / gists / member since), milestone badge tiles, a language
   breakdown, and a stars-ranked repo list in Steam's friends-list slot
@@ -95,6 +98,10 @@ rule below). Don't bump either without updating this file.
   **not linked** — a visitor gets a 404. Needs `GITHUB_TOKEN`; without one
   both blocks fall back to the public/starred lists rather than emptying.
   Don't add coursework repos to `featuredRepos`.
+- `components/Experience.tsx` — work history in the "recently played" row
+  shape, fed by `roles` in `profile-data.ts`. Transcribed verbatim from
+  Bradley's LinkedIn; don't embellish it, and remember it's the only panel
+  that can go stale silently since there's nothing to fetch.
 - `components/ContributionSummary.tsx` — contributions as counts, not a
   chart. A weekly bar chart lived here first; it showed *when* the work
   happened but never what it was, which is the question a reader actually
@@ -276,9 +283,9 @@ rule below). Don't bump either without updating this file.
   giscus.app once Discussions are enabled on the repo.
 - `app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split (616 / 16 / 308 at `max-w-profile`,
-  Steam's column widths) that stacks below `lg`. Main column order is
-  fixed by Bradley: **Favorite Project, Recent Activity, Contributions,
-  Item Showcase**. Comments import is commented out on purpose.
+  Steam's column widths) that stacks below `lg`. Main column order:
+  **Favorite Project, Experience, Recent Activity, Contributions, Item
+  Showcase** — Experience sits second because this is a career site. Comments import is commented out on purpose.
 - `app/layout.tsx` — fonts (next/font), metadata, and the two fixed
   background layers (nebula glow, then a tiled starfield).
 

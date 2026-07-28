@@ -38,6 +38,21 @@ export interface Project {
   period: string;
 }
 
+/** One role in the Experience panel. */
+export interface Role {
+  org: string;
+  title: string;
+  /** "May 2026" — free text, shown as given. */
+  start: string;
+  /** Omit for a role you're still in; renders as "Present". */
+  end?: string;
+  /** Internship / Contract / Part-time / Full-time. Omit if not worth saying. */
+  kind?: string;
+  location?: string;
+  blurb?: string;
+  url?: string;
+}
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -85,6 +100,97 @@ export const profile = {
  * to `[]` and the dropdown says "No previous aliases".
  */
 export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
+
+/**
+ * Experience, newest first. Hand-maintained — LinkedIn has no public API, so
+ * there's nothing to fetch here and nothing that can go stale on its own.
+ *
+ * Transcribed from Bradley's LinkedIn verbatim; don't embellish it.
+ */
+export const roles: Role[] = [
+  {
+    org: "Crossing Hurdles",
+    title: "Language and Audio Engineer",
+    kind: "Contract",
+    start: "Jun 2026",
+    blurb:
+      "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
+  },
+  {
+    org: "MedImpact Healthcare Systems",
+    title: "Applied AI & Software Engineer Intern",
+    kind: "Internship",
+    start: "May 2026",
+    location: "San Diego, CA",
+    blurb: "Portal cybersecurity systems; Verdegard IT operations.",
+  },
+  {
+    org: "CodeArena",
+    title: "Founding Engineer",
+    kind: "Part-time",
+    start: "Jan 2026",
+    location: "San Francisco, CA",
+    blurb: "Forward-deployed and software engineering.",
+    url: "https://codearena.co/",
+  },
+  {
+    org: "Dana Street Consulting",
+    title: "Software Engineer",
+    kind: "Part-time",
+    start: "Jan 2026",
+  },
+  {
+    org: "Web Development at Berkeley",
+    title: "Industry Developer",
+    start: "Jan 2026",
+    blurb: "Building websites and fullstack apps.",
+  },
+  {
+    org: "UC Santa Barbara",
+    title: "Behavioral Economics Researcher Intern",
+    kind: "Full-time",
+    start: "Jun 2024",
+    end: "Aug 2025",
+    blurb:
+      "Devised utility functions and conducted market research to model human cognition and economic theories for waste-reduction strategies at UCSB's dining halls.",
+  },
+  {
+    org: "BRI Youth",
+    title: "Web User Interface Developer",
+    kind: "Part-time",
+    start: "Aug 2023",
+    end: "Dec 2024",
+    blurb: "Prototyped website UI/UX for local startups and online services.",
+  },
+  {
+    org: "UCLA",
+    title: "Fullstack UI/UX Researcher",
+    kind: "Full-time",
+    start: "Jun 2023",
+    end: "Nov 2023",
+    location: "Los Angeles, CA",
+    blurb: "UCLA Technical Training Research Program (~8% acceptance rate).",
+  },
+  {
+    org: "The Bay Club Company",
+    title: "Lifeguard",
+    kind: "Part-time",
+    start: "Jun 2021",
+    end: "Oct 2023",
+    location: "Redwood City, CA",
+    blurb:
+      "40+ hours per week. Red Cross certified 2021-2025; first-responder training.",
+  },
+  {
+    org: "BRI Youth",
+    title: "Lead Tutor",
+    kind: "Part-time",
+    start: "Mar 2020",
+    end: "Dec 2023",
+    blurb:
+      "Mathematics (pre-algebra through Calculus II), violin and piano. 3x Tutor of the Month, 175+ hours logged. Recitals at senior homes and public libraries.",
+  },
+];
 
 /**
  * The repos Recent Activity actually features, in order, as "owner/name".
@@ -171,7 +277,7 @@ export const projects: Project[] = [
       "Evidence-first technical interviews for AI-era hiring, with executable tasks, AI Critique, scorecards, replay, and live validation.",
     rarity: "core",
     tags: ["Next.js", "TypeScript", "Postgres", "Docker"], // TODO(bradley): verify — GitHub reports HTML as the primary language
-    href: undefined, // TODO(bradley): live URL
+    href: "https://codearena.co/",
     repo: undefined, // private
     period: "2026",
   },
