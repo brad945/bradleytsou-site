@@ -250,12 +250,13 @@ export const projects: Project[] = [
     ghRepo: "aryan-gupta123/Guardian",
     name: "Guardian",
     kind: "Software",
-    blurb: "AI-powered fraud detection. Cal Hacks 12.0 winner.",
+    blurb:
+      "AI risk-defence agent that protects elderly users from financial scams — detects suspicious transactions and explains the risk in plain language. Built the entire frontend around accessibility for senior users: large type, guided voice, calm interface. 1st place at Cal Hacks 12.0 on the Bright Data track, out of 700 projects and 3,000+ participants.",
     rarity: "major",
-    tags: ["Hackathon", "AI"], // TODO(bradley): real stack
+    tags: ["Bright Data", "Fetch AI", "Fish Audio", "Claude"],
     href: undefined,
     repo: "https://github.com/aryan-gupta123/Guardian",
-    period: "2026",
+    period: "2025",
   },
   {
     id: "orca",
@@ -268,6 +269,26 @@ export const projects: Project[] = [
     href: undefined,
     repo: "https://github.com/ronoktanvir/Orca",
     period: "2026",
+  },
+  {
+    id: "ucsb-behavioral",
+    name: "Dining hall waste study",
+    kind: "Research",
+    blurb:
+      "Utility functions and market research modelling human cognition against waste-reduction strategies in UC Santa Barbara's dining halls.",
+    rarity: "side",
+    tags: ["Behavioral Economics", "Modelling"],
+    period: "2024 — 2025",
+  },
+  {
+    id: "bri-client-sites",
+    name: "BRI Youth client sites",
+    kind: "Design",
+    blurb:
+      "Website UI/UX prototyped and shipped for local startups and online services.",
+    rarity: "side",
+    tags: ["UI/UX", "Frontend"],
+    period: "2023 — 2024",
   },
   {
     id: "site",
