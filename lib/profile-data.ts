@@ -56,6 +56,11 @@ export interface Role {
    * it, not have half its detail in a second list.
    */
   tags?: string[];
+  /**
+   * "owner/name" when the role has a backing repo. Lets a merged entry keep
+   * the live commit count that used to come from a separate project row.
+   */
+  ghRepo?: string;
   url?: string;
 }
 
@@ -137,11 +142,13 @@ export const roles: Role[] = [
   },
   {
     org: "DevEval",
-    tags: ["Forward-Deployed", "Software Engineering"],
+    tags: ["Next.js", "TypeScript", "Postgres", "Docker", "Forward-Deployed"],
+    ghRepo: "sennaicodes/codearenamvp",
     title: "Founding Engineer",
     start: "Jan 2026",
     location: "San Francisco, CA",
-    blurb: "Forward-deployed and software engineering.",
+    blurb:
+      "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed and software engineering.",
     url: "https://deveval.com",
   },
   {
@@ -243,19 +250,6 @@ export const socials: SocialLink[] = [
  */
 export const projects: Project[] = [
   {
-    id: "deveval",
-    ghRepo: "sennaicodes/codearenamvp",
-    name: "DevEval",
-    kind: "Software",
-    blurb:
-      "Evidence-first technical interviews for AI-era hiring, with executable tasks, AI Critique, scorecards, replay, and live validation.",
-    rarity: "core",
-    tags: ["Next.js", "TypeScript", "Postgres", "Docker"], // TODO(bradley): verify — GitHub reports HTML as the primary language
-    href: "https://deveval.com",
-    repo: undefined, // private
-    period: "2026",
-  },
-  {
     id: "visionotes",
     ghRepo: "brad945/visionotes",
     name: "VisionNotes",
@@ -290,19 +284,6 @@ export const projects: Project[] = [
     tags: ["Python", "Reinforcement Learning", "Multi-agent"],
     href: undefined,
     repo: "https://github.com/ronoktanvir/Orca",
-    period: "2026",
-  },
-  {
-    id: "site",
-    name: "bradleytsou.com",
-    kind: "Software",
-    blurb:
-      "This site. Steam-profile structure, but every stat on it is a real number.",
-    rarity: "side",
-    tags: ["Next.js", "Tailwind", "GitHub API"],
-    href: undefined,
-    // Private for now, so linking it would 404. Set to `siteRepoUrl` once public.
-    repo: undefined,
     period: "2026",
   },
 ];

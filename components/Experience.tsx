@@ -66,7 +66,7 @@ function Row({
   );
 }
 
-function roleRow(role: Role) {
+function roleRow(role: Role, repo?: FeaturedRepo) {
   return (
     <Row
       key={`role-${role.org}-${role.title}`}
@@ -76,6 +76,13 @@ function roleRow(role: Role) {
       blurb={role.blurb}
       tags={role.tags}
       meta={`${role.start} — ${role.end ?? "Present"}`}
+      // A role with a backing repo keeps the live count that used to live on
+      // its separate project row.
+      stat={
+        repo
+          ? `${repo.myCommits.toLocaleString()} ${repo.myCommits === 1 ? "commit" : "commits"}`
+          : undefined
+      }
     />
   );
 }
@@ -121,7 +128,9 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
 
       <div className="px-5 pb-5 pt-1">
         <ul className="flex flex-col">
-          {roles.map(roleRow)}
+          {roles.map((role) =>
+            roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
+          )}
           {projects.map((project) =>
             projectRow(
               project,

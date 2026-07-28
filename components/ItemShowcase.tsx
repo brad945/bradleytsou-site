@@ -1,5 +1,5 @@
 import type { FeaturedRepo } from "@/lib/github";
-import { projects } from "@/lib/profile-data";
+import { projects, roles } from "@/lib/profile-data";
 
 /**
  * Steam's "Favorite Game" slot.
@@ -17,19 +17,26 @@ import { projects } from "@/lib/profile-data";
  * never empties. Tags stay hand-curated — the API has no equivalent.
  */
 export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
-  // Match on ghRepo, not the repo name: names diverge (CodeArena lives in
-  // `codearenamvp`), and a name match silently fell through to whichever entry
-  // happened to be rarity "core".
-  const entry =
-    (repo && projects.find((p) => p.ghRepo === repo.nameWithOwner)) ??
-    projects.find((p) => p.rarity === "core") ??
-    projects[0];
+  /*
+   * Matched on ghRepo, and roles are searched too — DevEval is a role now, not
+   * a project, so a projects-only lookup would fall through to whichever entry
+   * happened to be first and show the wrong name against DevEval's repo data.
+   */
+  const entry = repo
+    ? (projects.find((p) => p.ghRepo === repo.nameWithOwner) ??
+      roles.find((r) => r.ghRepo === repo.nameWithOwner))
+    : undefined;
   if (!entry && !repo) return null;
 
-  const name = entry?.name ?? repo?.name ?? "";
+  // A role is keyed on `org`/`url`, a project on `name`/`href`.
+  const isRole = !!entry && "org" in entry;
+  const name = isRole ? entry.org : (entry?.name ?? repo?.name ?? "");
+  const period = isRole ? undefined : entry?.period;
+  const entryLink = isRole ? entry.url : entry?.href;
+
   const blurb = repo?.description ?? entry?.blurb ?? "";
   const tags = entry?.tags ?? [];
-  const link = repo && !repo.isPrivate ? repo.url : entry?.href;
+  const link = repo && !repo.isPrivate ? repo.url : entryLink;
 
   return (
     <section aria-labelledby="favorite-heading" className="panel">
@@ -51,7 +58,7 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
             {name}
           </h3>
           <span className="t-meta">
-            {[repo?.language, entry?.period].filter(Boolean).join(" · ")}
+            {[repo?.language, period].filter(Boolean).join(" · ")}
           </span>
         </div>
 
