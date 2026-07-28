@@ -9,7 +9,7 @@ import Sidebar from "@/components/Sidebar";
 // See components/Comments.tsx.
 // import Comments from "@/components/Comments";
 
-import { getCodeArenaStats } from "@/lib/codearena";
+import { getDevEvalStats } from "@/lib/deveval";
 import {
   getContributions,
   getGitHubSnapshot,
@@ -29,10 +29,10 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, codearena, contributions, featured, languages] =
+  const [snapshot, deveval, contributions, featured, languages] =
     await Promise.all([
       getGitHubSnapshot(githubUsername),
-      getCodeArenaStats(),
+      getDevEvalStats(),
       getContributions(githubUsername),
       getFeaturedRepos(featuredRepos),
       getLanguages(),
@@ -65,7 +65,7 @@ export default async function Home() {
 
           <Sidebar
             snapshot={snapshot}
-            codearena={codearena}
+            deveval={deveval}
             contributions={contributions}
             languages={languages}
           />

@@ -1,11 +1,12 @@
 /**
- * Live stats from CodeArena's own API.
+ * Live stats from DevEval's own API. (The product was called CodeArena until
+ * mid-2026; the backing repo is still `codearenamvp`.)
  *
  * The rest of this site proves "every number is fetched, not written" using
  * someone else's API. This block does it with Bradley's own product, which is
  * the part that actually says something about him.
  *
- * Configured by `CODEARENA_STATS_URL`. With no endpoint set — or if the
+ * Configured by `DEVEVAL_STATS_URL`. With no endpoint set — or if the
  * endpoint is down, slow, or returns something unexpected — this returns null
  * and the sidebar block hides itself. It never invents a number and never
  * throws.
@@ -21,7 +22,7 @@
 
 import { REVALIDATE_SECONDS } from "@/lib/github";
 
-export interface CodeArenaStats {
+export interface DevEvalStats {
   submissions?: number;
   matches?: number;
   players?: number;
@@ -29,7 +30,7 @@ export interface CodeArenaStats {
 }
 
 /** Render order and labels. Rows whose value is missing are skipped. */
-export const CODEARENA_ROWS: { key: keyof CodeArenaStats; label: string }[] = [
+export const DEVEVAL_ROWS: { key: keyof DevEvalStats; label: string }[] = [
   { key: "submissions", label: "Submissions Judged" },
   { key: "matches", label: "Matches Played" },
   { key: "players", label: "Players" },
@@ -42,8 +43,8 @@ function readCount(value: unknown): number | undefined {
   return value;
 }
 
-export async function getCodeArenaStats(): Promise<CodeArenaStats | null> {
-  const url = process.env.CODEARENA_STATS_URL;
+export async function getDevEvalStats(): Promise<DevEvalStats | null> {
+  const url = process.env.DEVEVAL_STATS_URL;
   if (!url) return null;
 
   let payload: unknown;
@@ -61,7 +62,7 @@ export async function getCodeArenaStats(): Promise<CodeArenaStats | null> {
   if (!payload || typeof payload !== "object") return null;
   const raw = payload as Record<string, unknown>;
 
-  const stats: CodeArenaStats = {
+  const stats: DevEvalStats = {
     submissions: readCount(raw.submissions),
     matches: readCount(raw.matches),
     players: readCount(raw.players),
@@ -69,6 +70,6 @@ export async function getCodeArenaStats(): Promise<CodeArenaStats | null> {
   };
 
   // Nothing usable came back — treat it as "no data" rather than an empty box.
-  const hasAny = CODEARENA_ROWS.some(({ key }) => stats[key] !== undefined);
+  const hasAny = DEVEVAL_ROWS.some(({ key }) => stats[key] !== undefined);
   return hasAny ? stats : null;
 }

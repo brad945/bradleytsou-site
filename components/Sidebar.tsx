@@ -1,4 +1,4 @@
-import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
+import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import ContributionSummary from "@/components/ContributionSummary";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
@@ -6,8 +6,8 @@ import { linkedinFollowers, profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
-  /** Null when CODEARENA_STATS_URL isn't set or the endpoint is unreachable. */
-  codearena: CodeArenaStats | null;
+  /** Null when DEVEVAL_STATS_URL isn't set or the endpoint is unreachable. */
+  deveval: DevEvalStats | null;
   /** Null without a token — GraphQL is auth-only. */
   contributions: Contributions | null;
   /** All-repo breakdown. Empty without a token — falls back to public-only. */
@@ -34,7 +34,7 @@ function Stat({
 
 export default function Sidebar({
   snapshot,
-  codearena,
+  deveval,
   contributions,
   languages,
 }: SidebarProps) {
@@ -82,11 +82,11 @@ export default function Sidebar({
         someone else's API. Absent entirely when the endpoint isn't configured
         or is down — never a placeholder number.
       */}
-      {codearena && (
+      {deveval && (
         <section className="panel px-5 py-5">
           <div className="flex items-baseline justify-between gap-2">
             <h2 className="text-[17px] font-normal leading-tight text-bright">
-              CodeArena
+              DevEval
             </h2>
             <span className="flex items-center gap-1.5">
               <span
@@ -96,15 +96,15 @@ export default function Sidebar({
               <span className="t-meta text-live">Live</span>
             </span>
           </div>
-          <p className="t-meta mt-1">Straight off the CodeArena API.</p>
+          <p className="t-meta mt-1">Straight off the DevEval API.</p>
 
           <div className="mt-4">
-            {CODEARENA_ROWS.map(({ key, label }) =>
-              codearena[key] === undefined ? null : (
+            {DEVEVAL_ROWS.map(({ key, label }) =>
+              deveval[key] === undefined ? null : (
                 <div key={key} className="stat-row">
                   <span className="stat-label">{label}</span>
                   <span className="stat-value">
-                    {codearena[key]!.toLocaleString()}
+                    {deveval[key]!.toLocaleString()}
                   </span>
                 </div>
               ),

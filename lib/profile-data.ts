@@ -136,13 +136,13 @@ export const roles: Role[] = [
       "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
   },
   {
-    org: "CodeArena",
+    org: "DevEval",
     tags: ["Forward-Deployed", "Software Engineering"],
     title: "Founding Engineer",
     start: "Jan 2026",
     location: "San Francisco, CA",
     blurb: "Forward-deployed and software engineering.",
-    url: "https://codearena.co/",
+    url: "https://deveval.com",
   },
   {
     org: "Web Development at Berkeley",
@@ -194,6 +194,11 @@ export const roles: Role[] = [
  * coursework repos.
  */
 /**
+ * The repo the "Favorite Project" panel features. Still `codearenamvp` — the
+ * product renamed to DevEval but the repo did not, and this is an API
+ * identifier, not display text. Renaming it breaks the live commit count.
+ */
+/**
  * The repo the "Favorite Project" panel features. Its `id` in `projects`
  * below must match the repo name, lowercased.
  */
@@ -238,15 +243,15 @@ export const socials: SocialLink[] = [
  */
 export const projects: Project[] = [
   {
-    id: "codearena",
+    id: "deveval",
     ghRepo: "sennaicodes/codearenamvp",
-    name: "CodeArena",
+    name: "DevEval",
     kind: "Software",
     blurb:
       "Evidence-first technical interviews for AI-era hiring, with executable tasks, AI Critique, scorecards, replay, and live validation.",
     rarity: "core",
     tags: ["Next.js", "TypeScript", "Postgres", "Docker"], // TODO(bradley): verify — GitHub reports HTML as the primary language
-    href: "https://codearena.co/",
+    href: "https://deveval.com",
     repo: undefined, // private
     period: "2026",
   },
@@ -350,8 +355,8 @@ export const rarityStyles: Record<
 
 /**
  * One- or two-character stand-in for item art, used on every square tile and
- * repo capsule. Prefers word initials, then internal capitals ("CodeArena" →
- * "CA"), then the first two letters.
+ * repo capsule. Prefers word initials, then internal capitals ("DevEval" →
+ * "DE"), then the first two letters.
  */
 export function monogram(name: string): string {
   const words = name

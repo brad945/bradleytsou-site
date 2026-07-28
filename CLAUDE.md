@@ -120,10 +120,13 @@ rule below). Don't bump either without updating this file.
   Requires **"Include private contributions on my profile"** enabled, or
   the total collapses to public activity alone (10 vs 452).
 
-- `lib/codearena.ts` — live stats from Bradley's *own* product, not
+- `lib/deveval.ts` — live stats from Bradley's *own* product (called
+  CodeArena until mid-2026; the backing repo is still `codearenamvp`, and
+  `FAVORITE_REPO` / `ghRepo` must keep that name because they're API
+  identifiers, not display text), not
   someone else's API. This is the block that makes "every number is
   fetched, not written" say something about him. Configured by
-  `CODEARENA_STATS_URL` (see `.env.example`); the endpoint should return
+  `DEVEVAL_STATS_URL` (see `.env.example`); the endpoint should return
   JSON with any subset of `submissions` / `matches` / `players` /
   `problems`. Unknown keys are ignored and non-finite values dropped, so
   a malformed or half-migrated response loses rows rather than rendering
