@@ -160,6 +160,8 @@ export default function ProfileHeader({
             <p className="t-label mt-1 flex flex-wrap items-center gap-x-2">
               <span>{profile.handle}</span>
               <span className="text-muted/60">·</span>
+              <span>{profile.pronouns}</span>
+              <span className="text-muted/60">·</span>
               <span>{profile.location}</span>
             </p>
 

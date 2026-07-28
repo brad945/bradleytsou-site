@@ -75,14 +75,15 @@ export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */
   handle: "@bradleytsou",
-  /** One sentence. Real, not a mission statement. */
-  tagline:
-    "CS student building CodeArena. Mostly backend, systems, and dev tooling.",
-  location: "United States", // TODO(bradley): city if you want it public
+  /** His actual LinkedIn headline, not a paraphrase of it. */
+  tagline: "Applied Math + CS @ UC Berkeley. Building CodeArena.",
+  location: "San Jose, California",
   /** Drives the level card — level = full years since this date. */
   codingSince: "2019-09-01",
   /** What you're actually working on right now. Shown in the header. */
   currentFocus: "CodeArena — evidence-first technical interviews",
+  /** Shown beside the name. */
+  pronouns: "he/him",
   /** Fallback avatar initials, used before/if the GitHub avatar resolves. */
   initials: "BT",
   /** Canonical contact address — drives both the Message button and Links. */
