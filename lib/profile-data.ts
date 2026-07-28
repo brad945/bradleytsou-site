@@ -46,8 +46,6 @@ export interface Role {
   start: string;
   /** Omit for a role you're still in; renders as "Present". */
   end?: string;
-  /** Internship / Contract / Part-time / Full-time. Omit if not worth saying. */
-  kind?: string;
   location?: string;
   blurb?: string;
   url?: string;
@@ -111,7 +109,6 @@ export const roles: Role[] = [
   {
     org: "Crossing Hurdles",
     title: "Language and Audio Engineer",
-    kind: "Contract",
     start: "Jun 2026",
     blurb:
       "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
@@ -119,7 +116,6 @@ export const roles: Role[] = [
   {
     org: "MedImpact Healthcare Systems",
     title: "Applied AI & Software Engineer Intern",
-    kind: "Internship",
     start: "May 2026",
     location: "San Diego, CA",
     blurb: "Portal cybersecurity systems; Verdegard IT operations.",
@@ -127,7 +123,6 @@ export const roles: Role[] = [
   {
     org: "CodeArena",
     title: "Founding Engineer",
-    kind: "Part-time",
     start: "Jan 2026",
     location: "San Francisco, CA",
     blurb: "Forward-deployed and software engineering.",
@@ -136,7 +131,6 @@ export const roles: Role[] = [
   {
     org: "Dana Street Consulting",
     title: "Software Engineer",
-    kind: "Part-time",
     start: "Jan 2026",
   },
   {
@@ -148,7 +142,6 @@ export const roles: Role[] = [
   {
     org: "UC Santa Barbara",
     title: "Behavioral Economics Researcher Intern",
-    kind: "Full-time",
     start: "Jun 2024",
     end: "Aug 2025",
     blurb:
@@ -157,7 +150,6 @@ export const roles: Role[] = [
   {
     org: "BRI Youth",
     title: "Web User Interface Developer",
-    kind: "Part-time",
     start: "Aug 2023",
     end: "Dec 2024",
     blurb: "Prototyped website UI/UX for local startups and online services.",
@@ -165,7 +157,6 @@ export const roles: Role[] = [
   {
     org: "UCLA",
     title: "Fullstack UI/UX Researcher",
-    kind: "Full-time",
     start: "Jun 2023",
     end: "Nov 2023",
     location: "Los Angeles, CA",
@@ -174,7 +165,6 @@ export const roles: Role[] = [
   {
     org: "The Bay Club Company",
     title: "Lifeguard",
-    kind: "Part-time",
     start: "Jun 2021",
     end: "Oct 2023",
     location: "Redwood City, CA",
@@ -184,7 +174,6 @@ export const roles: Role[] = [
   {
     org: "BRI Youth",
     title: "Lead Tutor",
-    kind: "Part-time",
     start: "Mar 2020",
     end: "Dec 2023",
     blurb:

@@ -35,14 +35,7 @@ function RoleRow({ role }: { role: Role }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-          <span className="flex flex-wrap items-baseline gap-x-2">
-            {org}
-            {role.kind && (
-              <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
-                {role.kind}
-              </span>
-            )}
-          </span>
+          {org}
           {/*
             One line, always. Location used to sit on a second line here, so
             cards with one wrapped differently from cards without — most
