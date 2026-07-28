@@ -82,7 +82,7 @@ export const profile = {
   /** Shown under the name, mono. */
   handle: "@bradleytsou",
   /** His actual LinkedIn headline, not a paraphrase of it. */
-  tagline: "Applied Math + CS @ UC Berkeley. Building CodeArena.",
+  tagline: "Applied Math + CS @ UC Berkeley.",
   location: "San Jose, California",
   /**
    * Drives the Level circle — level = full years since this date. Set by
