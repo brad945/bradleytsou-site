@@ -84,8 +84,11 @@ export const profile = {
   /** His actual LinkedIn headline, not a paraphrase of it. */
   tagline: "Applied Math + CS @ UC Berkeley. Building CodeArena.",
   location: "San Jose, California",
-  /** Drives the level card — level = full years since this date. */
-  codingSince: "2019-09-01",
+  /**
+   * Drives the Level circle — level = full years since this date. Set by
+   * Bradley; the 2019 that was here before was a scaffold placeholder.
+   */
+  codingSince: "2021-01-01",
   /** What you're actually working on right now. Shown in the header. */
   currentFocus: "CodeArena — evidence-first technical interviews",
   /** Shown beside the name. */
@@ -376,5 +379,7 @@ export function experience(now: Date = new Date()) {
   const elapsed = Math.max(0, now.getTime() - start.getTime()) / msPerYear;
   const level = Math.floor(elapsed);
   const progress = Math.round((elapsed - level) * 100);
-  return { level, progress, sinceYear: start.getFullYear() };
+  // getUTCFullYear, not getFullYear: "2021-01-01" parses as midnight UTC, which
+  // is 31 Dec 2020 anywhere west of Greenwich — the year would read one early.
+  return { level, progress, sinceYear: start.getUTCFullYear() };
 }
