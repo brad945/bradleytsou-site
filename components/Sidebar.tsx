@@ -46,21 +46,17 @@ export default function Sidebar({
   return (
     <div className="flex flex-col gap-4">
       <section className="panel px-5 py-5">
+        {/* Heading only — the focus line lives in the page header, and
+            repeating it here was the redundancy this block already shed. */}
         <h2 className="text-[24px] font-light leading-tight text-live">
           Currently {profile.status.label}
         </h2>
-        {/*
-          One status line, not three. "Currently shipping" and a separate
-          "Focus" row said the same thing either side of the stats.
-        */}
-        <p className="t-body mt-1 leading-snug">{profile.currentFocus}</p>
-
         {/*
           Zero-value rows are hidden rather than listed. "Following 0 / Gists 0"
           fills space without telling anyone anything, and because the check is
           live each row returns on its own once the number moves.
         */}
-        <div className="mt-6">
+        <div className="mt-5">
           <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
           {!!stats?.followers && (
             <Stat label="Followers" value={stats.followers} />
