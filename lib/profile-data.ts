@@ -149,9 +149,9 @@ export const roles: Role[] = [
     blurb: "Building websites and fullstack apps.",
   },
   {
-    org: "UC Santa Barbara",
+    org: "UCSB",
     tags: ["Behavioral Economics", "Modelling", "Qualitative Research"],
-    title: "Behavioral Economics Research Intern",
+    title: "Research Experience Intern",
     start: "Jun 2024",
     end: "Aug 2025",
     blurb:
