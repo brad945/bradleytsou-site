@@ -94,13 +94,12 @@ export default function Sidebar({
         {/*
           Zero-value rows are hidden rather than listed. "Following 0 / Gists 0"
           fills space without telling anyone anything, and because the check is
-          live each row returns on its own once the number moves.
+          live each row returns on its own once the number moves. Followers,
+          Reviews and Issues are cut outright — GitHub follower count says
+          nothing here, and the other two were 0 with no prospect of moving.
         */}
         <div className="mt-5">
           <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
-          {!!stats?.followers && (
-            <Stat label="Followers" value={stats.followers} />
-          )}
           {!!stats?.following && (
             <Stat label="Following" value={stats.following} />
           )}
@@ -128,8 +127,6 @@ export default function Sidebar({
             <div className="mt-3">
               <Stat label="Pull Requests" value={contributions.pullRequests} />
               <Stat label="Merged" value={contributions.pullRequestsMerged} />
-              <Stat label="Reviews" value={contributions.reviews} />
-              <Stat label="Issues" value={contributions.issues} />
               <Stat
                 label="Repos Created"
                 value={contributions.repositoriesCreated}
