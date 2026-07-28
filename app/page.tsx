@@ -14,6 +14,7 @@ import {
   getContributions,
   getGitHubSnapshot,
   getFeaturedRepos,
+  getLanguages,
   REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
@@ -28,12 +29,14 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, codearena, contributions, featured] = await Promise.all([
-    getGitHubSnapshot(githubUsername),
-    getCodeArenaStats(),
-    getContributions(githubUsername),
-    getFeaturedRepos(featuredRepos),
-  ]);
+  const [snapshot, codearena, contributions, featured, languages] =
+    await Promise.all([
+      getGitHubSnapshot(githubUsername),
+      getCodeArenaStats(),
+      getContributions(githubUsername),
+      getFeaturedRepos(featuredRepos),
+      getLanguages(),
+    ]);
 
   const favorite =
     featured.find((r) => r.nameWithOwner === FAVORITE_REPO) ?? null;
@@ -66,6 +69,7 @@ export default async function Home() {
             codearena={codearena}
             featured={featured}
             contributions={contributions}
+            languages={languages}
           />
         </div>
 

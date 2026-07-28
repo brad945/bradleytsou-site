@@ -1,6 +1,6 @@
 import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
 import ContributionSummary from "@/components/ContributionSummary";
-import type { Contributions } from "@/lib/github";
+import type { Contributions, LanguageCount } from "@/lib/github";
 import type { FeaturedRepo, GitHubSnapshot } from "@/lib/github";
 import { badges, monogram, profile, socials } from "@/lib/profile-data";
 
@@ -12,6 +12,8 @@ interface SidebarProps {
   featured: FeaturedRepo[];
   /** Null without a token — GraphQL is auth-only. */
   contributions: Contributions | null;
+  /** All-repo breakdown. Empty without a token — falls back to public-only. */
+  languages: LanguageCount[];
 }
 
 /**
@@ -58,8 +60,12 @@ export default function Sidebar({
   codearena,
   featured,
   contributions,
+  languages,
 }: SidebarProps) {
-  const { stats, topRepos, languages, fetchedAt } = snapshot;
+  const { stats, topRepos, fetchedAt } = snapshot;
+  // The token-backed breakdown sees private repos and every language per repo;
+  // the snapshot's is public-only primaryLanguage and reads far too narrow.
+  const langs = languages.length > 0 ? languages : snapshot.languages;
   const now = Date.parse(fetchedAt);
 
   return (
@@ -150,11 +156,11 @@ export default function Sidebar({
         </section>
       )}
 
-      {languages.length > 0 && (
+      {langs.length > 0 && (
         <section className="panel px-5 py-5">
           <div className="stat-row">
             <span className="stat-label">Languages</span>
-            <span className="stat-value">{languages.length}</span>
+            <span className="stat-value">{langs.length}</span>
           </div>
           {/*
             A plain list, not bars. Bars here were scaled against the most-used
@@ -162,7 +168,7 @@ export default function Sidebar({
             the repo count already says everything the bar was implying.
           */}
           <ul className="mt-2 flex flex-col">
-            {languages.map((language) => (
+            {langs.map((language) => (
               <li
                 key={language.name}
                 className="flex items-baseline justify-between gap-2 py-1"

@@ -139,7 +139,12 @@ interface GitHubEvent {
     ref_type?: string;
     action?: string;
     commits?: { message: string }[];
-    pull_request?: { title: string; merged?: boolean; html_url?: string; number?: number };
+    pull_request?: {
+      title: string;
+      merged?: boolean;
+      html_url?: string;
+      number?: number;
+    };
     issue?: { title: string; html_url?: string; number?: number };
     release?: { tag_name?: string; html_url?: string };
   };
@@ -157,7 +162,9 @@ function headers(): HeadersInit {
   return h;
 }
 
-async function getJson<T>(path: string): Promise<{ data: T | null; error: string | null }> {
+async function getJson<T>(
+  path: string,
+): Promise<{ data: T | null; error: string | null }> {
   try {
     const res = await fetch(`${API}${path}`, {
       headers: headers(),
@@ -165,7 +172,8 @@ async function getJson<T>(path: string): Promise<{ data: T | null; error: string
     });
 
     if (!res.ok) {
-      if (res.status === 404) return { data: null, error: "GitHub user not found" };
+      if (res.status === 404)
+        return { data: null, error: "GitHub user not found" };
       if (res.status === 403 || res.status === 429) {
         return { data: null, error: "GitHub rate limit reached" };
       }
@@ -280,7 +288,10 @@ function countPast2Weeks(events: GitHubEvent[], now: number): number {
 }
 
 /** Commits per repo (short name) pushed in the last 14 days. */
-function commitsByRepo(events: GitHubEvent[], now: number): Map<string, number> {
+function commitsByRepo(
+  events: GitHubEvent[],
+  now: number,
+): Map<string, number> {
   const cutoff = now - TWO_WEEKS_MS;
   const counts = new Map<string, number>();
 
@@ -330,7 +341,9 @@ export async function getGitHubSnapshot(
   const [user, events, repos] = await Promise.all([
     getJson<GitHubUser>(`/users/${handle}`),
     getJson<GitHubEvent[]>(`/users/${handle}/events/public?per_page=100`),
-    getJson<GitHubRepo[]>(`/users/${handle}/repos?type=owner&sort=pushed&per_page=12`),
+    getJson<GitHubRepo[]>(
+      `/users/${handle}/repos?type=owner&sort=pushed&per_page=12`,
+    ),
   ]);
 
   if (!user.data) {
@@ -367,12 +380,18 @@ export async function getGitHubSnapshot(
   const languageCounts = new Map<string, number>();
   for (const repo of owned) {
     if (!repo.language) continue;
-    languageCounts.set(repo.language, (languageCounts.get(repo.language) ?? 0) + 1);
+    languageCounts.set(
+      repo.language,
+      (languageCounts.get(repo.language) ?? 0) + 1,
+    );
   }
-  const languages: LanguageCount[] = Array.from(languageCounts, ([name, count]) => ({
-    name,
-    repos: count,
-  }))
+  const languages: LanguageCount[] = Array.from(
+    languageCounts,
+    ([name, count]) => ({
+      name,
+      repos: count,
+    }),
+  )
     .sort((a, b) => b.repos - a.repos)
     .slice(0, 5);
 
@@ -391,13 +410,17 @@ export async function getGitHubSnapshot(
       publicGists: user.data.public_gists,
       followers: user.data.followers,
       following: user.data.following,
-      memberSince: Number.isFinite(createdAt) ? new Date(createdAt).getUTCFullYear() : null,
+      memberSince: Number.isFinite(createdAt)
+        ? new Date(createdAt).getUTCFullYear()
+        : null,
       eventsPast2Weeks: countPast2Weeks(rawEvents, Date.parse(fetchedAt)),
     },
     feed,
     repos: repoCards,
     topRepos,
-    publicRepoNames: (Array.isArray(repos.data) ? repos.data : []).map((r) => r.name),
+    publicRepoNames: (Array.isArray(repos.data) ? repos.data : []).map(
+      (r) => r.name,
+    ),
     languages,
   };
 }
@@ -472,9 +495,12 @@ interface CalendarResponse {
  * Never throws: no token, non-OK, GraphQL errors, or an unexpected shape all
  * return null and the panel hides itself.
  */
-export async function getContributions(username: string): Promise<Contributions | null> {
+export async function getContributions(
+  username: string,
+): Promise<Contributions | null> {
   const token = process.env.GITHUB_TOKEN;
-  if (!token || !username || username === PLACEHOLDER_GITHUB_USERNAME) return null;
+  if (!token || !username || username === PLACEHOLDER_GITHUB_USERNAME)
+    return null;
 
   let body: CalendarResponse;
   try {
@@ -556,7 +582,9 @@ export interface FeaturedRepo {
  * Returns an empty array without one, and the caller falls back to the public
  * list rather than showing nothing.
  */
-export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]> {
+export async function getFeaturedRepos(
+  names: string[],
+): Promise<FeaturedRepo[]> {
   const token = process.env.GITHUB_TOKEN;
   if (!token || names.length === 0) return [];
 
@@ -610,7 +638,10 @@ export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]>
            recent: history(author: {id: $who}, since: $since) { totalCount }
          } } }
        }`,
-      { who: viewerId, since: new Date(Date.now() - TWO_WEEKS_MS).toISOString() },
+      {
+        who: viewerId,
+        since: new Date(Date.now() - TWO_WEEKS_MS).toISOString(),
+      },
     );
 
     const data = body?.data;
@@ -637,6 +668,92 @@ export async function getFeaturedRepos(names: string[]): Promise<FeaturedRepo[]>
       });
     });
     return out;
+  } catch {
+    return [];
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Language breadth
+ * ------------------------------------------------------------------ */
+
+/**
+ * Languages across every repo the token can see, counted by how many repos use
+ * each.
+ *
+ * Two deliberate choices, both learned the hard way:
+ *
+ * 1. NOT `primaryLanguage` from the REST repo list. That's one language per
+ *    repo, from public repos only — and most of Bradley's public repos are
+ *    small enough that GitHub detects no language at all, which collapsed the
+ *    whole panel to "JavaScript, 1 repo".
+ * 2. Counted by REPO, not by bytes. Byte share is what GitHub's own bar shows
+ *    and it's badly skewed by vendored and generated files — HTML reads 53.8%
+ *    here off 21MB nobody hand-wrote, while TypeScript reads 0.6%. Repo count
+ *    says something true about breadth.
+ *
+ * Needs `GITHUB_TOKEN`; returns [] without one and the caller falls back to
+ * the public-only breakdown.
+ */
+export async function getLanguages(limit = 8): Promise<LanguageCount[]> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return [];
+
+  const query = `
+    query {
+      viewer {
+        repositories(first: 100, affiliations: [OWNER, COLLABORATOR], isFork: false) {
+          nodes {
+            languages(first: 20, orderBy: {field: SIZE, direction: DESC}) {
+              edges { node { name } }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const res = await fetch(`${API}/graphql`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "bradleytsou-site",
+      },
+      body: JSON.stringify({ query }),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return [];
+
+    const body = (await res.json()) as {
+      data?: {
+        viewer?: {
+          repositories?: {
+            nodes?: {
+              languages?: { edges?: { node?: { name?: string } }[] };
+            }[];
+          };
+        };
+      };
+    };
+
+    const nodes = body.data?.viewer?.repositories?.nodes;
+    if (!Array.isArray(nodes)) return [];
+
+    const counts = new Map<string, number>();
+    for (const repo of nodes) {
+      for (const edge of repo.languages?.edges ?? []) {
+        const name = edge.node?.name;
+        // Procfile and friends are config, not languages worth listing.
+        if (!name || name === "Procfile") continue;
+        counts.set(name, (counts.get(name) ?? 0) + 1);
+      }
+    }
+
+    return Array.from(counts, ([name, repos]) => ({ name, repos }))
+      .sort((a, b) => b.repos - a.repos || a.name.localeCompare(b.name))
+      .slice(0, limit);
   } catch {
     return [];
   }
