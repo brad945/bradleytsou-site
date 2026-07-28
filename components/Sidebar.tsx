@@ -1,15 +1,13 @@
 import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
 import ContributionSummary from "@/components/ContributionSummary";
 import type { Contributions, LanguageCount } from "@/lib/github";
-import type { FeaturedRepo, GitHubSnapshot } from "@/lib/github";
-import { badges, monogram, profile, socials } from "@/lib/profile-data";
+import type { GitHubSnapshot } from "@/lib/github";
+import { badges, profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
   /** Null when CODEARENA_STATS_URL isn't set or the endpoint is unreachable. */
   codearena: CodeArenaStats | null;
-  /** Hand-picked repos. Empty without a token — falls back to the starred list. */
-  featured: FeaturedRepo[];
   /** Null without a token — GraphQL is auth-only. */
   contributions: Contributions | null;
   /** All-repo breakdown. Empty without a token — falls back to public-only. */
@@ -26,15 +24,6 @@ function formatEarned(iso: string): string {
     year: "numeric",
     timeZone: "UTC",
   });
-}
-
-function daysAgo(iso: string, now: number): string {
-  const then = Date.parse(iso);
-  if (!Number.isFinite(then)) return "unknown";
-  const days = Math.floor((now - then) / (24 * 60 * 60 * 1000));
-  if (days <= 0) return "Pushed today";
-  if (days === 1) return "Pushed 1 day ago";
-  return `Pushed ${days} days ago`;
 }
 
 /** A grey label with a large light number, Steam's sidebar stat row. */
@@ -58,15 +47,13 @@ function Stat({
 export default function Sidebar({
   snapshot,
   codearena,
-  featured,
   contributions,
   languages,
 }: SidebarProps) {
-  const { stats, topRepos, fetchedAt } = snapshot;
+  const { stats } = snapshot;
   // The token-backed breakdown sees private repos and every language per repo;
   // the snapshot's is public-only primaryLanguage and reads far too narrow.
   const langs = languages.length > 0 ? languages : snapshot.languages;
-  const now = Date.parse(fetchedAt);
 
   return (
     <div className="flex flex-col gap-4">
@@ -177,95 +164,6 @@ export default function Sidebar({
                 <span className="t-meta">
                   {language.repos} {language.repos === 1 ? "repo" : "repos"}
                 </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/*
-        Ranked by Bradley's own commits, not stars — every public repo he owns
-        has zero stars, so a stars ranking just surfaced years-old intro
-        projects. Falls back to the starred list without a token.
-      */}
-      {featured.length > 0 ? (
-        <section className="panel px-5 py-5">
-          <div className="stat-row">
-            <span className="stat-label">Active Repositories</span>
-            <span className="stat-value">{featured.length}</span>
-          </div>
-          <ul className="mt-2 flex flex-col gap-2">
-            {[...featured]
-              .sort((a, b) => b.myCommits - a.myCommits)
-              .map((repo) => (
-                <li key={repo.nameWithOwner}>
-                  <span className="group flex items-center gap-2.5 py-1">
-                    <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center border border-line bg-base/60 text-[12px] text-link/80">
-                      {monogram(repo.name)}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      {repo.isPrivate ? (
-                        <span className="block truncate text-[14px] leading-tight text-copy">
-                          {repo.name}
-                        </span>
-                      ) : (
-                        <a
-                          href={repo.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="steam-link block truncate text-[14px] leading-tight"
-                        >
-                          {repo.name}
-                        </a>
-                      )}
-                      <span className="t-meta block leading-tight">
-                        {daysAgo(repo.pushedAt, now)}
-                      </span>
-                    </span>
-                    <span
-                      className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[13px] text-accent"
-                      title={`${repo.myCommits} commits by you`}
-                    >
-                      {repo.myCommits.toLocaleString()}
-                    </span>
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </section>
-      ) : (
-        <section className="panel px-5 py-5">
-          <div className="stat-row">
-            <span className="stat-label">Top Repositories</span>
-            <span className="stat-value">{topRepos.length}</span>
-          </div>
-          <ul className="mt-2 flex flex-col gap-2">
-            {topRepos.map((repo) => (
-              <li key={repo.id}>
-                <a
-                  href={repo.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-2.5 py-1"
-                >
-                  <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center border border-line bg-base/60 text-[12px] text-link/80">
-                    {monogram(repo.name)}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="steam-link block truncate text-[14px] leading-tight">
-                      {repo.name}
-                    </span>
-                    <span className="t-meta block leading-tight">
-                      {daysAgo(repo.pushedAt, now)}
-                    </span>
-                  </span>
-                  <span
-                    className="flex h-[26px] min-w-[34px] shrink-0 items-center justify-center border border-accent/50 px-1 text-[13px] text-accent"
-                    title={`${repo.stars} stars`}
-                  >
-                    {repo.stars.toLocaleString()}
-                  </span>
-                </a>
               </li>
             ))}
           </ul>

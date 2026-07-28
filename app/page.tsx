@@ -67,7 +67,6 @@ export default async function Home() {
           <Sidebar
             snapshot={snapshot}
             codearena={codearena}
-            featured={featured}
             contributions={contributions}
             languages={languages}
           />
