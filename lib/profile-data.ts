@@ -100,25 +100,26 @@ export const profile = {
 export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 
 /**
- * Experience, newest first. Hand-maintained — LinkedIn has no public API, so
- * there's nothing to fetch here and nothing that can go stale on its own.
+ * Experience in the order Bradley wants it shown — roughly newest first, but
+ * arranged by hand, not sorted by date. Hand-maintained overall: LinkedIn has
+ * no public API, so there's nothing to fetch and nothing that self-corrects.
  *
  * Transcribed from Bradley's LinkedIn verbatim; don't embellish it.
  */
 export const roles: Role[] = [
-  {
-    org: "Crossing Hurdles",
-    title: "Language and Audio Engineer",
-    start: "Jun 2026",
-    blurb:
-      "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
-  },
   {
     org: "MedImpact Healthcare Systems",
     title: "Applied AI & Software Engineer Intern",
     start: "May 2026",
     location: "San Diego, CA",
     blurb: "Portal cybersecurity systems; Verdegard IT operations.",
+  },
+  {
+    org: "Crossing Hurdles",
+    title: "Language and Audio Engineer",
+    start: "Jun 2026",
+    blurb:
+      "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
   },
   {
     org: "CodeArena",
