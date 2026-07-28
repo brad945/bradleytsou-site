@@ -2,7 +2,7 @@ import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
 import ContributionSummary from "@/components/ContributionSummary";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { badges, profile, socials } from "@/lib/profile-data";
+import { profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
@@ -12,18 +12,6 @@ interface SidebarProps {
   contributions: Contributions | null;
   /** All-repo breakdown. Empty without a token — falls back to public-only. */
   languages: LanguageCount[];
-}
-
-/**
- * Badge dates are bare `YYYY-MM-DD`, which JS parses as midnight UTC — format
- * in UTC too, or anyone west of Greenwich sees the previous month.
- */
-function formatEarned(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
 }
 
 /** A grey label with a large light number, Steam's sidebar stat row. */
@@ -61,47 +49,29 @@ export default function Sidebar({
         <h2 className="text-[24px] font-light leading-tight text-live">
           Currently {profile.status.label}
         </h2>
-        <p className="t-label mt-1">{profile.status.detail}</p>
+        {/*
+          One status line, not three. "Currently shipping" and a separate
+          "Focus" row said the same thing either side of the stats.
+        */}
+        <p className="t-body mt-1 leading-snug">{profile.currentFocus}</p>
 
-        <div className="mt-7">
+        {/*
+          Zero-value rows are hidden rather than listed. "Following 0 / Gists 0"
+          fills space without telling anyone anything, and because the check is
+          live each row returns on its own once the number moves.
+        */}
+        <div className="mt-6">
           <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
-          <Stat label="Followers" value={stats?.followers ?? "—"} />
-          <Stat label="Following" value={stats?.following ?? "—"} />
-          <Stat label="Gists" value={stats?.publicGists ?? "—"} />
+          {!!stats?.followers && (
+            <Stat label="Followers" value={stats.followers} />
+          )}
+          {!!stats?.following && (
+            <Stat label="Following" value={stats.following} />
+          )}
+          {!!stats?.publicGists && (
+            <Stat label="Gists" value={stats.publicGists} />
+          )}
           <Stat label="Member Since" value={stats?.memberSince ?? "—"} />
-        </div>
-
-        <div className="mt-7">
-          <div className="stat-row">
-            <span className="stat-label">Badges</span>
-            <span className="stat-value">{badges.length}</span>
-          </div>
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {badges.map((badge) => (
-              <li
-                key={badge.name}
-                title={`${badge.name} — ${badge.description} · ${formatEarned(badge.earned)}`}
-                className="flex h-[52px] w-[52px] flex-col items-center justify-center gap-0.5 border border-line bg-base/60"
-              >
-                <span
-                  className="text-[17px] leading-none text-accent"
-                  aria-hidden
-                >
-                  {badge.glyph}
-                </span>
-                <span className="px-1 text-center text-[8px] uppercase leading-tight tracking-wide text-muted">
-                  {badge.name.split(" ")[0]}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-7">
-          <div className="stat-row">
-            <span className="stat-label">Focus</span>
-          </div>
-          <p className="t-body leading-snug">{profile.currentFocus}</p>
         </div>
       </section>
 
