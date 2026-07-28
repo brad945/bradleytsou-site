@@ -16,11 +16,16 @@ function tileTitle(project: Project): string {
 }
 
 /**
- * Steam's "Favorite Game" slot, given to CodeArena.
+ * Steam's "Favorite Game" slot.
  *
  * Driven by the live repo rather than hand-written copy: the description here
- * used to say "competitive programming platform", which the repo itself had
- * long since contradicted. Pulling it from GitHub means it can't go stale.
+ * once said "competitive programming platform", which the repo itself had long
+ * since contradicted. Pulling it from GitHub means it can't go stale.
+ *
+ * Deliberately compact. Earlier passes had a 184x87 capsule holding a
+ * two-letter monogram and a 48px commit count in its own padded box — a lot of
+ * furniture around a name, a sentence and one number. Steam's capsule works
+ * because it's real cover art; a monogram in a big empty box is just space.
  *
  * Falls back to the `profile-data` entry when there's no token, so the panel
  * never empties. Tags stay hand-curated — the API has no equivalent.
@@ -33,10 +38,10 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
     projects[0];
   if (!entry && !repo) return null;
 
-  const style = rarityStyles[entry?.rarity ?? "core"];
   const name = entry?.name ?? repo?.name ?? "";
   const blurb = repo?.description ?? entry?.blurb ?? "";
   const tags = entry?.tags ?? [];
+  const link = repo && !repo.isPrivate ? repo.url : entry?.href;
 
   return (
     <section aria-labelledby="favorite-heading" className="panel">
@@ -44,68 +49,49 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
         <h2 id="favorite-heading" className="panel-bar-title">
           Favorite Project
         </h2>
-        {/* No uppercase or tracking — Steam's panel bars use plain sentence case. */}
-        <span className={`text-[15px] font-light ${style.text}`}>
-          {rarityLabels[entry?.rarity ?? "core"]}
-        </span>
+        {repo && (
+          <span className="panel-bar-meta">
+            {repo.myCommits.toLocaleString()}{" "}
+            {repo.myCommits === 1 ? "commit" : "commits"} contributed
+          </span>
+        )}
       </div>
 
       <div className="p-5">
-        <div className="flex flex-col gap-4 sm:flex-row">
-          {/* Capsule — generated from the palette, not lifted art. */}
-          <div
-            className={`flex h-[87px] w-full shrink-0 items-center justify-center border-l-2 bg-base/60 sm:w-[184px] ${style.border}`}
-          >
-            <span
-              className={`text-[30px] font-light leading-none ${style.text}`}
-            >
-              {monogram(name)}
-            </span>
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <h3 className="text-[19px] font-light leading-tight text-bright">
-              {name}
-            </h3>
-            <p className="t-body mt-1.5">{blurb}</p>
-            <ul className="mt-3 flex flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <li
-                  key={tag}
-                  className="border border-line bg-base/50 px-1.5 py-0.5 font-mono text-[10px] text-muted"
-                >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 className="text-[19px] font-light leading-tight text-bright">
+            {name}
+          </h3>
+          <span className="t-meta">
+            {[repo?.language, entry?.period].filter(Boolean).join(" · ")}
+          </span>
         </div>
 
-        {/*
-          Steam's "Hours played" line. It used to be a 48px number in its own
-          padded box, which was a lot of furniture around one figure — it now
-          sits inline with the rest of the row.
-        */}
-        {repo && (
-          <p className="t-meta mt-4 border-t border-line/60 pt-3">
-            {repo.myCommits.toLocaleString()}{" "}
-            {repo.myCommits === 1 ? "commit" : "commits"} contributed
-            {repo.language ? ` · ${repo.language}` : ""}
-          </p>
-        )}
+        <p className="t-body mt-1.5">{blurb}</p>
 
-        {repo && !repo.isPrivate && (
-          <div className="mt-2 flex justify-end">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <ul className="flex flex-wrap gap-1.5">
+            {tags.map((tag) => (
+              <li
+                key={tag}
+                className="border border-line bg-base/50 px-1.5 py-0.5 font-mono text-[10px] text-muted"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
+
+          {link && (
             <a
-              href={repo.url}
+              href={link}
               target="_blank"
               rel="noreferrer"
-              className="steam-link text-[14px]"
+              className="steam-link shrink-0 text-[14px]"
             >
-              View source
+              {repo && !repo.isPrivate ? "View source" : "Visit"}
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );
