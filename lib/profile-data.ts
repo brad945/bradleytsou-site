@@ -192,10 +192,19 @@ export const featuredRepos: string[] = [
 export const SITE_REPO_NAME = "bradleytsou-site";
 export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;
 
+/**
+ * LinkedIn follower count.
+ *
+ * Hand-entered, and it's the only number on the page that can't self-correct:
+ * LinkedIn has no public API, so nothing refreshes this. It WILL drift.
+ * TODO(bradley): re-check it when you remember to.
+ */
+export const linkedinFollowers = 1457;
+
 export const socials: SocialLink[] = [
   // Resolves off `githubUsername` above.
   { label: "GitHub", href: `https://github.com/${githubUsername}` },
-  { label: "LinkedIn", href: "https://linkedin.com/in/your-linkedin" }, // TODO(bradley)
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/bradleytsou" },
   { label: "Email", href: `mailto:${profile.email}` },
 ];
 

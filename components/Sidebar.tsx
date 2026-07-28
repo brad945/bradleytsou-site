@@ -2,7 +2,7 @@ import { CODEARENA_ROWS, type CodeArenaStats } from "@/lib/codearena";
 import ContributionSummary from "@/components/ContributionSummary";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { profile, socials } from "@/lib/profile-data";
+import { linkedinFollowers, profile, socials } from "@/lib/profile-data";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
@@ -145,19 +145,41 @@ export default function Sidebar({
           <span className="stat-label">Links</span>
           <span className="stat-value">{socials.length}</span>
         </div>
+        {/*
+          Reach shown per link where there's a number. GitHub's is live off the
+          API; LinkedIn's is hand-entered because LinkedIn has no public API,
+          so that one silently goes stale — see `linkedinFollowers`.
+        */}
         <ul className="mt-2 flex flex-col">
-          {socials.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-                rel="noreferrer"
-                className="steam-link block py-1.5 text-[14px]"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {socials.map((link) => {
+            const reach =
+              link.label === "GitHub"
+                ? stats?.followers
+                : link.label === "LinkedIn"
+                  ? linkedinFollowers
+                  : undefined;
+
+            return (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  target={
+                    link.href.startsWith("mailto:") ? undefined : "_blank"
+                  }
+                  rel="noreferrer"
+                  className="group flex items-baseline justify-between gap-2 py-1.5"
+                >
+                  <span className="steam-link text-[14px]">{link.label}</span>
+                  {reach !== undefined && reach > 0 && (
+                    <span className="t-meta">
+                      {reach.toLocaleString()}{" "}
+                      {reach === 1 ? "follower" : "followers"}
+                    </span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </section>
     </div>
