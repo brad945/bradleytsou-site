@@ -129,11 +129,6 @@ export const roles: Role[] = [
     url: "https://codearena.co/",
   },
   {
-    org: "Dana Street Consulting",
-    title: "Software Engineer",
-    start: "Jan 2026",
-  },
-  {
     org: "Web Development at Berkeley",
     title: "Industry Developer",
     start: "Jan 2026",
@@ -148,21 +143,6 @@ export const roles: Role[] = [
       "Devised utility functions and conducted market research to model human cognition and economic theories for waste-reduction strategies at UCSB's dining halls.",
   },
   {
-    org: "BRI Youth",
-    title: "Web User Interface Developer",
-    start: "Aug 2023",
-    end: "Dec 2024",
-    blurb: "Prototyped website UI/UX for local startups and online services.",
-  },
-  {
-    org: "UCLA",
-    title: "Fullstack UI/UX Researcher",
-    start: "Jun 2023",
-    end: "Nov 2023",
-    location: "Los Angeles, CA",
-    blurb: "UCLA Technical Training Research Program (~8% acceptance rate).",
-  },
-  {
     org: "The Bay Club Company",
     title: "Lifeguard",
     start: "Jun 2021",
@@ -173,11 +153,11 @@ export const roles: Role[] = [
   },
   {
     org: "BRI Youth",
-    title: "Lead Tutor",
+    title: "Web UI Developer & Lead Tutor",
     start: "Mar 2020",
-    end: "Dec 2023",
+    end: "Dec 2024",
     blurb:
-      "Mathematics (pre-algebra through Calculus II), violin and piano. 3x Tutor of the Month, 175+ hours logged. Recitals at senior homes and public libraries.",
+      "Prototyped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
   },
 ];
 
