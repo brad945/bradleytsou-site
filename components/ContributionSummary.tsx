@@ -19,7 +19,6 @@ export default function ContributionSummary({
 }) {
   const {
     total,
-    private: inPrivate,
     pullRequests,
     pullRequestsMerged,
     issues,
@@ -40,7 +39,6 @@ export default function ContributionSummary({
     { label: "Pull requests reviewed", value: String(reviews) },
     { label: "Issues opened", value: String(issues) },
     { label: "Repositories created", value: String(repositoriesCreated) },
-    { label: "In private repositories", value: inPrivate.toLocaleString() },
   ];
 
   return (
