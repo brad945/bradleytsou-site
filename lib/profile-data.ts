@@ -168,6 +168,15 @@ export const roles: Role[] = [
       "Dining hall waste study: devised utility functions and conducted market research to model human cognition and economic theories against waste-reduction strategies at UCSB's dining halls.",
   },
   {
+    org: "BRI Youth",
+    tags: ["UI/UX", "Frontend", "Tutoring", "Music"],
+    title: "Web UI Developer & Lead Tutor",
+    start: "Mar 2020",
+    end: "Dec 2024",
+    blurb:
+      "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
+  },
+  {
     org: "The Bay Club Company",
     tags: ["Lifeguarding", "First Response"],
     title: "Lifeguard",
@@ -176,15 +185,6 @@ export const roles: Role[] = [
     location: "Redwood City, CA",
     blurb:
       "40+ hours per week. Red Cross certified 2021-2025; first-responder training.",
-  },
-  {
-    org: "BRI Youth",
-    tags: ["UI/UX", "Frontend", "Tutoring", "Music"],
-    title: "Web UI Developer & Lead Tutor",
-    start: "Mar 2020",
-    end: "Dec 2024",
-    blurb:
-      "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
   },
 ];
 
