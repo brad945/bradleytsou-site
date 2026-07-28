@@ -39,6 +39,21 @@ function Stat({
  * a judgement call, but every one of them is derived — nothing here asserts
  * presence the data can't support.
  */
+/** "12 minutes", "6 hours", "3 days" — no "ago", the caller adds it. */
+function sinceLabel(iso: string, now: number): string | null {
+  const then = Date.parse(iso);
+  if (!Number.isFinite(then)) return null;
+  const mins = Math.max(0, Math.round((now - then) / 6e4));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} ${mins === 1 ? "minute" : "minutes"} ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  const days = Math.round(hours / 24);
+  if (days < 30) return `${days} ${days === 1 ? "day" : "days"} ago`;
+  const months = Math.round(days / 30);
+  return `${months} ${months === 1 ? "month" : "months"} ago`;
+}
+
 function pushStatus(lastPush: string | null, now: number) {
   const then = lastPush ? Date.parse(lastPush) : NaN;
   if (!Number.isFinite(then)) {
@@ -58,7 +73,9 @@ export default function Sidebar({
   lastPush,
 }: SidebarProps) {
   const { stats } = snapshot;
-  const status = pushStatus(lastPush, Date.parse(snapshot.fetchedAt));
+  const now = Date.parse(snapshot.fetchedAt);
+  const status = pushStatus(lastPush, now);
+  const since = lastPush ? sinceLabel(lastPush, now) : null;
   // The token-backed breakdown sees private repos and every language per repo;
   // the snapshot's is public-only primaryLanguage and reads far too narrow.
   const langs = languages.length > 0 ? languages : snapshot.languages;
@@ -73,6 +90,8 @@ export default function Sidebar({
         <h2 className={`text-[24px] font-light leading-tight ${status.tone}`}>
           {status.label}
         </h2>
+        {/* Says exactly what it measures — a push, not presence. */}
+        {since && <p className="t-meta mt-1">Last commit {since}</p>}
         {/*
           Zero-value rows are hidden rather than listed. "Following 0 / Gists 0"
           fills space without telling anyone anything, and because the check is
