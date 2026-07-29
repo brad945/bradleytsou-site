@@ -10,8 +10,13 @@ Bradley's personal site, deliberately NOT a generic hover/scroll-animation
 portfolio. It's structured like a Steam profile page, but every stat on it
 is real, not decorative:
 - Profile header = real "about me" info (name, location, current focus)
-  plus a Level circle and "Years of Service" card, where level is years
-  since his first commit rather than a game stat
+  plus a Level circle and "Years of Service" card. These are two
+  different numbers now, as they are on Steam, where level comes from
+  badge XP and has nothing to do with account age. Years of Service is
+  derived from `profile.codingSince` and picks its own badge art.
+  **`profileLevel` (20) is hand-set** — nothing derives or checks it, so
+  it joins `codingSince` and the badge dates on the list of values that
+  can't self-correct. Bradley asked for it directly
 - Favorite Project = Steam's "Favorite Game" slot, given to the highest-
   rarity project
 - Item Showcase = real projects as an inventory grid, rarity tier = how

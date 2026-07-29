@@ -359,7 +359,19 @@ export function monogram(name: string): string {
 }
 
 /**
- * Level = full years since `codingSince`.
+ * The number in the Level circle. Set by hand.
+ *
+ * On Steam, Level and Years of Service are genuinely two different stats —
+ * level comes from badge XP, not from how long the account has existed — so
+ * this being its own number is truer to the reference than reusing the years
+ * was. But note what it costs: unlike everything else on the page, nothing
+ * derives or checks this. See the note in CLAUDE.md.
+ */
+export const profileLevel = 20;
+
+/**
+ * Years of Service — full years since `codingSince`. Drives the service card
+ * and picks its badge art.
  *
  * It used to also return a percentage through the current year and the start
  * year, for a "57% to 6 · since 2021" line under Years of Service. That line is
@@ -370,5 +382,5 @@ export function experience(now: Date = new Date()) {
   const start = new Date(profile.codingSince);
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000;
   const elapsed = Math.max(0, now.getTime() - start.getTime()) / msPerYear;
-  return { level: Math.floor(elapsed) };
+  return { years: Math.floor(elapsed) };
 }

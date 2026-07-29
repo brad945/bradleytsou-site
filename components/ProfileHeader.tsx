@@ -2,7 +2,12 @@ import Image from "next/image";
 import HeaderActions from "@/components/HeaderActions";
 import NameHistory from "@/components/NameHistory";
 import type { GitHubStats } from "@/lib/github";
-import { aliases, experience, profile } from "@/lib/profile-data";
+import {
+  aliases,
+  experience,
+  profile,
+  profileLevel,
+} from "@/lib/profile-data";
 
 /**
  * Highest Years of Service badge with art in `public/`. Valve publishes these
@@ -97,17 +102,18 @@ export default function ProfileHeader({
   stats,
   sourceUrl,
 }: ProfileHeaderProps) {
-  const { level } = experience();
+  const { years } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
   /*
-   * Keyed off `level`, not hardcoded to the current one: `level` rolls over on
-   * its own every January, and a fixed "5" badge would quietly contradict the
-   * number beside it. Only the years present in `public/` are wired up — past
+   * Keyed off the derived years, not hardcoded: it rolls over on its own every
+   * January, and fixed art would quietly contradict the card beside it. Note
+   * this tracks Years of Service, NOT the Level circle — on Steam those are
+   * unrelated numbers. Only the years present in `public/` are wired up; past
    * that it falls back to the generated tile rather than a broken image.
    */
   const badge =
-    level >= 1 && level <= STEAM_BADGE_YEARS ? `/steam-years-${level}.png` : null;
+    years >= 1 && years <= STEAM_BADGE_YEARS ? `/steam-years-${years}.png` : null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. Nothing here overflows, so nothing needs clipping.
@@ -217,7 +223,7 @@ export default function ProfileHeader({
               Level
             </span>
             <span className="flex h-[37px] w-[37px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
-              {level}
+              {profileLevel}
             </span>
           </div>
 
@@ -231,14 +237,14 @@ export default function ProfileHeader({
               */
               <Image
                 src={badge}
-                alt={`Steam ${level}-year service badge`}
+                alt={`Steam ${years}-year service badge`}
                 width={44}
                 height={44}
                 className="h-11 w-11 shrink-0"
               />
             ) : (
               <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
-                {level}
+                {years}
               </span>
             )}
             <div className="min-w-0">
