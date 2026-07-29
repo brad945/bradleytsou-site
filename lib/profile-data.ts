@@ -176,16 +176,6 @@ export const roles: Role[] = [
     blurb:
       "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
   },
-  {
-    org: "The Bay Club Company",
-    tags: ["Lifeguarding", "First Response"],
-    title: "Lifeguard",
-    start: "Jun 2021",
-    end: "Oct 2023",
-    location: "Redwood City, CA",
-    blurb:
-      "40+ hours per week. Red Cross certified 2021-2025; first-responder training.",
-  },
 ];
 
 /**
