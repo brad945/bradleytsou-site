@@ -116,13 +116,18 @@ export default function Sidebar({
         */}
         {contributions && (
           <div className="mt-7">
+            {/*
+              No "Past year" subtext. It's the only window GitHub's
+              contributions API reports, so it wasn't distinguishing this
+              number from an alternative — it just cost a line in a narrow
+              column.
+            */}
             <div className="stat-row">
               <span className="stat-label">Contributions</span>
               <span className="stat-value">
                 {contributions.total.toLocaleString()}
               </span>
             </div>
-            <p className="t-meta -mt-1">Past year</p>
 
             <div className="mt-3">
               <Stat label="Pull Requests" value={contributions.pullRequests} />
