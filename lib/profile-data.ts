@@ -358,14 +358,17 @@ export function monogram(name: string): string {
   return word.slice(0, 2).toUpperCase();
 }
 
-/** Level = full years since `codingSince`; XP = progress through the current year. */
+/**
+ * Level = full years since `codingSince`.
+ *
+ * It used to also return a percentage through the current year and the start
+ * year, for a "57% to 6 · since 2021" line under Years of Service. That line is
+ * gone: a percentage toward the next birthday of a date is the decorative
+ * progress framing the rest of the page had already dropped.
+ */
 export function experience(now: Date = new Date()) {
   const start = new Date(profile.codingSince);
   const msPerYear = 365.25 * 24 * 60 * 60 * 1000;
   const elapsed = Math.max(0, now.getTime() - start.getTime()) / msPerYear;
-  const level = Math.floor(elapsed);
-  const progress = Math.round((elapsed - level) * 100);
-  // getUTCFullYear, not getFullYear: "2021-01-01" parses as midnight UTC, which
-  // is 31 Dec 2020 anywhere west of Greenwich — the year would read one early.
-  return { level, progress, sinceYear: start.getUTCFullYear() };
+  return { level: Math.floor(elapsed) };
 }

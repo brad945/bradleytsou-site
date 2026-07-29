@@ -91,7 +91,7 @@ export default function ProfileHeader({
   stats,
   sourceUrl,
 }: ProfileHeaderProps) {
-  const { level, progress, sinceYear } = experience();
+  const { level } = experience();
   const avatar = stats?.avatarUrl ?? null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
@@ -203,9 +203,6 @@ export default function ProfileHeader({
             <div className="min-w-0">
               <p className="text-[14px] leading-tight text-copy">
                 Years of Service
-              </p>
-              <p className="t-meta leading-tight">
-                {progress}% to {level + 1} · since {sinceYear}
               </p>
             </div>
           </div>
