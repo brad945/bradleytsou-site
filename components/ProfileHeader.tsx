@@ -233,17 +233,19 @@ export default function ProfileHeader({
                 Valve's own badge art, at Bradley's explicit request — the one
                 Steam-owned asset on the page, overriding the "everything is
                 generated from the palette" rule the rest of the site follows.
-                Sourced at 80px and shown at 44 so it stays sharp on retina.
+                Sourced at 80px and shown at 56. 1x still samples down from the
+                source, and Next's 2x variant caps at that same 80 — so this
+                is about as large as it goes before the art upscales.
               */
               <Image
                 src={badge}
                 alt={`Steam ${years}-year service badge`}
-                width={44}
-                height={44}
-                className="h-11 w-11 shrink-0"
+                width={56}
+                height={56}
+                className="h-14 w-14 shrink-0"
               />
             ) : (
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[20px] font-extralight text-accent">
                 {years}
               </span>
             )}
