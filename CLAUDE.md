@@ -57,12 +57,33 @@ server component with a 5-minute revalidate.
 
 Versions are pinned on purpose: `next@14.2.35` / `react@18` (the App Router
 API this was written against) and `tailwindcss@^3` (Tailwind v4 drops
-`tailwind.config.ts` in favour of CSS `@theme`, which would break the token
+`src/tailwind.config.ts` in favour of CSS `@theme`, which would break the token
 rule below). Don't bump either without updating this file.
+
+## Repo layout
+
+Flattened to 8 top-level entries at Bradley's request (it was 13). All
+source lives under `src/` — `app/`, `components/`, `lib/` and the Tailwind
+config. `public/`, `package.json`, `package-lock.json`, `tsconfig.json`,
+`next.config.mjs`, `.gitignore` and this file are the rest.
+
+Two things moved somewhere non-obvious, so look here before recreating them:
+- **PostCSS config is the `postcss` key in `package.json`**, not
+  `postcss.config.mjs`. Next's own `findConfig` checks `package.json`
+  first, so this is a supported location, not a hack. It carries the
+  Tailwind config path.
+- **`.env.example` is gone**; its contents are the "Environment" section
+  at the bottom of this file.
+
+`src/tailwind.config.ts`'s `content` globs stay **root-relative**
+(`./src/**/*`). Tailwind only rebases them onto the config file's own
+directory when `content.relative` is set, which it isn't — so writing
+them relative to `src/` would silently match nothing and every utility
+class would stop emitting.
 
 ## Current file structure
 
-- `lib/profile-data.ts` — all editable content (name, badges, projects,
+- `src/lib/profile-data.ts` — all editable content (name, badges, projects,
   GitHub username). `githubUsername` is set to `brad945`, so the live
   data layer is on. Projects are real now — every `blurb` is the repo's
   own GitHub description, copied verbatim so it can be checked.
@@ -79,7 +100,7 @@ rule below). Don't bump either without updating this file.
   elsewhere become "no overlap" build errors the moment it's edited.
   Until it's set the page prerenders fully static with the feed's empty
   state; once it's real the fetch appears and the route becomes ISR.
-- `lib/github.ts` — one `getGitHubSnapshot()` call returns everything the
+- `src/lib/github.ts` — one `getGitHubSnapshot()` call returns everything the
   page needs from three requests: user stats, public events, and owned
   repos. It also derives the 2-week event count, per-repo commit counts
   over the same window, a language breakdown, and a stars-ranked repo
@@ -90,7 +111,7 @@ rule below). Don't bump either without updating this file.
   present (raises the rate limit from 60/hr/IP to 5000/hr) but works fine
   without one. Forks and archived repos are filtered out — they'd
   dominate the "recently played" slot without saying anything.
-- Featured repos — `getFeaturedRepos()` in `lib/github.ts`, driven by
+- Featured repos — `getFeaturedRepos()` in `src/lib/github.ts`, driven by
   `featuredRepos` in `profile-data.ts`, rendered by `FeaturedRepoRow` in
   `ActivityFeed` and by the sidebar's Active Repositories block.
   **This replaced the automatic "most recently pushed public repo" list**,
@@ -108,14 +129,14 @@ rule below). Don't bump either without updating this file.
   **not linked** — a visitor gets a 404. Needs `GITHUB_TOKEN`; without one
   both blocks fall back to the public/starred lists rather than emptying.
   Don't add coursework repos to `featuredRepos`.
-- `components/Experience.tsx` — work history in the "recently played" row
+- `src/components/Experience.tsx` — work history in the "recently played" row
   shape, fed by `roles` in `profile-data.ts`. Transcribed verbatim from
   Bradley's LinkedIn; don't embellish it, and remember it's the only panel
   that can go stale silently since there's nothing to fetch.
-- `components/ContributionSummary.tsx` — contributions as counts, not a
+- `src/components/ContributionSummary.tsx` — contributions as counts, not a
   chart. A weekly bar chart lived here first; it showed *when* the work
   happened but never what it was, which is the question a reader actually
-  has. Fed by `getContributions()` in `lib/github.ts` — **GraphQL, so
+  has. Fed by `getContributions()` in `src/lib/github.ts` — **GraphQL, so
   auth-only**: no `GITHUB_TOKEN`, no panel.
   The type breakdown comes from **author-scoped search**, not from
   `contributionsCollection.total*Contributions`. Those count public
@@ -125,20 +146,20 @@ rule below). Don't bump either without updating this file.
   Requires **"Include private contributions on my profile"** enabled, or
   the total collapses to public activity alone (10 vs 452).
 
-- `lib/deveval.ts` — live stats from Bradley's *own* product (called
+- `src/lib/deveval.ts` — live stats from Bradley's *own* product (called
   CodeArena until mid-2026; the backing repo is still `codearenamvp`, and
   `FAVORITE_REPO` / `ghRepo` must keep that name because they're API
   identifiers, not display text), not
   someone else's API. This is the block that makes "every number is
   fetched, not written" say something about him. Configured by
-  `DEVEVAL_STATS_URL` (see `.env.example`); the endpoint should return
+  `DEVEVAL_STATS_URL` (see Environment, below); the endpoint should return
   JSON with any subset of `submissions` / `matches` / `players` /
   `problems`. Unknown keys are ignored and non-finite values dropped, so
   a malformed or half-migrated response loses rows rather than rendering
   NaN. Unset, unreachable, non-OK, unparseable, or carrying no usable
   number -> returns null and the sidebar block **hides itself entirely**.
   It never invents a number. All four failure paths are verified.
-- `components/ProfileHeader.tsx` — full-width identity block over the
+- `src/components/ProfileHeader.tsx` — full-width identity block over the
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Coding" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
@@ -220,7 +241,7 @@ rule below). Don't bump either without updating this file.
   drives it.
   The header must **not** get `overflow-hidden` — it would clip the alias
   dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
-- `components/SiteNav.tsx` — Steam's global header: dark full-width bar
+- `src/components/SiteNav.tsx` — Steam's global header: dark full-width bar
   (`chrome` #171a21), wordmark left, uppercase nav items beside it,
   signed-in user + avatar right. Uppercase with tracking is wrong nearly
   everywhere else here but it's exactly what Steam's nav does, so it
@@ -232,7 +253,7 @@ rule below). Don't bump either without updating this file.
   `scroll-padding-top` on `html` eases to the section and keeps the
   heading clear of the nav; both are disabled under
   `prefers-reduced-motion`.
-- `components/HeaderActions.tsx` — Steam's profile action row, sat where
+- `src/components/HeaderActions.tsx` — Steam's profile action row, sat where
   Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
   Steam's other-profile set rather than Edit — pared to **Message /
   More ⋯**, since mailing Bradley is the action a visitor is actually
@@ -259,14 +280,14 @@ rule below). Don't bump either without updating this file.
   `snapshot.publicRepoNames` is a truthful visibility check — the row
   appears by itself the day the repo is flipped public, and until then it
   can't send visitors to a 404.
-- `components/NameHistory.tsx` — client component for the caret next to
+- `src/components/NameHistory.tsx` — client component for the caret next to
   the name that opens Steam's alias history ("This user has also played
   as:"). Closes on Escape (returning focus to the caret) and on outside
   click. The dropdown anchors to the **caret**, not the name — the caret
   sits in its own `relative` span so that span is the containing block,
   putting the box's top-left directly under the arrow. Content comes from
-  `aliases` in `lib/profile-data.ts` and is still placeholder.
-- `components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
+  `aliases` in `src/lib/profile-data.ts` and is still placeholder.
+- `src/components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
   is Steam's "Favorite Game" slot. `FAVORITE_REPO` picks which repo, and
   the matching `projects` entry is found by id == repo name lowercased.
   Its copy comes from the **live repo description**, not `profile-data` —
@@ -278,7 +299,7 @@ rule below). Don't bump either without updating this file.
   The default export is the default export is the square inventory
   grid with rarity-coloured tile outlines and the "N Projects Shown"
   counter in the grid's leftover space. Tile detail lives in `title`.
-- `components/ActivityFeed.tsx` — Steam's Recent Activity panel: the
+- `src/components/ActivityFeed.tsx` — Steam's Recent Activity panel: the
   commits-past-2-weeks total in the header bar, then a row per featured
   repo. Each row's progress strip is **commits in the last two weeks**,
   author-scoped — it replaced a "your share of commits" bar that measured
@@ -287,19 +308,19 @@ rule below). Don't bump either without updating this file.
   summed from the rows rather than using `stats.eventsPast2Weeks`, which
   sees only public events and reads near-zero for a mostly-private
   account. `PublicRepoRow` is the no-token fallback.
-- `components/Sidebar.tsx` — the right column: status heading, stat rows
+- `src/components/Sidebar.tsx` — the right column: status heading, stat rows
   (repos / followers / following / gists / member since), badge tiles,
   focus, a language breakdown, and a stars-ranked Top Repositories list
   that fills the slot Steam uses for the friends list.
-- `components/AutoRefresh.tsx` — tiny client component that calls
+- `src/components/AutoRefresh.tsx` — tiny client component that calls
   `router.refresh()` on the revalidate interval so the killfeed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a
   new request; this supplies the request). Pauses while the tab is hidden.
-- `components/Comments.tsx` — built but NOT wired into the page yet
+- `src/components/Comments.tsx` — built but NOT wired into the page yet
   (deliberately parked). Uses giscus (GitHub Discussions-backed comments,
   not a fake widget). Needs `data-repo-id` / `data-category-id` from
   giscus.app once Discussions are enabled on the repo.
-- `app/page.tsx` — SiteNav, full-width ProfileHeader, then a
+- `src/app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split that stacks below `lg`. `max-w-profile`
   is **990px**, not Steam's 940 — widened 25px per side at Bradley's
   request for more text room, so the columns land at ~649 / 16 / ~325.
@@ -307,7 +328,7 @@ rule below). Don't bump either without updating this file.
   **Favorite Project, Experience, Recent Activity, Item Showcase**.
   Contributions moved to the sidebar — as five short counts it never
   needed the main column's width. Comments import is commented out on purpose.
-- `app/layout.tsx` — fonts (next/font), metadata, and the two fixed
+- `src/app/layout.tsx` — fonts (next/font), metadata, and the two fixed
   background layers (nebula glow, then a tiled starfield).
 
 ## Design tokens (already in tailwind.config.ts)
@@ -335,7 +356,7 @@ Fonts and not bundleable). Mulish is the standard free substitute and is
 what's loaded, as a variable font so weights 200-300 are actually
 available rather than being synthesised.
 
-The scale lives as `.t-*` classes in `app/globals.css` and is measured off
+The scale lives as `.t-*` classes in `src/app/globals.css` and is measured off
 the reference screenshots against a 940px column. Four traits carry most
 of the resemblance, and all four are easy to lose:
 - **very light weights** (200-300) on anything large — sidebar counts and
@@ -358,11 +379,11 @@ Two things under `backgroundImage` survive and neither is decoration:
 from the top-left, and flattening it makes the bevel vanish). Don't add
 new ones.
 Reusable Steam-shaped classes (`.panel`, `.panel-bar`, `.stat-row`,
-`.steam-link`, `.steam-button`) live in `app/globals.css`.
+`.steam-link`, `.steam-button`) live in `src/app/globals.css`.
 
 Rarity tiers (`rarity.core` / `rarity.major` / `rarity.side`) are derived
 from `accent` / `nebula` / `muted` so the showcase can't drift off-palette.
-Class strings per tier live in `rarityStyles` in `lib/profile-data.ts` and
+Class strings per tier live in `rarityStyles` in `src/lib/profile-data.ts` and
 are written out in full — Tailwind's scanner can't see concatenated names.
 
 ## Explicitly NOT built yet — do these next, in this order
@@ -375,7 +396,7 @@ are written out in full — Tailwind's scanner can't see concatenated names.
    to be a literal CS2 map, can be styled abstractly) where pins are skill
    categories. Clicking a pin opens a loadout-card style panel (rarity-tiered
    tech stack grid, similar visual language to Item Showcase).
-3. **Wire up Comments.tsx** into `app/page.tsx` once Bradley has enabled
+3. **Wire up Comments.tsx** into `src/app/page.tsx` once Bradley has enabled
    GitHub Discussions on the repo and has real giscus IDs.
 
 ## Deployment (Bradley needs to do the account-specific parts himself)
@@ -424,4 +445,27 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
   than hardcoded, so the art tracks the number beside it; years past
   `STEAM_BADGE_YEARS` fall back to the generated tile. Don't generalise
   this into permission for other Steam artwork.
-- Don't hardcode colors outside the token system in `tailwind.config.ts`.
+- Don't hardcode colors outside the token system in `src/tailwind.config.ts`.
+
+## Environment
+
+Both optional; this was `.env.example` before the repo was flattened. Put
+real values in `.env.local`, which `.gitignore` already covers.
+
+```sh
+# Optional. Raises the GitHub API rate limit from 60/hr/IP to 5000/hr.
+# A fine-grained PAT with no scopes is enough — it only needs to be valid.
+GITHUB_TOKEN=
+
+# Optional. Points the sidebar's DevEval block at your own API.
+# Expects JSON with any subset of these keys; unknown keys are ignored and
+# non-numeric values are dropped:
+#   { "submissions": 1204, "matches": 318, "players": 96, "problems": 42 }
+# Unset, unreachable, or unusable -> the block hides itself. It never
+# invents a number.
+DEVEVAL_STATS_URL=
+```
+
+Without `GITHUB_TOKEN` the status line, contributions, languages and every
+featured-repo row degrade to their empty states — the page still builds.
+It is needed in Vercel's environment variables too, not just locally.

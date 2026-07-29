@@ -158,11 +158,12 @@ const starfield = [
 ].join(", ");
 
 const config: Config = {
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./lib/**/*.{ts,tsx}",
-  ],
+  /*
+   * Resolved from the project root, not from this file's directory: Tailwind
+   * only rebases these onto the config's own folder when `content.relative`
+   * is set, and it isn't. Keep them root-relative if this file ever moves.
+   */
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
