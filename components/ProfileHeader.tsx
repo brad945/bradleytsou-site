@@ -233,9 +233,11 @@ export default function ProfileHeader({
                 Valve's own badge art, at Bradley's explicit request — the one
                 Steam-owned asset on the page, overriding the "everything is
                 generated from the palette" rule the rest of the site follows.
-                Sourced at 80px and shown at 56. 1x still samples down from the
-                source, and Next's 2x variant caps at that same 80 — so this
-                is about as large as it goes before the art upscales.
+                Sourced at 80px, the largest Valve publishes for these (100
+                and up 404), and shown at 56. Measured: Next's 2x candidate
+                caps at the source's own 80, so on a 2x display 56 CSS px
+                asks for 112 device px and gets 80 — very slightly soft. Going
+                bigger makes that worse, since there's no larger source.
               */
               <Image
                 src={badge}

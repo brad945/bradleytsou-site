@@ -71,21 +71,26 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
         </button>
 
         {open && (
-          <div className="absolute left-0 top-full z-20 mt-1 w-[250px] bg-menu shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
-            <p className="px-4 pb-1 pt-3 text-[15px] text-bright">
+          <div className="absolute left-0 top-full z-20 mt-1 w-[212px] bg-menu shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
+            {/*
+              212px is set by this line, not chosen round: at 13px it measures
+              ~175px and the 12px side padding takes it to ~200, so the header
+              still holds one line. Narrow it further and it wraps.
+            */}
+            <p className="whitespace-nowrap px-3 pb-0.5 pt-2.5 text-[13px] text-bright">
               This user has also played as:
             </p>
 
             {aliases.length > 0 ? (
-              <ul className="py-1 pb-3">
+              <ul className="py-0.5 pb-2">
                 {aliases.map((alias) => (
-                  <li key={alias} className="px-4 py-[7px] text-[15px] text-copy">
+                  <li key={alias} className="px-3 py-[5px] text-[13px] text-copy">
                     {alias}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-4 py-3 text-[14px] text-muted">No previous aliases</p>
+              <p className="px-3 py-2.5 text-[13px] text-muted">No previous aliases</p>
             )}
           </div>
         )}
