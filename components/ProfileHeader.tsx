@@ -172,14 +172,11 @@ export default function ProfileHeader({
           <div className="min-w-0 flex-1">
             <NameHistory name={profile.name} aliases={aliases} />
 
-            <p className="t-label mt-1 flex flex-wrap items-center gap-x-2">
-              <span>{profile.handle}</span>
-              <span className="text-muted/60">·</span>
-              <span>{profile.pronouns}</span>
-              <span className="text-muted/60">·</span>
-              <span>{profile.location}</span>
-            </p>
-
+            {/*
+              Handle, pronouns and location used to sit here as a mono strip.
+              Removed at Bradley's request — the handle repeats the avatar and
+              the nav, and the other two aren't what he wants read first.
+            */}
             <p className="t-body mt-4 max-w-[46ch]">{profile.tagline}</p>
 
             <p className="t-body mt-2 text-muted">
