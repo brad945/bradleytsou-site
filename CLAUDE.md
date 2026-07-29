@@ -10,9 +10,9 @@ Bradley's personal site, deliberately NOT a generic hover/scroll-animation
 portfolio. It's structured like a Steam profile page, but every stat on it
 is real, not decorative:
 - Profile header = real "about me" info (name, location, current focus)
-  plus a Level circle and "Years of Service" card. These are two
+  plus a Level circle and "Years of Coding" card. These are two
   different numbers now, as they are on Steam, where level comes from
-  badge XP and has nothing to do with account age. Years of Service is
+  badge XP and has nothing to do with account age. Years of Coding is
   derived from `profile.codingSince` and picks its own badge art.
   **`profileLevel` (20) is hand-set** — nothing derives or checks it, so
   it joins `codingSince` and the badge dates on the list of values that
@@ -140,7 +140,7 @@ rule below). Don't bump either without updating this file.
   It never invents a number. All four failure paths are verified.
 - `components/ProfileHeader.tsx` — full-width identity block over the
   profile-background gradient: framed avatar, name, location, summary,
-  and the right-hand Level circle + "Years of Service" card. Level is
+  and the right-hand Level circle + "Years of Coding" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
   The right-hand block is matched to the reference by ratio, not by eye.
   Against the "Level" font-size: **circle diameter 1.08x**, ring 6.4% of

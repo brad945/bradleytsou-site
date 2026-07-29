@@ -374,11 +374,11 @@ export function monogram(name: string): string {
 export const profileLevel = 20;
 
 /**
- * Years of Service — full years since `codingSince`. Drives the service card
+ * Years of Coding — full years since `codingSince`. Drives that card
  * and picks its badge art.
  *
  * It used to also return a percentage through the current year and the start
- * year, for a "57% to 6 · since 2021" line under Years of Service. That line is
+ * year, for a "57% to 6 · since 2021" line under that card. That line is
  * gone: a percentage toward the next birthday of a date is the decorative
  * progress framing the rest of the page had already dropped.
  */

@@ -10,7 +10,7 @@ import {
 } from "@/lib/profile-data";
 
 /**
- * Highest Years of Service badge with art in `public/`. Valve publishes these
+ * Highest Steam Years of Service badge with art in `public/`. Valve publishes
  * well past 10; add the file and raise this when the number gets there.
  */
 const STEAM_BADGE_YEARS = 10;
@@ -108,7 +108,7 @@ export default function ProfileHeader({
   /*
    * Keyed off the derived years, not hardcoded: it rolls over on its own every
    * January, and fixed art would quietly contradict the card beside it. Note
-   * this tracks Years of Service, NOT the Level circle — on Steam those are
+   * this tracks the Years of Coding card, NOT the Level circle — those are
    * unrelated numbers. Only the years present in `public/` are wired up; past
    * that it falls back to the generated tile rather than a broken image.
    */
@@ -205,7 +205,7 @@ export default function ProfileHeader({
 
         {/*
           Steam's right-hand header block. The Level line is sized from the
-          reference (see below); the Years of Service card is deliberately the
+          reference (see below); the Years of Coding card is deliberately the
           plain flat version — a bevelled-tile treatment was tried and reverted.
         */}
         <div className="lg:pl-2">
@@ -240,7 +240,7 @@ export default function ProfileHeader({
               */
               <Image
                 src={badge}
-                alt={`Steam ${years}-year service badge`}
+                alt={`Steam ${years}-year badge`}
                 width={56}
                 height={56}
                 className="h-14 w-14 shrink-0"
@@ -252,7 +252,7 @@ export default function ProfileHeader({
             )}
             <div className="min-w-0">
               <p className="text-[14px] leading-tight text-copy">
-                Years of Service
+                Years of Coding
               </p>
             </div>
           </div>
