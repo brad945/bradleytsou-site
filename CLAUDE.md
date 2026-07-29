@@ -157,9 +157,11 @@ rule below). Don't bump either without updating this file.
      padding is obviously wrong, and anything thicker stops reading as
      a frame.
   2. **The gradient is radial, not linear**, with the light source off
-     the top-left. But the range is **narrow** — medium greys
-     (#8a8e94 → #575b61) throughout. A wide light-to-dark sweep reads as
-     a completely different object.
+     the top-left. The range stays inside medium grey
+     (#9a9ea4 → #4b4f55) — widened once, by request, from an earlier
+     #8a8e94 → #575b61 that read nearly flat. That's about as far as it
+     goes: a genuinely wide light-to-dark sweep stops reading as a
+     brushed-metal frame and becomes a different object.
   3. **It's a 3D bevel, not a flat band.** Light on the top/left edges,
      dark on the bottom/right, with the photo in a sunken well below it
      (the reverse: dark top/left, light bottom/right). `frameHi` /

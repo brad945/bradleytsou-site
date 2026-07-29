@@ -39,13 +39,13 @@ const tokens = {
    * is mid-grey throughout with only a gentle top-left-to-bottom-right fall.
    * A wide light-to-dark range reads as a completely different object.
    */
-  steelLight: "#8a8e94",
-  steel: "#74787e",
-  steelMid: "#65696f",
-  steelDark: "#575b61",
+  steelLight: "#9a9ea4",
+  steel: "#787c82",
+  steelMid: "#60646a",
+  steelDark: "#4b4f55",
   /** Raised-bevel highlight (top/left edges) and shadow (bottom/right). */
-  frameHi: "#9ea3a9",
-  frameLo: "#484c51",
+  frameHi: "#b0b5bb",
+  frameLo: "#3e4247",
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
   /** Global nav bar — Steam's header sits darker and bluer than the page. */
