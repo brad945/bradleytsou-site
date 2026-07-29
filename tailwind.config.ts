@@ -206,8 +206,14 @@ const config: Config = {
         panel: "3px",
       },
       maxWidth: {
-        // 616 main + 16 gap + 308 sidebar — Steam's profile column widths.
-        profile: "940px",
+        /*
+         * Steam's own column widths are 616 main + 16 gap + 308 sidebar = 940.
+         * Widened 25px per side at Bradley's request, to give the text more
+         * room: 990 splits 2fr/1fr into ~649 + 16 + ~325. A deliberate
+         * departure from the reference — the ratio is kept, the absolute
+         * widths no longer match Steam's.
+         */
+        profile: "990px",
       },
       keyframes: {
         // Status pulse, tied to real "is the GitHub feed live" state.
