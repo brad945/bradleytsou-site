@@ -188,18 +188,17 @@ export default function ProfileHeader({
               name: at the old body size they read as a caption rather than as
               the point of the block. 17px with snug leading.
 
-              `text-wrap: balance` rather than a hand-tuned max-width: the
-              focus line is long enough to wrap at this column width, and left
-              alone it drops "@ MedImpact" onto a line by itself. Balance
-              splits it evenly instead, and keeps doing so if either line's
-              text changes — a fixed ch cap would only fit today's wording.
+              `text-wrap: balance` rather than a hand-tuned max-width. Either
+              line can outgrow the column as the wording changes, and balance
+              splits it evenly whenever it does instead of leaving a one-word
+              last line. A fixed ch cap would only ever fit today's text.
             */}
             <p className="mt-3.5 max-w-[46ch] text-[17px] leading-snug text-copy [text-wrap:balance]">
               {profile.tagline}
             </p>
 
             <p className="mt-2 max-w-[46ch] text-[17px] leading-snug text-muted [text-wrap:balance]">
-              Currently: {profile.currentFocus}
+              {profile.currentFocus}
             </p>
           </div>
         </div>
