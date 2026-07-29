@@ -210,18 +210,16 @@ export default function Sidebar({
           <span className="stat-value">{socials.length}</span>
         </div>
         {/*
-          Reach shown per link where there's a number. GitHub's is live off the
-          API; LinkedIn's is hand-entered because LinkedIn has no public API,
-          so that one silently goes stale — see `linkedinFollowers`.
+          Reach shown per link where there's a number — now only LinkedIn,
+          since GitHub was the live one and it's been replaced by Devpost.
+          LinkedIn's is hand-entered because LinkedIn has no public API, so it
+          silently goes stale — see `linkedinFollowers`. Devpost gets no count
+          rather than an invented one.
         */}
         <ul className="mt-2 flex flex-col">
           {socials.map((link) => {
             const reach =
-              link.label === "GitHub"
-                ? stats?.followers
-                : link.label === "LinkedIn"
-                  ? linkedinFollowers
-                  : undefined;
+              link.label === "LinkedIn" ? linkedinFollowers : undefined;
 
             return (
               <li key={link.label}>

@@ -227,12 +227,26 @@ export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAM
  * Hand-entered, and it's the only number on the page that can't self-correct:
  * LinkedIn has no public API, so nothing refreshes this. It WILL drift.
  * TODO(bradley): re-check it when you remember to.
+ *
+ * Annotated `: number` for the same reason `githubUsername` is annotated
+ * `: string` — otherwise TypeScript infers the literal type `1457`, and the
+ * singular/plural check in Sidebar becomes a "no overlap" build error now that
+ * this is the only reach value left.
  */
-export const linkedinFollowers = 1457;
+export const linkedinFollowers: number = 1457;
 
 export const socials: SocialLink[] = [
-  // Resolves off `githubUsername` above.
-  { label: "GitHub", href: `https://github.com/${githubUsername}` },
+  /*
+   * Devpost replaced GitHub here at Bradley's request. GitHub isn't lost —
+   * every repo name on the page links there, and "Follow on GitHub" is in the
+   * header's ⋯ menu — so this slot was the one place it was redundant.
+   *
+   * Bare profile URL: the link he supplied carried `ref_content` /
+   * `ref_feature` / `ref_medium` params, which are Devpost's own global-nav
+   * referral tracking picked up by copying from a signed-in page. They say
+   * where *he* clicked from, and would follow every visitor who used this link.
+   */
+  { label: "Devpost", href: "https://devpost.com/bradley_tsou" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/bradleytsou" },
   { label: "Email", href: `mailto:${profile.email}` },
 ];
