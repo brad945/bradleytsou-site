@@ -407,7 +407,14 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
 - **Close visual fidelity to Steam's profile layout is intentional** —
   Bradley asked for it directly, superseding the earlier "inspired by the
   structure of, not a literal skin" note. Don't undo it. The carve-out
-  that still holds: no Valve logo or wordmark, no Steam brand assets, no
-  game capsule art. Every capsule, frame, and badge tile on this site is
-  generated from the palette. Keep the footer's "not affiliated" line.
+  that still holds: no Valve logo or wordmark, no game capsule art, and
+  every capsule and frame on this site is generated from the palette.
+  Keep the footer's "not affiliated" line.
+  **One deliberate exception, added at Bradley's explicit request after
+  the tradeoff was put to him:** `public/steam-years-*.png` are Valve's
+  real Years of Service badges, served for the card in `ProfileHeader`.
+  They are the only Steam-owned assets here. Keyed off `level` rather
+  than hardcoded, so the art tracks the number beside it; years past
+  `STEAM_BADGE_YEARS` fall back to the generated tile. Don't generalise
+  this into permission for other Steam artwork.
 - Don't hardcode colors outside the token system in `tailwind.config.ts`.

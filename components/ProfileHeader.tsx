@@ -4,6 +4,12 @@ import NameHistory from "@/components/NameHistory";
 import type { GitHubStats } from "@/lib/github";
 import { aliases, experience, profile } from "@/lib/profile-data";
 
+/**
+ * Highest Years of Service badge with art in `public/`. Valve publishes these
+ * well past 10; add the file and raise this when the number gets there.
+ */
+const STEAM_BADGE_YEARS = 10;
+
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
   /** Null while this site's repo is private. */
@@ -93,6 +99,15 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const { level } = experience();
   const avatar = stats?.avatarUrl ?? null;
+
+  /*
+   * Keyed off `level`, not hardcoded to the current one: `level` rolls over on
+   * its own every January, and a fixed "5" badge would quietly contradict the
+   * number beside it. Only the years present in `public/` are wired up — past
+   * that it falls back to the generated tile rather than a broken image.
+   */
+  const badge =
+    level >= 1 && level <= STEAM_BADGE_YEARS ? `/steam-years-${level}.png` : null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. Nothing here overflows, so nothing needs clipping.
@@ -197,9 +212,25 @@ export default function ProfileHeader({
           </div>
 
           <div className="mt-4 flex items-center gap-3 bg-base/45 p-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
-              {level}
-            </span>
+            {badge ? (
+              /*
+                Valve's own badge art, at Bradley's explicit request — the one
+                Steam-owned asset on the page, overriding the "everything is
+                generated from the palette" rule the rest of the site follows.
+                Sourced at 80px and shown at 44 so it stays sharp on retina.
+              */
+              <Image
+                src={badge}
+                alt={`Steam ${level}-year service badge`}
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0"
+              />
+            ) : (
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[18px] font-extralight text-accent">
+                {level}
+              </span>
+            )}
             <div className="min-w-0">
               <p className="text-[14px] leading-tight text-copy">
                 Years of Service
