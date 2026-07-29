@@ -148,7 +148,7 @@ export const roles: Role[] = [
     start: "Jan 2026",
     location: "San Francisco, CA",
     blurb:
-      "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed and software engineering.",
+      "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed on customer implementations alongside core product engineering.",
     url: "https://deveval.com",
   },
   {
