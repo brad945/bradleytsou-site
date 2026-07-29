@@ -177,9 +177,22 @@ export default function ProfileHeader({
               Removed at Bradley's request — the handle repeats the avatar and
               the nav, and the other two aren't what he wants read first.
             */}
-            <p className="t-body mt-4 max-w-[46ch]">{profile.tagline}</p>
+            {/*
+              Sized up now that these two lines are the only thing under the
+              name: at the old body size they read as a caption rather than as
+              the point of the block. 17px with snug leading.
 
-            <p className="t-body mt-2 text-muted">
+              `text-wrap: balance` rather than a hand-tuned max-width: the
+              focus line is long enough to wrap at this column width, and left
+              alone it drops "@ MedImpact" onto a line by itself. Balance
+              splits it evenly instead, and keeps doing so if either line's
+              text changes — a fixed ch cap would only fit today's wording.
+            */}
+            <p className="mt-3.5 max-w-[46ch] text-[17px] leading-snug text-copy [text-wrap:balance]">
+              {profile.tagline}
+            </p>
+
+            <p className="mt-2 max-w-[46ch] text-[17px] leading-snug text-muted [text-wrap:balance]">
               Currently: {profile.currentFocus}
             </p>
           </div>
