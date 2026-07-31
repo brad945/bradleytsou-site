@@ -44,12 +44,6 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
         <h2 id="favorite-heading" className="panel-bar-title">
           Favorite Project
         </h2>
-        {repo && (
-          <span className="panel-bar-meta">
-            {repo.myCommits.toLocaleString()}{" "}
-            {repo.myCommits === 1 ? "commit" : "commits"} contributed
-          </span>
-        )}
       </div>
 
       <div className="p-5">

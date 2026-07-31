@@ -293,9 +293,11 @@ class would stop emitting.
   Its copy comes from the **live repo description**, not `profile-data` —
   the hand-written blurb had drifted to "competitive programming platform"
   while the repo itself said "evidence-first technical interviews". The
-  oversized stat is commits contributed, shown as "of N" so a shared repo
-  can't read as sole authorship. Tags stay hand-curated; the API has no
-  equivalent. Falls back to the `profile-data` entry without a token.
+  panel bar carried a commit count and no longer does — removed at
+  Bradley's request; the same figure is still on the DevEval row in
+  Experience & Projects, so nothing was lost. Tags stay hand-curated; the
+  API has no equivalent. Falls back to the `profile-data` entry without a
+  token.
   The default export is the default export is the square inventory
   grid with rarity-coloured tile outlines and the "N Projects Shown"
   counter in the grid's leftover space. Tile detail lives in `title`.
