@@ -197,9 +197,14 @@ export default function ProfileHeader({
               {profile.tagline}
             </p>
 
-            <p className="mt-2 max-w-[46ch] text-[17px] leading-snug text-muted [text-wrap:balance]">
-              {profile.currentFocus}
-            </p>
+            {profile.currentFocus.map((line) => (
+              <p
+                key={line}
+                className="mt-2 max-w-[46ch] text-[17px] leading-snug text-muted [text-wrap:balance]"
+              >
+                {line}
+              </p>
+            ))}
           </div>
         </div>
 

@@ -94,8 +94,16 @@ export const profile = {
    * Bradley; the 2019 that was here before was a scaffold placeholder.
    */
   codingSince: "2021-01-01",
-  /** What you're actually working on right now. Shown in the header. */
-  currentFocus: "AI and Software Engineer Intern @ MedImpact",
+  /**
+   * What you're actually working on right now, one line each, shown in the
+   * header under the tagline. A list because Bradley holds more than one
+   * current role — a single string would have forced them onto one line or
+   * into a comma splice.
+   */
+  currentFocus: [
+    "AI and Software Engineer Intern @ MedImpact",
+    "Founding Engineer @ DevEval",
+  ],
   /** Shown beside the name. */
   pronouns: "he/him",
   /** Fallback avatar initials, used before/if the GitHub avatar resolves. */
