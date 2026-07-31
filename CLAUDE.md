@@ -345,43 +345,41 @@ class would stop emitting.
 
 ## Design tokens (already in tailwind.config.ts)
 
-**Light theme.** Bradley asked for a white-background site in place of
-the dark navy one. The *structure* is still Steam's — 104px global
-header, 3px panel radius, 12px panel spacing, their type scale — but the
-surfaces and the text ramp are inverted, so **Steam's own colour values
-no longer apply** and you can't check a surface against their stylesheet
-the way you could before.
+**Dark theme**, and the palette is Steam's own, taken from their
+stylesheets — `#171d25` is `#global_header`, `#8f98a0` their body text,
+`#66c0f4` their link blue, `#c7d5e0` their bright text.
 
-What the dark theme used, for reference if it's ever restored: `base`
-#000000 (Steam's `body.profile_page`), `hero` #1b2838 (their
-community/store `body`, used here as the column), `panel` #131c27 and
-`panel2` #0e141c (their `rgba(0,0,0,.3)` / `.5` card fills composited),
-`line` #323e4c (their `rgba(255,255,255,.1)` border).
+**Two different Steam surfaces, don't mix them up.** `#1b2838` is `body`
+in `globalv2.css` — the *community/store* page. Profile pages use
+`body.profile_page { background-color: #000000 }`. So `base` (the page)
+is black and `hero` (the centred column, on `<main>`) is the blue.
+Painting the whole page #1b2838 was tried and reverted: with no darker
+surround there is no column to see.
 
-Every text token was contrast-checked against the white column and passes
-AA — `muted` at 5.03:1 is the tightest. Two accents had to darken to get
-there: `accent` #de9b35 -> #a2670a and `live` #5cc98f -> #12784a, both of
-which sat near 2:1 on white. `link` went #66c0f4 -> #0f5f96.
+The panel fills are derived, not guessed: Steam paints profile cards
+`rgba(0,0,0,.3)` and status blocks `rgba(0,0,0,.5)` over the page, so
+`panel`/`panel2` are those composited over `#1b2838`, and `line` is their
+`rgba(255,255,255,.1)` border done the same way.
 
-The one failure is `deveval` (#58e8d2, **1.51:1**) — Bradley's chosen hex,
-kept as given; see its note in the config. `medimpact` #250644, which was
-unreadable at 1.35:1 on the dark theme, is 17.67:1 here: the theme change
-fixed it for free.
+**A light theme was built and reverted** (commits `41c4d3a`, `f8903e8`,
+undone here). If it's ever wanted again the values were: `base` #c2c7ce,
+`hero` #eaedf1, `panel` #dfe3e9, `panel2` #d2d7de, `line` #aeb6c1,
+`chrome` #d9dde3, `bright` #0e1723, `ink` #1f2a36, `copy` #3b4856,
+`muted` #616b76, `accent` #945e09, `live` #12784a, `link` #0f5f96, and
+the starfield dots as `rgba(30,45,66,…)`.
 
-The starfield dots were `rgba(255,255,255,…)` and vanished on a light
-page. Same twelve positions, now `rgba(30,45,66,…)`.
+**The two bio colours swap legibility with the theme, every time.** On
+dark, `deveval` #58e8d2 is 9.87:1 and `medimpact` #470788 is 1.18:1. On
+light it was the reverse. Both are Bradley's chosen hexes and are kept as
+given; the notes in the config carry the numbers and a working
+alternative for each.
 
-Darkened one notch from the first light pass (the column was pure
-white). `muted` and `accent` had to follow the surfaces down — at the
-old values they fell to 4.28:1 and 3.99:1 against the darker column,
-under the 4.5 AA line.
-
-- `base` #c2c7ce (page), `hero` #eaedf1 (the centred column)
-- `panel` #dfe3e9, `panel2` #d2d7de, `line` #aeb6c1
-- Text ramp: `bright` #0e1723 (headings), `ink` #1f2a36, `copy` #3b4856
-  (body), `muted` #616b76
-- `accent` #945e09, `live` #12784a, `link` #0f5f96
-- `chrome` #d9dde3 (global header), `teal` #c3d3e2 (panel bars)
+- `base` #000000 (page), `hero` #1b2838 (the centred column)
+- `panel` #131c27, `panel2` #0e141c, `line` #323e4c
+- Text ramp: `bright` #ffffff (headings), `ink` #e5e8ea, `copy` #c7d5e0
+  (body), `muted` #8f98a0
+- `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
+- `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)

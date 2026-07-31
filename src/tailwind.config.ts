@@ -12,56 +12,58 @@ const tokens = {
    * community/store body, a different surface. Using the blue here made the
    * whole viewport one flat expanse with no column to see.
    */
-  base: "#c2c7ce",
-  panel: "#dfe3e9",
-  panel2: "#d2d7de",
-  line: "#aeb6c1",
+  base: "#000000",
+  panel: "#131c27",
+  panel2: "#0e141c",
+  line: "#323e4c",
   /**
    * Text ramp, tuned to Steam's. Steam runs cool blue-greys, not warm creams,
    * and reserves pure white for headings — `ink` was #e9e7e2 and read warm
    * against everything else.
    */
-  bright: "#0e1723",
-  ink: "#1f2a36",
-  copy: "#3b4856",
-  muted: "#616b76",
-  accent: "#945e09",
-  nebula: "#4b7ea1",
-  live: "#12784a",
+  bright: "#ffffff",
+  ink: "#e5e8ea",
+  copy: "#c7d5e0",
+  muted: "#8f98a0",
+  accent: "#de9b35",
+  nebula: "#417a9b",
+  live: "#5cc98f",
 
   // Added for the Steam-profile layout.
   /** Link / heading blue. */
-  link: "#0f5f96",
+  link: "#66c0f4",
   /**
    * DevEval's own colour, on its line in the header bio.
    *
-   * On the light theme this is **1.51:1** against the white column, where AA
-   * wants 4.5 — effectively invisible, the problem `medimpact` used to have
-   * and no longer does. Bradley's chosen hex, kept as given. A darker teal
-   * (#0d7a6a is 4.6:1) would read if he wants one.
+   * 9.87:1 on the dark column — fine here. (It was 1.29:1 on the light
+   * theme; the two bio colours swap legibility whenever the theme flips.)
    */
   deveval: "#58e8d2",
   /**
    * MedImpact's, on its line in the header bio.
    *
-   * Bradley's #250644 opened up to read as purple rather than near-black:
-   * same hue (270deg) and saturation, lightness 14.5% -> 28%. It was already
-   * a true violet, just too dark to show it. 12.70:1 on the white column.
+   * Bradley's #250644 opened up on the light theme: same hue (270deg) and
+   * saturation, lightness 14.5% -> 28%.
+   *
+   * Back on dark this is **1.18:1** against the column and unreadable —
+   * as #250644 also was, at the same 1.18. A dark purple cannot work on a
+   * dark navy ground; it needs a light one (#b899f0 is 7.4:1) to read
+   * here. Kept as Bradley's chosen hex.
    */
   medimpact: "#470788",
   /** Steam blue, used for panel bars. */
-  plum: "#cdd8e3",
+  plum: "#2a475e",
   /** Steam global-header near-black. */
-  wine: "#dfe4ea",
+  wine: "#171d25",
   /** Panel header bar — flat, was the left stop of a teal->purple gradient. */
-  teal: "#c3d3e2",
+  teal: "#2a475e",
   /** Profile header background — flat, was a five-stop purple sweep. */
   /**
    * The centred content column — Steam's #1b2838. On a real profile this
    * surface is the user's profile background image; here it's the flat blue,
    * which is what makes the column read as a column against the black page.
    */
-  hero: "#eaedf1",
+  hero: "#1b2838",
   /**
    * Avatar frame band. A NARROW range of medium greys — the reference band
    * is mid-grey throughout with only a gentle top-left-to-bottom-right fall.
@@ -77,7 +79,7 @@ const tokens = {
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
   /** Global nav bar — Steam's header sits darker and bluer than the page. */
-  chrome: "#d9dde3",
+  chrome: "#171a21",
 };
 
 /**
@@ -171,18 +173,18 @@ function tintKeyframes(palette: string[]) {
  * 1px dot, not a colour transition. Kept when the decorative gradients went.
  */
 const starfield = [
-  "radial-gradient(1px 1px at 12% 18%, rgba(30,45,66,0.40), transparent)",
-  "radial-gradient(1px 1px at 27% 62%, rgba(30,45,66,0.22), transparent)",
-  "radial-gradient(1.4px 1.4px at 41% 9%, rgba(30,45,66,0.32), transparent)",
-  "radial-gradient(1px 1px at 55% 44%, rgba(30,45,66,0.18), transparent)",
-  "radial-gradient(1px 1px at 63% 77%, rgba(30,45,66,0.30), transparent)",
-  "radial-gradient(1.2px 1.2px at 74% 24%, rgba(30,45,66,0.26), transparent)",
-  "radial-gradient(1px 1px at 82% 58%, rgba(30,45,66,0.20), transparent)",
-  "radial-gradient(1px 1px at 91% 88%, rgba(30,45,66,0.34), transparent)",
-  "radial-gradient(1px 1px at 6% 84%, rgba(30,45,66,0.24), transparent)",
-  "radial-gradient(1.3px 1.3px at 34% 93%, rgba(30,45,66,0.28), transparent)",
-  "radial-gradient(1px 1px at 48% 30%, rgba(30,45,66,0.16), transparent)",
-  "radial-gradient(1px 1px at 96% 38%, rgba(30,45,66,0.22), transparent)",
+  "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.40), transparent)",
+  "radial-gradient(1px 1px at 27% 62%, rgba(255,255,255,0.22), transparent)",
+  "radial-gradient(1.4px 1.4px at 41% 9%, rgba(255,255,255,0.32), transparent)",
+  "radial-gradient(1px 1px at 55% 44%, rgba(255,255,255,0.18), transparent)",
+  "radial-gradient(1px 1px at 63% 77%, rgba(255,255,255,0.30), transparent)",
+  "radial-gradient(1.2px 1.2px at 74% 24%, rgba(255,255,255,0.26), transparent)",
+  "radial-gradient(1px 1px at 82% 58%, rgba(255,255,255,0.20), transparent)",
+  "radial-gradient(1px 1px at 91% 88%, rgba(255,255,255,0.34), transparent)",
+  "radial-gradient(1px 1px at 6% 84%, rgba(255,255,255,0.24), transparent)",
+  "radial-gradient(1.3px 1.3px at 34% 93%, rgba(255,255,255,0.28), transparent)",
+  "radial-gradient(1px 1px at 48% 30%, rgba(255,255,255,0.16), transparent)",
+  "radial-gradient(1px 1px at 96% 38%, rgba(255,255,255,0.22), transparent)",
 ].join(", ");
 
 const config: Config = {
