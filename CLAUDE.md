@@ -366,8 +366,12 @@ Mulish is therefore what renders for essentially everyone. It's the
 standard free substitute and is loaded as a variable font so weights
 200-300 are actually available rather than being synthesised.
 
-The scale lives as `.t-*` classes in `src/app/globals.css` and is measured off
-the reference screenshots against a 940px column. Four traits carry most
+The scale lives as `.t-*` classes in `src/app/globals.css` and is taken
+**from Steam's own `profilev2.css`**, not estimated off screenshots:
+persona name 24/200/lh40, panel header 16/200/lh30, stat 24/200, big stat
+34/200, label 14, body 13. The eyeballed values it replaced ran 17-41%
+large and about double the weight on headings. Check their stylesheet
+before changing any of these. Four traits carry most
 of the resemblance, and all four are easy to lose:
 - **very light weights** (200-300) on anything large — sidebar counts and
   the showcase counter are weight 200, the persona name 300

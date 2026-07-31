@@ -48,25 +48,41 @@
    *   - pure white reserved for headings, blue-grey for copy
    *   - tight leading on headings, ~1.5 on body
    */
+  /*
+   * Sizes and weights below are taken from Steam's own profilev2.css, not
+   * estimated off screenshots — persona name 24/200/lh40, panel header
+   * 16/200/lh30, stat 24/200, big stat 34/200, label 14, body 13.
+   * (`.profile_header .persona_name`, `.profile_customization_header`,
+   * `.profile_count_link_total`, `.showcase_stat`, `.profile_count_link`,
+   * `.profile_header_content` — checked for overrides, there are none.)
+   *
+   * They were previously eyeballed against reference images and ran 17-41%
+   * large across the board, at roughly double the weight on headings. If a
+   * value here looks wrong, check Steam's stylesheet before changing it.
+   *
+   * Caveat: these are Motiva Sans's sizes and we render Mulish, whose
+   * x-height differs. If the text still reads a touch large at matching px,
+   * the fix is a `size-adjust` on the Mulish face, not new numbers here.
+   */
   .t-display {
-    @apply text-[32px] font-light leading-tight text-bright;
+    @apply text-[24px] font-extralight leading-[40px] text-bright;
   }
 
   .t-panel-title {
-    @apply text-[17px] font-normal leading-tight text-bright;
+    @apply text-[16px] font-extralight leading-[30px] text-bright;
   }
 
   .t-panel-meta {
-    @apply text-[15px] font-light text-copy/80;
+    @apply text-[13px] font-light text-copy/80;
   }
 
   /* Sidebar counts, the showcase counter, level numbers. */
   .t-stat {
-    @apply text-[28px] font-extralight leading-none text-ink;
+    @apply text-[24px] font-extralight leading-none text-ink;
   }
 
   .t-stat-lg {
-    @apply text-[48px] font-extralight leading-none text-ink;
+    @apply text-[34px] font-extralight leading-none text-ink;
   }
 
   .t-label {
@@ -74,7 +90,7 @@
   }
 
   .t-body {
-    @apply text-[14px] font-normal leading-[1.5] text-copy;
+    @apply text-[13px] font-normal leading-[1.5] text-copy;
   }
 
   .t-meta {
