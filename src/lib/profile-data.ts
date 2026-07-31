@@ -64,6 +64,19 @@ export interface Role {
   url?: string;
 }
 
+/**
+ * A line in the header bio. `linkText` is the substring of `text` to turn into
+ * a link — the org name — so the sentence stays one editable string instead of
+ * being pre-split into fragments.
+ */
+export interface BioLine {
+  text: string;
+  /** Full Tailwind class, never interpolated — the scanner reads this as text. */
+  className?: string;
+  linkText?: string;
+  href?: string;
+}
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -88,6 +101,8 @@ export const profile = {
   handle: "@bradleytsou",
   /** His actual LinkedIn headline, not a paraphrase of it. */
   tagline: "Applied Math + CS @ UC Berkeley",
+  /** Org in `tagline` to link, and where to. See `BioLine`. */
+  taglineLink: { linkText: "UC Berkeley", href: "https://www.berkeley.edu" },
   location: "San Jose, California",
   /**
    * Drives the Level circle — level = full years since this date. Set by
@@ -104,12 +119,19 @@ export const profile = {
     {
       text: "AI and Software Engineer Intern @ MedImpact",
       className: "text-medimpact",
+      linkText: "MedImpact",
+      href: "https://www.medimpact.com",
     },
     /*
      * Class written out in full, never built by interpolation — Tailwind's
      * scanner reads these files as text and can't see a composed name.
      */
-    { text: "Founding Engineer @ DevEval", className: "text-deveval" },
+    {
+      text: "Founding Engineer @ DevEval",
+      className: "text-deveval",
+      linkText: "DevEval",
+      href: "https://deveval.com",
+    },
   ],
   /** Shown beside the name. */
   pronouns: "he/him",

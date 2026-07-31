@@ -7,6 +7,7 @@ import {
   experience,
   profile,
   profileLevel,
+  type BioLine,
 } from "@/lib/profile-data";
 
 /**
@@ -95,6 +96,35 @@ function DvdLogo() {
         VIDEO
       </text>
     </svg>
+  );
+}
+
+/**
+ * Splits a bio line on its `linkText` and wraps that piece in an anchor,
+ * leaving the rest as plain text. Splitting at render keeps the sentence one
+ * editable string in `profile-data` rather than three fragments.
+ *
+ * `underline` rather than a colour change: these lines already carry their org
+ * colours, and recolouring them to link-blue would undo that.
+ */
+function renderBioLine(line: BioLine) {
+  if (!line.linkText || !line.href) return line.text;
+  const at = line.text.indexOf(line.linkText);
+  if (at === -1) return line.text;
+
+  return (
+    <>
+      {line.text.slice(0, at)}
+      <a
+        href={line.href}
+        target="_blank"
+        rel="noreferrer"
+        className="underline decoration-current/40 underline-offset-2 transition hover:decoration-current"
+      >
+        {line.linkText}
+      </a>
+      {line.text.slice(at + line.linkText.length)}
+    </>
   );
 }
 
@@ -204,7 +234,7 @@ export default function ProfileHeader({
               the roles look like a footnote to the school.
             */}
             {[
-              { text: profile.tagline },
+              { text: profile.tagline, ...profile.taglineLink },
               ...profile.currentFocus,
             ].map((line, i) => (
               <p
@@ -213,7 +243,7 @@ export default function ProfileHeader({
                   i === 0 ? "mt-3.5" : "mt-2"
                 } ${"className" in line && line.className ? line.className : "text-copy"}`}
               >
-                {line.text}
+                {renderBioLine(line)}
               </p>
             ))}
           </div>
