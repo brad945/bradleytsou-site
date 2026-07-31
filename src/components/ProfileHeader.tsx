@@ -239,7 +239,13 @@ export default function ProfileHeader({
             ].map((line, i) => (
               <p
                 key={line.text}
-                className={`max-w-[46ch] text-[17px] leading-snug [text-wrap:balance] ${
+                /*
+                  19px/500 rather than 17/400. Open Sans has no 200 and its
+                  400 read light against the headings; 500 is the next step it
+                  actually ships, so this is a real weight, not a synthesised
+                  one.
+                */
+                className={`max-w-[46ch] text-[19px] font-medium leading-snug [text-wrap:balance] ${
                   i === 0 ? "mt-3.5" : "mt-2"
                 } ${"className" in line && line.className ? line.className : "text-copy"}`}
               >
