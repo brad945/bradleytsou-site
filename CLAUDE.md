@@ -327,9 +327,17 @@ class would stop emitting.
 - `src/app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split that stacks below `lg`. `max-w-profile`
   is **990px**, not Steam's 940 — widened 25px per side at Bradley's
-  request for more text room, so the columns land at ~649 / 16 / ~325.
-  The 2:1 ratio is Steam's; the absolute widths are no longer. Main column order:
-  **Favorite Project, Experience, Recent Activity, Item Showcase**.
+  request for more text room, so the columns land at ~649 / 12 / ~325
+  (the gap is Steam's 12px `.profile_customization` margin). The 2:1
+  ratio is Steam's; the absolute widths are no longer. `<main>` carries
+  `hero`, which is what makes it read as the centred column.
+
+  **The grid was flattened to a single column once and put back.** "One
+  column" meant the *page* — this centred `max-w-profile` block on the
+  grey surround — not the main/sidebar split inside it. Don't collapse it
+  again.
+
+  Main column order: **Favorite Project, Experience, Recent Activity**.
   Contributions moved to the sidebar — as five short counts it never
   needed the main column's width. Comments import is commented out on purpose.
 - `src/app/layout.tsx` — fonts (next/font), metadata, and the two fixed
