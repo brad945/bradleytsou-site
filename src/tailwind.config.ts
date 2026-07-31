@@ -42,11 +42,13 @@ const tokens = {
    */
   deveval: "#58e8d2",
   /**
-   * MedImpact's, on its line in the header bio. This was the unreadable one
-   * on the dark theme (1.35:1); against the white column it is 17.67:1, so
-   * the light theme fixed it for free.
+   * MedImpact's, on its line in the header bio.
+   *
+   * Bradley's #250644 opened up to read as purple rather than near-black:
+   * same hue (270deg) and saturation, lightness 14.5% -> 28%. It was already
+   * a true violet, just too dark to show it. 12.70:1 on the white column.
    */
-  medimpact: "#250644",
+  medimpact: "#470788",
   /** Steam blue, used for panel bars. */
   plum: "#cdd8e3",
   /** Steam global-header near-black. */
