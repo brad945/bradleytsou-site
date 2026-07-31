@@ -56,14 +56,17 @@ export default async function Home() {
       <main className="mx-auto w-full max-w-profile px-3 py-6 sm:px-4 sm:py-8">
         <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
-        {/* 616 / 16 / 308 at ≥lg — Steam's column split. Stacks below that. */}
-        <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
-          <div className="flex min-w-0 flex-col gap-4">
-            <FavoriteProject repo={favorite} />
-            <Experience featured={featured} />
-            <ActivityFeed snapshot={snapshot} featured={featured} />
-            {/* <Comments /> */}
-          </div>
+        {/*
+          One column, at Bradley's request. This was Steam's 616/16/308 split
+          at ≥lg, which stacked below that breakpoint — so this is the stacked
+          order the narrow layout already used, now applied at every width.
+          The sidebar panels keep their own internal stacking.
+        */}
+        <div className="mt-4 flex min-w-0 flex-col gap-4">
+          <FavoriteProject repo={favorite} />
+          <Experience featured={featured} />
+          <ActivityFeed snapshot={snapshot} featured={featured} />
+          {/* <Comments /> */}
 
           <Sidebar
             snapshot={snapshot}

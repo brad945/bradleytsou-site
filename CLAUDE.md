@@ -324,11 +324,12 @@ class would stop emitting.
   (deliberately parked). Uses giscus (GitHub Discussions-backed comments,
   not a fake widget). Needs `data-repo-id` / `data-category-id` from
   giscus.app once Discussions are enabled on the repo.
-- `src/app/page.tsx` — SiteNav, full-width ProfileHeader, then a
-  `lg:grid-cols-[2fr_1fr]` split that stacks below `lg`. `max-w-profile`
-  is **990px**, not Steam's 940 — widened 25px per side at Bradley's
-  request for more text room, so the columns land at ~649 / 16 / ~325.
-  The 2:1 ratio is Steam's; the absolute widths are no longer. Main column order:
+- `src/app/page.tsx` — SiteNav, ProfileHeader, then **one column**, at
+  Bradley's request. This was Steam's `lg:grid-cols-[2fr_1fr]` split
+  (649 / 16 / 325 at `max-w-profile`) which stacked below `lg`; the
+  single column is that stacked order applied at every width, so the
+  sidebar panels now sit under the main ones. `max-w-profile` is 990px,
+  widened from Steam's 940 by 25px per side. Main column order:
   **Favorite Project, Experience, Recent Activity, Item Showcase**.
   Contributions moved to the sidebar — as five short counts it never
   needed the main column's width. Comments import is commented out on purpose.
