@@ -113,7 +113,6 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
 
 export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
   const byRepo = new Map(featured.map((r) => [r.nameWithOwner, r]));
-  const current = roles.filter((r) => !r.end).length;
 
   return (
     <section aria-labelledby="experience-heading" className="panel">
@@ -121,9 +120,6 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
         <h2 id="experience-heading" className="panel-bar-title">
           Experience &amp; Projects
         </h2>
-        <span className="panel-bar-meta">
-          {roles.length} roles · {current} current · {projects.length} built
-        </span>
       </div>
 
       <div className="px-5 pb-5 pt-1">
