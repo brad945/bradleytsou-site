@@ -42,15 +42,19 @@ const tokens = {
   /**
    * MedImpact's, on its line in the header bio.
    *
-   * Bradley's #250644 opened up on the light theme: same hue (270deg) and
-   * saturation, lightness 14.5% -> 28%.
+   * A tint of MedImpact's #250644, not a different colour: same violet hue
+   * (270deg), lifted from 14.5% lightness to 78%.
    *
-   * Back on dark this is **1.18:1** against the column and unreadable —
-   * as #250644 also was, at the same 1.18. A dark purple cannot work on a
-   * dark navy ground; it needs a light one (#b899f0 is 7.4:1) to read
-   * here. Kept as Bradley's chosen hex.
+   * The dark original measured 1.18:1 on this background and visibly sank
+   * into it. That isn't a shade problem — #470788 was tried and measured the
+   * same 1.18. On a dark ground **value does the separating and hue only
+   * carries identity**, and at 28% lightness it sat 12 points off a 16%
+   * background while its two sibling bio lines sat at 63% and 83%. Lifting
+   * it into that band is what fixes it; 6.89:1 here.
+   *
+   * If it ever needs to be darker, it can't be — not on this background.
    */
-  medimpact: "#470788",
+  medimpact: "#c7a0ee",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */
