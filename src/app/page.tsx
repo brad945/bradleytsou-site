@@ -53,7 +53,7 @@ export default async function Home() {
     <>
       <SiteNav stats={snapshot.stats} />
 
-      <main className="mx-auto w-full max-w-profile px-3 py-6 sm:px-4 sm:py-8">
+      <main className="mx-auto w-full max-w-profile bg-hero px-3 py-6 sm:px-4 sm:py-8">
         <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
         {/*

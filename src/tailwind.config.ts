@@ -6,7 +6,13 @@ import type { Config } from "tailwindcss";
  * colour, add a token here first.
  */
 const tokens = {
-  base: "#1b2838",
+  /*
+   * The page behind the column. Steam sets `body.profile_page` to #000000 —
+   * profile pages are black, and the blue #1b2838 in globalv2.css is the
+   * community/store body, a different surface. Using the blue here made the
+   * whole viewport one flat expanse with no column to see.
+   */
+  base: "#000000",
   panel: "#131c27",
   panel2: "#0e141c",
   line: "#323e4c",
@@ -42,6 +48,11 @@ const tokens = {
   /** Panel header bar — flat, was the left stop of a teal->purple gradient. */
   teal: "#2a475e",
   /** Profile header background — flat, was a five-stop purple sweep. */
+  /**
+   * The centred content column — Steam's #1b2838. On a real profile this
+   * surface is the user's profile background image; here it's the flat blue,
+   * which is what makes the column read as a column against the black page.
+   */
   hero: "#1b2838",
   /**
    * Avatar frame band. A NARROW range of medium greys — the reference band

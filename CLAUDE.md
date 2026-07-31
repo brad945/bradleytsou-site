@@ -338,10 +338,16 @@ class would stop emitting.
 
 ## Design tokens (already in tailwind.config.ts)
 
-**The palette is Steam's own, taken from their stylesheets** — `#1b2838`
-is `body` in `globalv2.css`, `#171d25` is `#global_header`, `#8f98a0` is
-their body text, `#66c0f4` their link blue, and `#c7d5e0` their bright
-text. The panel fills are derived, not guessed: Steam paints profile
+**The palette is Steam's own, taken from their stylesheets** — `#171d25`
+is `#global_header`, `#8f98a0` their body text, `#66c0f4` their link
+blue, `#c7d5e0` their bright text.
+
+**Two different Steam surfaces, don't mix them up.** `#1b2838` is `body`
+in `globalv2.css` — the *community/store* page. Profile pages use
+`body.profile_page { background-color: #000000 }`. So `base` (the page)
+is black and `hero` (the centred column, applied to `<main>`) is the
+blue. Painting the whole page #1b2838 was tried and reverted: with no
+darker surround there is no column to see, just one flat expanse. The panel fills are derived, not guessed: Steam paints profile
 cards `rgba(0,0,0,.3)` and status blocks `rgba(0,0,0,.5)` over the page,
 so `panel`/`panel2` are those composited over `#1b2838`, and `line` is
 their `rgba(255,255,255,.1)` border done the same way.
