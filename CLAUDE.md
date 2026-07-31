@@ -338,36 +338,39 @@ class would stop emitting.
 
 ## Design tokens (already in tailwind.config.ts)
 
-**The palette is Steam's own, taken from their stylesheets** — `#171d25`
-is `#global_header`, `#8f98a0` their body text, `#66c0f4` their link
-blue, `#c7d5e0` their bright text.
+**Light theme.** Bradley asked for a white-background site in place of
+the dark navy one. The *structure* is still Steam's — 104px global
+header, 3px panel radius, 12px panel spacing, their type scale — but the
+surfaces and the text ramp are inverted, so **Steam's own colour values
+no longer apply** and you can't check a surface against their stylesheet
+the way you could before.
 
-**Two different Steam surfaces, don't mix them up.** `#1b2838` is `body`
-in `globalv2.css` — the *community/store* page. Profile pages use
-`body.profile_page { background-color: #000000 }`. So `base` (the page)
-is black and `hero` (the centred column, applied to `<main>`) is the
-blue. Painting the whole page #1b2838 was tried and reverted: with no
-darker surround there is no column to see, just one flat expanse. The panel fills are derived, not guessed: Steam paints profile
-cards `rgba(0,0,0,.3)` and status blocks `rgba(0,0,0,.5)` over the page,
-so `panel`/`panel2` are those composited over `#1b2838`, and `line` is
-their `rgba(255,255,255,.1)` border done the same way.
+What the dark theme used, for reference if it's ever restored: `base`
+#000000 (Steam's `body.profile_page`), `hero` #1b2838 (their
+community/store `body`, used here as the column), `panel` #131c27 and
+`panel2` #0e141c (their `rgba(0,0,0,.3)` / `.5` card fills composited),
+`line` #323e4c (their `rgba(255,255,255,.1)` border).
 
-The purple scheme it replaced (`base` #0c0d11, `hero` #33203b and the
-plum/wine profile gradient) is gone — `hero` is now the page colour, so
-the header reads as part of the page rather than a card on it.
+Every text token was contrast-checked against the white column and passes
+AA — `muted` at 5.03:1 is the tightest. Two accents had to darken to get
+there: `accent` #de9b35 -> #a2670a and `live` #5cc98f -> #12784a, both of
+which sat near 2:1 on white. `link` went #66c0f4 -> #0f5f96.
 
-- `base` #1b2838, `panel` #131c27, `panel2` #0e141c, `line` #323e4c
-- `ink` #e9e7e2 (text), `muted` #8b90a0
-- `accent` #de9b35 (CS2-orange, used sparingly)
-- `nebula` #5b3fae (background glow / gradient accent)
-- `live` #5cc98f (online status / success)
-- `link` #66c0f4 (links and repo names)
-- `plum` #3f2350, `wine` #2b1526 (profile-background gradient)
-- `teal` #2f5d6e (left stop of the panel header bar)
+The one failure is `deveval` (#58e8d2, **1.51:1**) — Bradley's chosen hex,
+kept as given; see its note in the config. `medimpact` #250644, which was
+unreadable at 1.35:1 on the dark theme, is 17.67:1 here: the theme change
+fixed it for free.
+
+The starfield dots were `rgba(255,255,255,…)` and vanished on a light
+page. Same twelve positions, now `rgba(30,45,66,…)`.
+
+- `base` #d9dce0 (page), `hero` #ffffff (the centred column)
+- `panel` #f2f4f6, `panel2` #e7eaee, `line` #c3c9d1
+- Text ramp: `bright` #0e1723 (headings), `ink` #1f2a36, `copy` #3b4856
+  (body), `muted` #66707c
+- `accent` #a2670a, `live` #12784a, `link` #0f5f96
+- `chrome` #eceef1 (global header), `teal` #c3d3e2 (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- Text ramp: `bright` #ffffff (headings), `ink` #e5e8ea, `copy` #c6d4df
-  (body), `muted` #8f98a0. Steam runs cool blue-greys — the old warm
-  #e9e7e2 `ink` read wrong against everything else.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 
