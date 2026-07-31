@@ -161,9 +161,12 @@ class would stop emitting.
   NaN. Unset, unreachable, non-OK, unparseable, or carrying no usable
   number -> returns null and the sidebar block **hides itself entirely**.
   It never invents a number. All four failure paths are verified.
-- `src/components/ProfileHeader.tsx` — full-width identity block over the
-  profile-background gradient: framed avatar, name, location, summary,
-  and the right-hand Level circle + "Years of Coding" card. Level is
+- `src/components/ProfileHeader.tsx` — identity block: framed avatar,
+  name, summary, then the Level circle + "Years of Coding" card and the
+  action buttons **below it, not beside it**. This was Steam's 2fr/1fr
+  header split and was the last grid in the app; it was collapsed when
+  Bradley asked for one big column. The Years card carries `w-fit`
+  because it no longer has a narrow track to bound it. Level is
   computed from `profile.codingSince`, so it counts up on its own.
   The right-hand block is matched to the reference by ratio, not by eye.
   Against the "Level" font-size: **circle diameter 1.08x**, ring 6.4% of
