@@ -371,12 +371,17 @@ fixed it for free.
 The starfield dots were `rgba(255,255,255,…)` and vanished on a light
 page. Same twelve positions, now `rgba(30,45,66,…)`.
 
-- `base` #d9dce0 (page), `hero` #ffffff (the centred column)
-- `panel` #f2f4f6, `panel2` #e7eaee, `line` #c3c9d1
+Darkened one notch from the first light pass (the column was pure
+white). `muted` and `accent` had to follow the surfaces down — at the
+old values they fell to 4.28:1 and 3.99:1 against the darker column,
+under the 4.5 AA line.
+
+- `base` #c2c7ce (page), `hero` #eaedf1 (the centred column)
+- `panel` #dfe3e9, `panel2` #d2d7de, `line` #aeb6c1
 - Text ramp: `bright` #0e1723 (headings), `ink` #1f2a36, `copy` #3b4856
-  (body), `muted` #66707c
-- `accent` #a2670a, `live` #12784a, `link` #0f5f96
-- `chrome` #eceef1 (global header), `teal` #c3d3e2 (panel bars)
+  (body), `muted` #616b76
+- `accent` #945e09, `live` #12784a, `link` #0f5f96
+- `chrome` #d9dde3 (global header), `teal` #c3d3e2 (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)

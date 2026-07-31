@@ -12,10 +12,10 @@ const tokens = {
    * community/store body, a different surface. Using the blue here made the
    * whole viewport one flat expanse with no column to see.
    */
-  base: "#d9dce0",
-  panel: "#f2f4f6",
-  panel2: "#e7eaee",
-  line: "#c3c9d1",
+  base: "#c2c7ce",
+  panel: "#dfe3e9",
+  panel2: "#d2d7de",
+  line: "#aeb6c1",
   /**
    * Text ramp, tuned to Steam's. Steam runs cool blue-greys, not warm creams,
    * and reserves pure white for headings — `ink` was #e9e7e2 and read warm
@@ -24,8 +24,8 @@ const tokens = {
   bright: "#0e1723",
   ink: "#1f2a36",
   copy: "#3b4856",
-  muted: "#66707c",
-  accent: "#a2670a",
+  muted: "#616b76",
+  accent: "#945e09",
   nebula: "#4b7ea1",
   live: "#12784a",
 
@@ -61,7 +61,7 @@ const tokens = {
    * surface is the user's profile background image; here it's the flat blue,
    * which is what makes the column read as a column against the black page.
    */
-  hero: "#ffffff",
+  hero: "#eaedf1",
   /**
    * Avatar frame band. A NARROW range of medium greys — the reference band
    * is mid-grey throughout with only a gentle top-left-to-bottom-right fall.
@@ -77,7 +77,7 @@ const tokens = {
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
   /** Global nav bar — Steam's header sits darker and bluer than the page. */
-  chrome: "#eceef1",
+  chrome: "#d9dde3",
 };
 
 /**
