@@ -99,7 +99,12 @@ export default function Sidebar({
           nothing here, and the other two were 0 with no prospect of moving.
         */}
         <div className="mt-5">
-          <Stat label="Public Repos" value={stats?.publicRepos ?? "—"} />
+          {/*
+            Labelled "Repos" at Bradley's request, but the value is still
+            `publicRepos` — the REST user endpoint's public count, which can't
+            see his private repos. The shorter label reads as a total it isn't.
+          */}
+          <Stat label="Repos" value={stats?.publicRepos ?? "—"} />
           {!!stats?.following && (
             <Stat label="Following" value={stats.following} />
           )}
