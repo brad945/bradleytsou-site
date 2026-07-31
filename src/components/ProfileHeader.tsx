@@ -193,14 +193,18 @@ export default function ProfileHeader({
               splits it evenly whenever it does instead of leaving a one-word
               last line. A fixed ch cap would only ever fit today's text.
             */}
-            <p className="mt-3.5 max-w-[46ch] text-[17px] leading-snug text-copy [text-wrap:balance]">
-              {profile.tagline}
-            </p>
-
-            {profile.currentFocus.map((line) => (
+            {/*
+              One class for all three, so they read as one block. Size and
+              weight already matched at 17/400; only the colour differed —
+              the tagline was `copy` and the focus lines `muted`, which made
+              the roles look like a footnote to the school.
+            */}
+            {[profile.tagline, ...profile.currentFocus].map((line, i) => (
               <p
                 key={line}
-                className="mt-2 max-w-[46ch] text-[17px] leading-snug text-muted [text-wrap:balance]"
+                className={`max-w-[46ch] text-[17px] leading-snug text-copy [text-wrap:balance] ${
+                  i === 0 ? "mt-3.5" : "mt-2"
+                }`}
               >
                 {line}
               </p>
