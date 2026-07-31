@@ -28,6 +28,13 @@ const tokens = {
   link: "#66c0f4",
   /** DevEval's own colour, used on its line in the header bio. */
   deveval: "#58e8d2",
+  /**
+   * MedImpact's, on its line in the header bio. Set at Bradley's request
+   * after being told the number: against `hero` (#33203b) this is 1.19:1,
+   * where WCAG AA wants 4.5 and every other line on the page sits near 9.8.
+   * It is very nearly invisible. Kept because he asked for it knowing that.
+   */
+  medimpact: "#250644",
   /** Profile-background purple. */
   plum: "#3f2350",
   /** Profile-background magenta-maroon. */
