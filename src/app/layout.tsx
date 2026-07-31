@@ -4,8 +4,13 @@ import "./globals.css";
 import { profile } from "@/lib/profile-data";
 
 /**
- * Mulish stands in for Steam's Motiva Sans — closest free match on
- * proportions, and it carries the light weights the big numbers need.
+ * Steam's own face is Motiva Sans, and the Tailwind stacks now name it first
+ * so a visitor who already has it installed sees it. It can't be loaded here:
+ * it's Typotheque's, licensed per-use, and self-hosting the file needs a paid
+ * webfont licence. That makes it a local-only nicety, not the delivered font.
+ *
+ * Mulish is what actually renders for essentially everyone — closest free
+ * match on proportions, and it carries the light weights the big numbers need.
  * One family for display and body, same as Steam.
  */
 const sans = Mulish({

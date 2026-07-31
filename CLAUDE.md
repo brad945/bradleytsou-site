@@ -357,9 +357,15 @@ Dark theme, not a generic AI-slop palette:
 ## Typography
 
 Steam's own face is **Motiva Sans** (Typotheque, licensed — not on Google
-Fonts and not bundleable). Mulish is the standard free substitute and is
-what's loaded, as a variable font so weights 200-300 are actually
-available rather than being synthesised.
+Fonts and not bundleable). It now leads the `display` and `body` stacks in
+`src/tailwind.config.ts`, so a visitor who already owns and has installed
+it sees it — but **the site does not and cannot load it**. Self-hosting
+the file needs a paid Typotheque webfont licence. Don't "fix" this by
+adding an @font-face pointing at a copied file.
+
+Mulish is therefore what renders for essentially everyone. It's the
+standard free substitute and is loaded as a variable font so weights
+200-300 are actually available rather than being synthesised.
 
 The scale lives as `.t-*` classes in `src/app/globals.css` and is measured off
 the reference screenshots against a 940px column. Four traits carry most

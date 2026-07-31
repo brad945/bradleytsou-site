@@ -172,15 +172,31 @@ const config: Config = {
         dvd,
       },
       fontFamily: {
-        // Mulish stands in for Steam's Motiva Sans: same humanist-geometric
-        // proportions, and it has the light weights the big numbers need.
+        /*
+         * "Motiva Sans" leads both stacks, so anyone who has Steam's actual
+         * face installed locally gets it. It is NOT loaded by the site and
+         * cannot be: Motiva Sans is Typotheque's, sold per-use, and shipping
+         * the file would need a paid webfont licence. Nothing here downloads
+         * it — this only names it.
+         *
+         * So for practically every visitor the next entry is what renders.
+         * Mulish stands in: same humanist-geometric proportions, and it has
+         * the light weights the big numbers need.
+         */
         display: [
+          "Motiva Sans",
           "var(--font-display)",
           "ui-sans-serif",
           "system-ui",
           "sans-serif",
         ],
-        body: ["var(--font-body)", "ui-sans-serif", "system-ui", "sans-serif"],
+        body: [
+          "Motiva Sans",
+          "var(--font-body)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
         mono: [
           "var(--font-mono)",
           "ui-monospace",
