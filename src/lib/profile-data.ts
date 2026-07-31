@@ -101,8 +101,12 @@ export const profile = {
    * into a comma splice.
    */
   currentFocus: [
-    "AI and Software Engineer Intern @ MedImpact",
-    "Founding Engineer @ DevEval",
+    { text: "AI and Software Engineer Intern @ MedImpact" },
+    /*
+     * Class written out in full, never built by interpolation — Tailwind's
+     * scanner reads these files as text and can't see a composed name.
+     */
+    { text: "Founding Engineer @ DevEval", className: "text-deveval" },
   ],
   /** Shown beside the name. */
   pronouns: "he/him",

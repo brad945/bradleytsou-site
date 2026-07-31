@@ -26,6 +26,8 @@ const tokens = {
   // Added for the Steam-profile layout.
   /** Link / heading blue. */
   link: "#66c0f4",
+  /** DevEval's own colour, used on its line in the header bio. */
+  deveval: "#58e8d2",
   /** Profile-background purple. */
   plum: "#3f2350",
   /** Profile-background magenta-maroon. */

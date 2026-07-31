@@ -199,14 +199,17 @@ export default function ProfileHeader({
               the tagline was `copy` and the focus lines `muted`, which made
               the roles look like a footnote to the school.
             */}
-            {[profile.tagline, ...profile.currentFocus].map((line, i) => (
+            {[
+              { text: profile.tagline },
+              ...profile.currentFocus,
+            ].map((line, i) => (
               <p
-                key={line}
-                className={`max-w-[46ch] text-[17px] leading-snug text-copy [text-wrap:balance] ${
+                key={line.text}
+                className={`max-w-[46ch] text-[17px] leading-snug [text-wrap:balance] ${
                   i === 0 ? "mt-3.5" : "mt-2"
-                }`}
+                } ${"className" in line && line.className ? line.className : "text-copy"}`}
               >
-                {line}
+                {line.text}
               </p>
             ))}
           </div>
