@@ -123,12 +123,7 @@ export default function ProfileHeader({
       rather than a card sitting on it — the purple slab is gone.
     */
     <header id="profile" className="relative bg-hero">
-      {/*
-        One column. This was Steam's 2fr/1fr header split — identity left,
-        Level and the action buttons right — and was the last grid anywhere
-        in the app after the page columns were merged.
-      */}
-      <div className="relative flex flex-col gap-6 p-6">
+      <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
           <div className="shrink-0">
@@ -229,7 +224,7 @@ export default function ProfileHeader({
           reference (see below); the Years of Coding card is deliberately the
           plain flat version — a bevelled-tile treatment was tried and reverted.
         */}
-        <div>
+        <div className="lg:pl-2">
           {/*
             Measured off the reference rather than eyeballed. Against the
             "Level" font-size, the ring there is:
@@ -247,12 +242,7 @@ export default function ProfileHeader({
             </span>
           </div>
 
-          {/*
-            w-fit: this used to be bounded by the header's narrow 1fr track.
-            Without it the card stretches the full 990px and reads as an empty
-            bar with a badge stranded at one end.
-          */}
-          <div className="mt-4 flex w-fit items-center gap-3 bg-panel2/70 p-3 pr-6">
+          <div className="mt-4 flex items-center gap-3 bg-panel2/70 p-3">
             {badge ? (
               /*
                 Valve's own badge art, at Bradley's explicit request — the one
