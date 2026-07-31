@@ -118,6 +118,10 @@ export default function ProfileHeader({
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. Nothing here overflows, so nothing needs clipping.
   return (
+    /*
+      `bg-hero` is now the page colour, so this reads as part of the page
+      rather than a card sitting on it — the purple slab is gone.
+    */
     <header id="profile" className="relative bg-hero">
       <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
@@ -238,7 +242,7 @@ export default function ProfileHeader({
             </span>
           </div>
 
-          <div className="mt-4 flex items-center gap-3 bg-base/45 p-3">
+          <div className="mt-4 flex items-center gap-3 bg-panel2/70 p-3">
             {badge ? (
               /*
                 Valve's own badge art, at Bradley's explicit request — the one
@@ -258,7 +262,7 @@ export default function ProfileHeader({
                 className="h-14 w-14 shrink-0"
               />
             ) : (
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[20px] font-light text-accent">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-panel2/80 text-[20px] font-light text-accent">
                 {years}
               </span>
             )}

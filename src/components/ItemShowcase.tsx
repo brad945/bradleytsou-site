@@ -63,7 +63,7 @@ export function FavoriteProject({ repo }: { repo: FeaturedRepo | null }) {
             {tags.map((tag) => (
               <li
                 key={tag}
-                className="border border-line bg-base/50 px-1.5 py-0.5 font-mono text-[10px] text-muted"
+                className="border border-line bg-panel2/60 px-1.5 py-0.5 font-mono text-[10px] text-muted"
               >
                 {tag}
               </li>

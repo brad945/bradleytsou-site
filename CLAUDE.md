@@ -337,8 +337,19 @@ class would stop emitting.
 
 ## Design tokens (already in tailwind.config.ts)
 
-Dark theme, not a generic AI-slop palette:
-- `base` #0c0d11, `panel` #15171e, `panel2` #1c1f29, `line` #2a2d3a
+**The palette is Steam's own, taken from their stylesheets** — `#1b2838`
+is `body` in `globalv2.css`, `#171d25` is `#global_header`, `#8f98a0` is
+their body text, `#66c0f4` their link blue, and `#c7d5e0` their bright
+text. The panel fills are derived, not guessed: Steam paints profile
+cards `rgba(0,0,0,.3)` and status blocks `rgba(0,0,0,.5)` over the page,
+so `panel`/`panel2` are those composited over `#1b2838`, and `line` is
+their `rgba(255,255,255,.1)` border done the same way.
+
+The purple scheme it replaced (`base` #0c0d11, `hero` #33203b and the
+plum/wine profile gradient) is gone — `hero` is now the page colour, so
+the header reads as part of the page rather than a card on it.
+
+- `base` #1b2838, `panel` #131c27, `panel2` #0e141c, `line` #323e4c
 - `ink` #e9e7e2 (text), `muted` #8b90a0
 - `accent` #de9b35 (CS2-orange, used sparingly)
 - `nebula` #5b3fae (background glow / gradient accent)

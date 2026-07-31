@@ -61,7 +61,7 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
   );
 
   return (
-    <li className="bg-base/45">
+    <li className="bg-panel2/70">
       <div className="flex flex-col gap-3 p-3 sm:flex-row">
         <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
           <span
@@ -124,7 +124,7 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
 /** Fallback row, used only when there's no token to fetch the featured repos. */
 function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
   return (
-    <li className="bg-base/45">
+    <li className="bg-panel2/70">
       <div className="flex flex-col gap-3 p-3 sm:flex-row">
         <a
           href={repo.url}
@@ -227,7 +227,7 @@ export default function ActivityFeed({
                 ))}
           </ul>
         ) : (
-          <div className="bg-base/45 px-5 py-10 text-center">
+          <div className="bg-panel2/70 px-5 py-10 text-center">
             <p className="t-label">
               {snapshot.error ?? "No repository activity to show"}
             </p>

@@ -6,10 +6,10 @@ import type { Config } from "tailwindcss";
  * colour, add a token here first.
  */
 const tokens = {
-  base: "#0c0d11",
-  panel: "#15171e",
-  panel2: "#1c1f29",
-  line: "#2a2d3a",
+  base: "#1b2838",
+  panel: "#131c27",
+  panel2: "#0e141c",
+  line: "#323e4c",
   /**
    * Text ramp, tuned to Steam's. Steam runs cool blue-greys, not warm creams,
    * and reserves pure white for headings — `ink` was #e9e7e2 and read warm
@@ -17,10 +17,10 @@ const tokens = {
    */
   bright: "#ffffff",
   ink: "#e5e8ea",
-  copy: "#c6d4df",
+  copy: "#c7d5e0",
   muted: "#8f98a0",
   accent: "#de9b35",
-  nebula: "#5b3fae",
+  nebula: "#417a9b",
   live: "#5cc98f",
 
   // Added for the Steam-profile layout.
@@ -30,19 +30,19 @@ const tokens = {
   deveval: "#58e8d2",
   /**
    * MedImpact's, on its line in the header bio. Set at Bradley's request
-   * after being told the number: against `hero` (#33203b) this is 1.19:1,
+   * after being told the number: against `hero` (now #1b2838) it is 1.35:1,
    * where WCAG AA wants 4.5 and every other line on the page sits near 9.8.
    * It is very nearly invisible. Kept because he asked for it knowing that.
    */
   medimpact: "#250644",
-  /** Profile-background purple. */
-  plum: "#3f2350",
-  /** Profile-background magenta-maroon. */
-  wine: "#2b1526",
+  /** Steam blue, used for panel bars. */
+  plum: "#2a475e",
+  /** Steam global-header near-black. */
+  wine: "#171d25",
   /** Panel header bar — flat, was the left stop of a teal->purple gradient. */
-  teal: "#2f5d6e",
+  teal: "#2a475e",
   /** Profile header background — flat, was a five-stop purple sweep. */
-  hero: "#33203b",
+  hero: "#1b2838",
   /**
    * Avatar frame band. A NARROW range of medium greys — the reference band
    * is mid-grey throughout with only a gentle top-left-to-bottom-right fall.
