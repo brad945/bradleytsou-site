@@ -236,8 +236,8 @@ export const socials: SocialLink[] = [
    * referral tracking picked up by copying from a signed-in page. They say
    * where *he* clicked from, and would follow every visitor who used this link.
    */
-  { label: "Devpost", href: "https://devpost.com/bradley_tsou" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/bradleytsou" },
+  { label: "Devpost", href: "https://devpost.com/bradley_tsou" },
   { label: "Email", href: `mailto:${profile.email}` },
 ];
 
