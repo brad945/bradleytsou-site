@@ -24,10 +24,16 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
 
   return (
     <nav className="bg-chrome">
-      <div className="mx-auto flex max-w-profile flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+      {/*
+        104px is Steam's own `#global_header .content` height — ours was 48,
+        under half of it, which is most of why the top of the page didn't read
+        as Steam. The wordmark is scaled to suit and the nav items sit on the
+        baseline rather than centred, as they do there.
+      */}
+      <div className="mx-auto flex h-[104px] max-w-profile flex-wrap items-center gap-x-7 gap-y-2 px-4">
         <a
           href="#profile"
-          className="text-[19px] font-light leading-none tracking-tight text-bright"
+          className="text-[26px] font-light leading-none tracking-tight text-bright"
         >
           {handle}
         </a>

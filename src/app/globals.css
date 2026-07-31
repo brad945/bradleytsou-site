@@ -110,7 +110,8 @@
    * through it, the way Steam's panels sit over an equipped background.
    */
   .panel {
-    @apply bg-panel/70 backdrop-blur-[2px];
+    /* 3px is Steam's `.profile_customization` border-radius. */
+    @apply rounded-panel bg-panel/70 backdrop-blur-[2px];
   }
 
   /* Steam's showcase header: flat bar, title left, meta right. */

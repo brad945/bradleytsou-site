@@ -62,7 +62,7 @@ export default async function Home() {
           order the narrow layout already used, now applied at every width.
           The sidebar panels keep their own internal stacking.
         */}
-        <div className="mt-4 flex min-w-0 flex-col gap-4">
+        <div className="mt-3 flex min-w-0 flex-col gap-3">
           <FavoriteProject repo={favorite} />
           <Experience featured={featured} />
           <ActivityFeed snapshot={snapshot} featured={featured} />

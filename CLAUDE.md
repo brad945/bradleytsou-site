@@ -405,6 +405,16 @@ of the resemblance, and all four are easy to lose:
 - **pure white for headings, blue-grey for copy** — not one flat colour
 - **tight leading on headings, ~1.5 on body**
 
+Measured against Steam and matched: the global header is **104px**
+(`#global_header .content`), panels carry a **3px** radius
+(`.profile_customization`) and sit **12px** apart (its `margin-bottom`).
+The profile header's 230px is already within 6px of Steam's 224px
+`min-height`.
+
+One place we deliberately differ: our panel bar is 46px where Steam's
+`.profile_customization_header` computes to 40 (5px padding + 30px
+line-height). Bradley asked for bigger, so it stays bigger.
+
 `.panel-bar-title` / `.panel-bar-meta` / `.stat-label` / `.stat-value`
 are aliases onto that scale, so restyling the scale restyles the page.
 
