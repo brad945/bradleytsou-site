@@ -137,10 +137,6 @@ export default function Sidebar({
             <div className="mt-3">
               <Stat label="Pull Requests" value={contributions.pullRequests} />
               <Stat label="Merged" value={contributions.pullRequestsMerged} />
-              <Stat
-                label="Repos Created"
-                value={contributions.repositoriesCreated}
-              />
             </div>
           </div>
         )}
