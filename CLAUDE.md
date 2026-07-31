@@ -35,14 +35,13 @@ is real, not decorative:
 - Experience & Projects = roles and built things in **one** panel. They
   were two, which split the same story in half and listed UCSB and BRI
   Youth in both. Those two are kept as roles only, since that's where the
-  org and dates live. **Both lists sort newest-first in
-  `Experience.tsx`**, not in the order they're authored — this replaced a
-  manual order that deliberately put MedImpact above Crossing Hurdles;
-  sorting now puts Crossing Hurdles first. The two lists sort separately
-  rather than merging into one feed, because projects carry only a year
-  and interleaving them with month-precision roles would imply placement
-  the data can't support. Roles are hand-maintained (LinkedIn has no
-  public API); project rows pull live commits and language via `ghRepo`
+  org and dates live. **Order is manual on both lists** — rendered in
+  `profile-data` array order. A newest-first date sort was added and then
+  reverted within the hour: Bradley wants Crossing Hurdles below DevEval
+  despite starting five months later, and that's precisely what sorting
+  by date can't express. Don't re-add it. Roles are hand-maintained
+  (LinkedIn has no public API); project rows pull live commits and
+  language via `ghRepo`
 - Right sidebar = status, real GitHub counts (repos / followers /
   following / gists / member since), milestone badge tiles, a language
   breakdown, and a stars-ranked repo list in Steam's friends-list slot

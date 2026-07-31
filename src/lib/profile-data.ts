@@ -141,14 +141,6 @@ export const roles: Role[] = [
     blurb: "Portal cybersecurity systems; Verdegard IT operations.",
   },
   {
-    org: "Crossing Hurdles",
-    tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
-    title: "Language and Audio Engineer",
-    start: "Jun 2026",
-    blurb:
-      "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
-  },
-  {
     org: "DevEval",
     tags: ["Next.js", "TypeScript", "Postgres", "Docker", "Forward-Deployed"],
     ghRepo: "sennaicodes/codearenamvp",
@@ -158,6 +150,14 @@ export const roles: Role[] = [
     blurb:
       "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed on customer implementations alongside core product engineering.",
     url: "https://deveval.com",
+  },
+  {
+    org: "Crossing Hurdles",
+    tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
+    title: "Language and Audio Engineer",
+    start: "Jun 2026",
+    blurb:
+      "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
   },
   {
     org: "Web Development at Berkeley",

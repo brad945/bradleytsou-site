@@ -111,45 +111,15 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
   );
 }
 
-const MONTHS = [
-  "jan", "feb", "mar", "apr", "may", "jun",
-  "jul", "aug", "sep", "oct", "nov", "dec",
-];
-
-/**
- * "May 2026" / "2026" -> a sortable number. Unparseable strings sort last
- * rather than throwing, so a typo in `profile-data` costs one row's position
- * instead of the panel.
- */
-function when(value: string): number {
-  const match = /([a-z]{3})?[a-z]*\s*(\d{4})/i.exec(value.trim());
-  if (!match) return -Infinity;
-  const month = match[1] ? MONTHS.indexOf(match[1].toLowerCase()) : 0;
-  return Number(match[2]) * 12 + (month < 0 ? 0 : month);
-}
-
 export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
   const byRepo = new Map(featured.map((r) => [r.nameWithOwner, r]));
 
   /*
-   * Sorted newest-first rather than kept in the order they're authored. This
-   * replaces the manual ordering — CLAUDE.md used to note that Bradley wanted
-   * MedImpact above Crossing Hurdles despite the later start, and sorting now
-   * puts Crossing Hurdles first.
-   *
-   * Roles and projects are sorted separately, not merged into one feed:
-   * projects carry only a year, so interleaving them with month-precision
-   * roles would place them at an arbitrary point inside that year and imply
-   * precision the data doesn't have.
-   *
-   * Copies, not in-place — `roles` and `projects` are module-level arrays and
-   * sorting them mutates what every other importer sees.
+   * Rendered in the order they're authored in `profile-data`, deliberately.
+   * A date sort lived here briefly and was reverted: Bradley wants Crossing
+   * Hurdles below DevEval despite starting five months later, which is
+   * exactly the placement sorting by date can't express.
    */
-  const sortedRoles = [...roles].sort((a, b) => when(b.start) - when(a.start));
-  const sortedProjects = [...projects].sort(
-    (a, b) => when(b.period) - when(a.period),
-  );
-
   return (
     <section aria-labelledby="experience-heading" className="panel">
       <div className="panel-bar">
@@ -160,10 +130,10 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
 
       <div className="px-5 pb-5 pt-1">
         <ul className="flex flex-col">
-          {sortedRoles.map((role) =>
+          {roles.map((role) =>
             roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
           )}
-          {sortedProjects.map((project) =>
+          {projects.map((project) =>
             projectRow(
               project,
               project.ghRepo ? byRepo.get(project.ghRepo) : undefined,
