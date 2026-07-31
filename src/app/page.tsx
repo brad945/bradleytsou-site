@@ -57,16 +57,21 @@ export default async function Home() {
         <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
         {/*
-          One column, at Bradley's request. This was Steam's 616/16/308 split
-          at ≥lg, which stacked below that breakpoint — so this is the stacked
-          order the narrow layout already used, now applied at every width.
-          The sidebar panels keep their own internal stacking.
+          Steam's main/sidebar split, restored. It was flattened to a single
+          column and that was the wrong reading — what Bradley wanted contained
+          in one column is the *page*, which the centred `max-w-profile` block
+          above already does. The two columns live inside it.
+
+          ~649 / 12 / ~325 at ≥lg; stacks below that. The gap is 12px, Steam's
+          own `.profile_customization` margin, not the 16 it used to be.
         */}
-        <div className="mt-3 flex min-w-0 flex-col gap-3">
-          <FavoriteProject repo={favorite} />
-          <Experience featured={featured} />
-          <ActivityFeed snapshot={snapshot} featured={featured} />
-          {/* <Comments /> */}
+        <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
+          <div className="flex min-w-0 flex-col gap-3">
+            <FavoriteProject repo={favorite} />
+            <Experience featured={featured} />
+            <ActivityFeed snapshot={snapshot} featured={featured} />
+            {/* <Comments /> */}
+          </div>
 
           <Sidebar
             snapshot={snapshot}
