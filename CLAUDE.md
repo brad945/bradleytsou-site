@@ -362,9 +362,15 @@ it sees it — but **the site does not and cannot load it**. Self-hosting
 the file needs a paid Typotheque webfont licence. Don't "fix" this by
 adding an @font-face pointing at a copied file.
 
-Mulish is therefore what renders for essentially everyone. It's the
-standard free substitute and is loaded as a variable font so weights
-200-300 are actually available rather than being synthesised.
+**Open Sans** is therefore what renders for essentially everyone. Bradley
+picked it over Mulish (the previous substitute), Nunito Sans, Source
+Sans 3, IBM Plex Sans and Inter, from a side-by-side of all six set in
+this page's own headings at its own sizes.
+
+**Open Sans has no 200 weight** — the family starts at 300. Steam's
+headings are weight 200, so every `font-extralight` here became
+`font-light`; the CSS states the weight that actually renders instead of
+asking for one that silently clamps. Don't "restore" 200.
 
 The scale lives as `.t-*` classes in `src/app/globals.css` and is taken
 **from Steam's own `profilev2.css`**, not estimated off screenshots:

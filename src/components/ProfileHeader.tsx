@@ -148,7 +148,7 @@ export default function ProfileHeader({
                     unoptimized
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-extralight text-muted">
+                  <div className="flex h-full w-full items-center justify-center text-4xl font-light text-muted">
                     {profile.initials}
                   </div>
                 )}
@@ -251,7 +251,7 @@ export default function ProfileHeader({
                 className="h-14 w-14 shrink-0"
               />
             ) : (
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[20px] font-extralight text-accent">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-base/70 text-[20px] font-light text-accent">
                 {years}
               </span>
             )}

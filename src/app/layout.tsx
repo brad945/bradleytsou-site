@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Mulish } from "next/font/google";
+import { JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/profile-data";
 
@@ -9,11 +9,15 @@ import { profile } from "@/lib/profile-data";
  * it's Typotheque's, licensed per-use, and self-hosting the file needs a paid
  * webfont licence. That makes it a local-only nicety, not the delivered font.
  *
- * Mulish is what actually renders for essentially everyone — closest free
- * match on proportions, and it carries the light weights the big numbers need.
+ * Open Sans is what actually renders for essentially everyone. Bradley picked
+ * it from a side-by-side of six free faces set in this page's own headings.
  * One family for display and body, same as Steam.
+ *
+ * Note its weight range starts at 300 — there is no 200. Every heading that
+ * asked for `font-extralight` was moved to `font-light` rather than left to
+ * clamp silently, so the CSS says the weight that actually renders.
  */
-const sans = Mulish({
+const sans = Open_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",

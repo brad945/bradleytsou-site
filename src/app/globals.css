@@ -60,16 +60,18 @@
    * large across the board, at roughly double the weight on headings. If a
    * value here looks wrong, check Steam's stylesheet before changing it.
    *
-   * Caveat: these are Motiva Sans's sizes and we render Mulish, whose
-   * x-height differs. If the text still reads a touch large at matching px,
-   * the fix is a `size-adjust` on the Mulish face, not new numbers here.
+   * Two caveats. These are Motiva Sans's sizes rendered in Open Sans, whose
+   * x-height differs — if text reads large at matching px, the fix is a
+   * `size-adjust` on the face, not new numbers here. And Steam's 200 weights
+   * are 300 below, because Open Sans has no 200; that's the floor of the
+   * family, not a preference.
    */
   .t-display {
-    @apply text-[24px] font-extralight leading-[40px] text-bright;
+    @apply text-[24px] font-light leading-[40px] text-bright;
   }
 
   .t-panel-title {
-    @apply text-[16px] font-extralight leading-[30px] text-bright;
+    @apply text-[16px] font-light leading-[30px] text-bright;
   }
 
   .t-panel-meta {
@@ -78,11 +80,11 @@
 
   /* Sidebar counts, the showcase counter, level numbers. */
   .t-stat {
-    @apply text-[24px] font-extralight leading-none text-ink;
+    @apply text-[24px] font-light leading-none text-ink;
   }
 
   .t-stat-lg {
-    @apply text-[34px] font-extralight leading-none text-ink;
+    @apply text-[34px] font-light leading-none text-ink;
   }
 
   .t-label {

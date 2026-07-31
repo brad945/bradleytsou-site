@@ -180,8 +180,9 @@ const config: Config = {
          * it — this only names it.
          *
          * So for practically every visitor the next entry is what renders.
-         * Mulish stands in: same humanist-geometric proportions, and it has
-         * the light weights the big numbers need.
+         * Open Sans stands in — Bradley chose it from a side-by-side of six
+         * free faces set in this page's own headings. Its weight range starts
+         * at 300, so nothing here should ask for 200.
          */
         display: [
           "Motiva Sans",
