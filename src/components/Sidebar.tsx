@@ -119,24 +119,23 @@ export default function Sidebar({
           status above it — how active he is — so it reads better as a second
           group in one box than as a second box.
         */}
+        {/*
+          Down to the total. The type breakdown (pull requests, merged, repos
+          created) was stripped row by row at Bradley's request, so this is now
+          a single figure rather than a group — but `getContributions()` still
+          returns the rest, ready if any of it comes back.
+
+          No "Past year" subtext either: a year is the only window GitHub's
+          contributions API reports, so it never distinguished this number
+          from an alternative.
+        */}
         {contributions && (
           <div className="mt-7">
-            {/*
-              No "Past year" subtext. It's the only window GitHub's
-              contributions API reports, so it wasn't distinguishing this
-              number from an alternative — it just cost a line in a narrow
-              column.
-            */}
             <div className="stat-row">
               <span className="stat-label">Contributions</span>
               <span className="stat-value">
                 {contributions.total.toLocaleString()}
               </span>
-            </div>
-
-            <div className="mt-3">
-              <Stat label="Pull Requests" value={contributions.pullRequests} />
-              <Stat label="Merged" value={contributions.pullRequestsMerged} />
             </div>
           </div>
         )}
