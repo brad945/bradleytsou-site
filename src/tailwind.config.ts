@@ -50,11 +50,14 @@ const tokens = {
    * same 1.18. On a dark ground **value does the separating and hue only
    * carries identity**, and at 28% lightness it sat 12 points off a 16%
    * background while its two sibling bio lines sat at 63% and 83%. Lifting
-   * it into that band is what fixes it; 6.89:1 here.
+   * it into that band is what fixes it.
    *
-   * If it ever needs to be darker, it can't be — not on this background.
+   * Stepped back down from 78% to 72% at Bradley's request: 5.43:1, still
+   * clear of AA. **That is most of the room there is** — 69% is 4.79 and
+   * 66% is 4.22, i.e. failing. Anything that reads as a genuinely dark
+   * purple is back to sinking into the navy.
    */
-  medimpact: "#c7a0ee",
+  medimpact: "#b886ea",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */
