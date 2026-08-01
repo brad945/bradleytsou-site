@@ -102,7 +102,11 @@ export const profile = {
   /** His actual LinkedIn headline, not a paraphrase of it. */
   tagline: "Applied Math + CS @ UC Berkeley",
   /** Org in `tagline` to link, and where to. See `BioLine`. */
-  taglineLink: { linkText: "UC Berkeley", href: "https://www.berkeley.edu" },
+  taglineLink: {
+    linkText: "UC Berkeley",
+    href: "https://www.berkeley.edu",
+    className: "text-berkeley",
+  },
   location: "San Jose, California",
   /**
    * Drives the Level circle — level = full years since this date. Set by

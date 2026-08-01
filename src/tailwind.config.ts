@@ -33,6 +33,15 @@ const tokens = {
   /** Link / heading blue. */
   link: "#66c0f4",
   /**
+   * Berkeley Blue, on the tagline line. Their official #003262 measures
+   * 1.16:1 on this column and vanishes — same hue family as the navy, which
+   * is the purple's problem exactly. Same hue (212deg) lifted to 62%
+   * lightness: 5.08:1.
+   */
+  berkeley: "#649ad8",
+  /** California Gold, Berkeley's other half. #fdb515 as published, 8.38:1. */
+  gold: "#fdb515",
+  /**
    * DevEval's own colour, on its line in the header bio.
    *
    * 9.87:1 on the dark column — fine here. (It was 1.29:1 on the light
