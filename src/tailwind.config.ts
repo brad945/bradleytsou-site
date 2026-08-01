@@ -52,12 +52,17 @@ const tokens = {
    * background while its two sibling bio lines sat at 63% and 83%. Lifting
    * it into that band is what fixes it.
    *
-   * Stepped back down from 78% to 72% at Bradley's request: 5.43:1, still
-   * clear of AA. **That is most of the room there is** — 69% is 4.79 and
-   * 66% is 4.22, i.e. failing. Anything that reads as a genuinely dark
-   * purple is back to sinking into the navy.
+   * Darkened twice at Bradley's request, 78% -> 72% -> 64%. At 64% this is
+   * **4.04:1, under the 4.5 AA line** — a deliberate trade he made after
+   * being shown the numbers, because 72% still read as the same purple to
+   * him. It is legible, just not compliant.
+   *
+   * There is very little left below this. 60% is 3.43:1 and 56% is 2.82,
+   * where it starts disappearing into the navy again — the exact problem
+   * this colour was lifted out of. If it needs to go darker than 64%, the
+   * background under the line has to change, not the text.
    */
-  medimpact: "#b886ea",
+  medimpact: "#a768df",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */
