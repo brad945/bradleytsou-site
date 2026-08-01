@@ -119,7 +119,7 @@ function renderBioLine(line: BioLine) {
         href={line.href}
         target="_blank"
         rel="noreferrer"
-        className="underline decoration-current/40 underline-offset-2 transition hover:decoration-current"
+        className="font-semibold underline decoration-current/40 underline-offset-2 transition hover:decoration-current"
       >
         {line.linkText}
       </a>
