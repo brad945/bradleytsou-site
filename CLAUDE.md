@@ -488,10 +488,12 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
 ## Things to avoid
 
 - No fake/decorative animations — every interactive element should be real
-  data or a real mechanic, per Bradley's explicit brief. Two deliberate
-  exceptions, both replications of actual Steam features Bradley asked
-  for: the animated avatar frame (DVD-screensaver bounce) and the status
-  pulse. Neither is scroll-triggered and neither is a hover effect. Don't
+  data or a real mechanic, per Bradley's explicit brief. Three deliberate
+  exceptions, all requested directly: the animated avatar frame
+  (DVD-screensaver bounce) and the status pulse, both replications of
+  actual Steam features, and `cal-swap` — the tagline alternating between
+  Berkeley Blue and California Gold. That last one is decoration, not
+  data; it's here because Bradley asked for it by name. Neither is scroll-triggered and neither is a hover effect. Don't
   read these as licence to add decorative motion elsewhere.
 - **Close visual fidelity to Steam's profile layout is intentional** —
   Bradley asked for it directly, superseding the earlier "inspired by the

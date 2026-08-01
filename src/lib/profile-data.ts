@@ -105,7 +105,7 @@ export const profile = {
   taglineLink: {
     linkText: "UC Berkeley",
     href: "https://www.berkeley.edu",
-    className: "text-berkeley",
+    className: "text-berkeley animate-cal-swap",
   },
   location: "San Jose, California",
   /**

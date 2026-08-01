@@ -285,6 +285,18 @@ const config: Config = {
         profile: "990px",
       },
       keyframes: {
+        /*
+         * Berkeley's two colours on the tagline. `steps(1)` at each stop so it
+         * cuts between them rather than sliding through the muddy blue-greens
+         * in between — the point is the pair, not a gradient.
+         *
+         * `alternate` on the animation makes one cycle blue -> gold -> blue,
+         * so the two halves get equal time without a third keyframe.
+         */
+        "cal-swap": {
+          "0%, 45%": { color: tokens.berkeley, animationTimingFunction: "steps(1)" },
+          "50%, 100%": { color: tokens.gold, animationTimingFunction: "steps(1)" },
+        },
         // Status pulse, tied to real "is the GitHub feed live" state.
         "pulse-live": {
           "0%, 100%": { opacity: "1" },
@@ -335,6 +347,7 @@ const config: Config = {
         ]),
       },
       animation: {
+        "cal-swap": "cal-swap 3.2s infinite alternate",
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
         // jump-none, not the default jump-end — see the keyframe note.
         // fps = steps / duration, so both of these are 10fps.
