@@ -29,14 +29,33 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+/**
+ * The live origin. `metadataBase` is what turns the generated
+ * `opengraph-image` into an absolute URL — without it Next emits a relative
+ * path, and every scraper (LinkedIn, iMessage, Slack) drops the preview.
+ *
+ * Falls back to the Vercel-assigned URL for preview deployments so those get
+ * working cards too.
+ */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? `https://${process.env.NEXT_PUBLIC_SITE_URL}`
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://bradleytsou.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: `${profile.name} — ${profile.handle.replace("@", "")}`,
   description: profile.tagline,
+  alternates: { canonical: "/" },
   openGraph: {
     title: profile.name,
     description: profile.tagline,
     type: "profile",
+    url: siteUrl,
+    siteName: profile.name,
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
