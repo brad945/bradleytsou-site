@@ -32,44 +32,27 @@ const tokens = {
   // Added for the Steam-profile layout.
   /** Link / heading blue. */
   link: "#66c0f4",
-  /**
-   * Berkeley Blue, on the tagline line. Their official #003262 measures
-   * 1.16:1 on this column and vanishes — same hue family as the navy, which
-   * is the purple's problem exactly. Same hue (212deg) lifted to 62%
-   * lightness: 5.08:1.
+  /*
+   * The three bio-line colours. Treated as one set, not three independent
+   * picks — that's what stops them reading as highlighters.
+   *
+   * Each keeps its org's hue for identity (Berkeley 212deg, MedImpact
+   * 272deg, DevEval 171deg) but they share a saturation and a lightness:
+   * **S=35%, the background's own 34.9%, and L=74%.**
+   *
+   * Saturation is what was wrong before. The accents ran 60/65/76% against a
+   * 35% ground, so the text was twice as chromatic as the page it sat on —
+   * which is exactly what reads as childish. Matching the ground's
+   * saturation means nothing is louder than the page, and the shared
+   * lightness makes them a family that differs only in hue.
+   *
+   * Their brand colours can't be used raw: Berkeley's #003262 is 1.16:1 here
+   * and MedImpact's #250644 is 1.18:1 — both the background's own hue family
+   * and both invisible on it. These are tints, deliberately.
    */
-  berkeley: "#649ad8",
-  /**
-   * DevEval's own colour, on its line in the header bio.
-   *
-   * 9.87:1 on the dark column — fine here. (It was 1.29:1 on the light
-   * theme; the two bio colours swap legibility whenever the theme flips.)
-   */
-  deveval: "#58e8d2",
-  /**
-   * MedImpact's, on its line in the header bio.
-   *
-   * A tint of MedImpact's #250644, not a different colour: same violet hue
-   * (270deg), lifted from 14.5% lightness to 78%.
-   *
-   * The dark original measured 1.18:1 on this background and visibly sank
-   * into it. That isn't a shade problem — #470788 was tried and measured the
-   * same 1.18. On a dark ground **value does the separating and hue only
-   * carries identity**, and at 28% lightness it sat 12 points off a 16%
-   * background while its two sibling bio lines sat at 63% and 83%. Lifting
-   * it into that band is what fixes it.
-   *
-   * Darkened twice at Bradley's request, 78% -> 72% -> 64%. At 64% this is
-   * **4.04:1, under the 4.5 AA line** — a deliberate trade he made after
-   * being shown the numbers, because 72% still read as the same purple to
-   * him. It is legible, just not compliant.
-   *
-   * There is very little left below this. 60% is 3.43:1 and 56% is 2.82,
-   * where it starts disappearing into the navy again — the exact problem
-   * this colour was lifted out of. If it needs to go darker than 64%, the
-   * background under the line has to change, not the text.
-   */
-  medimpact: "#a768df",
+  berkeley: "#a5bbd4",
+  deveval: "#a5d4cd",
+  medimpact: "#bea5d4",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */

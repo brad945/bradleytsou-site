@@ -381,6 +381,13 @@ alternative for each.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
+- **Bio-line accents are one set, not three picks**: `berkeley` #a5bbd4,
+  `medimpact` #bea5d4, `deveval` #a5d4cd. Each keeps its org's hue
+  (212 / 272 / 171deg) but all three share S=35% — the background's own
+  34.9% — and L=74%. They ran 60/65/76% saturation before and read as
+  highlighters: text twice as chromatic as the page it sits on. Raw brand
+  colours can't be used (Berkeley's #003262 is 1.16:1 here, MedImpact's
+  #250644 is 1.18:1); these are tints on purpose.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 
