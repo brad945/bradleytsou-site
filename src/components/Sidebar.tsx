@@ -86,7 +86,7 @@ export default function Sidebar({
           Derived from the last push, not hardcoded. This used to read
           "Currently Online" in green permanently, regardless of anything.
         */}
-        <h2 className={`text-[24px] font-medium leading-tight ${status.tone}`}>
+        <h2 className={`text-[24px] font-normal leading-tight ${status.tone}`}>
           {status.label}
         </h2>
         {/* Says exactly what it measures — a push, not presence. */}
