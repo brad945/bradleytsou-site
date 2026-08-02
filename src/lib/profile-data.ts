@@ -95,6 +95,20 @@ export const PLACEHOLDER_GITHUB_USERNAME = "your-github-username";
  */
 export const githubUsername: string = "brad945";
 
+/**
+ * The site's canonical origin — what canonical tags, og:url and the sitemap
+ * advertise.
+ *
+ * **Must match whichever domain is set Primary in Vercel → Settings → Domains.**
+ * It's `www` today; the apex 308-redirects to it. If that's ever flipped,
+ * change this too or the canonical will point at a URL that redirects.
+ *
+ * Hardcoded on purpose. This was derived from Vercel's environment before, but
+ * `VERCEL_PROJECT_PRODUCTION_URL` is the *.vercel.app address, so every page
+ * advertised that as canonical and the real domain looked like a duplicate.
+ */
+export const siteOrigin = "https://www.bradleytsou.com";
+
 export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
-import { profile } from "@/lib/profile-data";
+import { profile, siteOrigin } from "@/lib/profile-data";
 
 /**
  * Steam's own face is Motiva Sans, and the Tailwind stacks now name it first
@@ -29,22 +29,8 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-/**
- * The live origin. `metadataBase` is what turns the generated
- * `opengraph-image` into an absolute URL — without it Next emits a relative
- * path, and every scraper (LinkedIn, iMessage, Slack) drops the preview.
- *
- * Falls back to the Vercel-assigned URL for preview deployments so those get
- * working cards too.
- */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-  ? `https://${process.env.NEXT_PUBLIC_SITE_URL}`
-  : process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "https://bradleytsou.com";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(siteOrigin),
   title: `${profile.name} — ${profile.handle.replace("@", "")}`,
   description: profile.tagline,
   alternates: { canonical: "/" },
@@ -52,14 +38,14 @@ export const metadata: Metadata = {
     title: profile.name,
     description: profile.tagline,
     type: "profile",
-    url: siteUrl,
+    url: siteOrigin,
     siteName: profile.name,
   },
   twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c0d11",
+  themeColor: "#1b2838", // `hero`, the column colour — matches the browser chrome to the page
 };
 
 export default function RootLayout({
