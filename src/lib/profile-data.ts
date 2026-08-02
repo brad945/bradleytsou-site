@@ -1,11 +1,8 @@
 /**
  * Everything editable about the site lives here.
  *
- * TODO(bradley): replace `githubUsername` and the project links below with the
- * real ones. The activity feed, the repo rows, the sidebar counts and the
- * avatar are all driven off `githubUsername` — until it's real, the feed
- * renders its empty state and the data-backed sidebar panels hide themselves
- * rather than crashing.
+ * `githubUsername` is real and the live data layer is on; the empty states
+ * below only appear if it's ever unset.
  */
 
 export type Rarity = "core" | "major" | "side";
@@ -166,8 +163,8 @@ export const profile = {
 
 /**
  * Steam lists every persona name you've used, behind the caret next to the
- * name. TODO(bradley): replace with your real previous handles, or set this
- * to `[]` and the dropdown says "No previous aliases".
+ * name. These are the ones Bradley wants shown. Set to `[]` and the dropdown
+ * reads "No previous aliases" instead.
  */
 export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 
@@ -303,9 +300,8 @@ export const socials: SocialLink[] = [
  * it can be checked. The placeholders that used to live here ("Project Three"
  * etc.) are gone.
  *
- * TODO(bradley): `period` is the year of last activity, not a real start date —
- * I don't have those. And the `tags` marked below are inferred from the
- * description or the repo's primary language rather than known; correct them.
+ * `period` is the year Bradley actually worked on each one — confirmed by him,
+ * not derived from repo activity. The inferred tags have been confirmed too.
  */
 export const projects: Project[] = [
   {
@@ -313,9 +309,17 @@ export const projects: Project[] = [
     ghRepo: "brad945/visionotes",
     name: "VisionNotes",
     kind: "Software",
-    blurb: "Piano posture analyzer.",
+    /*
+     * From Bradley directly, not the repo description — that reads "Piano
+     * posture analyzer.", which undersells it: it corrects in real time
+     * rather than reporting after the fact. The only blurb on the page not
+     * copied verbatim from GitHub; update the repo description and this can
+     * go back to matching it.
+     */
+    blurb: "Real-time piano posture corrector.",
     rarity: "major",
-    tags: ["JavaScript", "Computer Vision"], // TODO(bradley): "Computer Vision" is inferred from the name
+    // "Computer Vision" confirmed by Bradley — it was inferred before.
+    tags: ["JavaScript", "Computer Vision", "Real-time"],
     href: undefined,
     repo: undefined, // private
     period: "2026",
