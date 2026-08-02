@@ -31,7 +31,9 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
-  title: `${profile.name} — ${profile.handle.replace("@", "")}`,
+  // Just the name. The handle used to be appended and said nothing the name
+  // didn't — a tab is narrow, and "Bradley Tsou" is the whole identity here.
+  title: profile.name,
   description: profile.tagline,
   alternates: { canonical: "/" },
   openGraph: {
