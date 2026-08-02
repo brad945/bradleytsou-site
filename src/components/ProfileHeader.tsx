@@ -143,11 +143,16 @@ export default function ProfileHeader({
    * alternative was to set it on GitHub and let the fetch carry it, which
    * would have kept that property, but he supplied the image directly.)
    *
-   * The source was a circular-cropped screenshot, so the file is the largest
-   * square that fits inside that circle — 321px of a 454px disc. Cropping to
-   * the circle's bounding box instead would have left the screenshot's grey
-   * corners in a frame that expects a full square. 321 is deliberate headroom
-   * over the 150px it renders at, so it stays sharp on a 2x display.
+   * The source was a circular-cropped screenshot, which is what makes the
+   * framing a trade rather than a choice: the widest square with no circle
+   * edge in it is the inscribed 321px, and that read as too tight. This is
+   * 360px of the 454px disc — 12% more of the scene, at the cost of four
+   * small corner nicks, which are filled with `base` black to sit with the
+   * well behind them. Past ~380 the nicks stop reading as vignetting and
+   * start reading as a mistake; the full 454 disc is the other clean stop,
+   * a round photo on black. The way out of the trade entirely is the
+   * original uncropped photo, which we don't have. 360 still leaves
+   * headroom over the 150px it renders at, so it stays sharp at 2x.
    */
   const avatar = "/avatar.jpg";
 

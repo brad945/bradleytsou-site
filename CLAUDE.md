@@ -169,11 +169,15 @@ class would stop emitting.
   supplied the photo directly. It's the only thing in the header that
   isn't fetched, so it's the only one that can go stale silently:
   changing his GitHub picture no longer changes the page. The source was
-  a circular-cropped screenshot and the file is the largest square inside
-  that circle (321px of a 454px disc), so the square frame gets a full
-  square rather than the screenshot's grey corners. The nav's 24px chip
-  is **still** the GitHub avatar — it's the signed-in-as slot and links
-  to the GitHub profile — so the two differ on purpose.
+  a circular-cropped screenshot, so the framing is a trade: the widest
+  square with no circle edge in it is the inscribed 321px, which read as
+  too tight, so it's **360px of the 454px disc** — 12% more scene, four
+  small corner nicks filled with `base` black. Past ~380 they stop
+  reading as vignetting and start reading as a mistake; the full 454 disc
+  is the other clean stop. An uncropped original would end the trade.
+  The nav's 24px chip is **still** the GitHub avatar — it's the
+  signed-in-as slot and links to the GitHub profile — so the two differ
+  on purpose.
   The right-hand block is matched to the reference by ratio, not by eye.
   Against the "Level" font-size: **circle diameter 1.08x**, ring 6.4% of
   the diameter, numeral 0.44x the diameter, gap 0.20x. At 34px that's
