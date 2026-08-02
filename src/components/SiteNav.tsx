@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { GitHubStats } from "@/lib/github";
 import { profile } from "@/lib/profile-data";
+import BtMark from "@/components/BtMark";
 
 /**
  * Steam's global header: dark full-width bar, wordmark on the left, uppercase
@@ -20,8 +21,6 @@ const LINKS = [
 ];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
-  const handle = profile.handle.replace("@", "");
-
   return (
     <nav className="bg-chrome">
       {/*
@@ -31,11 +30,28 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
         baseline rather than centred, as they do there.
       */}
       <div className="mx-auto flex h-[104px] max-w-profile flex-wrap items-center gap-x-7 gap-y-2 px-4">
+        {/*
+          The mark, where the handle used to be set as text. Steam's slot here
+          is a logo, not a name — the name is already the persona heading a few
+          hundred pixels below, so spelling it twice was the redundancy.
+
+          28px tall is matched to what it replaced: the old 26px text stood
+          about 24px from the b's ascender to the y's descender, and a mark
+          wants to sit a shade above the type it stands in for rather than
+          level with it. Width follows from the mark's own 1.4:1.
+
+          The svg is aria-hidden, so the link takes its accessible name from
+          the label — without it this is an anchor with no text at all.
+        */}
         <a
           href="#profile"
-          className="text-[26px] font-light leading-none tracking-tight text-bright"
+          aria-label={`${profile.name} — back to top`}
+          className="text-bright transition-opacity hover:opacity-80"
         >
-          {handle}
+          {/* `block` so the svg doesn't sit on a text baseline — inline it
+              would carry the line-box's descender space and ride high of the
+              nav items it's meant to be centred against. */}
+          <BtMark width={39} height={28} className="block" />
         </a>
 
         <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
