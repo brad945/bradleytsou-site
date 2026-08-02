@@ -382,12 +382,16 @@ alternative for each.
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
 - **Bio-line accents are one set, not three picks**: `berkeley` #a5bbd4,
-  `medimpact` #bea5d4, `deveval` #a5d4cd. Each keeps its org's hue
-  (212 / 272 / 171deg) but all three share S=35% — the background's own
-  34.9% — and L=74%. They ran 60/65/76% saturation before and read as
-  highlighters: text twice as chromatic as the page it sits on. Raw brand
-  colours can't be used (Berkeley's #003262 is 1.16:1 here, MedImpact's
-  #250644 is 1.18:1); these are tints on purpose.
+  `medimpact` #bf98e1, `deveval` #a5d4cd. Each keeps its org's hue
+  (212 / 272 / 171deg) and all three share L=74%. Saturation was 35%
+  across the set — the background's own 34.9% — until Bradley asked for
+  MedImpact to read more purple, so **that one alone runs S=55%** and is
+  the deliberate break in the family. Watch this axis: the accents ran
+  60/65/76% before the harmonising pass and read as highlighters, text
+  twice as chromatic as the page it sits on. To pull MedImpact back, 45%
+  is #bf9fdb and the old matched 35% is #bea5d4 — don't instead raise the
+  other two. Raw brand colours can't be used (Berkeley's #003262 is
+  1.16:1 here, MedImpact's #250644 is 1.18:1); these are tints on purpose.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 

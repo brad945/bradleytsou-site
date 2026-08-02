@@ -37,14 +37,22 @@ const tokens = {
    * picks — that's what stops them reading as highlighters.
    *
    * Each keeps its org's hue for identity (Berkeley 212deg, MedImpact
-   * 272deg, DevEval 171deg) but they share a saturation and a lightness:
-   * **S=35%, the background's own 34.9%, and L=74%.**
+   * 272deg, DevEval 171deg) and all three share **L=74%**, which is what
+   * makes them a family.
    *
-   * Saturation is what was wrong before. The accents ran 60/65/76% against a
-   * 35% ground, so the text was twice as chromatic as the page it sat on —
-   * which is exactly what reads as childish. Matching the ground's
-   * saturation means nothing is louder than the page, and the shared
-   * lightness makes them a family that differs only in hue.
+   * Saturation was 35% across all three — the background's own 34.9% — until
+   * Bradley asked for MedImpact to read more purple, so that one alone now
+   * runs **S=55%** against the other two's 35%. It's the one deliberate break
+   * in the set, and it's the axis to watch: the accents ran 60/65/76% before
+   * the harmonising pass and read as highlighters, text twice as chromatic as
+   * the page it sat on. 55 is the loudest of the three by some way and sits
+   * within sight of that. If it ever needs pulling back, 45% (#bf9fdb) is
+   * halfway home; if the whole set is ever relevelled, take it back to 35%
+   * (#bea5d4) rather than raising the other two.
+   *
+   * Contrast on `hero` #1b2838: Berkeley 7.57:1, DevEval 9.17:1, MedImpact
+   * 6.25:1 — saturation costs contrast, so the loudest is also the weakest,
+   * though all three clear AA comfortably.
    *
    * Their brand colours can't be used raw: Berkeley's #003262 is 1.16:1 here
    * and MedImpact's #250644 is 1.18:1 — both the background's own hue family
@@ -52,7 +60,7 @@ const tokens = {
    */
   berkeley: "#a5bbd4",
   deveval: "#a5d4cd",
-  medimpact: "#bea5d4",
+  medimpact: "#bf98e1",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */
