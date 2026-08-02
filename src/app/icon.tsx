@@ -11,9 +11,9 @@ import { ImageResponse } from "next/og";
  *
  * Every coordinate below is measured off the artwork Bradley supplied, then
  * translated so the viewBox is the mark's own ink bounds (408x292) with no
- * padding baked in — padding is the flex centring, so the mark can be resized
- * by changing the svg width/height alone. Two things are easy to get wrong and
- * both are load-bearing:
+ * padding baked in — padding is the placement below, so the mark can be
+ * resized by changing the svg width/height alone. Two things are easy to get
+ * wrong and both are load-bearing:
  *   1. **The b's bowl is an ellipse, not a circle** — 75.5 x 87, noticeably
  *      taller than wide. The dot beside it *is* round (r 42), so this is the
  *      mark's own drawing, not a squashed screenshot. Circularising the bowl
@@ -42,14 +42,30 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "relative",
           background: BLACK,
         }}
       >
-        {/* 28x20 of the 32px tile: the mark is 1.4:1, so fitting it by width
-            is what sets the size, and the leftover is vertical by definition. */}
-        <svg width="28" height="20" viewBox="0 0 408 292">
+        {/*
+         * Placed, not centred. Centring the mark's bounding box looks jammed
+         * against the left edge, because the box's right side is set by the
+         * period down in the corner — so beside the b and t there is nothing
+         * on the right, while the b's flat stem runs hard into the margin.
+         *
+         * The ink's centre of mass is at 39.8% across, not 50%. Pure mass
+         * centring (left 6) puts the period on the edge, so this splits the
+         * difference: left 5, right 2. Vertical stays box-centred — the mark
+         * is only lopsided horizontally.
+         *
+         * 25x18 of the 32px tile. The mark is 1.4:1, so width sets the size
+         * and the leftover is vertical by definition.
+         */}
+        <svg
+          width="25"
+          height="18"
+          viewBox="0 0 408 292"
+          style={{ position: "absolute", left: 5, top: 7 }}
+        >
           {/* b: stem, then the bowl, then the counter punched back out in the
               field colour. Drawn in this order — the counter must land after
               the bowl, and nothing to its right overlaps it. */}
