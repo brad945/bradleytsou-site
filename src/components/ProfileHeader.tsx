@@ -133,7 +133,23 @@ export default function ProfileHeader({
   sourceUrl,
 }: ProfileHeaderProps) {
   const { years } = experience();
-  const avatar = stats?.avatarUrl ?? null;
+
+  /*
+   * Bradley's own photo, replacing `stats.avatarUrl` from the GitHub API.
+   *
+   * This is the one thing on the page that stopped being fetched, so it's the
+   * one that can now go stale silently — the rest of the header still can't.
+   * Changing his GitHub picture no longer changes this; edit the file. (The
+   * alternative was to set it on GitHub and let the fetch carry it, which
+   * would have kept that property, but he supplied the image directly.)
+   *
+   * The source was a circular-cropped screenshot, so the file is the largest
+   * square that fits inside that circle — 321px of a 454px disc. Cropping to
+   * the circle's bounding box instead would have left the screenshot's grey
+   * corners in a frame that expects a full square. 321 is deliberate headroom
+   * over the 150px it renders at, so it stays sharp on a 2x display.
+   */
+  const avatar = "/avatar.jpg";
 
   /*
    * Keyed off the derived years, not hardcoded: it rolls over on its own every
@@ -172,20 +188,18 @@ export default function ProfileHeader({
             */}
             <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[15px] py-[8px]">
               <div className="relative h-[150px] w-[150px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
-                {avatar ? (
-                  <Image
-                    src={avatar}
-                    alt={`${profile.name} avatar`}
-                    width={150}
-                    height={150}
-                    className="h-full w-full object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-4xl font-light text-muted">
-                    {profile.initials}
-                  </div>
-                )}
+                {/* The `profile.initials` fallback that used to sit here is
+                    gone with it: it existed because the GitHub avatar could
+                    fail to resolve, and a local asset either ships or breaks
+                    the build. `unoptimized` went too — it was there because
+                    the source was a remote host. */}
+                <Image
+                  src={avatar}
+                  alt={`${profile.name} avatar`}
+                  width={150}
+                  height={150}
+                  className="h-full w-full object-cover"
+                />
 
                 {/*
                   DVD-screensaver bounce. Two nested spans because one element

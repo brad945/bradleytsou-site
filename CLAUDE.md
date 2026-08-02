@@ -165,6 +165,15 @@ class would stop emitting.
   profile-background gradient: framed avatar, name, location, summary,
   and the right-hand Level circle + "Years of Coding" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
+  **The avatar is `public/avatar.jpg`, not the GitHub one** — Bradley
+  supplied the photo directly. It's the only thing in the header that
+  isn't fetched, so it's the only one that can go stale silently:
+  changing his GitHub picture no longer changes the page. The source was
+  a circular-cropped screenshot and the file is the largest square inside
+  that circle (321px of a 454px disc), so the square frame gets a full
+  square rather than the screenshot's grey corners. The nav's 24px chip
+  is **still** the GitHub avatar — it's the signed-in-as slot and links
+  to the GitHub profile — so the two differ on purpose.
   The right-hand block is matched to the reference by ratio, not by eye.
   Against the "Level" font-size: **circle diameter 1.08x**, ring 6.4% of
   the diameter, numeral 0.44x the diameter, gap 0.20x. At 34px that's

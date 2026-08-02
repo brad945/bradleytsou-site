@@ -150,7 +150,12 @@ export const profile = {
   ],
   /** Shown beside the name. */
   pronouns: "he/him",
-  /** Fallback avatar initials, used before/if the GitHub avatar resolves. */
+  /**
+   * Unused. It backed the avatar when that was fetched from GitHub and could
+   * fail to resolve; the avatar is now `public/avatar.jpg`, which either ships
+   * or breaks the build. Kept because it's the obvious fallback if the avatar
+   * ever goes back to being fetched.
+   */
   initials: "BT",
   /** Canonical contact address — drives both the Message button and Links. */
   email: "bradley_tsou@berkeley.edu",
