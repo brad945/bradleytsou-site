@@ -33,40 +33,37 @@ const tokens = {
   /** Link / heading blue. */
   link: "#66c0f4",
   /*
-   * The three bio-line colours. Treated as one set, not three independent
-   * picks — that's what stops them reading as highlighters.
+   * The three bio-line colours. They began as one harmonised set — a shared
+   * L=74% and S=35%, the background's own 34.9%, differing only in hue — which
+   * is what stopped them reading as highlighters. Two of Bradley's requests
+   * have since moved two of them out of it, both deliberately, so what's left
+   * of the rule is: **DevEval is the quiet ground the other two are loud
+   * against.** Don't "restore consistency" by pulling the loud ones back or
+   * pushing DevEval out; the set ran 60/65/76% saturation before the
+   * harmonising pass and read as text more chromatic than its own page.
    *
-   * Each keeps its org's hue for identity (Berkeley 212deg, MedImpact
-   * 272deg, DevEval 171deg) and all three share **L=74%**, which is what
-   * makes them a family.
+   * - `deveval` #a5d4cd — hsl(171, 35, 74). The original scheme, untouched.
+   * - `medimpact` #c084f5 — hsl(272, 85, 74). Asked for "more purple" twice;
+   *   saturation is the only axis that delivers that at fixed lightness.
+   *   Ladder back down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
+   * - `berkeley` #fdb515 — **California Gold, exactly as Berkeley publishes
+   *   it.** The one raw brand colour on the page.
    *
-   * Saturation was 35% across all three — the background's own 34.9% — until
-   * Bradley asked for MedImpact to read more purple, twice. That one alone now
-   * runs **S=85%** against the other two's 35%, so it is no longer really in
-   * the family: it's the one line that's meant to stand out, by request, and
-   * both asks were unambiguous.
+   * That last point is worth keeping straight, because the rule elsewhere is
+   * the opposite. Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644
+   * is 1.18:1 — both sit in the background's own hue family and vanish into
+   * it, so both had to become tints. Gold has the opposite relationship to a
+   * dark blue page: published, unmodified, it's 8.38:1. So Berkeley's palette
+   * is split here — the half that can't be used raw, and the half that needs
+   * no help at all. Prefer the published hex over a tint of it.
    *
-   * This is past where the harmonising pass drew the line. The accents ran
-   * 60/65/76% before that pass and read as highlighters — text more chromatic
-   * than the page it sits on — and 85 is above all three of those. The reason
-   * it holds anyway is that it's *one* line rather than the whole set, so
-   * there's still a quiet ground to be loud against. Don't raise the other two
-   * to match; that's the change that would bring the highlighter problem back.
-   * The ladder down, if it ever wants pulling in: 75% #c08bee, 65% #c092e8,
-   * 55% #bf98e1 (where it just was), 35% #bea5d4 (the matched original).
-   *
-   * Contrast on `hero` #1b2838: Berkeley 7.57:1, DevEval 9.17:1, MedImpact
-   * 5.59:1 — saturation costs contrast, so the loudest is the weakest. Still
-   * comfortably past AA's 4.5:1, and past AAA's 4.5 for large text, but it's
-   * the one with the least room left. Going much below L=74 is what would
-   * actually threaten it: at L=70 this hue drops to 4.75:1 and at L=66 to
-   * 4.05:1, which fails.
-   *
-   * Their brand colours can't be used raw: Berkeley's #003262 is 1.16:1 here
-   * and MedImpact's #250644 is 1.18:1 — both the background's own hue family
-   * and both invisible on it. These are tints, deliberately.
+   * Contrast on `hero` #1b2838: Berkeley 8.38:1, DevEval 9.17:1, MedImpact
+   * 5.59:1. Saturation costs contrast, so the loudest is the weakest and is
+   * the one to watch — at L=70 that hue is 4.75:1 and at L=66 it fails at
+   * 4.05:1. Gold has the opposite failure mode: it's bright, so darkening it
+   * is safe and lightening it is what would wash it out.
    */
-  berkeley: "#a5bbd4",
+  berkeley: "#fdb515",
   deveval: "#a5d4cd",
   medimpact: "#c084f5",
   /** Steam blue, used for panel bars. */

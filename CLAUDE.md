@@ -394,21 +394,26 @@ alternative for each.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents**: `berkeley` #a5bbd4, `medimpact` #c084f5,
-  `deveval` #a5d4cd. Each keeps its org's hue (212 / 272 / 171deg) and
-  all three share L=74%. Berkeley and DevEval also share S=35%, the
-  background's own 34.9%, which is what keeps them quiet.
-  **MedImpact is deliberately outside that** — Bradley asked twice for it
-  to read more purple, so it runs **S=85%** and is meant to stand out.
-  That's above the 60/65/76% the whole set ran before the harmonising
-  pass, which read as highlighters; it holds only because it's one line
-  against a quiet ground. **Don't raise the other two to match** — that's
-  the change that brings the highlighter problem back. Ladder down if
-  it's ever pulled in: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35%
-  #bea5d4. It's also the weakest for contrast (5.59:1 vs 7.57 and 9.17),
-  so don't darken it either: L=70 is 4.75:1 and L=66 fails at 4.05:1.
-  Raw brand colours can't be used (Berkeley's #003262 is 1.16:1 here,
-  MedImpact's #250644 is 1.18:1); these are tints on purpose.
+- **Bio-line accents**: `berkeley` #fdb515, `medimpact` #c084f5,
+  `deveval` #a5d4cd. They began as a harmonised set (shared L=74% and
+  S=35%, the background's own 34.9%, differing only in hue). Two of
+  Bradley's requests have moved two of them out of it, so what's left of
+  the rule is: **DevEval is the quiet ground the other two are loud
+  against.** Don't "restore consistency" — the set ran 60/65/76%
+  saturation before the harmonising pass and read as highlighters.
+  - `deveval` hsl(171,35,74), the original scheme, untouched.
+  - `medimpact` hsl(272,85,74) — "more purple" asked twice. Ladder back
+    down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
+  - `berkeley` is **California Gold exactly as published** — the one raw
+    brand colour on the page. The rule elsewhere is the opposite:
+    Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644 is
+    1.18:1, both lost in the background's own hue family, so both had to
+    be tints. Gold has the opposite relationship to a dark blue page and
+    needs no help. Prefer the published hex to a tint of it.
+  - Contrast on `hero`: Berkeley 8.38:1, DevEval 9.17:1, MedImpact
+    5.59:1. MedImpact is the one to watch — L=70 is 4.75:1, L=66 fails
+    at 4.05:1. Gold's failure mode is the reverse: darkening is safe,
+    lightening washes it out.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 
