@@ -20,7 +20,6 @@ function Row({
   subtitle,
   blurb,
   tags,
-  stat,
   href,
 }: {
   title: string;
@@ -28,7 +27,6 @@ function Row({
   subtitle?: string;
   blurb?: string;
   tags?: string[];
-  stat?: string;
   href?: string;
 }) {
   return (
@@ -58,9 +56,14 @@ function Row({
         )}
       </div>
 
+      {/*
+        Dates for a role, period + language for a project. The commit count
+        that used to sit under this was removed at Bradley's request — the
+        `stat` slot went with it rather than being left empty, since an unused
+        prop reads as something that broke.
+      */}
       <div className="t-meta shrink-0 leading-snug sm:w-[132px] sm:text-right">
         <p>{meta}</p>
-        {stat && <p className="text-muted/60">{stat}</p>}
       </div>
     </li>
   );
@@ -76,13 +79,6 @@ function roleRow(role: Role, repo?: FeaturedRepo) {
       blurb={role.blurb}
       tags={role.tags}
       meta={`${role.start} — ${role.end ?? "Present"}`}
-      // A role with a backing repo keeps the live count that used to live on
-      // its separate project row.
-      stat={
-        repo
-          ? `${repo.myCommits.toLocaleString()} ${repo.myCommits === 1 ? "commit" : "commits"}`
-          : undefined
-      }
     />
   );
 }
@@ -102,11 +98,6 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
       blurb={project.blurb}
       tags={project.tags}
       meta={[project.period, repo?.language].filter(Boolean).join(" · ")}
-      stat={
-        repo
-          ? `${repo.myCommits.toLocaleString()} ${repo.myCommits === 1 ? "commit" : "commits"}`
-          : undefined
-      }
     />
   );
 }
