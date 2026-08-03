@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { GitHubStats } from "@/lib/github";
-import { profile } from "@/lib/profile-data";
+import { accountBalance, profile } from "@/lib/profile-data";
 import BtMark from "@/components/BtMark";
 
 /**
@@ -19,6 +19,18 @@ const LINKS = [
   { label: "Experience", href: "#experience-heading" },
   { label: "Activity", href: "#activity-heading" },
 ];
+
+/**
+ * Placeholders, at Bradley's request — sections that don't exist yet.
+ *
+ * Rendered as plain text, **not as anchors**. A nav of hrefs going nowhere is
+ * the fake chrome this site exists not to be, and an `href="#"` that silently
+ * does nothing on click is worse than something that visibly isn't ready. They
+ * sit dimmer than the real items and carry a `title` saying so.
+ *
+ * Move an entry into `LINKS` with a real href the day its section lands.
+ */
+const PLACEHOLDER_LINKS = ["Chat", "Socials", "Games", "Misc"];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
   return (
@@ -54,7 +66,15 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           <BtMark width={39} height={28} className="block" />
         </a>
 
-        <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
+        {/*
+          `flex-1` + `justify-center` puts the items in the middle of the bar
+          rather than packed against the mark. The mark and the user block sit
+          either side at their natural widths, so the centre is the centre of
+          the leftover space, not of the bar — close enough at these widths,
+          and it doesn't need the absolute positioning that true centring would
+          (which would let the items slide under the user block when narrow).
+        */}
+        <ul className="flex flex-1 flex-wrap items-center justify-center gap-x-5 gap-y-1">
           {LINKS.map((link) => (
             <li key={link.href}>
               <a
@@ -65,27 +85,60 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
               </a>
             </li>
           ))}
+
+          {/* Not anchors — see PLACEHOLDER_LINKS. */}
+          {PLACEHOLDER_LINKS.map((label) => (
+            <li key={label}>
+              <span
+                title={`${label} — coming soon`}
+                className="cursor-default text-[12px] uppercase tracking-[0.08em] text-copy/30"
+              >
+                {label}
+              </span>
+            </li>
+          ))}
         </ul>
 
         {stats && (
-          <a
-            href={stats.profileUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="ml-auto flex items-center gap-2 text-[13px] text-copy/70 transition-colors hover:text-bright"
-          >
-            <span>{stats.login}</span>
-            {stats.avatarUrl && (
-              <Image
-                src={stats.avatarUrl}
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6 object-cover"
-                unoptimized
-              />
-            )}
-          </a>
+          /*
+            Two rows: the profile link, then the balance under it. Steam puts
+            the account balance exactly here, directly beneath the persona name
+            in the global header.
+
+            `items-end` right-aligns both against the bar's right edge, and the
+            pair is centred as a block — which is what lifts the login and
+            avatar off the middle line, as Bradley asked, without nudging them
+            with a margin that would have to be retuned if the balance moved.
+          */
+          <div className="flex flex-col items-end gap-1">
+            <a
+              href={stats.profileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-[13px] text-copy/70 transition-colors hover:text-bright"
+            >
+              <span>{stats.login}</span>
+              {stats.avatarUrl && (
+                <Image
+                  src={stats.avatarUrl}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 object-cover"
+                  unoptimized
+                />
+              )}
+            </a>
+
+            {/*
+              Hardcoded, and the only figure on this page that is. Everything
+              else is fetched — there's no account here to have a balance, so
+              this is Steam's chrome reproduced rather than data. Kept in
+              profile-data with that noted, so it reads as a deliberate prop
+              and not a number someone forgot to wire up.
+            */}
+            <span className="text-[13px] text-link/80">{accountBalance}</span>
+          </div>
         )}
       </div>
     </nav>

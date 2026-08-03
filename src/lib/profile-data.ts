@@ -113,6 +113,18 @@ export const githubUsername: string = "brad945";
  */
 export const siteOrigin = "https://www.bradleytsou.com";
 
+/**
+ * The balance shown under the login in the nav, where Steam puts an account
+ * balance.
+ *
+ * **This is the one figure on the page that isn't fetched.** There's no
+ * account behind this site to have a balance, so it's Steam's chrome
+ * reproduced rather than data — a prop, deliberately, at Bradley's request.
+ * Kept here rather than inline in `SiteNav` so it can't be mistaken for
+ * something that was meant to be wired up and never was.
+ */
+export const accountBalance = "$0.67";
+
 export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */
