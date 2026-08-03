@@ -66,8 +66,17 @@
    * are 300 below, because Open Sans has no 200; that's the floor of the
    * family, not a preference.
    */
+  /*
+   * The persona name. 24/40 was Steam's own `.profile_header .persona_name`,
+   * taken from profilev2.css; Bradley asked for bigger, so this is the one
+   * place the measured scale is deliberately overridden — 34px, matching
+   * `.t-stat-lg`, the largest size already on the page. Leading is 1.2x rather
+   * than the fixed 40px, which was tuned to the smaller size.
+   *
+   * Only NameHistory uses this class, so nothing else moved with it.
+   */
   .t-display {
-    @apply text-[24px] font-light leading-[40px] text-bright;
+    @apply text-[34px] font-light leading-[1.2] text-bright;
   }
 
   .t-panel-title {
