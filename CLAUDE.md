@@ -36,9 +36,9 @@ Bradley's personal site, deliberately NOT a generic hover/scroll-animation
 portfolio. It's structured like a Steam profile page, but every stat on it
 is real, not decorative:
 - Profile header = real "about me" info (name, location, current focus)
-  plus a Level circle and "Years of Coding" card. These are two
+  plus a Level circle and "Years of Experience" card. These are two
   different numbers now, as they are on Steam, where level comes from
-  badge XP and has nothing to do with account age. Years of Coding is
+  badge XP and has nothing to do with account age. Years of Experience is
   derived from `profile.codingSince` and picks its own badge art.
   **`profileLevel` (20) is hand-set** — nothing derives or checks it, so
   it joins `codingSince` and the badge dates on the list of values that
@@ -189,7 +189,7 @@ class would stop emitting.
   It never invents a number. All four failure paths are verified.
 - `src/components/ProfileHeader.tsx` — full-width identity block over the
   profile-background gradient: framed avatar, name, location, summary,
-  and the right-hand Level circle + "Years of Coding" card. Level is
+  and the right-hand Level circle + "Years of Experience" card. Level is
   computed from `profile.codingSince`, so it counts up on its own.
   **The avatar is `public/avatar.jpg`, not the GitHub one** — Bradley
   supplied the photo directly. It's the only thing in the header that

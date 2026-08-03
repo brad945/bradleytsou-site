@@ -163,7 +163,7 @@ export default function ProfileHeader({
   /*
    * Keyed off the derived years, not hardcoded: it rolls over on its own every
    * January, and fixed art would quietly contradict the card beside it. Note
-   * this tracks the Years of Coding card, NOT the Level circle — those are
+   * this tracks the Years of Experience card, NOT the Level circle — those are
    * unrelated numbers. Only the years present in `public/` are wired up; past
    * that it falls back to the generated tile rather than a broken image.
    */
@@ -284,7 +284,7 @@ export default function ProfileHeader({
 
         {/*
           Steam's right-hand header block. The Level line is sized from the
-          reference (see below); the Years of Coding card is deliberately the
+          reference (see below); the Years of Experience card is deliberately the
           plain flat version — a bevelled-tile treatment was tried and reverted.
         */}
         <div className="lg:pl-2">
@@ -331,7 +331,7 @@ export default function ProfileHeader({
             )}
             <div className="min-w-0">
               <p className="text-[14px] leading-tight text-copy">
-                Years of Coding
+                Years of Experience
               </p>
             </div>
           </div>

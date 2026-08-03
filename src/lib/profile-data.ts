@@ -455,7 +455,7 @@ export function monogram(name: string): string {
 export const profileLevel = 20;
 
 /**
- * Years of Coding — full years since `codingSince`. Drives that card
+ * Years of Experience — full years since `codingSince`. Drives that card
  * and picks its badge art.
  *
  * It used to also return a percentage through the current year and the start
