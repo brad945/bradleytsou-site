@@ -129,14 +129,18 @@ export default function Sidebar({
           contributions API reports, so it never distinguished this number
           from an alternative.
         */}
+        {/*
+          No top margin: the 28px that used to sit here was a leftover from
+          when this was its own panel, and inside one box it read as a gap
+          rather than a grouping. It's the same kind of row as the four above
+          it, so it sits in the same rhythm.
+        */}
         {contributions && (
-          <div className="mt-7">
-            <div className="stat-row">
-              <span className="stat-label">Contributions</span>
-              <span className="stat-value">
-                {contributions.total.toLocaleString()}
-              </span>
-            </div>
+          <div className="stat-row">
+            <span className="stat-label">Contributions</span>
+            <span className="stat-value">
+              {contributions.total.toLocaleString()}
+            </span>
           </div>
         )}
       </section>
