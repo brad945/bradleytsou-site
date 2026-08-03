@@ -32,23 +32,14 @@ import {
 export const revalidate = 300;
 
 export default async function Home() {
-  /*
-   * Under the privacy screen everything the boards cover is skipped, not
-   * fetched and then dropped — the parked data never enters the process.
-   * That's five of the six calls, including `getFeaturedRepos`, which is a
-   * request per featured repo and most of the page's GitHub budget.
-   *
-   * `getGitHubSnapshot` stays: the nav's signed-in-as chip and the header's
-   * profile link come off it, and both are above the boards.
-   */
   const [snapshot, deveval, contributions, featured, languages, lastPush] =
     await Promise.all([
       getGitHubSnapshot(githubUsername),
-      privacyScreen ? null : getDevEvalStats(),
-      privacyScreen ? null : getContributions(githubUsername),
-      privacyScreen ? [] : getFeaturedRepos(featuredRepos),
-      privacyScreen ? [] : getLanguages(),
-      privacyScreen ? null : getLastPush(),
+      getDevEvalStats(),
+      getContributions(githubUsername),
+      getFeaturedRepos(featuredRepos),
+      getLanguages(),
+      getLastPush(),
     ]);
 
   const favorite =
@@ -62,36 +53,28 @@ export default async function Home() {
 
   return (
     <>
-      <SiteNav stats={snapshot.stats} privacyScreen={privacyScreen} />
+      <SiteNav stats={snapshot.stats} />
 
       <main className="mx-auto w-full max-w-profile bg-hero px-3 py-6 sm:px-4 sm:py-8">
         <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
         {/*
-          Under the privacy screen the boards replace the whole grid — both
-          columns, sidebar included — rather than sitting in the main one with
-          the status block still up beside them. Boarding one column and
-          leaving the other open reads as a layout bug rather than a decision,
-          and the sidebar's own blocks (status, DevEval, languages, repos) are
-          the same class of detail the boards are over.
-        */}
-        {privacyScreen ? (
-          <div className="mt-3">
-            <BoardedUp />
-          </div>
-        ) : (
-          /*
-            Steam's main/sidebar split, restored. It was flattened to a single
-            column and that was the wrong reading — what Bradley wanted
-            contained in one column is the *page*, which the centred
-            `max-w-profile` block above already does. The two columns live
-            inside it.
+          Steam's main/sidebar split, restored. It was flattened to a single
+          column and that was the wrong reading — what Bradley wanted contained
+          in one column is the *page*, which the centred `max-w-profile` block
+          above already does. The two columns live inside it.
 
-            ~649 / 12 / ~325 at ≥lg; stacks below that. The gap is 12px,
-            Steam's own `.profile_customization` margin, not the 16 it used
-            to be.
-          */
-          <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
+          ~649 / 12 / ~325 at ≥lg; stacks below that. The gap is 12px, Steam's
+          own `.profile_customization` margin, not the 16 it used to be.
+        */}
+        {/*
+          `privacyScreen` in profile-data lays a board over this whole block.
+          The grid below is untouched and still renders — the board is an
+          overlay on top of it, nothing more. Flip the constant to false and
+          the overlay goes; there is no other change to undo.
+        */}
+        <div className="relative mt-3">
+          <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
             <div className="flex min-w-0 flex-col gap-3">
               <FavoriteProject repo={favorite} />
               <Experience featured={featured} />
@@ -107,7 +90,9 @@ export default async function Home() {
               lastPush={lastPush}
             />
           </div>
-        )}
+
+          {privacyScreen && <BoardedUp />}
+        </div>
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
           <span>Every number on this page is fetched, not written.</span>
