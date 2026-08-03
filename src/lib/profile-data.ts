@@ -389,58 +389,78 @@ export const projects: Project[] = [
 ];
 
 /**
- * Tags that name a *discipline, technique or way of working* rather than a
- * tool — so they're excluded from the Tech Stack panel.
+ * Tags that name a *job function or a non-technical field* rather than
+ * something you'd put on a stack — excluded from the Tech Stack panel.
  *
- * The panel is derived from the `tags` already on `roles` and `projects`
- * rather than hand-listed, so adding a tag to a role puts it on the stack
- * automatically and there's no second list to keep in sync. That only works if
- * the split is explicit, which is what this set is.
- *
- * The judgement call worth knowing: "Computer Vision", "Reinforcement
- * Learning" and "Multi-agent" are excluded. They're fields Bradley works in,
- * not things in a stack, and a stack listing them alongside Postgres reads as
- * padded. If he'd rather they showed, delete them from this set — that's the
- * whole change.
+ * The line is drawn at job functions ("Fullstack", "Forward-Deployed") and
+ * non-technical domains ("Behavioral Economics", "Tutoring"). Techniques stay:
+ * Computer Vision, Reinforcement Learning and Multi-agent were cut in the
+ * first pass as "fields, not tools" and put back — for an AI engineer they're
+ * as much a part of the stack as Postgres, and cutting them was the main
+ * reason the panel came out thin.
  */
 const NON_STACK_TAGS = new Set([
-  // Disciplines and domains
-  "Applied AI",
-  "Cybersecurity",
-  "IT Operations",
-  "Computer Vision",
-  "Reinforcement Learning",
-  "Multi-agent",
-  "Vocal Synthesis",
-  "Audio Engineering",
-  "Data Annotation",
-  "Behavioral Economics",
-  "Modelling",
-  "Qualitative Research",
-  "Music",
-  // Roles and ways of working, not tools
+  // Job functions and ways of working, not tools
   "Forward-Deployed",
   "Fullstack",
   "Frontend",
   "Web",
-  "UI/UX",
+  "Applied AI",
+  "IT Operations",
+  // Non-technical fields
+  "Behavioral Economics",
+  "Qualitative Research",
+  "Modelling",
   "Tutoring",
+  "Music",
+  "Data Annotation",
+  // A property of a system rather than a thing used to build one
   "Real-time",
 ]);
 
 /**
- * The Tech Stack panel's contents — every tool named anywhere in `roles` or
- * `projects`, deduped, minus `NON_STACK_TAGS`.
+ * Tools Bradley demonstrably works with that no `tags` entry happens to name.
  *
- * Derived, not written: it can't claim a tool that isn't attached to real work
- * somewhere else on this page, which is the same rule the rest of the page
- * follows. Order is order of appearance — roles first, and `roles` is itself
- * ordered newest-ish first by hand — so the most recent work leads.
+ * Every one is evidenced *inside this repo* rather than assumed from the shape
+ * of his work — that's the bar, and it's why the list is short. React and
+ * Tailwind are in `package.json`; Vercel is the documented deploy target;
+ * GraphQL and the REST work are both in `src/lib/github.ts`, which calls the
+ * v4 and v3 APIs respectively.
+ *
+ * **This is the one part of the panel not derived from data elsewhere on the
+ * page, so it's the part that can be wrong.** If Bradley works with something
+ * that isn't here — a cloud, a database, a framework from a private repo —
+ * adding the string is the whole change. Don't guess entries in: a stack that
+ * lists a tool he hasn't used is exactly the claim this site is built not to
+ * make.
+ */
+const EVIDENCED_STACK = [
+  "React",
+  "Tailwind CSS",
+  "Node.js",
+  "Vercel",
+  "GraphQL",
+  "REST APIs",
+];
+
+/**
+ * The Tech Stack panel's contents: every tool and technique named in `roles` or
+ * `projects`, minus `NON_STACK_TAGS`, plus `EVIDENCED_STACK`.
+ *
+ * Mostly derived rather than written, so the bulk of it can't claim anything
+ * that isn't attached to real work elsewhere on this page. Order is order of
+ * appearance — `roles` is hand-ordered with recent work first — with the
+ * evidenced entries last.
+ *
+ * Deliberately does *not* merge the fetched GitHub language breakdown: that
+ * has its own panel directly below this one, and repeating it here would make
+ * the stack look bigger without saying anything new.
  */
 export const techStack: string[] = Array.from(
   new Set([
     ...roles.flatMap((role) => role.tags ?? []),
     ...projects.flatMap((project) => project.tags),
+    ...EVIDENCED_STACK,
   ]),
 ).filter((tag) => !NON_STACK_TAGS.has(tag));
 
