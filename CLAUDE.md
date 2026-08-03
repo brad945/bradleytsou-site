@@ -394,7 +394,7 @@ alternative for each.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents**: `berkeley` #fdb515, `medimpact` #c084f5,
+- **Bio-line accents**: `berkeley` #fdcf17, `medimpact` #c084f5,
   `deveval` #a5d4cd. They began as a harmonised set (shared L=74% and
   S=35%, the background's own 34.9%, differing only in hue). Two of
   Bradley's requests have moved two of them out of it, so what's left of
@@ -404,16 +404,20 @@ alternative for each.
   - `deveval` hsl(171,35,74), the original scheme, untouched.
   - `medimpact` hsl(272,85,74) — "more purple" asked twice. Ladder back
     down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
-  - `berkeley` is **California Gold exactly as published** — the one raw
-    brand colour on the page. The rule elsewhere is the opposite:
-    Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644 is
-    1.18:1, both lost in the background's own hue family, so both had to
-    be tints. Gold has the opposite relationship to a dark blue page and
-    needs no help. Prefer the published hex to a tint of it.
-  - Contrast on `hero`: Berkeley 8.38:1, DevEval 9.17:1, MedImpact
+  - `berkeley` is California Gold rotated toward yellow at Bradley's
+    request — hue 41 -> 48, published saturation and lightness (98/54).
+    It was briefly the published #fdb515 exactly, and the reason it
+    *could* be still matters: Berkeley Blue #003262 is 1.16:1 here and
+    MedImpact's #250644 is 1.18:1, both lost in the background's own hue
+    family and so forced to be tints, whereas gold needs no lightening
+    against a dark blue page. Back down the hue to pull it in — 45deg
+    #fdc317, 41deg #fdb515 as published. 60deg is pure yellow and reads
+    as highlighter.
+  - Contrast on `hero`: Berkeley 10.03:1, DevEval 9.17:1, MedImpact
     5.59:1. MedImpact is the one to watch — L=70 is 4.75:1, L=66 fails
     at 4.05:1. Gold's failure mode is the reverse: darkening is safe,
-    lightening washes it out.
+    lightening washes it out; rotating toward yellow raises contrast, so
+    that direction is free.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 

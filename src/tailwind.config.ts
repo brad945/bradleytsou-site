@@ -46,24 +46,28 @@ const tokens = {
    * - `medimpact` #c084f5 — hsl(272, 85, 74). Asked for "more purple" twice;
    *   saturation is the only axis that delivers that at fixed lightness.
    *   Ladder back down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
-   * - `berkeley` #fdb515 — **California Gold, exactly as Berkeley publishes
-   *   it.** The one raw brand colour on the page.
+   * - `berkeley` #fdcf17 — California Gold, rotated 7deg toward yellow.
    *
-   * That last point is worth keeping straight, because the rule elsewhere is
-   * the opposite. Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644
-   * is 1.18:1 — both sit in the background's own hue family and vanish into
-   * it, so both had to become tints. Gold has the opposite relationship to a
-   * dark blue page: published, unmodified, it's 8.38:1. So Berkeley's palette
-   * is split here — the half that can't be used raw, and the half that needs
-   * no help at all. Prefer the published hex over a tint of it.
+   * That last one was briefly Berkeley's published #fdb515 exactly, and the
+   * reason it *could* be is worth keeping, because the rule elsewhere is the
+   * opposite: Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644 is
+   * 1.18:1, both lost in the background's own hue family, so both had to
+   * become tints. Gold has the opposite relationship to a dark blue page and
+   * needs no lightening at all. Bradley then asked for yellower, so this is
+   * hue 41 -> 48 at the published saturation and lightness (98/54) — off the
+   * brand hex now, but by hue alone, which is the axis he asked about. 60deg
+   * is pure yellow and reads as highlighter rather than gold; back down the
+   * hue if it ever wants pulling in, 45deg #fdc317, 41deg #fdb515 as
+   * published.
    *
-   * Contrast on `hero` #1b2838: Berkeley 8.38:1, DevEval 9.17:1, MedImpact
-   * 5.59:1. Saturation costs contrast, so the loudest is the weakest and is
-   * the one to watch — at L=70 that hue is 4.75:1 and at L=66 it fails at
-   * 4.05:1. Gold has the opposite failure mode: it's bright, so darkening it
-   * is safe and lightening it is what would wash it out.
+   * Contrast on `hero` #1b2838: Berkeley 10.03:1, DevEval 9.17:1, MedImpact
+   * 5.59:1. Saturation costs contrast, so MedImpact is the weakest and is the
+   * one to watch — at L=70 that hue is 4.75:1 and at L=66 it fails at 4.05:1.
+   * Gold's failure mode is the reverse: it's bright, so darkening is safe and
+   * lightening is what would wash it out. Rotating toward yellow *raises*
+   * contrast, so this direction is free.
    */
-  berkeley: "#fdb515",
+  berkeley: "#fdcf17",
   deveval: "#a5d4cd",
   medimpact: "#c084f5",
   /** Steam blue, used for panel bars. */
