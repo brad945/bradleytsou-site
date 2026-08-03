@@ -42,12 +42,16 @@ const tokens = {
    * pushing DevEval out; the set ran 60/65/76% saturation before the
    * harmonising pass and read as text more chromatic than its own page.
    *
-   * - `deveval` #95e4df — hsl(176, 60, 74). Was the last one still on the
- *   original harmonised scheme (hsl 171, 35, 74) until Bradley asked for
- *   more teal. Hue 171 -> 176, toward the 180 where teal actually sits, and
- *   saturation 35 -> 60 to get there — at 35% the hue shift alone is barely
- *   visible. All three accents are now off the original scheme, so what's
- *   left of it is only the shared L=74%.
+   * - `deveval` #60ebdb — hsl(173, 78, 65). Two passes of "more teal", and the
+ *   first went the wrong way: it moved the hue 171 -> 176, toward 180, on the
+ *   reasoning that 180 is where teal sits. **180 is where cyan sits.** Teal is
+ *   ~170-175 held at high saturation and mid lightness — Tailwind's teal-300
+ *   is hsl(171, 77, 64), the same hue this started on. So the hue came back to
+ *   173 and the move is saturation 60 -> 78 with lightness 74 -> 65. Going
+ *   bluer from here makes it more cyan, not more teal.
+ *
+ *   This is also the accent that broke the shared L=74%, so that last thread
+ *   of the original harmonised scheme is gone; the three now share nothing.
    * - `medimpact` #c084f5 — hsl(272, 85, 74). Asked for "more purple" twice;
    *   saturation is the only axis that delivers that at fixed lightness.
    *   Ladder back down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
@@ -65,7 +69,7 @@ const tokens = {
    * hue if it ever wants pulling in, 45deg #fdc317, 41deg #fdb515 as
    * published.
    *
-   * Contrast on `hero` #1b2838: Berkeley 10.03:1, DevEval 10.26:1, MedImpact
+   * Contrast on `hero` #1b2838: Berkeley 10.03:1, DevEval 10.24:1, MedImpact
    * 5.59:1. Saturation costs contrast, so MedImpact is the weakest and is the
    * one to watch — at L=70 that hue is 4.75:1 and at L=66 it fails at 4.05:1.
    * Gold's failure mode is the reverse: it's bright, so darkening is safe and
@@ -73,7 +77,7 @@ const tokens = {
    * contrast, so this direction is free.
    */
   berkeley: "#fdcf17",
-  deveval: "#95e4df",
+  deveval: "#60ebdb",
   medimpact: "#c084f5",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",

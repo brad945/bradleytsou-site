@@ -395,16 +395,19 @@ alternative for each.
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
 - **Bio-line accents**: `berkeley` #fdcf17, `medimpact` #c084f5,
-  `deveval` #95e4df. They began as a harmonised set (shared L=74% and
+  `deveval` #60ebdb. They began as a harmonised set (shared L=74% and
   S=35%, the background's own 34.9%, differing only in hue). Two of
   Bradley's requests have moved two of them out of it, so what's left of
   the rule is: **DevEval is the quiet ground the other two are loud
   against.** Don't "restore consistency" — the set ran 60/65/76%
   saturation before the harmonising pass and read as highlighters.
-  - `deveval` hsl(176,60,74) — asked for "more teal", so hue 171 -> 176
-    (toward the 180 where teal sits) and saturation 35 -> 60, since at 35%
-    the hue shift alone is invisible. All three accents are now off the
-    original scheme; only the shared L=74% survives it.
+  - `deveval` hsl(173,78,65) — asked for "more teal" twice. The first pass
+    moved the hue toward 180 and that was wrong: **180 is cyan.** Teal is
+    ~170-175 at high saturation and mid lightness (Tailwind teal-300 is
+    hsl(171,77,64)). So hue is back near where it started and the work is
+    done by saturation 35 -> 78 and lightness 74 -> 65. Bluer from here
+    reads as more cyan, not more teal. This also broke the shared L=74%,
+    so the three accents now have nothing in common.
   - `medimpact` hsl(272,85,74) — "more purple" asked twice. Ladder back
     down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
   - `berkeley` is California Gold rotated toward yellow at Bradley's
@@ -416,7 +419,7 @@ alternative for each.
     against a dark blue page. Back down the hue to pull it in — 45deg
     #fdc317, 41deg #fdb515 as published. 60deg is pure yellow and reads
     as highlighter.
-  - Contrast on `hero`: Berkeley 10.03:1, DevEval 10.26:1, MedImpact
+  - Contrast on `hero`: Berkeley 10.03:1, DevEval 10.24:1, MedImpact
     5.59:1. MedImpact is the one to watch — L=70 is 4.75:1, L=66 fails
     at 4.05:1. Gold's failure mode is the reverse: darkening is safe,
     lightening washes it out; rotating toward yellow raises contrast, so
