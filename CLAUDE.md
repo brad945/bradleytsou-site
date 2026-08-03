@@ -4,31 +4,26 @@ This file is read automatically by Claude Code when you open this folder.
 It's a handoff from a chat session where the design and initial scaffold
 were built — everything below is context so you don't have to re-explain it.
 
-## THE PRIVACY SCREEN IS CURRENTLY ON
+## A "COMING SOON" COVER IS CURRENTLY UP
 
-`privacyScreen` in `src/lib/profile-data.ts` is `true`, so **what's described
-below is not what a visitor to bradleytsou.com sees right now.** They get the
-nav, the profile header, and then `BoardedUp` in place of **the entire grid** —
-both columns. Favorite Project, Experience, Recent Activity *and* the whole
-right sidebar (status, DevEval, languages, repos, Links) are behind the boards.
-The header's Message button is the only way through.
+`privacyScreen` in `src/lib/profile-data.ts` is `true`, so **a visitor to
+bradleytsou.com does not see most of what's described below.** Everything under
+the profile header is covered: `src/app/page.tsx` caps that block at 220px and
+lays `BoardedUp` — a black rectangle reading "Coming soon" — over it.
 
-It spans both columns on purpose: boarding one and leaving the other open reads
-as a layout bug rather than a decision, and the sidebar's blocks are the same
-class of detail as the main column's.
+**Flip that one constant to `false` to bring the page back.** Nothing else was
+changed: the grid still renders in full underneath, and no component in it
+knows the cover exists.
 
-**Flip that one constant to `false` to restore the whole page.** Nothing was
-deleted and no component was changed to accommodate it — the swap is at the
-grid's call site in `src/app/page.tsx`, plus a `privacyScreen` prop on
-`SiteNav` that drops the nav items whose target headings no longer exist.
+**It's a visual cover, not a redaction**, deliberately. Every repo name, commit
+count and role is still in the page source and still fetched on each
+revalidate. That's the cost of leaving the sections untouched, which is what
+makes it one line to undo.
 
-Two properties are deliberate and worth keeping if this is ever edited:
-- The hidden sections are **not rendered**, not `display: none`. Hiding with
-  CSS still ships every repo name, commit count and role into the HTML source.
-- `page.tsx` **skips the fetches** that feed them — five of the six calls,
-  including `getFeaturedRepos`, which is a request per repo. Only
-  `getGitHubSnapshot` still runs, since the nav chip and the header's profile
-  link come off it.
+An earlier pass did the opposite — sections not rendered, fetches skipped, nav
+items dropped — which genuinely hid the data but rewrote five files. Bradley
+asked for the simple version twice. If the data ever needs to be *unreachable*
+rather than unseen, that approach is in the git history.
 
 ## What this is
 

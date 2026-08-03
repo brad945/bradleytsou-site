@@ -107,19 +107,23 @@ export const githubUsername: string = "brad945";
 export const siteOrigin = "https://www.bradleytsou.com";
 
 /**
- * Temporary privacy screen. **Flip to `false` to bring the whole page back** —
- * that's the only edit needed, and nothing else in the repo was removed.
+ * Temporary "Coming soon" cover. **Flip to `false` to bring the page back** —
+ * that's the only edit needed, and nothing else in the repo was changed.
  *
- * While it's on, a visitor to bradleytsou.com gets the nav, the profile header
- * and the GitHub status block, and `BoardedUp` stands in for Favorite Project,
- * Experience and Recent Activity.
+ * While it's on, everything below the profile header is covered: `page.tsx`
+ * caps that block's height and lays `BoardedUp` over it. The grid underneath
+ * still renders in full, and no component in it knows this exists.
  *
- * The hidden sections are **not rendered**, not hidden with CSS. That's the
- * difference between a privacy screen and a curtain: `display: none` still
- * ships every repo name, commit count and role into the HTML source, where
- * View Source finds them in one keystroke. Nothing behind the boards reaches
- * the browser at all — and `page.tsx` skips the fetches that feed them, so
- * they aren't requested from GitHub either.
+ * **It's a visual cover, not a redaction** — deliberately. Every repo name,
+ * commit count and role behind it is still in the page source, one View
+ * Source away, and still fetched from GitHub on every revalidate. That is the
+ * direct cost of leaving the sections untouched, which is what makes it a
+ * one-line change to put back.
+ *
+ * An earlier pass did it the other way — sections not rendered, fetches
+ * skipped, nav items dropped — which genuinely hid the data but rewrote five
+ * files to do it. If the data ever needs to be actually unreachable rather
+ * than unseen, that's the approach to go back to; it's in the history.
  */
 export const privacyScreen = true;
 
