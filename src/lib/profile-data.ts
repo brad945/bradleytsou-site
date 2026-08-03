@@ -110,20 +110,16 @@ export const siteOrigin = "https://www.bradleytsou.com";
  * Temporary "Coming soon" cover. **Flip to `false` to bring the page back** —
  * that's the only edit needed, and nothing else in the repo was changed.
  *
- * While it's on, everything below the profile header is covered: `page.tsx`
- * caps that block's height and lays `BoardedUp` over it. The grid underneath
- * still renders in full, and no component in it knows this exists.
+ * While it's on, `page.tsx` renders `BoardedUp` **instead of** the profile
+ * grid, `SiteNav` drops the two links whose headings no longer exist, and
+ * `ProfileHeader` drops the Message / More row. Nothing is edited — every one
+ * of those is a branch around code that is otherwise untouched.
  *
- * **It's a visual cover, not a redaction** — deliberately. Every repo name,
- * commit count and role behind it is still in the page source, one View
- * Source away, and still fetched from GitHub on every revalidate. That is the
- * direct cost of leaving the sections untouched, which is what makes it a
- * one-line change to put back.
- *
- * An earlier pass did it the other way — sections not rendered, fetches
- * skipped, nav items dropped — which genuinely hid the data but rewrote five
- * files to do it. If the data ever needs to be actually unreachable rather
- * than unseen, that's the approach to go back to; it's in the history.
+ * It was an overlay over the grid first, and that could not hold. The cover
+ * sat inside the clipped wrapper, so an anchor jump from the nav scrolled the
+ * container and carried the cover off with it; every link underneath stayed in
+ * the tab order regardless of what was painted on top; and the whole lot sat
+ * in the page source. **Covering pixels doesn't disable a document.**
  */
 export const privacyScreen = true;
 

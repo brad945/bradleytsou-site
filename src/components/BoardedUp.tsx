@@ -1,30 +1,21 @@
 /**
- * The cover laid over the profile grid while `privacyScreen` is on.
+ * The "Coming soon" cover, rendered in place of the profile grid while
+ * `privacyScreen` is on.
  *
- * It is exactly one thing: a rectangle over the block below the header. It
- * doesn't remove sections, edit copy, or change any component's props — the
- * grid underneath renders as it always did and this sits on top of it.
- * Turning the flag off removes this element and nothing else moves.
+ * It replaces that block rather than sitting on top of it. An overlay was
+ * tried first and couldn't hold: it lived inside the clipped wrapper, so an
+ * anchor jump from the nav scrolled the container and carried the cover off
+ * with it, and every link underneath stayed in the tab order however opaque
+ * the thing painted over it was. Covering pixels doesn't disable a document.
  *
- * **It is a visual cover, not a redaction.** Everything behind it is still in
- * the page source, because leaving the grid untouched is the point. If the
- * repo names, commit counts and roles need to be genuinely unreachable, this
- * is the wrong tool — that needs the sections not rendered at all.
+ * Because the grid isn't rendered, nothing behind this is reachable by click,
+ * keyboard or View Source, and `page.tsx` still hands the fetched data to a
+ * branch that never runs. No component below was edited to make that work —
+ * the whole change is which branch renders.
  */
 export default function BoardedUp() {
   return (
-    /*
-      `inset-0` over the grid's own relative wrapper, so the cover is exactly
-      the height of what it covers — no fixed height to keep in sync as the
-      sections below it change.
-
-      aria-hidden because it's a cover: the sign carries no information a
-      screen reader needs, and the content behind is what actually has meaning.
-    */
-    <div
-      aria-hidden
-      className="absolute inset-0 z-10 flex items-center justify-center rounded-panel bg-base"
-    >
+    <div className="mt-3 flex h-[220px] items-center justify-center rounded-panel bg-base">
       {/*
         `font-sign` is Bebas Neue, loaded in layout.tsx for this one element.
         It's a poster face and would be wrong anywhere else on the page — the

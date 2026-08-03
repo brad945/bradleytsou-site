@@ -68,23 +68,22 @@ export default async function Home() {
           own `.profile_customization` margin, not the 16 it used to be.
         */}
         {/*
-          `privacyScreen` in profile-data lays a cover over this whole block.
-          The grid below is untouched and still renders — the cover is an
-          overlay on top of it, nothing more. Flip the constant to false and
-          both the height cap and the overlay go; there is no other change.
+          `privacyScreen` in profile-data replaces this whole block with the
+          "Coming soon" cover. Flip the constant to false and the grid comes
+          back exactly as it is here — it isn't edited, only skipped.
 
-          The height cap is what keeps the cover short. Left to match the grid
-          it stood ~1400px tall, a black slab longer than the rest of the page
-          put together. Capping the wrapper and clipping the overflow means the
-          grid still renders at full size underneath — no component below knows
-          about this — while the block a visitor sees is one panel deep.
+          It renders *instead of* the grid rather than over it. An overlay was
+          tried and couldn't hold: the cover sat inside the clipped wrapper, so
+          an anchor jump from the nav scrolled that container and carried the
+          cover off with it, and every link behind stayed in the tab order
+          whatever was painted on top. Covering pixels doesn't disable a
+          document. Not rendering does, and it also keeps the repo names,
+          commit counts and roles out of the page source.
         */}
-        <div
-          className={`relative mt-3 ${
-            privacyScreen ? "h-[220px] overflow-hidden" : ""
-          }`}
-        >
-          <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
+        {privacyScreen ? (
+          <BoardedUp />
+        ) : (
+          <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
             <div className="flex min-w-0 flex-col gap-3">
               <FavoriteProject repo={favorite} />
               <Experience featured={featured} />
@@ -100,9 +99,7 @@ export default async function Home() {
               lastPush={lastPush}
             />
           </div>
-
-          {privacyScreen && <BoardedUp />}
-        </div>
+        )}
 
         {/*
           The "Every number on this page is fetched, not written" line is gone.

@@ -7,23 +7,23 @@ were built — everything below is context so you don't have to re-explain it.
 ## A "COMING SOON" COVER IS CURRENTLY UP
 
 `privacyScreen` in `src/lib/profile-data.ts` is `true`, so **a visitor to
-bradleytsou.com does not see most of what's described below.** Everything under
-the profile header is covered: `src/app/page.tsx` caps that block at 220px and
-lays `BoardedUp` — a black rectangle reading "Coming soon" — over it.
+bradleytsou.com does not see most of what's described below.** They get the nav
+and the profile header; everything under it is replaced by `BoardedUp`, a
+220px black panel reading "Coming soon".
 
-**Flip that one constant to `false` to bring the page back.** Nothing else was
-changed: the grid still renders in full underneath, and no component in it
-knows the cover exists.
+**Flip that one constant to `false` to bring the page back.** Nothing was
+edited to accommodate it — three components branch around otherwise untouched
+code:
+- `page.tsx` renders `BoardedUp` instead of the grid.
+- `SiteNav` drops Experience and Activity, whose headings no longer exist.
+- `ProfileHeader` drops the Message / More row.
 
-**It's a visual cover, not a redaction**, deliberately. Every repo name, commit
-count and role is still in the page source and still fetched on each
-revalidate. That's the cost of leaving the sections untouched, which is what
-makes it one line to undo.
-
-An earlier pass did the opposite — sections not rendered, fetches skipped, nav
-items dropped — which genuinely hid the data but rewrote five files. Bradley
-asked for the simple version twice. If the data ever needs to be *unreachable*
-rather than unseen, that approach is in the git history.
+**It renders instead of the grid, not over it — don't "simplify" that back to
+an overlay.** That was tried and failed three ways: the cover sat inside the
+clipped wrapper, so an anchor jump from the nav scrolled the container and
+carried the cover off with it; every link underneath stayed in the tab order
+whatever was painted on top; and all of it sat in the page source. Covering
+pixels doesn't disable a document.
 
 ## What this is
 
