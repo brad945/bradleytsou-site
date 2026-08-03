@@ -76,7 +76,14 @@ export interface BioLine {
 
 export interface SocialLink {
   label: string;
-  href: string;
+  /** Key into `SOCIAL_ICONS` in components/SocialIcons.tsx. */
+  icon: string;
+  /**
+   * Omit for a platform Bradley hasn't given a profile for yet. The icon still
+   * renders — greyed and not a link — so the row shows the full set without
+   * inventing a URL or sending anyone to a 404.
+   */
+  href?: string;
 }
 
 /** Sentinel meaning "Bradley hasn't filled this in yet." */
@@ -293,9 +300,22 @@ export const socials: SocialLink[] = [
    * referral tracking picked up by copying from a signed-in page. They say
    * where *he* clicked from, and would follow every visitor who used this link.
    */
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/bradleytsou" },
-  { label: "Devpost", href: "https://devpost.com/bradley_tsou" },
-  { label: "Email", href: `mailto:${profile.email}` },
+  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/in/bradleytsou" },
+  { label: "Devpost", icon: "devpost", href: "https://devpost.com/bradley_tsou" },
+  { label: "Email", icon: "mail", href: `mailto:${profile.email}` },
+  /*
+   * Placeholders, at Bradley's request — icons only until he supplies the
+   * profile URLs. Each renders greyed and unlinked rather than pointing
+   * somewhere plausible, so the row can't send a visitor to a 404. Fill in
+   * `href` and the entry lights up on its own; no other change needed.
+   *
+   * GitHub is here rather than in the note below because the row is now a set
+   * of marks, where its absence would read as an omission — it was previously
+   * left out as redundant when this was a list of words.
+   */
+  { label: "GitHub", icon: "github", href: `https://github.com/${githubUsername}` },
+  { label: "Steam", icon: "steam" },
+  { label: "Discord", icon: "discord" },
 ];
 
 /**

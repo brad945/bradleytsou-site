@@ -1,7 +1,11 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { linkedinFollowers, profile, socials } from "@/lib/profile-data";
+import { profile, socials } from "@/lib/profile-data";
+import {
+  SOCIAL_ICONS,
+  type SocialIconName,
+} from "@/components/SocialIcons";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
@@ -214,34 +218,57 @@ export default function Sidebar({
           <span className="stat-value">{socials.length}</span>
         </div>
         {/*
-          Reach shown per link where there's a number — now only LinkedIn,
-          since GitHub was the live one and it's been replaced by Devpost.
-          LinkedIn's is hand-entered because LinkedIn has no public API, so it
-          silently goes stale — see `linkedinFollowers`. Devpost gets no count
-          rather than an invented one.
+          A row of marks rather than a list of words.
+
+          The LinkedIn follower count went with the words. It was the only
+          number here and had nowhere to sit once the label became a 20px
+          icon — and it was the one figure on this page typed by hand rather
+          than fetched, since LinkedIn has no public API. `linkedinFollowers`
+          is still exported and still carries that warning if it's ever wanted
+          back.
+
+          Each icon keeps its label as the accessible name and as the tooltip,
+          so nothing is lost to someone who can't identify a mark on sight.
         */}
-        <ul className="mt-2 flex flex-col">
+        <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
           {socials.map((link) => {
-            const reach =
-              link.label === "LinkedIn" ? linkedinFollowers : undefined;
+            const Icon = SOCIAL_ICONS[link.icon as SocialIconName];
+            if (!Icon) return null;
+
+            /*
+              No href yet: render the mark greyed and unlinked rather than
+              dropping it or pointing it somewhere invented. `title` still
+              says which platform it is and that it's not wired up.
+            */
+            if (!link.href) {
+              return (
+                <li key={link.label}>
+                  <span
+                    title={`${link.label} — coming soon`}
+                    className="block text-muted/35"
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="sr-only">
+                      {link.label} — not linked yet
+                    </span>
+                  </span>
+                </li>
+              );
+            }
 
             return (
               <li key={link.label}>
                 <a
                   href={link.href}
+                  title={link.label}
                   target={
                     link.href.startsWith("mailto:") ? undefined : "_blank"
                   }
                   rel="noreferrer"
-                  className="group flex items-baseline justify-between gap-2 py-1.5"
+                  className="block text-muted transition-colors hover:text-link"
                 >
-                  <span className="steam-link text-[14px]">{link.label}</span>
-                  {reach !== undefined && reach > 0 && (
-                    <span className="t-meta">
-                      {reach.toLocaleString()}{" "}
-                      {reach === 1 ? "follower" : "followers"}
-                    </span>
-                  )}
+                  <Icon className="h-5 w-5" />
+                  <span className="sr-only">{link.label}</span>
                 </a>
               </li>
             );
