@@ -104,8 +104,13 @@ export default async function Home() {
           {privacyScreen && <BoardedUp />}
         </div>
 
+        {/*
+          The "Every number on this page is fetched, not written" line is gone.
+          The Valve disclaimer stays — it's the one line here that isn't
+          decorative, and with one child `justify-between` leaves it at the
+          left rather than the right edge it used to share.
+        */}
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
-          <span>Every number on this page is fetched, not written.</span>
           <span>
             Layout inspired by Steam profiles. Not affiliated with Valve.
           </span>
