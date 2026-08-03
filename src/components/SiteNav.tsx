@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { GitHubStats } from "@/lib/github";
-import { privacyScreen, profile } from "@/lib/profile-data";
+import { profile } from "@/lib/profile-data";
 import BtMark from "@/components/BtMark";
 
 /**
@@ -21,16 +21,6 @@ const LINKS = [
 ];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
-  /*
-   * Experience and Activity go while the cover is up. Their target headings
-   * aren't rendered, so the hrefs point at ids that don't exist — and these
-   * were the controls that actually leaked: an anchor jump used to scroll the
-   * covered container and drag the cover out of the way with it.
-   */
-  const links = privacyScreen
-    ? LINKS.filter((link) => link.href === "#profile")
-    : LINKS;
-
   return (
     <nav className="bg-chrome">
       {/*
@@ -65,7 +55,7 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
         </a>
 
         <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          {links.map((link) => (
+          {LINKS.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}

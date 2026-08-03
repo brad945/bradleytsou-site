@@ -106,23 +106,6 @@ export const githubUsername: string = "brad945";
  */
 export const siteOrigin = "https://www.bradleytsou.com";
 
-/**
- * Temporary "Coming soon" cover. **Flip to `false` to bring the page back** —
- * that's the only edit needed, and nothing else in the repo was changed.
- *
- * While it's on, `page.tsx` renders `BoardedUp` **instead of** the profile
- * grid, `SiteNav` drops the two links whose headings no longer exist, and
- * `ProfileHeader` drops the Message / More row. Nothing is edited — every one
- * of those is a branch around code that is otherwise untouched.
- *
- * It was an overlay over the grid first, and that could not hold. The cover
- * sat inside the clipped wrapper, so an anchor jump from the nav scrolled the
- * container and carried the cover off with it; every link underneath stayed in
- * the tab order regardless of what was painted on top; and the whole lot sat
- * in the page source. **Covering pixels doesn't disable a document.**
- */
-export const privacyScreen = true;
-
 export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */

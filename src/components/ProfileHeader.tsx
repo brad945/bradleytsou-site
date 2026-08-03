@@ -5,7 +5,6 @@ import type { GitHubStats } from "@/lib/github";
 import {
   aliases,
   experience,
-  privacyScreen,
   profile,
   profileLevel,
   type BioLine,
@@ -337,24 +336,15 @@ export default function ProfileHeader({
             </div>
           </div>
 
-          {/*
-            Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is.
-
-            Gone while the "Coming soon" cover is up. They sit above the cover,
-            so they stayed live and clickable on a page that otherwise reads as
-            closed — the ⋯ menu in particular still opened onto View source,
-            the raw API response and the activity feed.
-          */}
-          {!privacyScreen && (
-            <div className="mt-4">
-              <HeaderActions
-                profileUrl={stats?.profileUrl ?? null}
-                login={stats?.login ?? null}
-                sourceUrl={sourceUrl}
-                email={profile.email}
-              />
-            </div>
-          )}
+          {/* Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is. */}
+          <div className="mt-4">
+            <HeaderActions
+              profileUrl={stats?.profileUrl ?? null}
+              login={stats?.login ?? null}
+              sourceUrl={sourceUrl}
+              email={profile.email}
+            />
+          </div>
         </div>
       </div>
     </header>

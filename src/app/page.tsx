@@ -1,6 +1,5 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
-import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
 import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
@@ -23,7 +22,6 @@ import {
   githubUsername,
   FAVORITE_REPO,
   featuredRepos,
-  privacyScreen,
   SITE_REPO_NAME,
   siteRepoUrl,
 } from "@/lib/profile-data";
@@ -67,46 +65,23 @@ export default async function Home() {
           ~649 / 12 / ~325 at ≥lg; stacks below that. The gap is 12px, Steam's
           own `.profile_customization` margin, not the 16 it used to be.
         */}
-        {/*
-          `privacyScreen` in profile-data replaces this whole block with the
-          "Coming soon" cover. Flip the constant to false and the grid comes
-          back exactly as it is here — it isn't edited, only skipped.
-
-          It renders *instead of* the grid rather than over it. An overlay was
-          tried and couldn't hold: the cover sat inside the clipped wrapper, so
-          an anchor jump from the nav scrolled that container and carried the
-          cover off with it, and every link behind stayed in the tab order
-          whatever was painted on top. Covering pixels doesn't disable a
-          document. Not rendering does, and it also keeps the repo names,
-          commit counts and roles out of the page source.
-        */}
-        {privacyScreen ? (
-          <BoardedUp />
-        ) : (
-          <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
-            <div className="flex min-w-0 flex-col gap-3">
-              <FavoriteProject repo={favorite} />
-              <Experience featured={featured} />
-              <ActivityFeed snapshot={snapshot} featured={featured} />
-              {/* <Comments /> */}
-            </div>
-
-            <Sidebar
-              snapshot={snapshot}
-              deveval={deveval}
-              contributions={contributions}
-              languages={languages}
-              lastPush={lastPush}
-            />
+        <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
+          <div className="flex min-w-0 flex-col gap-3">
+            <FavoriteProject repo={favorite} />
+            <Experience featured={featured} />
+            <ActivityFeed snapshot={snapshot} featured={featured} />
+            {/* <Comments /> */}
           </div>
-        )}
 
-        {/*
-          The "Every number on this page is fetched, not written" line is gone.
-          The Valve disclaimer stays — it's the one line here that isn't
-          decorative, and with one child `justify-between` leaves it at the
-          left rather than the right edge it used to share.
-        */}
+          <Sidebar
+            snapshot={snapshot}
+            deveval={deveval}
+            contributions={contributions}
+            languages={languages}
+            lastPush={lastPush}
+          />
+        </div>
+
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
           <span>
             Layout inspired by Steam profiles. Not affiliated with Valve.

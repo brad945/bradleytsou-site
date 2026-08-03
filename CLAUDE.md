@@ -4,27 +4,6 @@ This file is read automatically by Claude Code when you open this folder.
 It's a handoff from a chat session where the design and initial scaffold
 were built — everything below is context so you don't have to re-explain it.
 
-## A "COMING SOON" COVER IS CURRENTLY UP
-
-`privacyScreen` in `src/lib/profile-data.ts` is `true`, so **a visitor to
-bradleytsou.com does not see most of what's described below.** They get the nav
-and the profile header; everything under it is replaced by `BoardedUp`, a
-220px black panel reading "Coming soon".
-
-**Flip that one constant to `false` to bring the page back.** Nothing was
-edited to accommodate it — three components branch around otherwise untouched
-code:
-- `page.tsx` renders `BoardedUp` instead of the grid.
-- `SiteNav` drops Experience and Activity, whose headings no longer exist.
-- `ProfileHeader` drops the Message / More row.
-
-**It renders instead of the grid, not over it — don't "simplify" that back to
-an overlay.** That was tried and failed three ways: the cover sat inside the
-clipped wrapper, so an anchor jump from the nav scrolled the container and
-carried the cover off with it; every link underneath stayed in the tab order
-whatever was painted on top; and all of it sat in the page source. Covering
-pixels doesn't disable a document.
-
 ## What this is
 
 Bradley's personal site, deliberately NOT a generic hover/scroll-animation
@@ -350,14 +329,6 @@ class would stop emitting.
   (repos / followers / following / gists / member since), badge tiles,
   focus, a language breakdown, and a stars-ranked Top Repositories list
   that fills the slot Steam uses for the friends list.
-- `src/components/BoardedUp.tsx` — the cover laid over the profile grid
-  while the privacy screen is on. A rectangle and the words "Coming
-  soon", nothing else. It went through a plywood-and-nails version first;
-  Bradley cut the boards, and before that cut a longer sign that named
-  the hidden sections. Both are worth remembering as the shape of the
-  ask: **the cover should not acquire content.** Copy on it had to be
-  re-edited every time the scope moved, which is the tell it shouldn't
-  have been there.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
   `router.refresh()` on the revalidate interval so the killfeed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a
