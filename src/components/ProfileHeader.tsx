@@ -143,16 +143,20 @@ export default function ProfileHeader({
    * alternative was to set it on GitHub and let the fetch carry it, which
    * would have kept that property, but he supplied the image directly.)
    *
-   * The source was a circular-cropped screenshot, which is what makes the
-   * framing a trade rather than a choice: the widest square with no circle
-   * edge in it is the inscribed 321px, and that read as too tight. This is
-   * 360px of the 454px disc — 12% more of the scene, at the cost of four
-   * small corner nicks, which are filled with `base` black to sit with the
-   * well behind them. Past ~380 the nicks stop reading as vignetting and
-   * start reading as a mistake; the full 454 disc is the other clean stop,
-   * a round photo on black. The way out of the trade entirely is the
-   * original uncropped photo, which we don't have. 360 still leaves
-   * headroom over the 150px it renders at, so it stays sharp at 2x.
+   * Cropped from the full-frame original, 600x600 at q90.
+   *
+   * Earlier passes worked from a circular-cropped copy of the same photo, and
+   * every framing decision there was a trade against the circle: the widest
+   * square with no disc edge in it was only 321px, which read tight, and
+   * going wider bought scene at the price of black corner nicks. The original
+   * ends that — the frame is 1652x1576, so a full-height 1576px square is
+   * almost the entire photo, and the crop is now free.
+   *
+   * It's the centred square. With only 76px of horizontal slack the three
+   * possible squares are near-identical, so centring costs nothing and keeps
+   * all three faces whole. 600px is 4x the 150 it renders at, headroom well
+   * past 2x; if it ever wants tightening, crop toward the right, which is
+   * where Bradley is.
    */
   const avatar = "/avatar.jpg";
 

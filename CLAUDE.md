@@ -169,12 +169,12 @@ class would stop emitting.
   supplied the photo directly. It's the only thing in the header that
   isn't fetched, so it's the only one that can go stale silently:
   changing his GitHub picture no longer changes the page. The source was
-  a circular-cropped screenshot, so the framing is a trade: the widest
-  square with no circle edge in it is the inscribed 321px, which read as
-  too tight, so it's **360px of the 454px disc** — 12% more scene, four
-  small corner nicks filled with `base` black. Past ~380 they stop
-  reading as vignetting and start reading as a mistake; the full 454 disc
-  is the other clean stop. An uncropped original would end the trade.
+  the **full-frame original**, cropped 600x600 at q90 — the centred
+  square of a 1652x1576 photo, so it's almost the whole frame with all
+  three faces. Earlier passes used a circular-cropped copy, where every
+  framing choice traded scene against black corner nicks; the original
+  ends that, and the crop is free. To tighten it, crop toward the right,
+  which is where Bradley is.
   The nav's 24px chip is **still** the GitHub avatar — it's the
   signed-in-as slot and links to the GitHub profile — so the two differ
   on purpose.
