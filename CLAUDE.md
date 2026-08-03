@@ -8,20 +8,27 @@ were built — everything below is context so you don't have to re-explain it.
 
 `privacyScreen` in `src/lib/profile-data.ts` is `true`, so **what's described
 below is not what a visitor to bradleytsou.com sees right now.** They get the
-nav, the profile header, the sidebar's status block and Links; `BoardedUp`
-stands in for Favorite Project, Experience and Recent Activity.
+nav, the profile header, and then `BoardedUp` in place of **the entire grid** —
+both columns. Favorite Project, Experience, Recent Activity *and* the whole
+right sidebar (status, DevEval, languages, repos, Links) are behind the boards.
+The header's Message button is the only way through.
+
+It spans both columns on purpose: boarding one and leaving the other open reads
+as a layout bug rather than a decision, and the sidebar's blocks are the same
+class of detail as the main column's.
 
 **Flip that one constant to `false` to restore the whole page.** Nothing was
-deleted and no component was changed to accommodate it — the hidden sections
-are guarded at their call sites in `src/app/page.tsx`, plus a `statusOnly` prop
-on `Sidebar` and a `privacyScreen` prop on `SiteNav`.
+deleted and no component was changed to accommodate it — the swap is at the
+grid's call site in `src/app/page.tsx`, plus a `privacyScreen` prop on
+`SiteNav` that drops the nav items whose target headings no longer exist.
 
 Two properties are deliberate and worth keeping if this is ever edited:
 - The hidden sections are **not rendered**, not `display: none`. Hiding with
   CSS still ships every repo name, commit count and role into the HTML source.
-- `page.tsx` **skips the fetches** that feed them, so the parked data isn't
-  requested from GitHub either. `getLastPush` and `getContributions` stay,
-  since the status block needs them.
+- `page.tsx` **skips the fetches** that feed them — five of the six calls,
+  including `getFeaturedRepos`, which is a request per repo. Only
+  `getGitHubSnapshot` still runs, since the nav chip and the header's profile
+  link come off it.
 
 ## What this is
 
@@ -362,6 +369,9 @@ class would stop emitting.
   height`, so **overhang and angle have to stay small together** or the
   boards run out of the well and get clipped into wedges; and the **nail
   inset must exceed the overhang** or the nails are clipped away entirely.
+  The same rule means **the angles are tied to the panel's width**: these
+  were set for the full ~966px column, where 4deg drops 67px. Narrow the
+  panel and they'd want steepening; widen it and they'd want flattening.
   The well's height is fixed rather than content-driven, since the boards
   are positioned in percentages and would slide if the copy changed.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls

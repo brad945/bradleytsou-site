@@ -31,8 +31,17 @@ import { profile } from "@/lib/profile-data";
  * reader gets the sentence without the scenery.
  */
 
-/** The sections this board is standing in front of, named on the sign. */
-const BEHIND_THE_BOARDS = ["Favorite Project", "Experience", "Recent Activity"];
+/**
+ * The sections this board is standing in front of, named on the sign. The
+ * boards cover the whole grid, both columns, so this includes the sidebar's
+ * blocks and not just the main column's.
+ */
+const BEHIND_THE_BOARDS = [
+  "Projects",
+  "Experience",
+  "Activity",
+  "GitHub stats",
+];
 
 /**
  * One nailed plank. `top` and `rotate` are per-board rather than derived — a
@@ -115,19 +124,26 @@ export default function BoardedUp() {
           drew. Three, unevenly spaced at unequal angles, read as boards someone
           nailed up, which is the whole difference.
         */}
-        <Plank top="9%" rotate="-4deg" />
-        <Plank top="43%" rotate="2.5deg" />
-        <Plank top="76%" rotate="-2deg" />
+        {/*
+          Angles are shallower than they look like they should be because this
+          panel spans the full ~966px column. Rise is `width x sin(angle)`, so
+          the same 4deg that read as a gentle tilt in the 649px main column
+          becomes a 67px drop here — steep enough to run the boards out of the
+          well. Widening the panel means flattening these.
+        */}
+        <Plank top="10%" rotate="-2.4deg" />
+        <Plank top="44%" rotate="1.5deg" />
+        <Plank top="77%" rotate="-1.2deg" />
 
         {/*
           The sign hangs over the middle board, tilted against it so it reads as
-          a separate object nailed on top rather than part of the board. Narrow
-          enough that the boards stay visible either side of it — at 420 in this
-          column it covered them and the scene collapsed into a card on a brown
-          background.
+          a separate object nailed on top rather than part of the board. Capped
+          well short of the column so the boards stay visible either side —
+          a sign that spans the opening covers them and the scene collapses
+          into a card on a brown background.
         */}
         <div className="absolute inset-0 flex items-center justify-center px-5">
-          <div className="w-full max-w-[360px] rotate-[-1.5deg] border border-line bg-panel2 px-6 py-5 text-center shadow-[0_2px_0_rgba(0,0,0,0.5)]">
+          <div className="w-full max-w-[440px] rotate-[-1.5deg] border border-line bg-panel2 px-7 py-6 text-center shadow-[0_2px_0_rgba(0,0,0,0.5)]">
             {/*
               Uppercase mono is the one place this site allows tracked capitals
               — `.label`, scoped to chrome. A hand-painted sign is the same kind
@@ -140,9 +156,15 @@ export default function BoardedUp() {
               {profile.name.split(" ")[0]} finishes them.
             </p>
 
+            {/*
+              This used to say the status block above was still live. It isn't
+              — the boards now cover the sidebar too, so that line was claiming
+              something a visitor could see wasn't there. Points at Message
+              instead, which is the only way through while this is up: the
+              Links panel is behind the boards with everything else.
+            */}
             <p className="mt-3 text-[13px] leading-relaxed text-muted">
-              The profile above is live and fetching — status, counts and
-              activity are all real.
+              Use Message above to get in touch in the meantime.
             </p>
           </div>
         </div>
