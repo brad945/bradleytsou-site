@@ -388,6 +388,63 @@ export const projects: Project[] = [
   },
 ];
 
+/**
+ * Tags that name a *discipline, technique or way of working* rather than a
+ * tool — so they're excluded from the Tech Stack panel.
+ *
+ * The panel is derived from the `tags` already on `roles` and `projects`
+ * rather than hand-listed, so adding a tag to a role puts it on the stack
+ * automatically and there's no second list to keep in sync. That only works if
+ * the split is explicit, which is what this set is.
+ *
+ * The judgement call worth knowing: "Computer Vision", "Reinforcement
+ * Learning" and "Multi-agent" are excluded. They're fields Bradley works in,
+ * not things in a stack, and a stack listing them alongside Postgres reads as
+ * padded. If he'd rather they showed, delete them from this set — that's the
+ * whole change.
+ */
+const NON_STACK_TAGS = new Set([
+  // Disciplines and domains
+  "Applied AI",
+  "Cybersecurity",
+  "IT Operations",
+  "Computer Vision",
+  "Reinforcement Learning",
+  "Multi-agent",
+  "Vocal Synthesis",
+  "Audio Engineering",
+  "Data Annotation",
+  "Behavioral Economics",
+  "Modelling",
+  "Qualitative Research",
+  "Music",
+  // Roles and ways of working, not tools
+  "Forward-Deployed",
+  "Fullstack",
+  "Frontend",
+  "Web",
+  "UI/UX",
+  "Tutoring",
+  "Real-time",
+]);
+
+/**
+ * The Tech Stack panel's contents — every tool named anywhere in `roles` or
+ * `projects`, deduped, minus `NON_STACK_TAGS`.
+ *
+ * Derived, not written: it can't claim a tool that isn't attached to real work
+ * somewhere else on this page, which is the same rule the rest of the page
+ * follows. Order is order of appearance — roles first, and `roles` is itself
+ * ordered newest-ish first by hand — so the most recent work leads.
+ */
+export const techStack: string[] = Array.from(
+  new Set([
+    ...roles.flatMap((role) => role.tags ?? []),
+    ...projects.flatMap((project) => project.tags),
+  ]),
+).filter((tag) => !NON_STACK_TAGS.has(tag));
+
+
 /** Human labels per tier. Kept for ordering; no longer rendered as a legend. */
 export const rarityLabels: Record<Rarity, string> = {
   core: "Core",

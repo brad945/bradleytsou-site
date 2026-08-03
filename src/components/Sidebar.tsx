@@ -1,7 +1,7 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { profile, socials } from "@/lib/profile-data";
+import { profile, socials, techStack } from "@/lib/profile-data";
 import {
   SOCIAL_ICONS,
   type SocialIconName,
@@ -182,6 +182,43 @@ export default function Sidebar({
               ),
             )}
           </div>
+        </section>
+      )}
+
+      {/*
+        Tech Stack, between the status block and Languages.
+
+        Derived from the `tags` already on roles and projects (see `techStack`),
+        not a separate hand-kept list — so nothing can appear here that isn't
+        attached to real work elsewhere on the page, and adding a tag to a role
+        puts it on the stack by itself.
+
+        It sits above Languages deliberately: Languages is what GitHub counted,
+        this is what he'd say he works in, and the derived one reads better as
+        the footnote to the stated one than the other way round.
+      */}
+      {techStack.length > 0 && (
+        <section className="panel px-5 py-5">
+          <div className="stat-row">
+            <span className="stat-label">Tech Stack</span>
+            <span className="stat-value">{techStack.length}</span>
+          </div>
+
+          {/*
+            Chips rather than the mono dot-list the same tags use in
+            Experience. There they're a footnote under a role and shouldn't
+            compete with it; here they're the content of the panel.
+          */}
+          <ul className="mt-3 flex flex-wrap gap-1.5">
+            {techStack.map((tech) => (
+              <li
+                key={tech}
+                className="border border-line/70 bg-panel2/60 px-2 py-1 text-[12px] leading-none text-copy"
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
