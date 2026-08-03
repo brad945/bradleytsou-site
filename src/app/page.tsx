@@ -68,12 +68,22 @@ export default async function Home() {
           own `.profile_customization` margin, not the 16 it used to be.
         */}
         {/*
-          `privacyScreen` in profile-data lays a board over this whole block.
-          The grid below is untouched and still renders — the board is an
+          `privacyScreen` in profile-data lays a cover over this whole block.
+          The grid below is untouched and still renders — the cover is an
           overlay on top of it, nothing more. Flip the constant to false and
-          the overlay goes; there is no other change to undo.
+          both the height cap and the overlay go; there is no other change.
+
+          The height cap is what keeps the cover short. Left to match the grid
+          it stood ~1400px tall, a black slab longer than the rest of the page
+          put together. Capping the wrapper and clipping the overflow means the
+          grid still renders at full size underneath — no component below knows
+          about this — while the block a visitor sees is one panel deep.
         */}
-        <div className="relative mt-3">
+        <div
+          className={`relative mt-3 ${
+            privacyScreen ? "h-[220px] overflow-hidden" : ""
+          }`}
+        >
           <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
             <div className="flex min-w-0 flex-col gap-3">
               <FavoriteProject repo={favorite} />
