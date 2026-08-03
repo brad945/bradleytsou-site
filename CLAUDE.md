@@ -355,25 +355,14 @@ class would stop emitting.
   (repos / followers / following / gists / member since), badge tiles,
   focus, a language breakdown, and a stars-ranked Top Repositories list
   that fills the slot Steam uses for the friends list.
-- `src/components/BoardedUp.tsx` — the plywood panel that stands in for the
-  parked sections while the privacy screen is on. Plywood nailed across a
-  dark opening with a sign hung on it; the plank colour is **sampled from
-  the boarded storefront behind Bradley in `avatar.jpg`**, so it reads as
-  continuous with the photo above it. Three boards, not two — two read as
-  a drawn X, three unevenly spaced read as something someone nailed up.
-  Nothing animates (a placeholder is the most tempting place to break the
-  no-decorative-motion rule) and there are no gradients: the planks are
-  flat fills with the same `frameHi`/`frameLo` bevel vocabulary as the
-  avatar frame. Two numbers are load-bearing and were both wrong first
-  time — a rotated board's vertical extent is `width x sin(angle) +
-  height`, so **overhang and angle have to stay small together** or the
-  boards run out of the well and get clipped into wedges; and the **nail
-  inset must exceed the overhang** or the nails are clipped away entirely.
-  The same rule means **the angles are tied to the panel's width**: these
-  were set for the full ~966px column, where 4deg drops 67px. Narrow the
-  panel and they'd want steepening; widen it and they'd want flattening.
-  The well's height is fixed rather than content-driven, since the boards
-  are positioned in percentages and would slide if the copy changed.
+- `src/components/BoardedUp.tsx` — the cover laid over the profile grid
+  while the privacy screen is on. A rectangle and the words "Coming
+  soon", nothing else. It went through a plywood-and-nails version first;
+  Bradley cut the boards, and before that cut a longer sign that named
+  the hidden sections. Both are worth remembering as the shape of the
+  ask: **the cover should not acquire content.** Copy on it had to be
+  re-edited every time the scope moved, which is the tell it shouldn't
+  have been there.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
   `router.refresh()` on the revalidate interval so the killfeed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a
