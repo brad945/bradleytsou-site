@@ -53,7 +53,14 @@ export default async function Home() {
     <>
       <SiteNav stats={snapshot.stats} />
 
-      <main className="mx-auto w-full max-w-profile bg-hero px-3 py-6 sm:px-4 sm:py-8">
+      {/*
+        Top padding is deliberately smaller than the bottom: `pt-3` against
+        `pb-6`/`pb-8`. The nav is its own dark bar, so the column's top padding
+        was stacking on the visual break the bar already makes and pushing the
+        avatar down away from it. The bottom keeps the larger value — there's
+        nothing under the column to break against.
+      */}
+      <main className="mx-auto w-full max-w-profile bg-hero px-3 pb-6 pt-3 sm:px-4 sm:pb-8 sm:pt-4">
         <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
 
         {/*
