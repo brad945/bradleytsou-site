@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Open_Sans } from "next/font/google";
+import { Bebas_Neue, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { profile, siteOrigin } from "@/lib/profile-data";
 
@@ -26,6 +26,25 @@ const sans = Open_Sans({
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+/**
+ * Signage face, used only by the "Coming soon" cover.
+ *
+ * Deliberately outside the page's own typography, which is one family at light
+ * weights with no tracked capitals — the rules that make the rest of this read
+ * as Steam. A hoarding over the profile isn't part of that page, so it gets a
+ * poster face; it would be wrong anywhere else here, and `font-sign` exists so
+ * that stays visible at the call site.
+ *
+ * Bebas Neue ships one weight (400) and is caps-only by design, so there is no
+ * weight axis to get wrong and no lowercase to fall back to.
+ */
+const sign = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-sign",
   display: "swap",
 });
 
@@ -58,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${mono.variable}`}
+      className={`${sans.variable} ${mono.variable} ${sign.variable}`}
       style={
         {
           "--font-display": "var(--font-sans)",

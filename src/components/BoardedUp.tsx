@@ -26,11 +26,16 @@ export default function BoardedUp() {
       className="absolute inset-0 z-10 flex items-center justify-center rounded-panel bg-base"
     >
       {/*
-        Uppercase mono is the one place this site allows tracked capitals —
-        `.label`, scoped to chrome. Signage is that kind of object, so it earns
-        it here and nowhere else.
+        `font-sign` is Bebas Neue, loaded in layout.tsx for this one element.
+        It's a poster face and would be wrong anywhere else on the page — the
+        site's own type is one family at light weights with no tracked capitals
+        — but a hoarding isn't part of that page.
+
+        The face is caps-only, so "Coming soon" renders as capitals without
+        `uppercase`; the string stays sentence case so it reads normally
+        anywhere the markup is read as text.
       */}
-      <p className="label text-[13px] tracking-[0.22em] text-accent">
+      <p className="font-sign text-[52px] leading-none tracking-[0.06em] text-accent sm:text-[64px]">
         Coming soon
       </p>
     </div>
