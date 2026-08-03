@@ -4,6 +4,25 @@ This file is read automatically by Claude Code when you open this folder.
 It's a handoff from a chat session where the design and initial scaffold
 were built — everything below is context so you don't have to re-explain it.
 
+## THE PRIVACY SCREEN IS CURRENTLY ON
+
+`privacyScreen` in `src/lib/profile-data.ts` is `true`, so **what's described
+below is not what a visitor to bradleytsou.com sees right now.** They get the
+nav, the profile header, the sidebar's status block and Links; `BoardedUp`
+stands in for Favorite Project, Experience and Recent Activity.
+
+**Flip that one constant to `false` to restore the whole page.** Nothing was
+deleted and no component was changed to accommodate it — the hidden sections
+are guarded at their call sites in `src/app/page.tsx`, plus a `statusOnly` prop
+on `Sidebar` and a `privacyScreen` prop on `SiteNav`.
+
+Two properties are deliberate and worth keeping if this is ever edited:
+- The hidden sections are **not rendered**, not `display: none`. Hiding with
+  CSS still ships every repo name, commit count and role into the HTML source.
+- `page.tsx` **skips the fetches** that feed them, so the parked data isn't
+  requested from GitHub either. `getLastPush` and `getContributions` stay,
+  since the status block needs them.
+
 ## What this is
 
 Bradley's personal site, deliberately NOT a generic hover/scroll-animation
@@ -329,6 +348,22 @@ class would stop emitting.
   (repos / followers / following / gists / member since), badge tiles,
   focus, a language breakdown, and a stars-ranked Top Repositories list
   that fills the slot Steam uses for the friends list.
+- `src/components/BoardedUp.tsx` — the plywood panel that stands in for the
+  parked sections while the privacy screen is on. Plywood nailed across a
+  dark opening with a sign hung on it; the plank colour is **sampled from
+  the boarded storefront behind Bradley in `avatar.jpg`**, so it reads as
+  continuous with the photo above it. Three boards, not two — two read as
+  a drawn X, three unevenly spaced read as something someone nailed up.
+  Nothing animates (a placeholder is the most tempting place to break the
+  no-decorative-motion rule) and there are no gradients: the planks are
+  flat fills with the same `frameHi`/`frameLo` bevel vocabulary as the
+  avatar frame. Two numbers are load-bearing and were both wrong first
+  time — a rotated board's vertical extent is `width x sin(angle) +
+  height`, so **overhang and angle have to stay small together** or the
+  boards run out of the well and get clipped into wedges; and the **nail
+  inset must exceed the overhang** or the nails are clipped away entirely.
+  The well's height is fixed rather than content-driven, since the boards
+  are positioned in percentages and would slide if the copy changed.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
   `router.refresh()` on the revalidate interval so the killfeed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a

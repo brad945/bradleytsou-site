@@ -97,6 +97,25 @@ const tokens = {
   frameLo: "#3e4247",
   /** Slate background of the alias dropdown. */
   menu: "#464c58",
+  /*
+   * Plywood, for the boarded-up panel over the parked sections.
+   *
+   * Flat fills with a light and a dark edge, not a wood-grain gradient —
+   * that's the same bevel vocabulary the avatar frame uses (`frameHi` /
+   * `frameLo`), and it's what keeps this inside the no-gradients rule while
+   * still reading as a board with thickness.
+   *
+   * The hue (32deg) is the one the boarded storefront behind Bradley in
+   * `avatar.jpg` actually is, sampled rather than picked, which is why the
+   * panel sits with the photo above it instead of against it. Kept dark
+   * (L=30%) so it reads as a board in a dim room rather than a bright yellow
+   * slab next to the gold bio line.
+   */
+  plank: "#4d3a26",
+  plankHi: "#6b5236",
+  plankLo: "#2e2216",
+  /** Nail head — the one cool note on the boards, so it reads as metal. */
+  nail: "#8b8f96",
   /** Global nav bar — Steam's header sits darker and bluer than the page. */
   chrome: "#171a21",
 };

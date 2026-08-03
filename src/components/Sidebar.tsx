@@ -13,6 +13,13 @@ interface SidebarProps {
   languages: LanguageCount[];
   /** ISO timestamp of the most recent push, or null without a token. */
   lastPush: string | null;
+  /**
+   * Privacy screen: render the status block alone and drop DevEval, languages
+   * and Top Repositories. Those three name Bradley's repos and his own
+   * product's numbers, which is the same class of detail the boards are over —
+   * leaving them up would put the hidden work back on the page sideways.
+   */
+  statusOnly?: boolean;
 }
 
 /** A grey label with a large light number, Steam's sidebar stat row. */
@@ -70,6 +77,7 @@ export default function Sidebar({
   contributions,
   languages,
   lastPush,
+  statusOnly = false,
 }: SidebarProps) {
   const { stats } = snapshot;
   const now = Date.parse(snapshot.fetchedAt);
@@ -146,7 +154,7 @@ export default function Sidebar({
         someone else's API. Absent entirely when the endpoint isn't configured
         or is down — never a placeholder number.
       */}
-      {deveval && (
+      {!statusOnly && deveval && (
         <section className="panel px-5 py-5">
           <div className="flex items-baseline justify-between gap-2">
             <h2 className="text-[17px] font-normal leading-tight text-bright">
@@ -177,7 +185,7 @@ export default function Sidebar({
         </section>
       )}
 
-      {langs.length > 0 && (
+      {!statusOnly && langs.length > 0 && (
         <section className="panel px-5 py-5">
           <div className="stat-row">
             <span className="stat-label">Languages</span>
@@ -204,6 +212,14 @@ export default function Sidebar({
         </section>
       )}
 
+      {/*
+        Links stays up under the privacy screen, unlike the three blocks above
+        it. It isn't hidden work — it's LinkedIn, Devpost and an email address,
+        all of them places Bradley is already public. Removing it would only
+        strand someone who came to get in touch, and the header's Message
+        button exposes the same address anyway, so hiding this panel would
+        cost the visitor something and conceal nothing.
+      */}
       <section className="panel px-5 py-5">
         <div className="stat-row">
           <span className="stat-label">Links</span>

@@ -106,6 +106,23 @@ export const githubUsername: string = "brad945";
  */
 export const siteOrigin = "https://www.bradleytsou.com";
 
+/**
+ * Temporary privacy screen. **Flip to `false` to bring the whole page back** —
+ * that's the only edit needed, and nothing else in the repo was removed.
+ *
+ * While it's on, a visitor to bradleytsou.com gets the nav, the profile header
+ * and the GitHub status block, and `BoardedUp` stands in for Favorite Project,
+ * Experience and Recent Activity.
+ *
+ * The hidden sections are **not rendered**, not hidden with CSS. That's the
+ * difference between a privacy screen and a curtain: `display: none` still
+ * ships every repo name, commit count and role into the HTML source, where
+ * View Source finds them in one keystroke. Nothing behind the boards reaches
+ * the browser at all — and `page.tsx` skips the fetches that feed them, so
+ * they aren't requested from GitHub either.
+ */
+export const privacyScreen = true;
+
 export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */

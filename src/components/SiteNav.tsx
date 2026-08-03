@@ -20,7 +20,24 @@ const LINKS = [
   { label: "Activity", href: "#activity-heading" },
 ];
 
-export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
+export default function SiteNav({
+  stats,
+  privacyScreen = false,
+}: {
+  stats: GitHubStats | null;
+  /** Drops the nav items whose sections are behind the boards. */
+  privacyScreen?: boolean;
+}) {
+  /*
+   * Experience and Activity are removed rather than disabled while the privacy
+   * screen is up. Their headings aren't rendered, so those hrefs would be
+   * anchors to ids that don't exist — they'd silently do nothing on click,
+   * which is precisely the dead-tab chrome this nav exists not to be.
+   */
+  const links = privacyScreen
+    ? LINKS.filter((link) => link.href === "#profile")
+    : LINKS;
+
   return (
     <nav className="bg-chrome">
       {/*
@@ -55,7 +72,7 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
         </a>
 
         <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
