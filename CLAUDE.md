@@ -394,17 +394,21 @@ alternative for each.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents are one set, not three picks**: `berkeley` #a5bbd4,
-  `medimpact` #bf98e1, `deveval` #a5d4cd. Each keeps its org's hue
-  (212 / 272 / 171deg) and all three share L=74%. Saturation was 35%
-  across the set — the background's own 34.9% — until Bradley asked for
-  MedImpact to read more purple, so **that one alone runs S=55%** and is
-  the deliberate break in the family. Watch this axis: the accents ran
-  60/65/76% before the harmonising pass and read as highlighters, text
-  twice as chromatic as the page it sits on. To pull MedImpact back, 45%
-  is #bf9fdb and the old matched 35% is #bea5d4 — don't instead raise the
-  other two. Raw brand colours can't be used (Berkeley's #003262 is
-  1.16:1 here, MedImpact's #250644 is 1.18:1); these are tints on purpose.
+- **Bio-line accents**: `berkeley` #a5bbd4, `medimpact` #c084f5,
+  `deveval` #a5d4cd. Each keeps its org's hue (212 / 272 / 171deg) and
+  all three share L=74%. Berkeley and DevEval also share S=35%, the
+  background's own 34.9%, which is what keeps them quiet.
+  **MedImpact is deliberately outside that** — Bradley asked twice for it
+  to read more purple, so it runs **S=85%** and is meant to stand out.
+  That's above the 60/65/76% the whole set ran before the harmonising
+  pass, which read as highlighters; it holds only because it's one line
+  against a quiet ground. **Don't raise the other two to match** — that's
+  the change that brings the highlighter problem back. Ladder down if
+  it's ever pulled in: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35%
+  #bea5d4. It's also the weakest for contrast (5.59:1 vs 7.57 and 9.17),
+  so don't darken it either: L=70 is 4.75:1 and L=66 fails at 4.05:1.
+  Raw brand colours can't be used (Berkeley's #003262 is 1.16:1 here,
+  MedImpact's #250644 is 1.18:1); these are tints on purpose.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 

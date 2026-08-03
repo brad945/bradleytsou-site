@@ -41,18 +41,26 @@ const tokens = {
    * makes them a family.
    *
    * Saturation was 35% across all three — the background's own 34.9% — until
-   * Bradley asked for MedImpact to read more purple, so that one alone now
-   * runs **S=55%** against the other two's 35%. It's the one deliberate break
-   * in the set, and it's the axis to watch: the accents ran 60/65/76% before
-   * the harmonising pass and read as highlighters, text twice as chromatic as
-   * the page it sat on. 55 is the loudest of the three by some way and sits
-   * within sight of that. If it ever needs pulling back, 45% (#bf9fdb) is
-   * halfway home; if the whole set is ever relevelled, take it back to 35%
-   * (#bea5d4) rather than raising the other two.
+   * Bradley asked for MedImpact to read more purple, twice. That one alone now
+   * runs **S=85%** against the other two's 35%, so it is no longer really in
+   * the family: it's the one line that's meant to stand out, by request, and
+   * both asks were unambiguous.
+   *
+   * This is past where the harmonising pass drew the line. The accents ran
+   * 60/65/76% before that pass and read as highlighters — text more chromatic
+   * than the page it sits on — and 85 is above all three of those. The reason
+   * it holds anyway is that it's *one* line rather than the whole set, so
+   * there's still a quiet ground to be loud against. Don't raise the other two
+   * to match; that's the change that would bring the highlighter problem back.
+   * The ladder down, if it ever wants pulling in: 75% #c08bee, 65% #c092e8,
+   * 55% #bf98e1 (where it just was), 35% #bea5d4 (the matched original).
    *
    * Contrast on `hero` #1b2838: Berkeley 7.57:1, DevEval 9.17:1, MedImpact
-   * 6.25:1 — saturation costs contrast, so the loudest is also the weakest,
-   * though all three clear AA comfortably.
+   * 5.59:1 — saturation costs contrast, so the loudest is the weakest. Still
+   * comfortably past AA's 4.5:1, and past AAA's 4.5 for large text, but it's
+   * the one with the least room left. Going much below L=74 is what would
+   * actually threaten it: at L=70 this hue drops to 4.75:1 and at L=66 to
+   * 4.05:1, which fails.
    *
    * Their brand colours can't be used raw: Berkeley's #003262 is 1.16:1 here
    * and MedImpact's #250644 is 1.18:1 — both the background's own hue family
@@ -60,7 +68,7 @@ const tokens = {
    */
   berkeley: "#a5bbd4",
   deveval: "#a5d4cd",
-  medimpact: "#bf98e1",
+  medimpact: "#c084f5",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */
