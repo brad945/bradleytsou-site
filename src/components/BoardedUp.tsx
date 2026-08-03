@@ -26,7 +26,7 @@ export default function BoardedUp() {
         `uppercase`; the string stays sentence case so it reads normally
         anywhere the markup is read as text.
       */}
-      <p className="font-sign text-[52px] leading-none tracking-[0.06em] text-accent sm:text-[64px]">
+      <p className="font-sign text-[52px] leading-none tracking-[0.06em] text-bright sm:text-[64px]">
         Coming soon
       </p>
     </div>
