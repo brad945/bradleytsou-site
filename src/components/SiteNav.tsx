@@ -110,35 +110,47 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
             avatar off the middle line, as Bradley asked, without nudging them
             with a margin that would have to be retuned if the balance moved.
           */
-          <div className="flex flex-col items-end gap-1">
-            <a
-              href={stats.profileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 text-[13px] text-copy/70 transition-colors hover:text-bright"
-            >
-              <span>{stats.login}</span>
-              {stats.avatarUrl && (
-                <Image
-                  src={stats.avatarUrl}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="h-6 w-6 object-cover"
-                  unoptimized
-                />
-              )}
-            </a>
-
+          <a
+            href={stats.profileUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="group flex items-center gap-2"
+          >
             {/*
-              Hardcoded, and the only figure on this page that is. Everything
-              else is fetched — there's no account here to have a balance, so
-              this is Steam's chrome reproduced rather than data. Kept in
-              profile-data with that noted, so it reads as a deliberate prop
-              and not a number someone forgot to wire up.
+              The login and the balance stack in their own column, with the
+              avatar beside the pair rather than above it — so the balance sits
+              under the *name*, and the avatar spans both lines. That's Steam's
+              arrangement, and it's why this can't just be a flex-col around
+              the whole link.
             */}
-            <span className="text-[13px] text-link/80">{accountBalance}</span>
-          </div>
+            <span className="flex flex-col items-end leading-tight">
+              <span className="text-[13px] text-copy/70 transition-colors group-hover:text-bright">
+                {stats.login}
+              </span>
+              {/*
+                Hardcoded, and the only figure on this page that is. Everything
+                else is fetched — there's no account here to have a balance, so
+                this is Steam's chrome reproduced rather than data. Kept in
+                profile-data with that noted, so it reads as a deliberate prop
+                and not a number someone forgot to wire up.
+
+                Grey rather than link-blue: it isn't a link, and colouring it
+                like one implied a wallet page to click through to.
+              */}
+              <span className="text-[12px] text-muted">{accountBalance}</span>
+            </span>
+
+            {stats.avatarUrl && (
+              <Image
+                src={stats.avatarUrl}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6 shrink-0 object-cover"
+                unoptimized
+              />
+            )}
+          </a>
         )}
       </div>
     </nav>

@@ -123,7 +123,7 @@ export const siteOrigin = "https://www.bradleytsou.com";
  * Kept here rather than inline in `SiteNav` so it can't be mistaken for
  * something that was meant to be wired up and never was.
  */
-export const accountBalance = "$0.67";
+export const accountBalance = "$0.01";
 
 export const profile = {
   name: "Bradley Tsou",
