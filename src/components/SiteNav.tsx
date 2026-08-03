@@ -140,13 +140,19 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
               <span className="text-[12px] text-muted">{accountBalance}</span>
             </span>
 
+            {/*
+              32px, up from 24. It now has two lines of text beside it — the
+              login and the balance — and at 24 it was shorter than the pair it
+              sits against, which read as undersized rather than compact.
+              Requested at 40 in `width`/`height` so it stays sharp at 2x.
+            */}
             {stats.avatarUrl && (
               <Image
                 src={stats.avatarUrl}
                 alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6 shrink-0 object-cover"
+                width={64}
+                height={64}
+                className="h-8 w-8 shrink-0 object-cover"
                 unoptimized
               />
             )}
