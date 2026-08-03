@@ -1,7 +1,7 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { profile, socials, techStack } from "@/lib/profile-data";
+import { profile, projects, socials, techStack } from "@/lib/profile-data";
 import {
   SOCIAL_ICONS,
   type SocialIconName,
@@ -109,6 +109,11 @@ export default function Sidebar({
             see his private repos. The shorter label reads as a total it isn't.
           */}
           <Stat label="Repos" value={stats?.publicRepos ?? "—"} />
+          {/*
+            Counted from the `projects` array, so it can't drift from the
+            showcase below — the two read the same list.
+          */}
+          <Stat label="Projects" value={projects.length} />
           {!!stats?.following && (
             <Stat label="Following" value={stats.following} />
           )}
@@ -147,6 +152,22 @@ export default function Sidebar({
             </span>
           </div>
         )}
+
+        {/*
+          Two rows with no number yet, shown as an em-dash rather than a zero.
+
+          "Comments 0" would be a claim — that the count was fetched and came
+          back empty — when in fact nothing counts them: giscus isn't wired
+          into the page yet (see components/Comments.tsx). The dash says the
+          row exists and the number doesn't, which is the truth. Same for
+          Artwork, which has no source at all.
+
+          Wire each to a real count when there is one — `Stat` already renders
+          nothing but the label if the value is null, so passing the number is
+          the whole change.
+        */}
+        <Stat label="Comments" value="—" />
+        <Stat label="Artwork" value="—" />
       </section>
 
       {/*
