@@ -544,7 +544,7 @@ export function monogram(name: string): string {
  * was. But note what it costs: unlike everything else on the page, nothing
  * derives or checks this. See the note in CLAUDE.md.
  */
-export const profileLevel = 20;
+export const profileLevel = 26;
 
 /**
  * Years of Experience — full years since `codingSince`. Drives that card

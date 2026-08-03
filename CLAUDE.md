@@ -14,7 +14,7 @@ is real, not decorative:
   different numbers now, as they are on Steam, where level comes from
   badge XP and has nothing to do with account age. Years of Experience is
   derived from `profile.codingSince` and picks its own badge art.
-  **`profileLevel` (20) is hand-set** — nothing derives or checks it, so
+  **`profileLevel` (26) is hand-set** — nothing derives or checks it, so
   it joins `codingSince` and the badge dates on the list of values that
   can't self-correct. Bradley asked for it directly
 - Favorite Project = Steam's "Favorite Game" slot, given to the highest-
