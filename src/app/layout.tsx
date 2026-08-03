@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, JetBrains_Mono, Open_Sans } from "next/font/google";
+import { Gabarito, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { profile, siteOrigin } from "@/lib/profile-data";
 
@@ -34,16 +34,26 @@ const mono = JetBrains_Mono({
  *
  * Deliberately outside the page's own typography, which is one family at light
  * weights with no tracked capitals — the rules that make the rest of this read
- * as Steam. A hoarding over the profile isn't part of that page, so it gets a
- * poster face; it would be wrong anywhere else here, and `font-sign` exists so
+ * as Steam. A hoarding over the profile isn't part of that page, so it gets its
+ * own face; it would be wrong anywhere else here, and `font-sign` exists so
  * that stays visible at the call site.
  *
- * Bebas Neue ships one weight (400) and is caps-only by design, so there is no
- * weight axis to get wrong and no lowercase to fall back to.
+ * **This is a stand-in for BB Casual Pro Medium, which Bradley asked for and
+ * the site cannot load.** BB Casual is Bold Studio's, sold per-licence through
+ * MyFonts and Fontspring — serving it needs a paid *webfont* licence, and a
+ * desktop licence for design work doesn't cover embedding. Same wall as Motiva
+ * Sans above. If that licence is ever bought, drop the .woff2 in and swap this
+ * for `next/font/local`; don't point an @font-face at a copy from a free-font
+ * aggregator, which is what those sites almost always are.
+ *
+ * Gabarito is the closest free face: a contemporary geometric sans with real
+ * stroke modulation rather than the dead-even strokes of Outfit or Poppins,
+ * which is the trait BB Casual is built around. It carries a true Medium, so
+ * the weight Bradley named survives the substitution.
  */
-const sign = Bebas_Neue({
+const sign = Gabarito({
   subsets: ["latin"],
-  weight: "400",
+  weight: "500",
   variable: "--font-sign",
   display: "swap",
 });

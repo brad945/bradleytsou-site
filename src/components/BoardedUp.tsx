@@ -17,16 +17,17 @@ export default function BoardedUp() {
   return (
     <div className="mt-3 flex h-[220px] items-center justify-center rounded-panel bg-base">
       {/*
-        `font-sign` is Bebas Neue, loaded in layout.tsx for this one element.
-        It's a poster face and would be wrong anywhere else on the page — the
-        site's own type is one family at light weights with no tracked capitals
-        — but a hoarding isn't part of that page.
+        `font-sign` is Gabarito Medium, loaded in layout.tsx for this one
+        element — a free stand-in for BB Casual Pro Medium, which needs a paid
+        webfont licence. See the note there before changing it.
 
-        The face is caps-only, so "Coming soon" renders as capitals without
-        `uppercase`; the string stays sentence case so it reads normally
-        anywhere the markup is read as text.
+        Tracking is near-zero, not the 0.06em this carried under Bebas. That
+        was there because Bebas is caps-only and tightly fitted; Gabarito has
+        lowercase and normal sidebearings, so the same value would space it
+        out. Which also means the line renders sentence case now rather than
+        the all-caps Bebas forced.
       */}
-      <p className="font-sign text-[52px] leading-none tracking-[0.06em] text-bright sm:text-[64px]">
+      <p className="font-sign text-[52px] leading-none tracking-[-0.01em] text-bright sm:text-[64px]">
         Coming soon
       </p>
     </div>
