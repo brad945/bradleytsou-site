@@ -381,7 +381,19 @@ export const projects: Project[] = [
     kind: "Software",
     blurb: "Hierarchical RL system that orchestrates multi-agent teams.",
     rarity: "side",
-    tags: ["Python", "Reinforcement Learning", "Multi-agent"],
+    /*
+     * Sharpened from ["Reinforcement Learning", "Multi-agent"], which undersold
+     * what the blurb right above already says: hierarchical RL orchestrating
+     * agent teams is a specific thing, and the generic pair could describe any
+     * paper. These tags feed the Tech Stack panel, so the panel gets the
+     * sharper claim too.
+     */
+    tags: [
+      "Python",
+      "Hierarchical RL",
+      "Multi-agent Orchestration",
+      "Subagent Delegation",
+    ],
     href: undefined,
     repo: "https://github.com/ronoktanvir/Orca",
     period: "2026",
