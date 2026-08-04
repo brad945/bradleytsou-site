@@ -14,23 +14,34 @@ import BtMark from "@/components/BtMark";
  * and a nav of hrefs that go nowhere is the fake chrome the site avoids.
  * They target the section headings, so they break if those ids are renamed.
  */
-const LINKS = [
+/**
+ * One ordered list rather than links-then-placeholders, so position and
+ * readiness are independent: "About" is a placeholder but belongs second, next
+ * to Profile, not shunted to the end with the others.
+ *
+ * An entry **without** `href` renders as dim plain text, not an anchor. A nav
+ * of hrefs going nowhere is the fake chrome this site exists not to be, and an
+ * `href="#"` that silently does nothing on click is worse than something that
+ * visibly isn't ready — those carry a `title` saying so.
+ *
+ * Giving an entry an href is the whole change when its section lands.
+ */
+const NAV_ITEMS: { label: string; href?: string }[] = [
   { label: "Profile", href: "#profile" },
+  /*
+   * No href on purpose. The obvious one is `#profile`, but Profile already
+   * points there — two items scrolling to the same place is worse than one
+   * that visibly isn't built. Point it at an About section's heading id when
+   * there is one.
+   */
+  { label: "About" },
   { label: "Experience", href: "#experience-heading" },
   { label: "Activity", href: "#activity-heading" },
+  { label: "Chat" },
+  { label: "Socials" },
+  { label: "Games" },
+  { label: "Misc" },
 ];
-
-/**
- * Placeholders, at Bradley's request — sections that don't exist yet.
- *
- * Rendered as plain text, **not as anchors**. A nav of hrefs going nowhere is
- * the fake chrome this site exists not to be, and an `href="#"` that silently
- * does nothing on click is worse than something that visibly isn't ready. They
- * sit dimmer than the real items and carry a `title` saying so.
- *
- * Move an entry into `LINKS` with a real href the day its section lands.
- */
-const PLACEHOLDER_LINKS = ["Chat", "Socials", "Games", "Misc"];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
   return (
@@ -75,26 +86,24 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           (which would let the items slide under the user block when narrow).
         */}
         <ul className="flex flex-1 flex-wrap items-center justify-center gap-x-5 gap-y-1">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-[12px] uppercase tracking-[0.08em] text-copy/70 transition-colors hover:text-bright"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-
-          {/* Not anchors — see PLACEHOLDER_LINKS. */}
-          {PLACEHOLDER_LINKS.map((label) => (
-            <li key={label}>
-              <span
-                title={`${label} — coming soon`}
-                className="cursor-default text-[12px] uppercase tracking-[0.08em] text-copy/30"
-              >
-                {label}
-              </span>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.label}>
+              {item.href ? (
+                <a
+                  href={item.href}
+                  className="text-[12px] uppercase tracking-[0.08em] text-copy/70 transition-colors hover:text-bright"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                /* Not an anchor — see NAV_ITEMS. */
+                <span
+                  title={`${item.label} — coming soon`}
+                  className="cursor-default text-[12px] uppercase tracking-[0.08em] text-copy/30"
+                >
+                  {item.label}
+                </span>
+              )}
             </li>
           ))}
         </ul>
