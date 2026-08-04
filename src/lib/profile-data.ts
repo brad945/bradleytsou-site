@@ -202,7 +202,17 @@ export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 export const roles: Role[] = [
   {
     org: "MedImpact Healthcare Systems",
-    tags: ["Applied AI", "Cybersecurity", "IT Operations"],
+    /*
+     * "HIPAA / PHI" is a competency, not a tool, and it's here rather than in
+     * `EVIDENCED_STACK` because it's true *of this role* — MedImpact is a
+     * pharmacy-benefits company, so the sensitive-data work is the job, not a
+     * side note. Tagging it on the role is what puts it in the Tech Stack
+     * panel; the panel only ever shows things attached to real work.
+     *
+     * Named with both terms deliberately: "HIPAA" is what a recruiter filters
+     * on, "PHI" is what an engineer recognises.
+     */
+    tags: ["Applied AI", "Cybersecurity", "HIPAA / PHI", "IT Operations"],
     title: "Applied AI & Software Engineer Intern",
     start: "May 2026",
     location: "San Diego, CA",
