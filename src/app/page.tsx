@@ -9,6 +9,10 @@ import Sidebar from "@/components/Sidebar";
 // See components/Comments.tsx.
 // import Comments from "@/components/Comments";
 
+// Parked until the sprite frames exist in public/exy/ — without them he'd
+// render as broken images. See components/Exy.tsx for the file list.
+// import Exy from "@/components/Exy";
+
 import { getDevEvalStats } from "@/lib/deveval";
 import {
   getContributions,
@@ -96,6 +100,10 @@ export default async function Home() {
         </footer>
 
         <AutoRefresh intervalSeconds={REVALIDATE_SECONDS} />
+
+        {/* Sits outside the column on purpose — he walks the whole viewport,
+            not just the centred block. Uncomment with the import above. */}
+        {/* <Exy /> */}
       </main>
     </>
   );
