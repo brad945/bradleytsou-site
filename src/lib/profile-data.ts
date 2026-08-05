@@ -135,7 +135,6 @@ export const profile = {
   taglineLink: {
     linkText: "UC Berkeley",
     href: "https://www.berkeley.edu",
-    className: "text-berkeley",
   },
   location: "San Jose, California",
   /**
@@ -152,17 +151,11 @@ export const profile = {
   currentFocus: [
     {
       text: "AI and Software Engineer Intern @ MedImpact",
-      className: "text-medimpact",
       linkText: "MedImpact",
       href: "https://www.medimpact.com",
     },
-    /*
-     * Class written out in full, never built by interpolation — Tailwind's
-     * scanner reads these files as text and can't see a composed name.
-     */
     {
       text: "Founding Engineer @ DevEval",
-      className: "text-deveval",
       linkText: "DevEval",
       href: "https://deveval.com",
     },

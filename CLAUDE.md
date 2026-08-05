@@ -381,11 +381,8 @@ undone here). If it's ever wanted again the values were: `base` #c2c7ce,
 `muted` #616b76, `accent` #945e09, `live` #12784a, `link` #0f5f96, and
 the starfield dots as `rgba(30,45,66,…)`.
 
-**The two bio colours swap legibility with the theme, every time.** On
-dark, `deveval` #58e8d2 is 9.87:1 and `medimpact` #470788 is 1.18:1. On
-light it was the reverse. Both are Bradley's chosen hexes and are kept as
-given; the notes in the config carry the numbers and a working
-alternative for each.
+**The bio lines are white now**, so the theme-swap legibility problem the
+accents used to have is moot while they stay unused.
 
 - `base` #000000 (page), `hero` #1b2838 (the centred column)
 - `panel` #131c27, `panel2` #0e141c, `line` #323e4c
@@ -394,36 +391,18 @@ alternative for each.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents**: `berkeley` #fdcf17, `medimpact` #c084f5,
-  `deveval` #60ebdb. They began as a harmonised set (shared L=74% and
-  S=35%, the background's own 34.9%, differing only in hue). Two of
-  Bradley's requests have moved two of them out of it, so what's left of
-  the rule is: **DevEval is the quiet ground the other two are loud
-  against.** Don't "restore consistency" — the set ran 60/65/76%
-  saturation before the harmonising pass and read as highlighters.
-  - `deveval` hsl(173,78,65) — asked for "more teal" twice. The first pass
-    moved the hue toward 180 and that was wrong: **180 is cyan.** Teal is
-    ~170-175 at high saturation and mid lightness (Tailwind teal-300 is
-    hsl(171,77,64)). So hue is back near where it started and the work is
-    done by saturation 35 -> 78 and lightness 74 -> 65. Bluer from here
-    reads as more cyan, not more teal. This also broke the shared L=74%,
-    so the three accents now have nothing in common.
-  - `medimpact` hsl(272,85,74) — "more purple" asked twice. Ladder back
-    down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
-  - `berkeley` is California Gold rotated toward yellow at Bradley's
-    request — hue 41 -> 48, published saturation and lightness (98/54).
-    It was briefly the published #fdb515 exactly, and the reason it
-    *could* be still matters: Berkeley Blue #003262 is 1.16:1 here and
-    MedImpact's #250644 is 1.18:1, both lost in the background's own hue
-    family and so forced to be tints, whereas gold needs no lightening
-    against a dark blue page. Back down the hue to pull it in — 45deg
-    #fdc317, 41deg #fdb515 as published. 60deg is pure yellow and reads
-    as highlighter.
-  - Contrast on `hero`: Berkeley 10.03:1, DevEval 10.24:1, MedImpact
-    5.59:1. MedImpact is the one to watch — L=70 is 4.75:1, L=66 fails
-    at 4.05:1. Gold's failure mode is the reverse: darkening is safe,
-    lightening washes it out; rotating toward yellow raises contrast, so
-    that direction is free.
+- **Bio-line accents are currently UNUSED**: `berkeley` #fdcf17,
+  `medimpact` #c084f5, `deveval` #60ebdb. The header bio is all
+  `bright` white — Bradley asked for the colours off, which took the
+  per-line `className` hook with them. The tokens are kept because the
+  values took several passes; the config comment carries the reasoning.
+  Three things worth not relearning if they return: gold is the one brand
+  colour usable raw here (Berkeley Blue #003262 is 1.16:1 on this column,
+  MedImpact's #250644 is 1.18:1 — both had to be tints); MedImpact is the
+  contrast risk at 5.59:1, and L=66 fails outright; and "more teal" means
+  more saturated and slightly darker, **not bluer** — 180 is cyan. The
+  trap is re-harmonising all three to a shared saturation, which is what
+  read as highlighters at 60/65/76%.
 - Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
   chrome only)
 

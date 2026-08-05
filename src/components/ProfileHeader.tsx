@@ -272,9 +272,17 @@ export default function ProfileHeader({
                   Measured in the browser — if a role title gets longer, check
                   it again rather than assuming there's room.
                 */
-                className={`max-w-[46ch] text-[17px] font-medium leading-snug [text-wrap:balance] ${
+                /*
+                  All three lines are white now. Each used to carry its org's
+                  colour via `line.className` — Berkeley gold, MedImpact purple,
+                  DevEval teal — and that per-line hook is gone with them, so
+                  the only way a line differs from its neighbours is its words.
+                  Restoring it means putting `className` back on the entries in
+                  profile-data and reading it here again.
+                */
+                className={`max-w-[46ch] text-[17px] font-medium leading-snug text-bright [text-wrap:balance] ${
                   i === 0 ? "mt-3.5" : "mt-2"
-                } ${"className" in line && line.className ? line.className : "text-copy"}`}
+                }`}
               >
                 {renderBioLine(line)}
               </p>

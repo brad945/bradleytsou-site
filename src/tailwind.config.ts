@@ -33,48 +33,27 @@ const tokens = {
   /** Link / heading blue. */
   link: "#66c0f4",
   /*
-   * The three bio-line colours. They began as one harmonised set — a shared
-   * L=74% and S=35%, the background's own 34.9%, differing only in hue — which
-   * is what stopped them reading as highlighters. Two of Bradley's requests
-   * have since moved two of them out of it, both deliberately, so what's left
-   * of the rule is: **DevEval is the quiet ground the other two are loud
-   * against.** Don't "restore consistency" by pulling the loud ones back or
-   * pushing DevEval out; the set ran 60/65/76% saturation before the
-   * harmonising pass and read as text more chromatic than its own page.
+   * The three bio-line colours — **currently unused.** Each line in the header
+   * bio carried its org's hue until Bradley asked for the whole bio in white,
+   * which took the per-line `className` hook with it.
    *
-   * - `deveval` #60ebdb — hsl(173, 78, 65). Two passes of "more teal", and the
- *   first went the wrong way: it moved the hue 171 -> 176, toward 180, on the
- *   reasoning that 180 is where teal sits. **180 is where cyan sits.** Teal is
- *   ~170-175 held at high saturation and mid lightness — Tailwind's teal-300
- *   is hsl(171, 77, 64), the same hue this started on. So the hue came back to
- *   173 and the move is saturation 60 -> 78 with lightness 74 -> 65. Going
- *   bluer from here makes it more cyan, not more teal.
- *
- *   This is also the accent that broke the shared L=74%, so that last thread
- *   of the original harmonised scheme is gone; the three now share nothing.
-   * - `medimpact` #c084f5 — hsl(272, 85, 74). Asked for "more purple" twice;
-   *   saturation is the only axis that delivers that at fixed lightness.
-   *   Ladder back down: 75% #c08bee, 65% #c092e8, 55% #bf98e1, 35% #bea5d4.
-   * - `berkeley` #fdcf17 — California Gold, rotated 7deg toward yellow.
+   * Kept rather than deleted because the values took several passes to land
+   * and the reasoning is worth not relearning:
    *
-   * That last one was briefly Berkeley's published #fdb515 exactly, and the
-   * reason it *could* be is worth keeping, because the rule elsewhere is the
-   * opposite: Berkeley Blue #003262 is 1.16:1 here and MedImpact's #250644 is
-   * 1.18:1, both lost in the background's own hue family, so both had to
-   * become tints. Gold has the opposite relationship to a dark blue page and
-   * needs no lightening at all. Bradley then asked for yellower, so this is
-   * hue 41 -> 48 at the published saturation and lightness (98/54) — off the
-   * brand hex now, but by hue alone, which is the axis he asked about. 60deg
-   * is pure yellow and reads as highlighter rather than gold; back down the
-   * hue if it ever wants pulling in, 45deg #fdc317, 41deg #fdb515 as
-   * published.
+   * - `berkeley` #fdcf17 is California Gold rotated 7deg toward yellow. It's
+   *   the one brand colour that works raw here — Berkeley Blue #003262 is
+   *   1.16:1 on this column and MedImpact's #250644 is 1.18:1, both lost in
+   *   the background's own hue family, so those had to be tints.
+   * - `medimpact` #c084f5 is hsl(272, 85, 74) — "more purple", asked twice.
+   *   It was the contrast risk of the set at 5.59:1; L=70 is 4.75:1 and L=66
+   *   fails outright at 4.05:1.
+   * - `deveval` #60ebdb is hsl(173, 78, 65). "More teal" means more saturated
+   *   and slightly darker, NOT bluer — 180 is where cyan sits, and a pass that
+   *   moved the hue that way is why it had to be asked twice.
    *
-   * Contrast on `hero` #1b2838: Berkeley 10.03:1, DevEval 10.24:1, MedImpact
-   * 5.59:1. Saturation costs contrast, so MedImpact is the weakest and is the
-   * one to watch — at L=70 that hue is 4.75:1 and at L=66 it fails at 4.05:1.
-   * Gold's failure mode is the reverse: it's bright, so darkening is safe and
-   * lightening is what would wash it out. Rotating toward yellow *raises*
-   * contrast, so this direction is free.
+   * If they ever come back: the trap is re-harmonising all three to a shared
+   * saturation. They ran 60/65/76% once and read as highlighters — text more
+   * chromatic than the page it sat on.
    */
   berkeley: "#fdcf17",
   deveval: "#60ebdb",
