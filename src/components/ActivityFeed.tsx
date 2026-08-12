@@ -34,6 +34,19 @@ function shortDate(iso: string): string {
 }
 
 /**
+ * How many repos the panel shows.
+ *
+ * Sliced here rather than trimmed out of `featuredRepos`, because that list
+ * also drives the sidebar's repo block and the `ghRepo` lookups behind the
+ * Experience rows — dropping an entry there would pull its data off the page
+ * in three places instead of shortening one panel.
+ *
+ * So a fourth repo added to `featuredRepos` still fetches and still appears
+ * elsewhere; it just doesn't show up here.
+ */
+const MAX_ROWS = 2;
+
+/**
  * A featured repo in Steam's "recently played" slot.
  *
  * **Every commit count is gone**, at Bradley's request: the per-row total, the
@@ -181,14 +194,14 @@ export default function ActivityFeed({
         {hasRows ? (
           <ul className="flex flex-col gap-3">
             {useFeatured
-              ? featured.map((repo) => (
+              ? featured.slice(0, MAX_ROWS).map((repo) => (
                   <FeaturedRepoRow
                     key={repo.nameWithOwner}
                     repo={repo}
                     now={now}
                   />
                 ))
-              : repos.map((repo) => (
+              : repos.slice(0, MAX_ROWS).map((repo) => (
                   <PublicRepoRow key={repo.id} repo={repo} now={now} />
                 ))}
           </ul>
