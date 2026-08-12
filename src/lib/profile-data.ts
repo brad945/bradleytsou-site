@@ -128,17 +128,20 @@ export const accountBalance = "$0.01";
 /**
  * Hackathon wins, for the sidebar row.
  *
- * Hand-set and **currently unknown** — `null` renders an em-dash rather than a
- * number. It replaced `projects.length` when the row was relabelled from
- * "Projects": that count is 3 because there are 3 entries in `projects`, which
- * says nothing about how many were won, and shipping it under the new label
- * would have been the page asserting a figure it hadn't measured.
+ * Hand-set, from Bradley directly.
  *
- * Devpost is the source of truth Bradley would check. Nothing here can fetch
- * it — Devpost has no public API — so this joins `profileLevel` and
- * `accountBalance` on the short list of values nothing verifies.
+ * It replaced `projects.length` when the row was relabelled from "Projects".
+ * That count is also 3, which makes this look like a no-op — it isn't. The old
+ * number counted entries in the `projects` array and would move the moment a
+ * fourth project was added, silently claiming a win that never happened. The
+ * two figures agreeing today is a coincidence, not a link.
+ *
+ * Devpost is the source of truth, and it has no public API, so nothing here
+ * can check this. It joins `profileLevel` and `accountBalance` on the short
+ * list of values that can't self-correct — win a fourth and this stays 3 until
+ * someone edits it.
  */
-export const hackathonWins: number | null = null;
+export const hackathonWins: number | null = 3;
 
 export const profile = {
   name: "Bradley Tsou",
