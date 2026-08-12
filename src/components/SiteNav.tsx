@@ -40,7 +40,6 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
   { label: "Chat" },
   { label: "Socials" },
   { label: "Play" },
-  { label: "Misc" },
 ];
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
