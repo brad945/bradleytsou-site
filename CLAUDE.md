@@ -350,7 +350,7 @@ class would stop emitting.
   grey surround — not the main/sidebar split inside it. Don't collapse it
   again.
 
-  Main column order: **Favorite Project, Experience, Recent Activity**.
+  Main column order: **Favorite Project, Recent Activity, Experience**.
   Contributions moved to the sidebar — as five short counts it never
   needed the main column's width. Comments import is commented out on purpose.
 - `src/app/layout.tsx` — fonts (next/font), metadata, and the two fixed

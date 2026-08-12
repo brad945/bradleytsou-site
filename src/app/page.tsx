@@ -79,8 +79,10 @@ export default async function Home() {
         <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
           <div className="flex min-w-0 flex-col gap-3">
             <FavoriteProject repo={favorite} />
-            <Experience featured={featured} />
+            {/* Activity above Experience: what he's working on now reads
+                before where he's been. */}
             <ActivityFeed snapshot={snapshot} featured={featured} />
+            <Experience featured={featured} />
             {/* <Comments /> */}
           </div>
 
