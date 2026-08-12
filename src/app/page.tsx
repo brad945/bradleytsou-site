@@ -78,11 +78,15 @@ export default async function Home() {
         */}
         <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
           <div className="flex min-w-0 flex-col gap-3">
-            <FavoriteProject repo={favorite} />
-            {/* Activity above Experience: what he's working on now reads
-                before where he's been. */}
+            {/*
+              Order: Activity, Experience, Favorite Project. Activity leads
+              because what he's working on now reads before where he's been,
+              and Favorite Project sits last as the closing note rather than
+              the opening one.
+            */}
             <ActivityFeed snapshot={snapshot} featured={featured} />
             <Experience featured={featured} />
+            <FavoriteProject repo={favorite} />
             {/* <Comments /> */}
           </div>
 
