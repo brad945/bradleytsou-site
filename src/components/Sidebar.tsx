@@ -159,14 +159,14 @@ export default function Sidebar({
           back empty — when in fact nothing counts them: giscus isn't wired
           into the page yet (see components/Comments.tsx). The dash says the
           row exists and the number doesn't, which is the truth. Same for
-          Artwork, which has no source at all.
+          Artwork / Portfolio, which has no source at all.
 
           Wire each to a real count when there is one — `Stat` already renders
           nothing but the label if the value is null, so passing the number is
           the whole change.
         */}
         <Stat label="Comments" value="—" />
-        <Stat label="Artwork" value="—" />
+        <Stat label="Artwork / Portfolio" value="—" />
       </section>
 
       {/*
