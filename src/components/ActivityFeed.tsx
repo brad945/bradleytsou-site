@@ -36,13 +36,16 @@ function shortDate(iso: string): string {
 /**
  * A featured repo in Steam's "recently played" slot.
  *
- * Commits in the last two weeks is the direct analogue of the hours-past-2-weeks
- * figure Steam puts here. It's shown as a plain number: an earlier version drew
- * a bar scaled against whichever featured repo was busiest, which is an
- * arbitrary comparison that conveys nothing — decoration dressed as data.
+ * **Every commit count is gone**, at Bradley's request: the per-row total, the
+ * "commits past 2 weeks" strip, and the panel-bar sum that was the analogue of
+ * Steam's hours-past-2-weeks. A row is now the repo, its language, when it was
+ * last pushed, and its description.
  *
- * The headline commit count is author-scoped, so it's this person's work
- * rather than the repo's. Private repos aren't linked — a visitor gets a 404.
+ * `myCommits` and `myCommitsPast2Weeks` are still fetched and still on
+ * `FeaturedRepo` — nothing was removed from the data layer, so putting any of
+ * it back is a render change only.
+ *
+ * Private repos aren't linked — a visitor gets a 404.
  */
 function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
   const title = repo.isPrivate ? (
@@ -84,11 +87,9 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
               )}
             </span>
             <div className="t-meta text-right leading-tight">
-              <p>
-                {repo.myCommits.toLocaleString()}{" "}
-                {repo.myCommits === 1 ? "commit" : "commits"}
-                {repo.language ? ` · ${repo.language}` : ""}
-              </p>
+              {/* Commit count removed at Bradley's request; the language
+                  was sharing this line and stays. */}
+              {repo.language && <p>{repo.language}</p>}
               <p>
                 last pushed on {shortDate(repo.pushedAt)} ·{" "}
                 {relativeTime(repo.pushedAt, now)} ago
@@ -102,19 +103,6 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
             </p>
           )}
 
-          {/*
-            Only shown when there is recent activity. A row reading
-            "Commits past 2 weeks: 0" is noise — and because the count is live,
-            the strip reappears by itself on the next commit.
-          */}
-          {repo.myCommitsPast2Weeks > 0 && (
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-panel2/50 px-2.5 py-2">
-              <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="text-[17px] font-light leading-none text-ink">
-                {repo.myCommitsPast2Weeks}
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </li>
@@ -165,15 +153,6 @@ function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
               {repo.description}
             </p>
           )}
-
-          {repo.commitsPast2Weeks > 0 && (
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 bg-panel2/50 px-2.5 py-2">
-              <span className="t-label text-copy">Commits past 2 weeks</span>
-              <span className="text-[17px] font-light leading-none text-ink">
-                {repo.commitsPast2Weeks}
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </li>
@@ -188,15 +167,6 @@ export default function ActivityFeed({
   const now = Date.parse(fetchedAt);
   const useFeatured = featured.length > 0;
 
-  /*
-   * The header count is summed from the rows on screen. The snapshot's own
-   * eventsPast2Weeks only counts *public* events, which for a mostly-private
-   * account reads as near-zero and badly understates the work.
-   */
-  const commitsPast2Weeks = useFeatured
-    ? featured.reduce((sum, repo) => sum + repo.myCommitsPast2Weeks, 0)
-    : repos.reduce((sum, repo) => sum + repo.commitsPast2Weeks, 0);
-
   const hasRows = useFeatured || repos.length > 0;
 
   return (
@@ -205,10 +175,6 @@ export default function ActivityFeed({
         <h2 id="activity-heading" className="panel-bar-title">
           Recent Activity
         </h2>
-        <span className="panel-bar-meta">
-          {commitsPast2Weeks.toLocaleString()}{" "}
-          {commitsPast2Weeks === 1 ? "commit" : "commits"} past 2 weeks
-        </span>
       </div>
 
       <div className="flex flex-col gap-4 p-5">
