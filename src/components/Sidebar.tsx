@@ -1,7 +1,7 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { projects, socials, techStack } from "@/lib/profile-data";
+import { hackathonWins, socials, techStack } from "@/lib/profile-data";
 import {
   SOCIAL_ICONS,
   type SocialIconName,
@@ -110,10 +110,12 @@ export default function Sidebar({
           */}
           <Stat label="Repos" value={stats?.publicRepos ?? "—"} />
           {/*
-            Counted from the `projects` array, so it can't drift from the
-            showcase below — the two read the same list.
+            Was "Projects", counted from the `projects` array. The relabel
+            forced the value to change with it: 3 is how many entries that
+            array has, not how many were won, and leaving it would have made
+            the page state a figure it never measured. See `hackathonWins`.
           */}
-          <Stat label="Projects" value={projects.length} />
+          <Stat label="Hackathon Wins" value={hackathonWins ?? "—"} />
           {!!stats?.following && (
             <Stat label="Following" value={stats.following} />
           )}

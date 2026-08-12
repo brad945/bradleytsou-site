@@ -125,6 +125,21 @@ export const siteOrigin = "https://www.bradleytsou.com";
  */
 export const accountBalance = "$0.01";
 
+/**
+ * Hackathon wins, for the sidebar row.
+ *
+ * Hand-set and **currently unknown** — `null` renders an em-dash rather than a
+ * number. It replaced `projects.length` when the row was relabelled from
+ * "Projects": that count is 3 because there are 3 entries in `projects`, which
+ * says nothing about how many were won, and shipping it under the new label
+ * would have been the page asserting a figure it hadn't measured.
+ *
+ * Devpost is the source of truth Bradley would check. Nothing here can fetch
+ * it — Devpost has no public API — so this joins `profileLevel` and
+ * `accountBalance` on the short list of values nothing verifies.
+ */
+export const hackathonWins: number | null = null;
+
 export const profile = {
   name: "Bradley Tsou",
   /** Shown under the name, mono. */
