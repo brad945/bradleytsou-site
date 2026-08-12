@@ -38,7 +38,6 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
   { label: "Experience", href: "#experience-heading" },
   { label: "Activity", href: "#activity-heading" },
   { label: "Chat" },
-  { label: "Socials" },
   { label: "Play" },
 ];
 
