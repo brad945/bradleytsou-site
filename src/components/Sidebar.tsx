@@ -272,9 +272,14 @@ export default function Sidebar({
       )}
 
       <section className="panel px-5 py-5">
+        {/*
+          Heading only — the count is gone. It was `socials.length`, and with
+          the icons sitting directly beneath it a reader could just see how
+          many there were; the number restated something already visible, and
+          two of the six it counted aren't even linked yet.
+        */}
         <div className="stat-row">
           <span className="stat-label">Links</span>
-          <span className="stat-value">{socials.length}</span>
         </div>
         {/*
           A row of marks rather than a list of words.
