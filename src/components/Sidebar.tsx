@@ -120,7 +120,25 @@ export default function Sidebar({
           {!!stats?.publicGists && (
             <Stat label="Gists" value={stats.publicGists} />
           )}
-          <Stat label="Member Since" value={stats?.memberSince ?? "—"} />
+          {/*
+            "Building Since" counts from `profile.codingSince`, NOT from
+            `stats.memberSince` as it did when it was labelled "Member Since".
+            The label change forced the source change: memberSince is the year
+            the GitHub account was made (2023), which is a fine answer to "member
+            since" and the wrong one for "building since" — he'd been building
+            two years by then.
+
+            It also had to move because the Years of Experience card in the
+            header already counts from `codingSince`. Left on memberSince, the
+            page would have read "Building Since 2023" beside "5 Years of
+            Experience" and contradicted itself in two places a reader can see
+            at once.
+
+            Sliced rather than parsed: `new Date("2021-01-01").getFullYear()`
+            reads the string as UTC midnight and then answers in local time, so
+            it returns 2020 anywhere west of Greenwich.
+          */}
+          <Stat label="Building Since" value={profile.codingSince.slice(0, 4)} />
         </div>
 
         {/*
