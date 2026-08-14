@@ -119,11 +119,20 @@ const DUTY = 1 - Math.max(...PHASES);
 /**
  * Frames across `ACTIVE`.
  *
- * 90/sec rather than 60: rAF fires at the display's refresh rate, so a 120Hz
- * screen was being handed the same cached frame twice in a row. The cache
- * fills once, so more frames cost encodes at startup and nothing afterwards.
+ * **120 is the ceiling, and it's the display's, not ours.** Frames are handed
+ * out by `requestAnimationFrame`, which fires once per screen refresh — 120Hz
+ * at best on current hardware, 60 on most. Past 120 the index advances faster
+ * than rAF samples it, so the extra frames are encoded, cached, and never
+ * shown.
+ *
+ * Rendering isn't the limit: every frame at this rate rasterises distinct,
+ * checked by hashing all 84. Nor is cost — the cache fills once, so raising
+ * this buys encodes at startup and nothing afterwards.
+ *
+ * On a 60Hz screen half of these are skipped, which is no worse than a lower
+ * number would have been there.
  */
-const FPS = 90;
+const FPS = 120;
 const FRAMES = Math.round((ACTIVE / 1000) * FPS);
 
 /**
