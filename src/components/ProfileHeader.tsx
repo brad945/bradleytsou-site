@@ -332,6 +332,16 @@ export default function ProfileHeader({
                 {renderBioLine(line)}
               </p>
             ))}
+
+            {/*
+              Just the word, with room above it — the bio itself is Bradley's
+              to write and isn't written yet, so there's deliberately nothing
+              under this. It carries an id so the nav's About item has
+              something to point at the day it does.
+            */}
+            <h2 id="bio-heading" className="mt-8 text-[14px] text-copy">
+              Bio
+            </h2>
           </div>
         </div>
 
