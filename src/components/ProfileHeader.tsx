@@ -348,14 +348,29 @@ export default function ProfileHeader({
             size as the word — an earlier pass had it at 1.29x, which is what
             made it read as oversized.
           */}
-          <div className="flex items-center gap-[7px]">
-            <span className="text-[34px] font-light leading-none text-ink">
-              Level
+          {/*
+            The note wraps both the word and the circle, so hovering either
+            shows it — they're one thing, and a reader aiming at "26" shouldn't
+            get nothing.
+
+            `inline-flex` on the wrapper because `HoverNote` renders a span:
+            left as an inline box it would sit on a text baseline and add
+            descender space under a row that has no text in it.
+          */}
+          <HoverNote
+            align="left"
+            className="inline-flex"
+            note="This is my actual Steam account level."
+          >
+            <span className="flex items-center gap-[7px]">
+              <span className="text-[34px] font-light leading-none text-ink">
+                Level
+              </span>
+              <span className="flex h-[37px] w-[37px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
+                {profileLevel}
+              </span>
             </span>
-            <span className="flex h-[37px] w-[37px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
-              {profileLevel}
-            </span>
-          </div>
+          </HoverNote>
 
           {/*
             `{years}` is interpolated into the note rather than written as "5".
