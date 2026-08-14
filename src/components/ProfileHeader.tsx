@@ -168,9 +168,7 @@ export default function ProfileHeader({
    * that it falls back to the generated tile rather than a broken image.
    */
   const badge =
-    years >= 1 && years <= STEAM_BADGE_YEARS
-      ? `/steam-years-${years}.png`
-      : null;
+    years >= 1 && years <= STEAM_BADGE_YEARS ? `/steam-years-${years}.png` : null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. Nothing here overflows, so nothing needs clipping.
@@ -182,12 +180,11 @@ export default function ProfileHeader({
     <header id="profile" className="relative bg-hero">
       <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-5 sm:flex-row">
-            <div className="shrink-0">
-              {/* Static brushed-grey frame with a dark inner edge, per the
+        <div className="flex flex-col gap-5 sm:flex-row">
+          <div className="shrink-0">
+            {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
-              {/*
+            {/*
               Measured off the reference: side bands are 10.6% of the photo's
               width, top/bottom 6.1% of its height (76px and 43.5px against a
               720x717 photo) — a 1.75 ratio. On this 150px avatar that's
@@ -198,22 +195,22 @@ export default function ProfileHeader({
               left edges, dark on the bottom and right, with the photo sitting
               in a sunken well (the reverse) below it.
             */}
-              <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[15px] py-[8px]">
-                <div className="relative h-[150px] w-[150px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
-                  {/* The `profile.initials` fallback that used to sit here is
+            <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[15px] py-[8px]">
+              <div className="relative h-[150px] w-[150px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
+                {/* The `profile.initials` fallback that used to sit here is
                     gone with it: it existed because the GitHub avatar could
                     fail to resolve, and a local asset either ships or breaks
                     the build. `unoptimized` went too — it was there because
                     the source was a remote host. */}
-                  <Image
-                    src={avatar}
-                    alt={`${profile.name} avatar`}
-                    width={150}
-                    height={150}
-                    className="h-full w-full object-cover"
-                  />
+                <Image
+                  src={avatar}
+                  alt={`${profile.name} avatar`}
+                  width={150}
+                  height={150}
+                  className="h-full w-full object-cover"
+                />
 
-                  {/*
+                {/*
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
                   baked into the keyframes against this box's 148px padding
@@ -221,29 +218,29 @@ export default function ProfileHeader({
                   other, and the travel has to stay divisible by the step count
                   or the logo jitters. See the keyframes for why.
                 */}
-                  {/* will-change promotes each axis to its own layer, so a step
+                {/* will-change promotes each axis to its own layer, so a step
                     composites rather than repainting the SVG. */}
-                  <span
-                    className="pointer-events-none absolute left-0 top-0 animate-dvd-x will-change-transform"
-                    aria-hidden
-                  >
-                    <span className="block animate-dvd-y will-change-transform">
-                      <DvdLogo />
-                    </span>
+                <span
+                  className="pointer-events-none absolute left-0 top-0 animate-dvd-x will-change-transform"
+                  aria-hidden
+                >
+                  <span className="block animate-dvd-y will-change-transform">
+                    <DvdLogo />
                   </span>
-                </div>
+                </span>
               </div>
             </div>
+          </div>
 
-            <div className="min-w-0 flex-1">
-              <NameHistory name={profile.name} aliases={aliases} />
+          <div className="min-w-0 flex-1">
+            <NameHistory name={profile.name} aliases={aliases} />
 
-              {/*
+            {/*
               Handle, pronouns and location used to sit here as a mono strip.
               Removed at Bradley's request — the handle repeats the avatar and
               the nav, and the other two aren't what he wants read first.
             */}
-              {/*
+            {/*
               Sized up now that these two lines are the only thing under the
               name: at the old body size they read as a caption rather than as
               the point of the block. 17px with snug leading.
@@ -253,26 +250,12 @@ export default function ProfileHeader({
               splits it evenly whenever it does instead of leaving a one-word
               last line. A fixed ch cap would only ever fit today's text.
             */}
-              {/*
+            {/*
               One class for all three, so they read as one block. Size and
               weight already matched at 17/400; only the colour differed —
               the tagline was `copy` and the focus lines `muted`, which made
               the roles look like a footnote to the school.
             */}
-            </div>
-          </div>
-
-          {/*
-            The tagline and current roles, moved out from beside the name so
-            they run the full width of the identity column — under the avatar
-            as well as the name, rather than squeezed into the ~389px left
-            beside a 180px frame.
-
-            That extra room is why `max-w-[46ch]` stays: without a cap they'd
-            stretch to the column's full width and the block would stop reading
-            as a stack of related lines.
-          */}
-          <div>
             {[
               { text: profile.tagline, ...profile.taglineLink },
               ...profile.currentFocus,
