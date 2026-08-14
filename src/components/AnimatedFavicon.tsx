@@ -165,12 +165,32 @@ function drawMark(
 
 export default function AnimatedFavicon() {
   useEffect(() => {
-    const link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    /*
+     * Re-acquired rather than captured once.
+     *
+     * `AutoRefresh` calls `router.refresh()` every 300s, and a refresh can
+     * replace the head's icon link with a new element. Holding the original
+     * reference meant that after five minutes the animation was still running
+     * and still writing hrefs — to a node no longer in the document. The tab
+     * simply froze on its last frame, which is exactly what "it stops after a
+     * few minutes" looked like.
+     *
+     * `isConnected` is the cheap check for that: false the moment the node is
+     * detached, whatever detached it.
+     */
+    let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
     if (!link) return;
 
     // Restored whenever the animation stops, so the tab never sits on a
-    // half-drawn frame.
+    // half-drawn frame. Captured from the first element and reused, since a
+    // replacement carries the same static href.
     const staticHref = link.href;
+
+    function iconLink(): HTMLLinkElement | null {
+      if (link?.isConnected) return link;
+      link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+      return link;
+    }
 
     const canvas = document.createElement("canvas");
     canvas.width = SIZE;
@@ -235,7 +255,8 @@ export default function AnimatedFavicon() {
           url = canvas.toDataURL("image/png");
           FRAME_CACHE.set(key, url);
         }
-        if (link) link.href = url;
+        const el = iconLink();
+        if (el) el.href = url;
       }
 
       raf = requestAnimationFrame(frame);
@@ -252,7 +273,8 @@ export default function AnimatedFavicon() {
         stop();
         // A tab frozen mid-bounce reads as broken; the static mark reads as a
         // normal favicon.
-        if (link) link.href = staticHref;
+        const el = iconLink();
+        if (el) el.href = staticHref;
       } else if (raf === undefined) {
         raf = requestAnimationFrame(frame);
       }
@@ -264,7 +286,8 @@ export default function AnimatedFavicon() {
     return () => {
       stop();
       document.removeEventListener("visibilitychange", onVisibility);
-      if (link) link.href = staticHref;
+      const el = iconLink();
+      if (el) el.href = staticHref;
     };
   }, []);
 
