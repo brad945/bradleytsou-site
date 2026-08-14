@@ -372,7 +372,7 @@ export default function ProfileHeader({
           <HoverNote
             align="left"
             className="inline-flex"
-            note="This is my actual Steam account level."
+            note="This is my actual Steam account level"
           >
             <span className="flex items-center gap-[7px]">
               <span className="text-[34px] font-light leading-none text-ink">
@@ -393,7 +393,7 @@ export default function ProfileHeader({
           <HoverNote
             align="left"
             className="mt-4 block"
-            note={`Out of all the experience I've had in my life, I would say it averages out to about ${YEARS_IN_WORDS[years] ?? years} solid, genuine years.`}
+            note={`Out of all the experience Ive had in my life I would say it averages out to about ${YEARS_IN_WORDS[years] ?? years} solid genuine years`}
           >
             <div className="flex items-center gap-3 bg-panel2/70 p-3">
               {badge ? (
