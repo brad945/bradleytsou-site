@@ -8,6 +8,7 @@ import {
   experience,
   profile,
   profileLevel,
+  steamProfileUrl,
   type BioLine,
 } from "@/lib/profile-data";
 
@@ -421,6 +422,7 @@ export default function ProfileHeader({
               profileUrl={stats?.profileUrl ?? null}
               sourceUrl={sourceUrl}
               email={profile.email}
+              steamUrl={steamProfileUrl}
             />
           </div>
         </div>

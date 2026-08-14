@@ -135,6 +135,30 @@ export const siteOrigin = "https://www.bradleytsou.com";
 export const accountBalance = "$0.01";
 
 /**
+ * Steam profile, or a friend-invite link.
+ *
+ * **Null until Bradley supplies one**, and the "Add friend on Steam" row in the
+ * header's ⋯ menu is omitted entirely while it is. The Steam icon in the
+ * sidebar's Links row reads this too, and stays greyed out for the same reason.
+ * Nothing here guesses a URL — a wrong Steam ID sends visitors to someone
+ * else's profile, which is worse than no link.
+ *
+ * Two kinds of URL work here, and they behave differently:
+ *
+ * 1. **A friend-invite link** — `https://s.team/p/xxxx-xxxxx`. Generated in
+ *    Steam under Friends > Add a Friend > "Create invite link". This is the
+ *    one that actually adds you in a click; it works for people who aren't
+ *    signed in yet and doesn't expose the profile to search. It can be revoked
+ *    and regenerated, so it's the safer thing to publish.
+ * 2. **The plain profile** — `https://steamcommunity.com/id/<vanity>`. Always
+ *    valid, but "Add Friend" there is a button behind a login, so it's a couple
+ *    of steps rather than one.
+ *
+ * Prefer (1); (2) is the fallback.
+ */
+export const steamProfileUrl: string | null = null;
+
+/**
  * Hackathon wins, for the sidebar row.
  *
  * Hand-set, from Bradley directly.
@@ -365,7 +389,7 @@ export const socials: SocialLink[] = [
    * left out as redundant when this was a list of words.
    */
   { label: "GitHub", icon: "github", href: `https://github.com/${githubUsername}` },
-  { label: "Steam", icon: "steam" },
+  { label: "Steam", icon: "steam", href: steamProfileUrl ?? undefined },
   { label: "Discord", icon: "discord" },
 ];
 
