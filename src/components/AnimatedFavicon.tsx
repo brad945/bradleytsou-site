@@ -3,11 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * The tab icon, bouncing.
- *
- * The `bt.` mark drifts around a 32x32 box and bounces off the walls — the
- * avatar's DVD-screensaver movement, in the tab. White throughout: the motion
- * is the point, not the colour cycling the avatar's logo does.
+ * The tab icon, with the `bt.` glyphs hopping in sequence — b, then t, then
+ * the period — like a row of bouncing dots.
  *
  * ## How it works, and why it isn't a hack
  *
@@ -18,107 +15,110 @@ import { useEffect } from "react";
  * repaints. So this draws each frame to a canvas, exports a PNG data URL, and
  * swaps it in — a supported API used as intended, just quickly.
  *
- * ## What this costs, honestly
+ * ## Why this animation is smoother than the one it replaced
  *
- * - **It needs JS**, so the static `/icon` route stays as the real favicon and
- *   this replaces it after hydration. With JS off, the tab shows the static
- *   mark and nothing is lost.
- * - **30fps, and 60 wouldn't help.** See the note on `FPS`: the icon renders
- *   at 16 CSS px over 11px of travel, so past ~30 the mark moves less than a
- *   device pixel per frame while still paying for a PNG encode each time.
- * - **It stops when the tab is hidden.** `requestAnimationFrame` is throttled
- *   or halted in background tabs, so this listens for `visibilitychange` and
- *   restores the static icon on the way out — a tab frozen mid-bounce looks
- *   broken rather than paused.
+ * The mark used to drift around the tile and bounce off the walls. Two things
+ * made that read as choppy, and the hop fixes both:
+ *
+ * 1. **It travelled far.** Crossing 11px in well under a second is a large
+ *    jump between frames at any frame rate. A 3px hop moves a fraction of that
+ *    per frame, so consecutive frames sit close together — which is what
+ *    "smooth" actually is.
+ * 2. **It never repeated exactly.** Time-based drift lands on a new sub-pixel
+ *    position every frame, so no frame could be reused and every one cost a
+ *    synchronous PNG encode on the main thread. That was the stutter.
+ *
+ * The hop is strictly periodic, so the whole animation is a function of one
+ * number: how far through the loop we are. Frames are cached by index, the
+ * first circuit fills the cache, and every frame after costs a single string
+ * assignment.
+ *
+ * ## The rest of the costs
+ *
+ * - **It needs JS**, so the static `/icon` route stays the real favicon and
+ *   this replaces it after hydration. With JS off nothing is lost.
+ * - **It stops when the tab is hidden** and restores the static icon — rAF is
+ *   throttled in background tabs, and a tab frozen mid-hop reads as broken
+ *   rather than paused. Same on unmount, and it never starts under
+ *   `prefers-reduced-motion`.
+ * - **The icon link is re-acquired, not captured.** `AutoRefresh` refreshes
+ *   the route every 300s and that can replace the element; holding the
+ *   original meant the animation kept writing to a detached node and the tab
+ *   froze after five minutes.
  *
  * ## The mark
  *
- * Drawn as canvas primitives rather than reusing `BtMark`: that's an SVG
- * component, and rasterising it per frame would mean an `Image` load and
- * `drawImage` for each one. The geometry is the same, scaled from the same
- * 408x292 ink bounds, so the two stay recognisably one mark — but **they are
- * two implementations of it**, and a change to the letterforms has to be made
- * in both.
+ * Drawn as canvas primitives rather than reusing `BtMark`, which is an SVG
+ * component — rasterising it per frame would mean an image load and a
+ * `drawImage` each time. Same 408x292 ink bounds, so the two stay one mark,
+ * but **they are two implementations of it** and a change to the letterforms
+ * has to be made in both.
  */
 
 /** The tab icon is 16 CSS px; 32 keeps it sharp on a 2x display. */
 const SIZE = 32;
 
 /**
- * Mark size inside that box — 21x15, leaving 11x17 to travel in.
- *
- * A trade, and both ends are worse: smaller buys more bounce but closes up the
- * b's counter, which is most of what makes the mark read as "bt" rather than a
- * blob; bigger keeps the counter open but leaves too little room to see it
- * move. 21 is where the hole survives and the travel is still obvious.
+ * Mark size. Bigger than the drifting version managed, because a hop needs
+ * only a few px of headroom where travel needed a third of the tile — the
+ * space that was travel is now legibility, and the b's counter stays open.
  */
-const MARK_W = 21;
+const MARK_W = 26;
 const MARK_H = Math.round((MARK_W * 292) / 408);
 
+/** Hop height. Deliberately small — see above on why less movement reads as
+ *  smoother rather than lazier. */
+const AMP = 3;
+
+/** One full cycle, in ms. */
+const LOOP = 1400;
+
 /**
- * How often the tab icon is redrawn, per second.
+ * Where each glyph sits in that cycle, as a fraction of it.
  *
- * 60 is only affordable because frames are cached — see `FRAME_CACHE`. Without
- * it this would be 60 synchronous PNG encodes a second on the main thread,
- * which janks the *page*, not just the icon. That was the "laggy" at 30.
- *
- * The remaining limit is the display, not the CPU: the icon renders at 16 CSS
- * px and the mark's whole horizontal travel is 11px, so past ~60 it advances
- * well under a device pixel per frame and browsers coalesce the writes anyway.
- *
- * Motion is time-based, so changing this doesn't change how fast the mark
- * moves — only how finely that movement is sampled.
+ * b leads, t follows, the period last, so it reads left to right. The gaps are
+ * small enough that the three overlap — spaced further apart they stop being
+ * one mark moving and become three things taking turns.
  */
+const PHASES = [0, 0.11, 0.22];
+
+/**
+ * Fraction of a glyph's cycle spent in the air; the rest is rest.
+ *
+ * Below ~0.5 the hop is too quick to follow at this size; at 1 there's no
+ * pause and it reads as a wave rather than a bounce.
+ */
+const DUTY = 0.55;
+
+/** Frames per loop. 60fps against `LOOP` — the cache is exactly this long. */
 const FPS = 60;
+const FRAMES = Math.round((LOOP / 1000) * FPS);
 
-/**
- * Speed in **pixels per second**, not per frame.
- *
- * Per-frame movement tied the mark's speed to the frame rate: a dropped frame
- * meant a slower dog, and changing FPS silently changed how fast it moved.
- * Against elapsed time, neither is true.
- *
- * The two axes are deliberately unequal, so the path doesn't retrace itself
- * into a short loop the way matching speeds would.
- */
-const SPEED_X = 17;
-const SPEED_Y = 13;
-
-/**
- * Position is snapped to half-pixels before drawing.
- *
- * This is what makes caching possible: without it, time-based motion produces
- * a new sub-pixel position every frame and no two are ever reusable. At 0.5px
- * on a 32px tile the steps are a quarter of a CSS pixel in the tab — finer
- * than the display resolves — while bounding the cache to a few hundred
- * entries.
- */
-const STEP = 0.5;
-
-/**
- * Rendered frames, keyed by snapped position.
- *
- * The mark retraces the same box forever, so after roughly one circuit every
- * frame it needs is already encoded and a "frame" costs one string assignment
- * instead of a PNG encode. That's the difference between 60fps being free and
- * 60fps being the reason the page stutters.
- */
-const FRAME_CACHE = new Map<string, string>();
-
-/**
- * `bright` white, and it stays white.
- *
- * The avatar's DVD logo cycles a screensaver palette on wall contact and this
- * did too at first; Bradley wanted the bounce without the colour. It also
- * suits the tile better — the favicon is transparent, so the mark sits on the
- * browser's own tab strip rather than on a field of ours, and a colour that
- * shifts underneath unpredictable chrome is a worse bet than one that doesn't.
- */
+/** `bright` white. The mark doesn't change colour — the motion is the point. */
 const MARK_COLOUR = "#ffffff";
 
 /**
- * The `bt.` mark, scaled from its 408x292 ink bounds into `w` x `h` at (x, y).
- * Mirrors `BtMark`'s geometry — see the note above about the duplication.
+ * One glyph's vertical offset at loop position `u` (0..1), in px, negative
+ * being up.
+ *
+ * A half-sine over the duty window: it leaves the ground at zero speed, slows
+ * at the top and lands at zero speed. A linear or triangular hop reads
+ * mechanical at this size, because the direction change is instantaneous.
+ */
+function hop(u: number, phase: number): number {
+  /*
+   * Subtracted, not added. Adding a phase puts a glyph *ahead* in its cycle,
+   * which ran the ripple right to left — the period hopping first and b last.
+   * Subtracting makes each phase a delay, so b leads as intended.
+   */
+  const t = (u - phase + 1) % 1;
+  if (t >= DUTY) return 0;
+  return -AMP * Math.sin((Math.PI * t) / DUTY);
+}
+
+/**
+ * The `bt.` mark, scaled from its 408x292 ink bounds, each glyph offset
+ * vertically by its own amount. Mirrors `BtMark`'s geometry.
  */
 function drawMark(
   ctx: CanvasRenderingContext2D,
@@ -126,65 +126,57 @@ function drawMark(
   y: number,
   w: number,
   h: number,
-  colour: string,
+  offsets: [number, number, number],
 ) {
   const sx = w / 408;
   const sy = h / 292;
   const X = (v: number) => x + v * sx;
-  const Y = (v: number) => y + v * sy;
+  const Y = (v: number, dy: number) => y + v * sy + dy;
 
-  ctx.fillStyle = colour;
+  const [db, dt, dp] = offsets;
+  ctx.fillStyle = MARK_COLOUR;
 
-  // b: stem, bowl, then the counter punched back out.
-  ctx.fillRect(X(0), Y(0), 70 * sx, 281 * sy);
+  // b — stem and bowl, then the counter cut back out.
+  ctx.fillRect(X(0), Y(0, db), 70 * sx, 281 * sy);
   ctx.beginPath();
-  ctx.ellipse(X(126), Y(198), 75.5 * sx, 87 * sy, 0, 0, Math.PI * 2);
+  ctx.ellipse(X(126), Y(198, db), 75.5 * sx, 87 * sy, 0, 0, Math.PI * 2);
   ctx.fill();
 
   /*
-   * The counter is cut with `destination-out` rather than filled with the
-   * background colour — the tile is transparent, so painting it would leave an
-   * opaque blob where the hole should be.
+   * `destination-out` rather than filling with a background colour — the tile
+   * is transparent, so painting the counter would leave an opaque blob where
+   * the hole belongs.
    */
   ctx.globalCompositeOperation = "destination-out";
   ctx.beginPath();
-  ctx.ellipse(X(99), Y(198), 29.5 * sx, 33 * sy, 0, 0, Math.PI * 2);
+  ctx.ellipse(X(99), Y(198, db), 29.5 * sx, 33 * sy, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = MARK_COLOUR;
 
-  // t: crossbar, then the stem over it.
-  ctx.fillStyle = colour;
-  ctx.fillRect(X(196), Y(116), 127 * sx, 55 * sy);
-  ctx.fillRect(X(226), Y(58), 67 * sx, 223 * sy);
+  // t — crossbar, then the stem over it.
+  ctx.fillRect(X(196), Y(116, dt), 127 * sx, 55 * sy);
+  ctx.fillRect(X(226), Y(58, dt), 67 * sx, 223 * sy);
 
   // The period.
   ctx.beginPath();
-  ctx.ellipse(X(365), Y(250), 42 * sx, 42 * sy, 0, 0, Math.PI * 2);
+  ctx.ellipse(X(365), Y(250, dp), 42 * sx, 42 * sy, 0, 0, Math.PI * 2);
   ctx.fill();
 }
 
+/**
+ * Rendered frames, one per position in the loop.
+ *
+ * Module-level so it survives remounts — a route refresh shouldn't pay to
+ * re-encode every frame. Filled lazily: the first pass through the loop
+ * encodes, everything after is a lookup.
+ */
+const FRAME_CACHE: (string | undefined)[] = new Array(FRAMES);
+
 export default function AnimatedFavicon() {
   useEffect(() => {
-    /*
-     * Re-acquired rather than captured once.
-     *
-     * `AutoRefresh` calls `router.refresh()` every 300s, and a refresh can
-     * replace the head's icon link with a new element. Holding the original
-     * reference meant that after five minutes the animation was still running
-     * and still writing hrefs — to a node no longer in the document. The tab
-     * simply froze on its last frame, which is exactly what "it stops after a
-     * few minutes" looked like.
-     *
-     * `isConnected` is the cheap check for that: false the moment the node is
-     * detached, whatever detached it.
-     */
     let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
     if (!link) return;
-
-    // Restored whenever the animation stops, so the tab never sits on a
-    // half-drawn frame. Captured from the first element and reused, since a
-    // replacement carries the same static href.
-    const staticHref = link.href;
 
     function iconLink(): HTMLLinkElement | null {
       if (link?.isConnected) return link;
@@ -192,69 +184,52 @@ export default function AnimatedFavicon() {
       return link;
     }
 
+    const staticHref = link.href;
+
     const canvas = document.createElement("canvas");
     canvas.width = SIZE;
     canvas.height = SIZE;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    /* Respect the same preference the rest of the site does. */
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    let x = 3;
-    let y = 4;
-    let dirX = 1;
-    let dirY = 1;
+    // Centred horizontally; the headroom above is where the hop goes.
+    const originX = (SIZE - MARK_W) / 2;
+    const originY = (SIZE - MARK_H) / 2 + AMP / 2;
+
     let raf: number | undefined;
-    let last = 0;
-    let sinceDraw = 0;
+    let start = 0;
+    let lastIndex = -1;
 
     function frame(now: number) {
       if (!ctx) return;
+      if (!start) start = now;
 
       /*
-       * First frame has no previous timestamp, and a tab returning to the
-       * foreground can hand back a gap of many seconds. Both would teleport
-       * the mark, so dt is clamped to a sane maximum.
+       * The frame index is the entire animation state — position in the loop,
+       * quantised to the cache's resolution. Skipping when it hasn't changed
+       * means no work at all on rAF ticks landing inside the same frame, which
+       * is most of them on a 120Hz display.
        */
-      const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
-      last = now;
+      const index = Math.floor(((now - start) % LOOP) / (LOOP / FRAMES));
 
-      x += dirX * SPEED_X * dt;
-      y += dirY * SPEED_Y * dt;
+      if (index !== lastIndex) {
+        lastIndex = index;
 
-      // Reverse at each wall. Clamped as well as reversed, so a frame that
-      // overshoots doesn't leave the mark stuck outside the box.
-      if (x <= 0 || x >= SIZE - MARK_W) {
-        dirX = -dirX;
-        x = Math.min(Math.max(x, 0), SIZE - MARK_W);
-      }
-      if (y <= 0 || y >= SIZE - MARK_H) {
-        dirY = -dirY;
-        y = Math.min(Math.max(y, 0), SIZE - MARK_H);
-      }
-
-      /*
-       * Position updates every animation frame; the icon is only rewritten at
-       * FPS. Redrawing on every rAF tick would spend a PNG encode on movement
-       * too small to see, and browsers would drop most of those writes anyway.
-       */
-      sinceDraw += dt;
-      if (sinceDraw >= 1 / FPS) {
-        sinceDraw = 0;
-
-        const qx = Math.round(x / STEP) * STEP;
-        const qy = Math.round(y / STEP) * STEP;
-        const key = `${qx}:${qy}`;
-
-        let url = FRAME_CACHE.get(key);
+        let url = FRAME_CACHE[index];
         if (url === undefined) {
+          const u = index / FRAMES;
           ctx.clearRect(0, 0, SIZE, SIZE);
-          drawMark(ctx, qx, qy, MARK_W, MARK_H, MARK_COLOUR);
+          drawMark(ctx, originX, originY, MARK_W, MARK_H, [
+            hop(u, PHASES[0]),
+            hop(u, PHASES[1]),
+            hop(u, PHASES[2]),
+          ]);
           url = canvas.toDataURL("image/png");
-          FRAME_CACHE.set(key, url);
+          FRAME_CACHE[index] = url;
         }
+
         const el = iconLink();
         if (el) el.href = url;
       }
@@ -265,17 +240,17 @@ export default function AnimatedFavicon() {
     function stop() {
       if (raf !== undefined) cancelAnimationFrame(raf);
       raf = undefined;
-      last = 0;
     }
 
     function onVisibility() {
       if (document.hidden) {
         stop();
-        // A tab frozen mid-bounce reads as broken; the static mark reads as a
-        // normal favicon.
         const el = iconLink();
         if (el) el.href = staticHref;
       } else if (raf === undefined) {
+        // Restart the clock, or the loop resumes wherever it would have been.
+        start = 0;
+        lastIndex = -1;
         raf = requestAnimationFrame(frame);
       }
     }
