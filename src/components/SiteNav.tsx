@@ -11,9 +11,13 @@ import HoverNote from "@/components/HoverNote";
  * Uppercase with tracking is wrong nearly everywhere else on this site, but
  * it's exactly what Steam's nav does, so it stays here.
  *
- * The links are real in-page anchors rather than dead tabs — this is one page,
- * and a nav of hrefs that go nowhere is the fake chrome the site avoids.
- * They target the section headings, so they break if those ids are renamed.
+ * The links are real destinations rather than dead tabs — a nav of hrefs that
+ * go nowhere is the fake chrome the site avoids.
+ *
+ * In-page targets are written **root-relative** (`/#profile`, not `#profile`).
+ * The nav renders on `/play` too, where a bare fragment would scroll to
+ * nothing; `/#profile` navigates home and then to the section, and still
+ * behaves as a same-page jump when you're already on `/`.
  */
 /**
  * One ordered list rather than links-then-placeholders, so position and
@@ -28,7 +32,7 @@ import HoverNote from "@/components/HoverNote";
  * Giving an entry an href is the whole change when its section lands.
  */
 const NAV_ITEMS: { label: string; href?: string }[] = [
-  { label: "Profile", href: "#profile" },
+  { label: "Profile", href: "/#profile" },
   /*
    * No href on purpose. The obvious one is `#profile`, but Profile already
    * points there — two items scrolling to the same place is worse than one
@@ -37,7 +41,7 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    */
   { label: "About" },
   { label: "Chat" },
-  { label: "Play" },
+  { label: "Play", href: "/play" },
   /*
    * Also no href. There's no resume file in `public/` and no hosted copy to
    * point at — a nav item linking to a 404 is worse than one that's visibly
@@ -77,8 +81,8 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           the label — without it this is an anchor with no text at all.
         */}
         <a
-          href="#profile"
-          aria-label={`${profile.name} — back to top`}
+          href="/#profile"
+          aria-label={`${profile.name} — home`}
           className="text-bright transition-opacity hover:opacity-80"
         >
           {/* `block` so the svg doesn't sit on a text baseline — inline it
