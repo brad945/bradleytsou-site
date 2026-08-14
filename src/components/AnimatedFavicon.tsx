@@ -18,9 +18,9 @@ import { useEffect } from "react";
  * a second, browsers coalesce favicon writes and quietly drop most of them,
  * which is why several passes of raising the frame rate changed nothing.
  *
- * So this is four distinct images shown in six slots, each on a whole pixel.
- * It reads as a deliberate stepped animation rather than as smooth motion that
- * didn't arrive — and every frame actually paints.
+ * So this is four images, each on a whole pixel. It reads as a deliberate
+ * stepped animation rather than as smooth motion that didn't arrive — and at
+ * four frames the browser's repaint limit no longer stretches the loop.
  *
  * ## The rest
  *
@@ -54,26 +54,30 @@ const LIFT = -3;
 /**
  * The whole animation: `[b, t, period]` offsets, and how long to hold each.
  *
- * Six frames, one up and one down per glyph. The three down frames are the
- * same image, so this is four distinct renders — `FRAME_CACHE` is keyed by the
- * offsets rather than the index, so it encodes four PNGs, not six.
+ * Four frames: each glyph up in turn, then all down.
  *
- * Every hop holds for the same `STEP`. They ran 110/90/110/90/110 once and
- * that unevenness is what made the loop feel arbitrary — at six frames there's
- * no room for a rhythm to be subtle, it just reads as a mistake.
+ * It was six — up *and* down per glyph — and the two mid-sequence down frames
+ * were dropped for a measurable reason. **Chrome rate-limits favicon repaints
+ * to roughly one a second**, whatever interval the page asks for, so the cycle
+ * a viewer sees is about `frames x 1s` rather than the sum of these holds. At
+ * six frames that made a 1.1s loop look like five, and the pause between
+ * cycles read as enormous. Each dropped frame is a second off that.
  *
- * The last frame holds `PAUSE` instead. That's the beat between cycles, and
- * keeping it as a duration rather than extra frames is why the pause costs
- * nothing.
+ * Nothing is lost visually: a glyph landing is already shown by the next
+ * frame, which has it at rest. The dedicated down frames only existed to make
+ * the sequence explicit in code.
+ *
+ * Every hop holds for the same `STEP` — they ran 110/90/110/90/110 once, and
+ * at this few frames that unevenness reads as a mistake rather than a rhythm.
+ * The final frame holds `PAUSE`, the beat between cycles; keeping it a
+ * duration rather than extra frames is why the pause costs nothing.
  */
 const STEP = 120;
 const PAUSE = 500;
 
 const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
   { offsets: [LIFT, 0, 0], hold: STEP },
-  { offsets: [0, 0, 0], hold: STEP },
   { offsets: [0, LIFT, 0], hold: STEP },
-  { offsets: [0, 0, 0], hold: STEP },
   { offsets: [0, 0, LIFT], hold: STEP },
   { offsets: [0, 0, 0], hold: PAUSE },
 ];
