@@ -3,29 +3,24 @@
 import { useEffect } from "react";
 
 /**
- * The tab icon, with the `bt.` glyphs hopping in sequence — b, then t, then
- * the period.
+ * The tab icon: each glyph of `bt.` pops up and drops back, in turn.
  *
- * ## Why this is built the opposite way to the first attempt
+ * ## Six frames, written out
  *
- * The first version drew smooth sub-pixel motion at up to 120fps and failed
- * twice over: the mark went soft, and it stayed laggy through every tuning
- * pass. Both had the same root cause, and it wasn't the frame rate.
+ * The animation is a literal table — b up, b down, t up, t down, period up,
+ * period down — rather than offsets sampled from a curve. Two earlier versions
+ * did it the other way and both failed for the same reason.
  *
- * **Softness came from sub-pixel positions.** A glyph at y=7.34 is rasterised
- * across two rows of pixels with partial coverage in each. At 16 CSS px in a
- * tab strip that reads as blur, and no amount of resolution fixes it — the
- * static icon looked crisp precisely because Satori places it on whole pixels.
- * So this moves in **whole pixels only**, and every frame is as sharp as the
- * static one.
+ * **Smooth motion doesn't survive this medium.** Sub-pixel positions rasterise
+ * across two rows of pixels with partial coverage in each, which at 16 CSS px
+ * in a tab strip reads as blur; the static icon looks crisp precisely because
+ * Satori places it on whole pixels. And volume doesn't help: at 84-126 frames
+ * a second, browsers coalesce favicon writes and quietly drop most of them,
+ * which is why several passes of raising the frame rate changed nothing.
  *
- * **Lag came from volume.** 84–126 frames a second means that many favicon
- * writes, and browsers coalesce those; most were queued and dropped. Whole-px
- * motion needs far fewer — there are only four distinct heights — so this runs
- * **18 frames at ~14fps**, and every one of them actually paints.
- *
- * The result reads as a deliberate stepped animation, like a sprite, rather
- * than as smooth motion that didn't quite make it.
+ * So this is four distinct images shown in six slots, each on a whole pixel.
+ * It reads as a deliberate stepped animation rather than as smooth motion that
+ * didn't arrive — and every frame actually paints.
  *
  * ## The rest
  *
@@ -37,8 +32,6 @@ import { useEffect } from "react";
  * - **Re-acquires the icon link** rather than holding one reference.
  *   `AutoRefresh` refreshes the route every 300s and can replace that element;
  *   holding the original froze the tab after five minutes.
- * - Frames are drawn once into a module-level cache, so the whole animation
- *   costs 18 encodes for the life of the page.
  *
  * The mark is canvas primitives rather than `BtMark`'s SVG — rasterising that
  * per frame would mean an image load each time. Same 408x292 ink bounds, so
@@ -49,49 +42,42 @@ import { useEffect } from "react";
 /** The tab icon is 16 CSS px; 32 keeps it sharp on a 2x display. */
 const SIZE = 32;
 
-/** Mark size. Leaves 3px of headroom above for the hop. */
+/** Mark size, leaving headroom above for the hop. */
 const MARK_W = 26;
 const MARK_H = Math.round((MARK_W * 292) / 408);
 
+/** How far a glyph rises, in whole pixels. Fractions are what caused the blur.  */
+const LIFT = -3;
+
 /**
- * One glyph's hop, in whole pixels up from rest.
+ * The whole animation: `[b, t, period]` offsets, and how long to hold each.
  *
- * Eight steps, and the shape is the easing — slow at the top (two frames at
- * -3) and quicker off the ground, which is what a bounce does. Written out
- * rather than computed from a sine, because the whole point is that these are
- * integers and a curve would reintroduce the sub-pixel values this exists to
- * avoid.
+ * Six frames, one up and one down per glyph. The three down frames are the
+ * same image, so this is four distinct renders — `FRAME_CACHE` is keyed by the
+ * offsets rather than the index, so it encodes four PNGs, not six.
+ *
+ * The last frame holds far longer than the rest. That's the beat between
+ * cycles, and keeping it as a duration rather than extra frames is why the
+ * pause costs nothing.
  */
-const HOP = [0, -1, -2, -3, -3, -2, -1, 0];
-
-/** How many steps each glyph lags the one before it. */
-const STAGGER = 2;
-
-/** Steps of stillness after the last glyph lands. */
-const REST_STEPS = 7;
-
-/** ms per step. ~14fps — high enough to read as motion, low enough that every
- *  frame is actually painted rather than coalesced away. */
-const STEP_MS = 70;
-
-/** Total steps in a cycle: the ripple, then the rest. */
-const CYCLE = HOP.length + STAGGER * 2 + REST_STEPS;
+const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
+  { offsets: [LIFT, 0, 0], hold: 110 },
+  { offsets: [0, 0, 0], hold: 90 },
+  { offsets: [0, LIFT, 0], hold: 110 },
+  { offsets: [0, 0, 0], hold: 90 },
+  { offsets: [0, 0, LIFT], hold: 110 },
+  { offsets: [0, 0, 0], hold: 500 },
+];
 
 /** `bright` white. */
 const MARK_COLOUR = "#ffffff";
 
-/** A glyph's offset at `step`, given how many steps it lags. */
-function offsetAt(step: number, lag: number): number {
-  const i = step - lag;
-  return i >= 0 && i < HOP.length ? HOP[i] : 0;
-}
-
 /**
  * The `bt.` mark, each glyph offset vertically by whole pixels.
  *
- * `x` and `y` are rounded before use for the same reason the offsets are
- * integers: a fractional origin would put every glyph back on a sub-pixel
- * boundary regardless of how clean the offsets are.
+ * Every coordinate is rounded before use, for the same reason the offsets are
+ * integers: a fractional origin would put the glyphs back on sub-pixel
+ * boundaries however clean the offsets are.
  */
 function drawMark(
   ctx: CanvasRenderingContext2D,
@@ -139,8 +125,11 @@ function drawMark(
   ctx.fill();
 }
 
-/** One entry per step. Module-level, so a route refresh doesn't re-encode. */
-const FRAME_CACHE: (string | undefined)[] = new Array(CYCLE);
+/**
+ * Keyed by offsets, not frame index, so the three identical down frames share
+ * one encode. Module-level, so a route refresh doesn't re-render them.
+ */
+const FRAME_CACHE = new Map<string, string>();
 
 export default function AnimatedFavicon() {
   useEffect(() => {
@@ -164,32 +153,31 @@ export default function AnimatedFavicon() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const originX = (SIZE - MARK_W) / 2;
-    // The 3px of hop travels upward, so rest sits that much lower.
+    // The lift travels upward, so rest sits that much lower in the tile.
     const originY = (SIZE - MARK_H) / 2 + 2;
 
-    let step = 0;
+    let i = 0;
     let timer: number | undefined;
 
     function tick() {
       if (!ctx) return;
 
-      let url = FRAME_CACHE[step];
+      const { offsets, hold } = FRAMES[i];
+      const key = offsets.join(",");
+
+      let url = FRAME_CACHE.get(key);
       if (url === undefined) {
         ctx.clearRect(0, 0, SIZE, SIZE);
-        drawMark(ctx, originX, originY, MARK_W, MARK_H, [
-          offsetAt(step, 0),
-          offsetAt(step, STAGGER),
-          offsetAt(step, STAGGER * 2),
-        ]);
+        drawMark(ctx, originX, originY, MARK_W, MARK_H, offsets);
         url = canvas.toDataURL("image/png");
-        FRAME_CACHE[step] = url;
+        FRAME_CACHE.set(key, url);
       }
 
       const el = iconLink();
       if (el) el.href = url;
 
-      step = (step + 1) % CYCLE;
-      timer = window.setTimeout(tick, STEP_MS);
+      i = (i + 1) % FRAMES.length;
+      timer = window.setTimeout(tick, hold);
     }
 
     function stop() {
@@ -203,7 +191,7 @@ export default function AnimatedFavicon() {
         const el = iconLink();
         if (el) el.href = staticHref;
       } else if (timer === undefined) {
-        step = 0;
+        i = 0;
         tick();
       }
     }
