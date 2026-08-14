@@ -5,8 +5,9 @@ import { useEffect } from "react";
 /**
  * The tab icon, bouncing.
  *
- * The `bt.` mark drifts around a 32x32 box and changes colour when it hits a
- * wall — the same DVD-screensaver behaviour as the avatar, in the favicon.
+ * The `bt.` mark drifts around a 32x32 box and bounces off the walls — the
+ * avatar's DVD-screensaver movement, in the tab. White throughout: the motion
+ * is the point, not the colour cycling the avatar's logo does.
  *
  * ## How it works, and why it isn't a hack
  *
@@ -63,8 +64,16 @@ const FPS = 10;
 const VX = 1.1;
 const VY = 0.9;
 
-/** Wall-contact colours, matching the avatar's screensaver palette. */
-const COLOURS = ["#ffe500", "#00e0ff", "#ff3cc8", "#3bff78", "#ff7a14"];
+/**
+ * `bright` white, and it stays white.
+ *
+ * The avatar's DVD logo cycles a screensaver palette on wall contact and this
+ * did too at first; Bradley wanted the bounce without the colour. It also
+ * suits the tile better — the favicon is transparent, so the mark sits on the
+ * browser's own tab strip rather than on a field of ours, and a colour that
+ * shifts underneath unpredictable chrome is a worse bet than one that doesn't.
+ */
+const MARK_COLOUR = "#ffffff";
 
 /**
  * The `bt.` mark, scaled from its 408x292 ink bounds into `w` x `h` at (x, y).
@@ -136,7 +145,6 @@ export default function AnimatedFavicon() {
     let y = 4;
     let dx = VX;
     let dy = VY;
-    let colour = 0;
     let timer: number | undefined;
 
     function frame() {
@@ -145,23 +153,19 @@ export default function AnimatedFavicon() {
       x += dx;
       y += dy;
 
-      // Bounce, and change colour only on contact — as the real screensaver
-      // does, and as the avatar's tint keyframes do.
-      let hit = false;
+      // Reverse at each wall. Clamped as well as reversed, so a frame that
+      // overshoots doesn't leave the mark stuck outside the box.
       if (x <= 0 || x >= SIZE - MARK_W) {
         dx = -dx;
         x = Math.min(Math.max(x, 0), SIZE - MARK_W);
-        hit = true;
       }
       if (y <= 0 || y >= SIZE - MARK_H) {
         dy = -dy;
         y = Math.min(Math.max(y, 0), SIZE - MARK_H);
-        hit = true;
       }
-      if (hit) colour = (colour + 1) % COLOURS.length;
 
       ctx.clearRect(0, 0, SIZE, SIZE);
-      drawMark(ctx, x, y, MARK_W, MARK_H, COLOURS[colour]);
+      drawMark(ctx, x, y, MARK_W, MARK_H, MARK_COLOUR);
       if (link) link.href = canvas.toDataURL("image/png");
 
       timer = window.setTimeout(frame, 1000 / FPS);
@@ -175,8 +179,8 @@ export default function AnimatedFavicon() {
     function onVisibility() {
       if (document.hidden) {
         stop();
-        // A tab frozen mid-bounce on a random colour reads as broken; the
-        // static mark reads as a normal favicon.
+        // A tab frozen mid-bounce reads as broken; the static mark reads as a
+        // normal favicon.
         if (link) link.href = staticHref;
       } else if (timer === undefined) {
         frame();
