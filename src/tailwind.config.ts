@@ -301,11 +301,11 @@ const config: Config = {
          */
         "dvd-x": {
           from: { transform: "translateX(0)" },
-          to: { transform: "translateX(84px)" },
+          to: { transform: "translateX(98px)" },
         },
         "dvd-y": {
           from: { transform: "translateY(0)" },
-          to: { transform: "translateY(112px)" },
+          to: { transform: "translateY(128px)" },
         },
         /*
          * The logo is the only thing that changes colour, and it changes only

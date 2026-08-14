@@ -33,8 +33,8 @@ interface ProfileHeaderProps {
 function DvdLogo() {
   return (
     <svg
-      width="64"
-      height="36"
+      width="69"
+      height="39"
       /* Cropped to the mark's actual ink bounds. A 0-0-110-62 box carries ~4px
          of transparent padding under the ellipse and ~6px right of the last D,
          so the element could touch a wall while the logo visibly stopped short.
@@ -187,16 +187,19 @@ export default function ProfileHeader({
             {/*
               Measured off the reference: side bands are 10.6% of the photo's
               width, top/bottom 6.1% of its height (76px and 43.5px against a
-              720x717 photo) — a 1.75 ratio. On this 150px avatar that's
-              a 16 / 9 total band. The 1px bevel border counts toward that, so
-              the padding is 15 / 8. Bigger and it stops reading as a frame.
+              720x717 photo) — a 1.75 ratio. On this 169px avatar that's an
+              18 / 10 total band. The 1px bevel border counts toward that, so
+              the padding is 17 / 9. Bigger and it stops reading as a frame.
+
+              Both scale with the photo — they're percentages of it, so a
+              resize means recomputing them rather than keeping the old px.
 
               The band is not flat: it's a raised bevel. Light on the top and
               left edges, dark on the bottom and right, with the photo sitting
               in a sunken well (the reverse) below it.
             */}
-            <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[15px] py-[8px]">
-              <div className="relative h-[150px] w-[150px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
+            <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[17px] py-[9px]">
+              <div className="relative h-[169px] w-[169px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
                 {/* The `profile.initials` fallback that used to sit here is
                     gone with it: it existed because the GitHub avatar could
                     fail to resolve, and a local asset either ships or breaks
@@ -205,16 +208,16 @@ export default function ProfileHeader({
                 <Image
                   src={avatar}
                   alt={`${profile.name} avatar`}
-                  width={150}
-                  height={150}
+                  width={169}
+                  height={169}
                   className="h-full w-full object-cover"
                 />
 
                 {/*
                   DVD-screensaver bounce. Two nested spans because one element
                   can carry only one transform animation. Travel distances are
-                  baked into the keyframes against this box's 148px padding
-                  area and the 63x36 logo — resize one and you must resize the
+                  baked into the keyframes against this box's 167px padding
+                  area and the 69x39 logo — resize one and you must resize the
                   other, and the travel has to stay divisible by the step count
                   or the logo jitters. See the keyframes for why.
                 */}

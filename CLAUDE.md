@@ -193,8 +193,9 @@ class would stop emitting.
   1. **The bands are asymmetric, and thinner than they look.** Measured
      off the reference: sides are **10.6%** of the photo's width,
      top/bottom **6.1%** of its height (76px and 43.5px against a
-     720x717 photo) — a 1.75 ratio. On the 150px avatar that's a 16 / 9
-     band, which with the 1px bevel means `px-[15px] py-[8px]`. Equal
+     720x717 photo) — a 1.75 ratio. On the 169px avatar that's an 18 / 10
+     band, which with the 1px bevel means `px-[17px] py-[9px]`. Both are
+     percentages of the photo, so a resize means recomputing them. Equal
      padding is obviously wrong, and anything thicker stops reading as
      a frame.
   2. **The gradient is radial, not linear**, with the light source off
@@ -208,7 +209,7 @@ class would stop emitting.
      (the reverse: dark top/left, light bottom/right). `frameHi` /
      `frameLo` are those two edge colours.
   The DVD logo is sized off the reference too — ~42% of the photo width.
-  Here that's 64x36 (43.2%), rounded to the nearest size whose travel
+  Here that's 69x39 (40.8%), rounded to the nearest size whose travel
   divides evenly by the step count; see the jitter note below.
   The only thing that moves or changes colour is the DVD logo bouncing
   screensaver-style inside the 150px box. It changes colour **only on
@@ -232,14 +233,14 @@ class would stop emitting.
   what reads as a disc.
   The bounce needs two nested spans (one element carries one transform
   animation) and the travel distances in the `dvd-x` / `dvd-y` keyframes
-  are hard-coded against the avatar's 148px padding box and the 64x36
+  are hard-coded against the avatar's 167px padding box and the 69x39
   logo — **resize one and you must resize the other**. The bounce runs on `steps(15, jump-none)` /
   `steps(17, jump-none)`, i.e. duration x 10, which pins it to the original
   screensaver's chunky 10fps; change a duration and you must change its
   step count to hold that framerate. Keep durations at whole tenths so
   the step count stays an integer, and keep the two sharing no common
   factor or the path visibly loops. **Travel must divide evenly by its
-  step count** (84/14 = 6px, 112/16 = 7px) — a fractional step lands the
+  step count** (98/14 = 7px, 128/16 = 8px) — a fractional step lands the
   logo on a new subpixel phase each frame, so the browser re-antialiases
   the letterforms and it visibly jitters.
   Two things make the logo actually touch the walls, and it silently
