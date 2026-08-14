@@ -392,11 +392,12 @@ accents used to have is moot while they stay unused.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents are currently UNUSED**: `berkeley` #fdcf17,
-  `medimpact` #c084f5, `deveval` #60ebdb. The header bio is all
-  `bright` white — Bradley asked for the colours off, which took the
-  per-line `className` hook with them. The tokens are kept because the
-  values took several passes; the config comment carries the reasoning.
+- **Bio-line accents, on the org links only**: `berkeley` #fdcf17,
+  `medimpact` #c084f5, `deveval` #60ebdb. The bio sentences are `bright`
+  white and each org **link** carries its colour, so the hue marks the word
+  it belongs to instead of tinting a whole line. They've been on the full
+  sentence and off entirely before this; the config comment carries the
+  reasoning behind the values.
   Three things worth not relearning if they return: gold is the one brand
   colour usable raw here (Berkeley Blue #003262 is 1.16:1 on this column,
   MedImpact's #250644 is 1.18:1 — both had to be tints); MedImpact is the

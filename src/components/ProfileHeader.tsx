@@ -105,8 +105,14 @@ function DvdLogo() {
  * leaving the rest as plain text. Splitting at render keeps the sentence one
  * editable string in `profile-data` rather than three fragments.
  *
- * `underline` rather than a colour change: these lines already carry their org
- * colours, and recolouring them to link-blue would undo that.
+ * **`line.className` colours the link, not the line.** The org colours were on
+ * the whole sentence once and then taken off entirely when Bradley wanted the
+ * bio white; this is the third position and the useful one — the sentence
+ * stays white and the org name carries its own colour, so the colour marks
+ * exactly the word it belongs to instead of tinting a line of unrelated text.
+ *
+ * The underline stays. `decoration-current` means it takes the org colour
+ * automatically, so it still reads as a link without needing link-blue.
  */
 function renderBioLine(line: BioLine) {
   if (!line.linkText || !line.href) return line.text;
@@ -120,7 +126,9 @@ function renderBioLine(line: BioLine) {
         href={line.href}
         target="_blank"
         rel="noreferrer"
-        className="font-semibold underline decoration-current/40 underline-offset-2 transition hover:decoration-current"
+        className={`font-semibold underline decoration-current/40 underline-offset-2 transition hover:decoration-current ${
+          line.className ?? ""
+        }`}
       >
         {line.linkText}
       </a>
@@ -269,14 +277,21 @@ export default function ProfileHeader({
               <p
                 key={line.text}
                 /*
-                  17px/500. The weight is the point — Open Sans has no 200 and
+                  16px/500. The weight is the point — Open Sans has no 200 and
                   its 400 read light beside the headings, so 500 is the next
                   step the family actually ships.
-                  The size is set by the longest line: "AI and Software
-                  Engineer Intern @ MedImpact" measures 416px at 19px and the
-                  column is 389 wide, so 19 wrapped it. 17 needs 372 and fits.
-                  Measured in the browser — if a role title gets longer, check
-                  it again rather than assuming there's room.
+
+                  The size is set by the longest line, "AI and Software
+                  Engineer Intern @ MedImpact". It ran at 17px until the avatar
+                  went 150 -> 169: the frame grew 23px and took that straight
+                  out of this column, which dropped it from ~410 to ~387 and
+                  wrapped the line. At 16px the string is ~350 and fits with
+                  room to spare. **Resizing the avatar resizes this column** —
+                  check the longest line again rather than assuming.
+
+                  `whitespace-nowrap` holds it to one line outright, and
+                  `text-wrap: balance` went with it: balance only does anything
+                  once a line already wraps, so with nowrap it's dead weight.
                 */
                 /*
                   All three lines are white now. Each used to carry its org's
@@ -286,7 +301,7 @@ export default function ProfileHeader({
                   Restoring it means putting `className` back on the entries in
                   profile-data and reading it here again.
                 */
-                className={`max-w-[46ch] text-[17px] font-medium leading-tight text-bright [text-wrap:balance] ${
+                className={`max-w-[46ch] whitespace-nowrap text-[16px] font-medium leading-tight text-bright ${
                   i === 0 ? "mt-2.5" : "mt-1"
                 }`}
               >

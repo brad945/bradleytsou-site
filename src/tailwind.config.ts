@@ -33,12 +33,14 @@ const tokens = {
   /** Link / heading blue. */
   link: "#66c0f4",
   /*
-   * The three bio-line colours — **currently unused.** Each line in the header
-   * bio carried its org's hue until Bradley asked for the whole bio in white,
-   * which took the per-line `className` hook with it.
+   * The three bio-line colours. They've been in three positions: on the whole
+   * sentence, off entirely when Bradley wanted the bio white, and now on the
+   * **org link only** — the sentence stays white and the org name carries its
+   * colour, so the hue marks the word it belongs to rather than tinting a line
+   * of unrelated text.
    *
-   * Kept rather than deleted because the values took several passes to land
-   * and the reasoning is worth not relearning:
+   * The values took several passes to land and the reasoning is worth not
+   * relearning:
    *
    * - `berkeley` #fdcf17 is California Gold rotated 7deg toward yellow. It's
    *   the one brand colour that works raw here — Berkeley Blue #003262 is
@@ -51,9 +53,10 @@ const tokens = {
    *   and slightly darker, NOT bluer — 180 is where cyan sits, and a pass that
    *   moved the hue that way is why it had to be asked twice.
    *
-   * If they ever come back: the trap is re-harmonising all three to a shared
-   * saturation. They ran 60/65/76% once and read as highlighters — text more
-   * chromatic than the page it sat on.
+   * The trap is re-harmonising all three to a shared saturation. They ran
+   * 60/65/76% once and read as highlighters — text more chromatic than the
+   * page it sat on. That risk is lower now they're a word each rather than
+   * three full lines, but it's the same mistake.
    */
   berkeley: "#fdcf17",
   deveval: "#60ebdb",
