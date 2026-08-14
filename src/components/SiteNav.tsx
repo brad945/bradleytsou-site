@@ -36,11 +36,22 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    * there is one.
    */
   { label: "About" },
-  { label: "Experience", href: "#experience-heading" },
-  { label: "Activity", href: "#activity-heading" },
   { label: "Chat" },
   { label: "Play" },
+  /*
+   * Also no href. There's no resume file in `public/` and no hosted copy to
+   * point at — a nav item linking to a 404 is worse than one that's visibly
+   * not ready. Drop a PDF in `public/` and give this its path.
+   */
+  { label: "Resume" },
 ];
+
+/*
+ * Experience and Activity were dropped here at Bradley's request, so the two
+ * in-page section anchors are gone and Profile is the only live link left.
+ * Their headings (`#experience-heading`, `#activity-heading`) still exist on
+ * the page, so restoring either is just re-adding the entry.
+ */
 
 export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
   return (
