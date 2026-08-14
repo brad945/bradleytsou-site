@@ -67,7 +67,7 @@ const LIFT = -3;
  * frame, which has it at rest. The dedicated down frames only existed to make
  * the sequence explicit in code.
  *
- * **Every frame holds the same 250ms, the pause included** — one cycle per
+ * **Every frame holds the same 125ms, the pause included** — two cycles per
  * second.
  *
  * This is the knob, and it's the one worth understanding before turning it.
@@ -78,12 +78,12 @@ const LIFT = -3;
  * reads as a bug in the sequence and is really the browser undersampling it.
  *
  * 500ms was chosen to sit at or above that floor so every frame painted once,
- * in order. 250 is deliberately below it, at Bradley's request — it plays
- * twice as fast when the browser keeps up, and if the uneven-glyph symptom
- * returns this is the number to put back.
+ * in order; 125 is four times faster than that and well inside the range where
+ * the browser decides what it shows. Bradley asked for it twice, knowing the
+ * risk. If the uneven-glyph symptom returns, walk it back — 250, then 500.
  */
-const STEP = 250;
-const PAUSE = 250;
+const STEP = 125;
+const PAUSE = 125;
 
 const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
   { offsets: [LIFT, 0, 0], hold: STEP },
