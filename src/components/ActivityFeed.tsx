@@ -1,5 +1,6 @@
 import type { FeaturedRepo, GitHubSnapshot, RepoCard } from "@/lib/github";
 import { monogram } from "@/lib/profile-data";
+import { GitHubIcon } from "@/components/SocialIcons";
 
 interface ActivityFeedProps {
   snapshot: GitHubSnapshot;
@@ -31,6 +32,71 @@ function shortDate(iso: string): string {
     day: "numeric",
     timeZone: "UTC",
   });
+}
+
+/**
+ * One activity source inside the panel.
+ *
+ * Recent Activity used to *be* GitHub — the panel's contents were repo rows
+ * and nothing said so. It's becoming a feed of several sources, so each one is
+ * now labelled and boxed, and GitHub is one of them rather than the whole
+ * thing.
+ *
+ * `live` marks a source whose rows are fetched. It's the honest distinction
+ * between GitHub, which updates itself, and the sources below that will be
+ * hand-kept because they have no usable public API.
+ */
+function SourceBlock({
+  name,
+  icon,
+  live = false,
+  children,
+}: {
+  name: string;
+  icon?: React.ReactNode;
+  live?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center gap-2">
+        {icon}
+        <span className="t-label text-copy">{name}</span>
+        {live && (
+          <span className="flex items-center gap-1.5">
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-live animate-pulse-live"
+              aria-hidden
+            />
+            <span className="t-meta text-live">Live</span>
+          </span>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * The sources that aren't built yet, named rather than implied.
+ *
+ * A draft on purpose — Bradley wants the shape of a multi-source feed before
+ * any of it is wired. It says which are API-backed and which he'd keep by
+ * hand, because that's the part that decides whether a source is worth
+ * building: books and games have no usable public API, so those rows would be
+ * written, not fetched, and this page's whole premise is knowing which is
+ * which.
+ */
+function PlannedSources() {
+  return (
+    <div className="border border-dashed border-line/70 px-4 py-4">
+      <p className="t-label text-muted">More sources</p>
+      <p className="t-meta mt-1.5 leading-relaxed">
+        Spotify, YouTube, videogame, books, etc. Not built — Spotify and YouTube
+        have APIs to pull from; books and games would be hand-kept.
+      </p>
+    </div>
+  );
 }
 
 /**
@@ -115,7 +181,6 @@ function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
               {repo.description}
             </p>
           )}
-
         </div>
       </div>
     </li>
@@ -190,28 +255,40 @@ export default function ActivityFeed({
         </h2>
       </div>
 
-      <div className="flex flex-col gap-4 p-5">
-        {hasRows ? (
-          <ul className="flex flex-col gap-3">
-            {useFeatured
-              ? featured.slice(0, MAX_ROWS).map((repo) => (
-                  <FeaturedRepoRow
-                    key={repo.nameWithOwner}
-                    repo={repo}
-                    now={now}
-                  />
-                ))
-              : repos.slice(0, MAX_ROWS).map((repo) => (
-                  <PublicRepoRow key={repo.id} repo={repo} now={now} />
-                ))}
-          </ul>
-        ) : (
-          <div className="bg-panel2/70 px-5 py-10 text-center">
-            <p className="t-label">
-              {snapshot.error ?? "No repository activity to show"}
-            </p>
-          </div>
-        )}
+      <div className="flex flex-col gap-5 p-5">
+        <SourceBlock
+          name="GitHub"
+          live={hasRows}
+          icon={<GitHubIcon className="h-4 w-4 text-muted" />}
+        >
+          {hasRows ? (
+            <ul className="flex flex-col gap-3">
+              {useFeatured
+                ? featured
+                    .slice(0, MAX_ROWS)
+                    .map((repo) => (
+                      <FeaturedRepoRow
+                        key={repo.nameWithOwner}
+                        repo={repo}
+                        now={now}
+                      />
+                    ))
+                : repos
+                    .slice(0, MAX_ROWS)
+                    .map((repo) => (
+                      <PublicRepoRow key={repo.id} repo={repo} now={now} />
+                    ))}
+            </ul>
+          ) : (
+            <div className="bg-panel2/70 px-5 py-10 text-center">
+              <p className="t-label">
+                {snapshot.error ?? "No repository activity to show"}
+              </p>
+            </div>
+          )}
+        </SourceBlock>
+
+        <PlannedSources />
 
         {stats && (
           <div className="flex flex-wrap items-center justify-end gap-2 pt-1 text-[14px] text-muted">
