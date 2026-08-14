@@ -29,9 +29,11 @@ import { useEffect } from "react";
  * - **Stops when the tab is hidden** and restores the static icon — a tab
  *   frozen mid-hop reads as broken. Same on unmount, and it never starts under
  *   `prefers-reduced-motion`.
- * - **Re-acquires the icon link** rather than holding one reference.
- *   `AutoRefresh` refreshes the route every 300s and can replace that element;
- *   holding the original froze the tab after five minutes.
+ * - **Replaces the icon element** each frame rather than reassigning its href.
+ *   Chrome caches favicons by URL and can skip a swap back to one it has
+ *   already decoded, which made hops appear on some cycles and not others.
+ *   Replacing also means `AutoRefresh` re-rendering the head every 300s can't
+ *   leave this writing to a detached node.
  *
  * The mark is canvas primitives rather than `BtMark`'s SVG — rasterising that
  * per frame would mean an image load each time. Same 408x292 ink bounds, so
@@ -56,17 +58,24 @@ const LIFT = -3;
  * same image, so this is four distinct renders — `FRAME_CACHE` is keyed by the
  * offsets rather than the index, so it encodes four PNGs, not six.
  *
- * The last frame holds far longer than the rest. That's the beat between
- * cycles, and keeping it as a duration rather than extra frames is why the
- * pause costs nothing.
+ * Every hop holds for the same `STEP`. They ran 110/90/110/90/110 once and
+ * that unevenness is what made the loop feel arbitrary — at six frames there's
+ * no room for a rhythm to be subtle, it just reads as a mistake.
+ *
+ * The last frame holds `PAUSE` instead. That's the beat between cycles, and
+ * keeping it as a duration rather than extra frames is why the pause costs
+ * nothing.
  */
+const STEP = 120;
+const PAUSE = 500;
+
 const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
-  { offsets: [LIFT, 0, 0], hold: 110 },
-  { offsets: [0, 0, 0], hold: 90 },
-  { offsets: [0, LIFT, 0], hold: 110 },
-  { offsets: [0, 0, 0], hold: 90 },
-  { offsets: [0, 0, LIFT], hold: 110 },
-  { offsets: [0, 0, 0], hold: 500 },
+  { offsets: [LIFT, 0, 0], hold: STEP },
+  { offsets: [0, 0, 0], hold: STEP },
+  { offsets: [0, LIFT, 0], hold: STEP },
+  { offsets: [0, 0, 0], hold: STEP },
+  { offsets: [0, 0, LIFT], hold: STEP },
+  { offsets: [0, 0, 0], hold: PAUSE },
 ];
 
 /** `bright` white. */
@@ -133,16 +142,35 @@ const FRAME_CACHE = new Map<string, string>();
 
 export default function AnimatedFavicon() {
   useEffect(() => {
-    let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
-    if (!link) return;
+    const initial = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    if (!initial) return;
 
-    function iconLink(): HTMLLinkElement | null {
-      if (link?.isConnected) return link;
-      link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
-      return link;
+    const staticHref = initial.href;
+
+    /*
+     * Replaces the icon element rather than reassigning its href.
+     *
+     * Reassigning looked correct and behaved erratically: this cycles four
+     * repeating data URLs, and Chrome caches favicons by URL, so a swap back
+     * to one it has already decoded can be skipped entirely. The result was
+     * hops that appeared some cycles and not others — which reads as random
+     * rather than as broken, and is why it wasn't obvious.
+     *
+     * A fresh element with no history is unambiguous, and it also removes the
+     * need to re-acquire a stale reference after `AutoRefresh` re-renders the
+     * head: whatever is in the document when this runs gets replaced.
+     */
+    function setIcon(href: string) {
+      const next = document.createElement("link");
+      next.rel = "icon";
+      next.type = "image/png";
+      next.sizes = "32x32";
+      next.href = href;
+      document
+        .querySelectorAll('link[rel~="icon"]')
+        .forEach((el) => el.remove());
+      document.head.appendChild(next);
     }
-
-    const staticHref = link.href;
 
     const canvas = document.createElement("canvas");
     canvas.width = SIZE;
@@ -173,8 +201,7 @@ export default function AnimatedFavicon() {
         FRAME_CACHE.set(key, url);
       }
 
-      const el = iconLink();
-      if (el) el.href = url;
+      setIcon(url);
 
       i = (i + 1) % FRAMES.length;
       timer = window.setTimeout(tick, hold);
@@ -188,8 +215,7 @@ export default function AnimatedFavicon() {
     function onVisibility() {
       if (document.hidden) {
         stop();
-        const el = iconLink();
-        if (el) el.href = staticHref;
+        setIcon(staticHref);
       } else if (timer === undefined) {
         i = 0;
         tick();
@@ -202,8 +228,7 @@ export default function AnimatedFavicon() {
     return () => {
       stop();
       document.removeEventListener("visibilitychange", onVisibility);
-      const el = iconLink();
-      if (el) el.href = staticHref;
+      setIcon(staticHref);
     };
   }, []);
 
