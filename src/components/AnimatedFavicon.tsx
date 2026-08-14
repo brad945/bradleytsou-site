@@ -67,12 +67,19 @@ const LIFT = -3;
  * frame, which has it at rest. The dedicated down frames only existed to make
  * the sequence explicit in code.
  *
- * Every hop holds for the same `STEP` — they ran 110/90/110/90/110 once, and
- * at this few frames that unevenness reads as a mistake rather than a rhythm.
- * The final frame holds `PAUSE`, the beat between cycles; keeping it a
- * duration rather than extra frames is why the pause costs nothing.
+ * **Every frame holds 500ms, including the pause.** At 120ms it aliased
+ * badly: the cycle came to 860ms against a browser repaint floor of roughly a
+ * second, and two rates that close beat against each other — some frames got
+ * sampled over and over while others were skipped almost entirely. The visible
+ * symptom was the t hopping constantly while the b and the period appeared
+ * every few seconds, which looks like a bug in the animation and is actually
+ * the browser undersampling it.
+ *
+ * Holding every frame at or above the repaint floor means each one is painted
+ * once, in order. It's slower than the earlier attempts *asked* for and faster
+ * than they *achieved*.
  */
-const STEP = 120;
+const STEP = 500;
 const PAUSE = 500;
 
 const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
