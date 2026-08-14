@@ -90,8 +90,26 @@ export default function Sidebar({
           Derived from the last push, not hardcoded. This used to read
           "Currently Online" in green permanently, regardless of anything.
         */}
+        {/*
+          Linked to the GitHub profile, because that's where the status comes
+          from — it's derived from the last push, so the link goes to the thing
+          being measured rather than somewhere merely related. Falls back to
+          plain text if the snapshot has no profile URL, so a failed fetch
+          can't produce an anchor to nowhere.
+        */}
         <h2 className={`text-[24px] font-normal leading-tight ${status.tone}`}>
-          {status.label}
+          {stats?.profileUrl ? (
+            <a
+              href={stats.profileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-opacity hover:opacity-80"
+            >
+              {status.label}
+            </a>
+          ) : (
+            status.label
+          )}
         </h2>
         {/* Says exactly what it measures — a push, not presence. */}
         {since && <p className="t-meta mt-1">Last commit {since}</p>}

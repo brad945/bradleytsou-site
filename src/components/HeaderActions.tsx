@@ -5,8 +5,6 @@ import { useEffect, useRef, useState } from "react";
 interface HeaderActionsProps {
   /** GitHub profile URL, or null when the username isn't configured. */
   profileUrl: string | null;
-  /** GitHub login, used to build the API and feed URLs. */
-  login: string | null;
   /**
    * This site's own repo — null when it isn't publicly visible, in which case
    * the row is omitted rather than linking somewhere a visitor gets a 404.
@@ -33,7 +31,6 @@ interface HeaderActionsProps {
  */
 export default function HeaderActions({
   profileUrl,
-  login,
   sourceUrl,
   email,
 }: HeaderActionsProps) {
@@ -101,29 +98,6 @@ export default function HeaderActions({
               <a href={sourceUrl} target="_blank" rel="noreferrer" className={menuItem}>
                 View source
               </a>
-            )}
-
-            {login && (
-              <>
-                {/* The JSON the page is built from. */}
-                <a
-                  href={`https://api.github.com/users/${login}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={menuItem}
-                >
-                  View raw API response
-                </a>
-                {/* GitHub's real Atom feed — the same events as the killfeed. */}
-                <a
-                  href={`https://github.com/${login}.atom`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={menuItem}
-                >
-                  Activity feed (.atom)
-                </a>
-              </>
             )}
           </div>
         )}

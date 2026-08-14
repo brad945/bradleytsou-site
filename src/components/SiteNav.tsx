@@ -143,8 +143,20 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
 
                 Grey rather than link-blue: it isn't a link, and colouring it
                 like one implied a wallet page to click through to.
+
+                **The tooltip is a joke, not a description.** It says "pulled
+                live from cashapp api"; the value is the hardcoded constant
+                right there in profile-data, and there is no Cash App call
+                anywhere in this repo. Bradley asked for it deliberately. Worth
+                knowing before anyone reads it as a lead and goes looking for
+                the integration.
               */}
-              <span className="text-[12px] text-muted">{accountBalance}</span>
+              <span
+                title="pulled live from cashapp api"
+                className="text-[12px] text-muted"
+              >
+                {accountBalance}
+              </span>
             </span>
 
             {/*

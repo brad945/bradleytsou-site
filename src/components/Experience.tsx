@@ -121,15 +121,28 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
 
       <div className="px-5 pb-5 pt-1">
         <ul className="flex flex-col">
-          {roles.map((role) =>
-            roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
-          )}
+          {roles
+            .filter((role) => !role.afterProjects)
+            .map((role) =>
+              roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
+            )}
           {projects.map((project) =>
             projectRow(
               project,
               project.ghRepo ? byRepo.get(project.ghRepo) : undefined,
             ),
           )}
+          {/*
+            Roles flagged `afterProjects` close the list. The panel is one
+            merged list but was built as roles-then-projects, which tied a
+            role's position to its category — BRI Youth could only ever be last
+            among the roles, never last overall.
+          */}
+          {roles
+            .filter((role) => role.afterProjects)
+            .map((role) =>
+              roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
+            )}
         </ul>
       </div>
     </section>

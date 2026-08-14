@@ -351,7 +351,6 @@ export default function ProfileHeader({
           <div className="mt-4">
             <HeaderActions
               profileUrl={stats?.profileUrl ?? null}
-              login={stats?.login ?? null}
               sourceUrl={sourceUrl}
               email={profile.email}
             />

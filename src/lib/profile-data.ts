@@ -59,6 +59,15 @@ export interface Role {
    */
   ghRepo?: string;
   url?: string;
+  /**
+   * Render this role *below* the project rows instead of with the other roles.
+   *
+   * The Experience panel is one merged list, but it's built as roles-then-
+   * projects, which tied a role's position to its category. BRI Youth is the
+   * oldest thing here and Bradley wants it last overall, which that structure
+   * couldn't express — it could only ever be last among the roles.
+   */
+  afterProjects?: boolean;
 }
 
 /**
@@ -205,7 +214,8 @@ export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
 
 /**
  * Experience in the order Bradley wants it shown — roughly newest first, but
- * arranged by hand, not sorted by date. Hand-maintained overall: LinkedIn has
+ * arranged by hand, not sorted by date. BRI Youth carries `afterProjects`, so
+ * it renders below the project rows rather than with the other roles. Hand-maintained overall: LinkedIn has
  * no public API, so there's nothing to fetch and nothing that self-corrects.
  *
  * Transcribed from Bradley's LinkedIn verbatim; don't embellish it.
@@ -228,6 +238,7 @@ export const roles: Role[] = [
     start: "May 2026",
     location: "San Diego, CA",
     blurb: "Portal cybersecurity systems; Verdegard IT operations.",
+    url: "https://www.medimpact.com",
   },
   {
     org: "DevEval",
@@ -241,12 +252,13 @@ export const roles: Role[] = [
     url: "https://deveval.com",
   },
   {
-    org: "Crossing Hurdles",
+    org: "micro1",
     tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
     title: "Language and Audio Engineer",
     start: "Jun 2026",
     blurb:
       "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
+    url: "https://micro1.ai",
   },
   {
     org: "Web Development at Berkeley",
@@ -254,6 +266,7 @@ export const roles: Role[] = [
     title: "Industry Developer",
     start: "Jan 2026",
     blurb: "Building websites and fullstack apps.",
+    url: "https://webatberkeley.org",
   },
   {
     org: "UCSB",
@@ -263,9 +276,11 @@ export const roles: Role[] = [
     end: "Aug 2025",
     blurb:
       "Dining hall waste study: devised utility functions and conducted market research to model human cognition and economic theories against waste-reduction strategies at UCSB's dining halls.",
+    url: "https://www.ucsb.edu",
   },
   {
     org: "BRI Youth",
+    afterProjects: true,
     tags: ["UI/UX", "Frontend", "Tutoring", "Music"],
     title: "Web UI Developer & Lead Tutor",
     start: "Mar 2020",
