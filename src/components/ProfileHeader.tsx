@@ -280,8 +280,8 @@ export default function ProfileHeader({
                   Restoring it means putting `className` back on the entries in
                   profile-data and reading it here again.
                 */
-                className={`max-w-[46ch] text-[17px] font-medium leading-snug text-bright [text-wrap:balance] ${
-                  i === 0 ? "mt-3.5" : "mt-2"
+                className={`max-w-[46ch] text-[17px] font-medium leading-tight text-bright [text-wrap:balance] ${
+                  i === 0 ? "mt-2.5" : "mt-1"
                 }`}
               >
                 {renderBioLine(line)}
