@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
+import AnimatedFavicon from "@/components/AnimatedFavicon";
 import { profile, siteOrigin } from "@/lib/profile-data";
 
 /**
@@ -75,6 +76,9 @@ export default function RootLayout({
           aria-hidden
         />
         <div className="relative">{children}</div>
+        {/* Swaps the static /icon for a stepped hop after hydration. Renders
+            nothing; with JS off the static mark stays. */}
+        <AnimatedFavicon />
       </body>
     </html>
   );
