@@ -70,8 +70,18 @@ const MARK_H = Math.round((MARK_W * 292) / 408);
  *  smoother rather than lazier. */
 const AMP = 3;
 
-/** One full cycle, in ms. */
-const LOOP = 1400;
+/**
+ * One full cycle, in ms.
+ *
+ * 1400 read as sluggish: with the duty now filling the whole loop there's no
+ * pause to break it up, so a long cycle is 1.4 seconds of continuous slow
+ * drift rather than a bounce. 700 gives each glyph a hop of about half a
+ * second, which reads as a bounce.
+ *
+ * This is the speed knob. `FPS` is the smoothness knob — they're independent,
+ * and turning the wrong one is why this took a few passes.
+ */
+const LOOP = 700;
 
 /**
  * Where each glyph sits in that cycle, as a fraction of it.
