@@ -120,8 +120,15 @@ export default function HeaderActions({
           /* Left-aligned: Message is the leftmost control, so the panel grows
              rightward. The mirror of what More does. */
           <div className="absolute left-0 top-full z-20 mt-1 w-[240px] bg-menu py-1 shadow-[0_4px_14px_rgba(0,0,0,0.55)]">
+            {/*
+              Labelled "(Mac)" at Bradley's request. It isn't Mac-only —
+              mailto: works anywhere a mail client is registered — but this is
+              the item that silently does nothing on a stock Windows machine,
+              and naming the platform where it reliably works steers Windows
+              visitors to the two below it instead of a dead click.
+            */}
             <a href={`mailto:${email}`} className={menuItem}>
-              Open in mail app
+              Open in mail app (Mac)
             </a>
             <a
               href={gmailCompose}
