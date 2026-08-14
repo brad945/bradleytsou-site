@@ -67,20 +67,23 @@ const LIFT = -3;
  * frame, which has it at rest. The dedicated down frames only existed to make
  * the sequence explicit in code.
  *
- * **Every frame holds 500ms, including the pause.** At 120ms it aliased
- * badly: the cycle came to 860ms against a browser repaint floor of roughly a
- * second, and two rates that close beat against each other — some frames got
- * sampled over and over while others were skipped almost entirely. The visible
- * symptom was the t hopping constantly while the b and the period appeared
- * every few seconds, which looks like a bug in the animation and is actually
- * the browser undersampling it.
+ * **Every frame holds the same 250ms, the pause included** — one cycle per
+ * second.
  *
- * Holding every frame at or above the repaint floor means each one is painted
- * once, in order. It's slower than the earlier attempts *asked* for and faster
- * than they *achieved*.
+ * This is the knob, and it's the one worth understanding before turning it.
+ * Browsers repaint the tab icon on their own schedule, somewhere around once a
+ * second, and a frame interval close to that beats against it: some frames get
+ * sampled repeatedly while others are skipped. At 120ms the symptom was the t
+ * hopping constantly while the b and period appeared every few seconds, which
+ * reads as a bug in the sequence and is really the browser undersampling it.
+ *
+ * 500ms was chosen to sit at or above that floor so every frame painted once,
+ * in order. 250 is deliberately below it, at Bradley's request — it plays
+ * twice as fast when the browser keeps up, and if the uneven-glyph symptom
+ * returns this is the number to put back.
  */
-const STEP = 500;
-const PAUSE = 500;
+const STEP = 250;
+const PAUSE = 250;
 
 const FRAMES: { offsets: [number, number, number]; hold: number }[] = [
   { offsets: [LIFT, 0, 0], hold: STEP },
