@@ -137,26 +137,17 @@ export const accountBalance = "$0.01";
 /**
  * Steam profile, or a friend-invite link.
  *
- * **Null until Bradley supplies one**, and the "Add friend on Steam" row in the
- * header's ⋯ menu is omitted entirely while it is. The Steam icon in the
- * sidebar's Links row reads this too, and stays greyed out for the same reason.
- * Nothing here guesses a URL — a wrong Steam ID sends visitors to someone
- * else's profile, which is worse than no link.
+ * **The plain profile, deliberately.** A friend-invite link
+ * (`https://s.team/p/xxxx-xxxxx`) adds you in one click rather than two, but
+ * Steam expires them after 30 days — it would rot into a dead link on a page
+ * nobody edits weekly, which is worse than the extra step. The vanity URL
+ * doesn't expire.
  *
- * Two kinds of URL work here, and they behave differently:
- *
- * 1. **A friend-invite link** — `https://s.team/p/xxxx-xxxxx`. Generated in
- *    Steam under Friends > Add a Friend > "Create invite link". This is the
- *    one that actually adds you in a click; it works for people who aren't
- *    signed in yet and doesn't expose the profile to search. It can be revoked
- *    and regenerated, so it's the safer thing to publish.
- * 2. **The plain profile** — `https://steamcommunity.com/id/<vanity>`. Always
- *    valid, but "Add Friend" there is a button behind a login, so it's a couple
- *    of steps rather than one.
- *
- * Prefer (1); (2) is the fallback.
+ * Read by the ⋯ menu's "Add friend on Steam" row and by the Steam icon in the
+ * sidebar's Links row; both are omitted entirely when this is null.
  */
-export const steamProfileUrl: string | null = null;
+export const steamProfileUrl: string | null =
+  "https://steamcommunity.com/id/bushhammer";
 
 /**
  * Hackathon wins, for the sidebar row.
