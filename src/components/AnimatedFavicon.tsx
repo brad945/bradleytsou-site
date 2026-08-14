@@ -29,11 +29,11 @@ import { useEffect } from "react";
  * - **Stops when the tab is hidden** and restores the static icon — a tab
  *   frozen mid-hop reads as broken. Same on unmount, and it never starts under
  *   `prefers-reduced-motion`.
- * - **Replaces the icon element** each frame rather than reassigning its href.
- *   Chrome caches favicons by URL and can skip a swap back to one it has
- *   already decoded, which made hops appear on some cycles and not others.
- *   Replacing also means `AutoRefresh` re-rendering the head every 300s can't
- *   leave this writing to a detached node.
+ * - **Assigns `href` on one stable element**, re-acquiring it if detached.
+ *   Building a fresh `<link>` per frame was tried and stopped the animation
+ *   dead after a cycle or two — Chrome throttles rapid churn of head elements.
+ *   Re-acquisition covers `AutoRefresh` replacing the element every 300s,
+ *   which otherwise froze the tab after five minutes.
  *
  * The mark is canvas primitives rather than `BtMark`'s SVG — rasterising that
  * per frame would mean an image load each time. Same 408x292 ink bounds, so
@@ -142,34 +142,28 @@ const FRAME_CACHE = new Map<string, string>();
 
 export default function AnimatedFavicon() {
   useEffect(() => {
-    const initial = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
-    if (!initial) return;
+    let link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+    if (!link) return;
 
-    const staticHref = initial.href;
+    const staticHref = link.href;
 
     /*
-     * Replaces the icon element rather than reassigning its href.
+     * Assigns to one stable element.
      *
-     * Reassigning looked correct and behaved erratically: this cycles four
-     * repeating data URLs, and Chrome caches favicons by URL, so a swap back
-     * to one it has already decoded can be skipped entirely. The result was
-     * hops that appeared some cycles and not others — which reads as random
-     * rather than as broken, and is why it wasn't obvious.
+     * Building a fresh `<link>` per frame was tried and was worse — it ran a
+     * cycle or two and then stopped altogether, which is Chrome throttling
+     * rapid churn of head elements. Reassigning `href` on a single element is
+     * what every favicon library does, and it keeps animating.
      *
-     * A fresh element with no history is unambiguous, and it also removes the
-     * need to re-acquire a stale reference after `AutoRefresh` re-renders the
-     * head: whatever is in the document when this runs gets replaced.
+     * The element is re-acquired when detached rather than captured once:
+     * `AutoRefresh` refreshes the route every 300s and can replace it, and
+     * holding the original froze the tab after five minutes.
      */
     function setIcon(href: string) {
-      const next = document.createElement("link");
-      next.rel = "icon";
-      next.type = "image/png";
-      next.sizes = "32x32";
-      next.href = href;
-      document
-        .querySelectorAll('link[rel~="icon"]')
-        .forEach((el) => el.remove());
-      document.head.appendChild(next);
+      if (!link?.isConnected) {
+        link = document.querySelector<HTMLLinkElement>('link[rel~="icon"]');
+      }
+      if (link) link.href = href;
     }
 
     const canvas = document.createElement("canvas");
