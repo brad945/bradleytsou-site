@@ -23,14 +23,13 @@ import { useEffect } from "react";
  * - **It needs JS**, so the static `/icon` route stays as the real favicon and
  *   this replaces it after hydration. With JS off, the tab shows the static
  *   mark and nothing is lost.
- * - **10fps, not 60.** Each frame is a canvas export plus a DOM write, and the
- *   tab strip is 16 CSS px — past ~10fps it costs more than it shows. That
- *   also matches the original screensaver's chunky framerate, which is what
- *   the avatar's `steps()` bounce is pinned to.
+ * - **30fps, and 60 wouldn't help.** See the note on `FPS`: the icon renders
+ *   at 16 CSS px over 11px of travel, so past ~30 the mark moves less than a
+ *   device pixel per frame while still paying for a PNG encode each time.
  * - **It stops when the tab is hidden.** `requestAnimationFrame` is throttled
  *   or halted in background tabs, so this listens for `visibilitychange` and
- *   restores the static icon on the way out — a tab frozen mid-bounce on a
- *   random colour looks broken rather than paused.
+ *   restores the static icon on the way out — a tab frozen mid-bounce looks
+ *   broken rather than paused.
  *
  * ## The mark
  *
@@ -56,13 +55,37 @@ const SIZE = 32;
 const MARK_W = 21;
 const MARK_H = Math.round((MARK_W * 292) / 408);
 
-/** Frames per second. See the note above on why this isn't higher. */
-const FPS = 10;
+/**
+ * How often the tab icon is redrawn, per second.
+ *
+ * **30 is about where this stops paying off, and 60 is not worth it.** Three
+ * limits, in the order they bite:
+ *
+ * 1. Every redraw is a `toDataURL` — a synchronous PNG encode and base64 on
+ *    the main thread. Small at 32x32, but it's a fixed tax per frame.
+ * 2. The icon renders at 16 CSS px and the mark's whole horizontal travel is
+ *    11px. At 60fps it advances ~0.18px a frame, under one device pixel;
+ *    antialiasing means those frames aren't identical, but they're close.
+ * 3. Browsers coalesce rapid favicon changes. Setting `href` queues a load and
+ *    decode, so writes past a certain rate are dropped rather than painted.
+ *
+ * Raising this is safe — motion is time-based, so speed doesn't change with it
+ * (which was not true when this moved in pixels-per-frame).
+ */
+const FPS = 30;
 
-/** Pixels per frame on each axis. Deliberately unequal, so the path doesn't
- *  retrace itself into a short loop the way matching speeds would. */
-const VX = 1.1;
-const VY = 0.9;
+/**
+ * Speed in **pixels per second**, not per frame.
+ *
+ * Per-frame movement tied the mark's speed to the frame rate: a dropped frame
+ * meant a slower dog, and changing FPS silently changed how fast it moved.
+ * Against elapsed time, neither is true.
+ *
+ * The two axes are deliberately unequal, so the path doesn't retrace itself
+ * into a short loop the way matching speeds would.
+ */
+const SPEED_X = 11;
+const SPEED_Y = 9;
 
 /**
  * `bright` white, and it stays white.
@@ -143,37 +166,57 @@ export default function AnimatedFavicon() {
 
     let x = 3;
     let y = 4;
-    let dx = VX;
-    let dy = VY;
-    let timer: number | undefined;
+    let dirX = 1;
+    let dirY = 1;
+    let raf: number | undefined;
+    let last = 0;
+    let sinceDraw = 0;
 
-    function frame() {
+    function frame(now: number) {
       if (!ctx) return;
 
-      x += dx;
-      y += dy;
+      /*
+       * First frame has no previous timestamp, and a tab returning to the
+       * foreground can hand back a gap of many seconds. Both would teleport
+       * the mark, so dt is clamped to a sane maximum.
+       */
+      const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
+      last = now;
+
+      x += dirX * SPEED_X * dt;
+      y += dirY * SPEED_Y * dt;
 
       // Reverse at each wall. Clamped as well as reversed, so a frame that
       // overshoots doesn't leave the mark stuck outside the box.
       if (x <= 0 || x >= SIZE - MARK_W) {
-        dx = -dx;
+        dirX = -dirX;
         x = Math.min(Math.max(x, 0), SIZE - MARK_W);
       }
       if (y <= 0 || y >= SIZE - MARK_H) {
-        dy = -dy;
+        dirY = -dirY;
         y = Math.min(Math.max(y, 0), SIZE - MARK_H);
       }
 
-      ctx.clearRect(0, 0, SIZE, SIZE);
-      drawMark(ctx, x, y, MARK_W, MARK_H, MARK_COLOUR);
-      if (link) link.href = canvas.toDataURL("image/png");
+      /*
+       * Position updates every animation frame; the icon is only rewritten at
+       * FPS. Redrawing on every rAF tick would spend a PNG encode on movement
+       * too small to see, and browsers would drop most of those writes anyway.
+       */
+      sinceDraw += dt;
+      if (sinceDraw >= 1 / FPS) {
+        sinceDraw = 0;
+        ctx.clearRect(0, 0, SIZE, SIZE);
+        drawMark(ctx, x, y, MARK_W, MARK_H, MARK_COLOUR);
+        if (link) link.href = canvas.toDataURL("image/png");
+      }
 
-      timer = window.setTimeout(frame, 1000 / FPS);
+      raf = requestAnimationFrame(frame);
     }
 
     function stop() {
-      if (timer !== undefined) window.clearTimeout(timer);
-      timer = undefined;
+      if (raf !== undefined) cancelAnimationFrame(raf);
+      raf = undefined;
+      last = 0;
     }
 
     function onVisibility() {
@@ -182,13 +225,13 @@ export default function AnimatedFavicon() {
         // A tab frozen mid-bounce reads as broken; the static mark reads as a
         // normal favicon.
         if (link) link.href = staticHref;
-      } else if (timer === undefined) {
-        frame();
+      } else if (raf === undefined) {
+        raf = requestAnimationFrame(frame);
       }
     }
 
     document.addEventListener("visibilitychange", onVisibility);
-    frame();
+    raf = requestAnimationFrame(frame);
 
     return () => {
       stop();
