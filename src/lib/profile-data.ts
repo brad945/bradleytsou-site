@@ -492,7 +492,13 @@ export const projects: Project[] = [
       "Subagent Delegation",
     ],
     href: undefined,
-    repo: "https://github.com/ronoktanvir/Orca",
+    /*
+     * No link: `ronoktanvir/Orca` 404s for anyone not on it — the API reports
+     * it private. It carried the public URL and sent visitors to a dead page.
+     * The row shows a Private tag instead; restore the URL if it's ever opened
+     * up.
+     */
+    repo: undefined,
     period: "2026",
   },
 ];

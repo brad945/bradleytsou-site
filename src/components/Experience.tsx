@@ -21,6 +21,7 @@ function Row({
   blurb,
   tags,
   href,
+  isPrivate = false,
 }: {
   title: string;
   meta: string;
@@ -28,6 +29,8 @@ function Row({
   blurb?: string;
   tags?: string[];
   href?: string;
+  /** Shows a Private tag. Set when the backing repo isn't publicly visible. */
+  isPrivate?: boolean;
 }) {
   return (
     <li className="flex flex-col gap-x-6 gap-y-1 border-t border-line/50 py-3 sm:flex-row">
@@ -43,6 +46,16 @@ function Row({
           </a>
         ) : (
           <span className="text-[15px] text-copy">{title}</span>
+        )}
+        {/*
+          Marks a project whose repo a visitor can't open. It's shown instead
+          of a link rather than beside one — the point is that there's nothing
+          to click, not that the link is restricted.
+        */}
+        {isPrivate && (
+          <span className="ml-2 border border-line px-1.5 py-px text-[10px] uppercase tracking-wider text-muted">
+            Private
+          </span>
         )}
         {subtitle && <p className="t-meta leading-snug">{subtitle}</p>}
       </div>
@@ -89,11 +102,20 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
     project.repo ??
     (repo && !repo.isPrivate ? repo.url : undefined);
 
+  /*
+   * A project with a backing repo the API reports private, and no other link,
+   * has nothing a visitor can open — so it gets the tag instead. `repo` is only
+   * populated for repos in `featuredRepos`, so a private one outside that list
+   * shows neither, which is correct: nothing here knows it exists.
+   */
+  const isPrivate = !href && Boolean(repo?.isPrivate);
+
   return (
     <Row
       key={`project-${project.id}`}
       title={project.name}
       href={href}
+      isPrivate={isPrivate}
       subtitle={project.kind}
       blurb={project.blurb}
       tags={project.tags}
