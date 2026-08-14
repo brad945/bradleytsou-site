@@ -42,19 +42,17 @@ function shortDate(iso: string): string {
  * now labelled and boxed, and GitHub is one of them rather than the whole
  * thing.
  *
- * `live` marks a source whose rows are fetched. It's the honest distinction
- * between GitHub, which updates itself, and the sources below that will be
- * hand-kept because they have no usable public API.
+ * A `live` dot marked fetched sources apart from hand-kept ones and was
+ * removed at Bradley's request. The distinction still matters when the other
+ * sources land — it's stated in `PlannedSources` instead, in words.
  */
 function SourceBlock({
   name,
   icon,
-  live = false,
   children,
 }: {
   name: string;
   icon?: React.ReactNode;
-  live?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -62,15 +60,6 @@ function SourceBlock({
       <div className="mb-2 flex items-center gap-2">
         {icon}
         <span className="t-label text-copy">{name}</span>
-        {live && (
-          <span className="flex items-center gap-1.5">
-            <span
-              className="h-1.5 w-1.5 rounded-full bg-live animate-pulse-live"
-              aria-hidden
-            />
-            <span className="t-meta text-live">Live</span>
-          </span>
-        )}
       </div>
       {children}
     </div>
@@ -258,7 +247,6 @@ export default function ActivityFeed({
       <div className="flex flex-col gap-5 p-5">
         <SourceBlock
           name="GitHub"
-          live={hasRows}
           icon={<GitHubIcon className="h-4 w-4 text-muted" />}
         >
           {hasRows ? (
