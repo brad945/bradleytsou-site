@@ -42,13 +42,17 @@ const tokens = {
    * The values took several passes to land and the reasoning is worth not
    * relearning:
    *
-   * - `berkeley` #fdcf17 is California Gold rotated 7deg toward yellow. It's
-   *   the one brand colour that works raw here — Berkeley Blue #003262 is
-   *   1.16:1 on this column and MedImpact's #250644 is 1.18:1, both lost in
-   *   the background's own hue family, so those had to be tints.
-   * - `medimpact` #c084f5 is hsl(272, 85, 74) — "more purple", asked twice.
-   *   It was the contrast risk of the set at 5.59:1; L=70 is 4.75:1 and L=66
-   *   fails outright at 4.05:1.
+   * - `berkeley` #dca009 is hsl(43, 92, 45). It went to hue 48 once and read
+   *   too yellow and too bright, so it's back near California Gold's own 41
+   *   and darker — gold rather than lemon. Raising the hue past ~46 or the
+   *   lightness past ~50 is what makes it yellow again. 6.45:1.
+   *   Berkeley's blue can't be used at all here: #003262 is 1.16:1 on this
+   *   column, lost in the background's own hue family.
+   * - `medimpact` #b771f4 is hsl(272, 85, 70), darkened from 74 by request.
+   *   **70 is the floor.** It's the least legible colour on the page at
+   *   4.75:1, and one more step down — L=66, #ad5ff2 — is 4.05:1, under the
+   *   4.5:1 AA needs for text this size. Darker means dropping saturation
+   *   too, or accepting a fail.
    * - `deveval` #60ebdb is hsl(173, 78, 65). "More teal" means more saturated
    *   and slightly darker, NOT bluer — 180 is where cyan sits, and a pass that
    *   moved the hue that way is why it had to be asked twice.
@@ -58,9 +62,9 @@ const tokens = {
    * page it sat on. That risk is lower now they're a word each rather than
    * three full lines, but it's the same mistake.
    */
-  berkeley: "#fdcf17",
+  berkeley: "#dca009",
   deveval: "#60ebdb",
-  medimpact: "#c084f5",
+  medimpact: "#b771f4",
   /** Steam blue, used for panel bars. */
   plum: "#2a475e",
   /** Steam global-header near-black. */

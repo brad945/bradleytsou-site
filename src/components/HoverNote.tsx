@@ -8,7 +8,13 @@
  * `hidden` -> `block` with no transition, so it appears on the same frame the
  * pointer arrives.
  *
- * ## Two things that are load-bearing
+ * **`w-max` is load-bearing.** An absolutely positioned box shrink-to-fits
+ * against its containing block, and here that's the `relative` span wrapping
+ * the trigger — often only a few characters wide. Without `w-max` the note
+ * collapses to that width and breaks one word per line. `max-w` then caps it
+ * so a long note wraps at a sensible measure instead of running off-screen.
+ *
+ * ## Also load-bearing
  *
  * **The group is named (`group/note`).** Both call sites sit inside elements
  * that already use the default `group` for their own hover states — the nav's
@@ -41,7 +47,7 @@ export default function HoverNote({
       {children}
       <span
         aria-hidden
-        className={`pointer-events-none absolute top-full z-40 mt-1 hidden max-w-[280px] whitespace-normal border border-line bg-menu px-2 py-1.5 text-[11px] leading-snug text-ink shadow-[0_2px_8px_rgba(0,0,0,0.5)] group-hover/note:block ${
+        className={`pointer-events-none absolute top-full z-40 mt-1 hidden w-max max-w-[280px] border border-line bg-menu px-2 py-1.5 text-[11px] leading-snug text-ink shadow-[0_2px_8px_rgba(0,0,0,0.5)] group-hover/note:block ${
           align === "right" ? "right-0" : "left-0"
         }`}
       >

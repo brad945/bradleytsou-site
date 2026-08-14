@@ -392,8 +392,8 @@ accents used to have is moot while they stay unused.
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
-- **Bio-line accents, on the org links only**: `berkeley` #fdcf17,
-  `medimpact` #c084f5, `deveval` #60ebdb. The bio sentences are `bright`
+- **Bio-line accents, on the org links only**: `berkeley` #dca009,
+  `medimpact` #b771f4, `deveval` #60ebdb. The bio sentences are `bright`
   white and each org **link** carries its colour, so the hue marks the word
   it belongs to instead of tinting a whole line. They've been on the full
   sentence and off entirely before this; the config comment carries the

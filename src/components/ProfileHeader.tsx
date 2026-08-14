@@ -17,6 +17,29 @@ import {
  */
 const STEAM_BADGE_YEARS = 10;
 
+/**
+ * Spelled-out years, for the Years of Experience hover note.
+ *
+ * The note reads as a sentence ("about five solid, genuine years"), where a
+ * numeral would read as a stat. It's still keyed off the derived `years`
+ * rather than written out, so it rolls over with the card every January
+ * instead of quietly contradicting the number beside it.
+ *
+ * Falls back to the numeral past the end of the table.
+ */
+const YEARS_IN_WORDS: Record<number, string> = {
+  1: "one",
+  2: "two",
+  3: "three",
+  4: "four",
+  5: "five",
+  6: "six",
+  7: "seven",
+  8: "eight",
+  9: "nine",
+  10: "ten",
+};
+
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
   /** Null while this site's repo is private. */
@@ -343,7 +366,7 @@ export default function ProfileHeader({
           <HoverNote
             align="left"
             className="mt-4 block"
-            note={`Out of all the experience i've had in my life, i would say it averages out to about ${years} years.`}
+            note={`Out of all the experience I've had in my life, I would say it averages out to about ${YEARS_IN_WORDS[years] ?? years} solid, genuine years.`}
           >
             <div className="flex items-center gap-3 bg-panel2/70 p-3">
               {badge ? (
