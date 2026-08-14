@@ -71,17 +71,28 @@ const MARK_H = Math.round((MARK_W * 292) / 408);
 const AMP = 3;
 
 /**
- * One full cycle, in ms.
+ * The moving part of a cycle, in ms — start of b's hop to the moment the
+ * period lands.
  *
- * 1400 read as sluggish: with the duty now filling the whole loop there's no
- * pause to break it up, so a long cycle is 1.4 seconds of continuous slow
- * drift rather than a bounce. 700 gives each glyph a hop of about half a
- * second, which reads as a bounce.
- *
- * This is the speed knob. `FPS` is the smoothness knob — they're independent,
- * and turning the wrong one is why this took a few passes.
+ * This is the speed knob. `FPS` is the smoothness knob and `PAUSE` is the
+ * beat; they're independent, and turning the wrong one is why this took a few
+ * passes.
  */
-const LOOP = 700;
+const ACTIVE = 700;
+
+/**
+ * Still time after each ripple, in ms.
+ *
+ * Deliberate, and worth distinguishing from the pause that was removed a
+ * couple of commits ago. That one was an accident — `DUTY` was too short, so
+ * the loop ended with dead frames nobody chose and the icon stuttered. This
+ * one is a beat between bounces, and because it's held outside the animated
+ * range it costs one cached frame rather than a run of identical ones.
+ */
+const PAUSE = 500;
+
+/** One full cycle. */
+const LOOP = ACTIVE + PAUSE;
 
 /**
  * Where each glyph sits in that cycle, as a fraction of it.
@@ -95,27 +106,34 @@ const PHASES = [0, 0.11, 0.22];
 /**
  * Fraction of a glyph's cycle spent in the air; the rest is rest.
  *
- * **0.78 is not a taste value — it's `1 - max(PHASES)`.** At 0.55 the last
- * glyph landed 77% through the loop, so the final 23% was every glyph at rest:
- * ~19 of 84 frames rendering byte-identical, a 320ms freeze, then a jerk back
- * into motion. That pause was what read as a low frame rate, not the frame
- * rate. Sizing the duty so the last glyph lands exactly on the loop boundary
- * makes every frame distinct and the motion continuous.
+ * **Not a taste value — it's `1 - max(PHASES)`**, measured against `ACTIVE`.
+ * At 0.55 the last glyph landed well before the end and the remainder rendered
+ * byte-identical: ~19 of 84 frames, a 320ms freeze, then a jerk back into
+ * motion. That read as a low frame rate. Sizing the duty so the period lands
+ * exactly as `ACTIVE` ends keeps every frame in the moving range distinct.
  *
- * Change `PHASES` and this has to change with it, or the dead time comes back.
+ * Change `PHASES` and this follows, so the accidental dead time can't return.
  */
 const DUTY = 1 - Math.max(...PHASES);
 
 /**
- * Frames per loop.
+ * Frames across `ACTIVE`.
  *
  * 90/sec rather than 60: rAF fires at the display's refresh rate, so a 120Hz
- * screen was being handed the same cached frame twice in a row. The cache is
- * this long and fills once, so more frames cost encodes at startup and nothing
- * afterwards.
+ * screen was being handed the same cached frame twice in a row. The cache
+ * fills once, so more frames cost encodes at startup and nothing afterwards.
  */
 const FPS = 90;
-const FRAMES = Math.round((LOOP / 1000) * FPS);
+const FRAMES = Math.round((ACTIVE / 1000) * FPS);
+
+/**
+ * The at-rest frame, cached once and held for the whole pause.
+ *
+ * Sitting outside `FRAMES` rather than inside the loop is the point: the pause
+ * is one entry reused, not 45 identical encodes, and since the index doesn't
+ * change while it's held the icon isn't rewritten either.
+ */
+const REST_FRAME = FRAMES;
 
 /** `bright` white. The mark doesn't change colour — the motion is the point. */
 const MARK_COLOUR = "#ffffff";
@@ -194,7 +212,7 @@ function drawMark(
  * re-encode every frame. Filled lazily: the first pass through the loop
  * encodes, everything after is a lookup.
  */
-const FRAME_CACHE: (string | undefined)[] = new Array(FRAMES);
+const FRAME_CACHE: (string | undefined)[] = new Array(FRAMES + 1);
 
 export default function AnimatedFavicon() {
   useEffect(() => {
@@ -235,14 +253,16 @@ export default function AnimatedFavicon() {
        * means no work at all on rAF ticks landing inside the same frame, which
        * is most of them on a 120Hz display.
        */
-      const index = Math.floor(((now - start) % LOOP) / (LOOP / FRAMES));
+      const t = (now - start) % LOOP;
+      const index = t < ACTIVE ? Math.floor(t / (ACTIVE / FRAMES)) : REST_FRAME;
 
       if (index !== lastIndex) {
         lastIndex = index;
 
         let url = FRAME_CACHE[index];
         if (url === undefined) {
-          const u = index / FRAMES;
+          // The rest frame is the animation at u=0: every glyph grounded.
+          const u = index === REST_FRAME ? 0 : index / FRAMES;
           ctx.clearRect(0, 0, SIZE, SIZE);
           drawMark(ctx, originX, originY, MARK_W, MARK_H, [
             hop(u, PHASES[0]),
