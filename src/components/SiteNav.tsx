@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { GitHubStats } from "@/lib/github";
 import { accountBalance, profile } from "@/lib/profile-data";
 import BtMark from "@/components/BtMark";
+import HoverNote from "@/components/HoverNote";
 
 /**
  * Steam's global header: dark full-width bar, wordmark on the left, uppercase
@@ -151,29 +152,9 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
                 Worth knowing before anyone reads it as a lead and goes looking
                 for the integration.
               */}
-              <span className="group/bal relative">
+              <HoverNote note="pulled live from cashapp api">
                 <span className="text-[12px] text-muted">{accountBalance}</span>
-
-                {/*
-                  A real element, not `title`. The native tooltip has a
-                  browser-controlled delay of roughly a second that no CSS or
-                  JS can shorten — "instantly" isn't reachable with it.
-
-                  `hidden` -> `block` on hover, with no transition, so it
-                  appears on the same frame the pointer arrives.
-
-                  aria-hidden because this span sits inside the profile anchor,
-                  and without it the joke would be appended to that link's
-                  accessible name — a screen reader would read "brad945, $0.01,
-                  pulled live from cashapp api" as one label.
-                */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute right-0 top-full z-40 mt-1 hidden whitespace-nowrap border border-line bg-menu px-2 py-1 text-[11px] leading-none text-ink shadow-[0_2px_8px_rgba(0,0,0,0.5)] group-hover/bal:block"
-                >
-                  pulled live from cashapp api
-                </span>
-              </span>
+              </HoverNote>
             </span>
 
             {/*

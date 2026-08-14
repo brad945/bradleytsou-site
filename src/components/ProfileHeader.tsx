@@ -1,5 +1,6 @@
 import Image from "next/image";
 import HeaderActions from "@/components/HeaderActions";
+import HoverNote from "@/components/HoverNote";
 import NameHistory from "@/components/NameHistory";
 import type { GitHubStats } from "@/lib/github";
 import {
@@ -168,7 +169,9 @@ export default function ProfileHeader({
    * that it falls back to the generated tile rather than a broken image.
    */
   const badge =
-    years >= 1 && years <= STEAM_BADGE_YEARS ? `/steam-years-${years}.png` : null;
+    years >= 1 && years <= STEAM_BADGE_YEARS
+      ? `/steam-years-${years}.png`
+      : null;
 
   // The header deliberately has no `overflow-hidden`: it would clip the alias
   // dropdown. Nothing here overflows, so nothing needs clipping.
@@ -316,9 +319,20 @@ export default function ProfileHeader({
             </span>
           </div>
 
-          <div className="mt-4 flex items-center gap-3 bg-panel2/70 p-3">
-            {badge ? (
-              /*
+          {/*
+            `{years}` is interpolated into the note rather than written as "5".
+            The card beside it counts from `profile.codingSince` and rolls over
+            on its own every January, so a hardcoded number would quietly start
+            contradicting the figure it's explaining.
+          */}
+          <HoverNote
+            align="left"
+            className="mt-4 block"
+            note={`Out of all the experience i've had in my life, i would say it averages out to about ${years} years.`}
+          >
+            <div className="flex items-center gap-3 bg-panel2/70 p-3">
+              {badge ? (
+                /*
                 Valve's own badge art, at Bradley's explicit request — the one
                 Steam-owned asset on the page, overriding the "everything is
                 generated from the palette" rule the rest of the site follows.
@@ -328,24 +342,25 @@ export default function ProfileHeader({
                 asks for 112 device px and gets 80 — very slightly soft. Going
                 bigger makes that worse, since there's no larger source.
               */
-              <Image
-                src={badge}
-                alt={`Steam ${years}-year badge`}
-                width={56}
-                height={56}
-                className="h-14 w-14 shrink-0"
-              />
-            ) : (
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-panel2/80 text-[20px] font-light text-accent">
-                {years}
-              </span>
-            )}
-            <div className="min-w-0">
-              <p className="text-[14px] leading-tight text-copy">
-                Years of Experience
-              </p>
+                <Image
+                  src={badge}
+                  alt={`Steam ${years}-year badge`}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 shrink-0"
+                />
+              ) : (
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-accent/40 bg-panel2/80 text-[20px] font-light text-accent">
+                  {years}
+                </span>
+              )}
+              <div className="min-w-0">
+                <p className="text-[14px] leading-tight text-copy">
+                  Years of Experience
+                </p>
+              </div>
             </div>
-          </div>
+          </HoverNote>
 
           {/* Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is. */}
           <div className="mt-4">
