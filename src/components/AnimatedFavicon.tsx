@@ -85,13 +85,26 @@ const PHASES = [0, 0.11, 0.22];
 /**
  * Fraction of a glyph's cycle spent in the air; the rest is rest.
  *
- * Below ~0.5 the hop is too quick to follow at this size; at 1 there's no
- * pause and it reads as a wave rather than a bounce.
+ * **0.78 is not a taste value — it's `1 - max(PHASES)`.** At 0.55 the last
+ * glyph landed 77% through the loop, so the final 23% was every glyph at rest:
+ * ~19 of 84 frames rendering byte-identical, a 320ms freeze, then a jerk back
+ * into motion. That pause was what read as a low frame rate, not the frame
+ * rate. Sizing the duty so the last glyph lands exactly on the loop boundary
+ * makes every frame distinct and the motion continuous.
+ *
+ * Change `PHASES` and this has to change with it, or the dead time comes back.
  */
-const DUTY = 0.55;
+const DUTY = 1 - Math.max(...PHASES);
 
-/** Frames per loop. 60fps against `LOOP` — the cache is exactly this long. */
-const FPS = 60;
+/**
+ * Frames per loop.
+ *
+ * 90/sec rather than 60: rAF fires at the display's refresh rate, so a 120Hz
+ * screen was being handed the same cached frame twice in a row. The cache is
+ * this long and fills once, so more frames cost encodes at startup and nothing
+ * afterwards.
+ */
+const FPS = 90;
 const FRAMES = Math.round((LOOP / 1000) * FPS);
 
 /** `bright` white. The mark doesn't change colour — the motion is the point. */
