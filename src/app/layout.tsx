@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Open_Sans } from "next/font/google";
+import { Gabarito, JetBrains_Mono, Open_Sans } from "next/font/google";
 import "./globals.css";
 import AnimatedFavicon from "@/components/AnimatedFavicon";
 import { profile, siteOrigin } from "@/lib/profile-data";
@@ -27,6 +27,32 @@ const sans = Open_Sans({
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+/**
+ * Signage face, used only by the "Coming soon" cover.
+ *
+ * Deliberately outside the page's own typography, which is one family at light
+ * weights with no tracked capitals — the rules that make the rest read as
+ * Steam. A hoarding over the profile isn't part of that page, so it gets its
+ * own face; `font-sign` exists so that stays visible at the call site.
+ *
+ * **A stand-in for BB Casual Pro Medium**, which Bradley asked for and the
+ * site cannot load: it's Bold Studio's, sold per-licence, and embedding it
+ * needs a paid *webfont* licence. Same wall as Motiva Sans. If that licence is
+ * ever bought, drop the .woff2 in and swap this for `next/font/local`; don't
+ * point an @font-face at a copy from a free-font aggregator.
+ *
+ * Gabarito is the closest free face — a geometric sans with real stroke
+ * modulation rather than the dead-even strokes of Outfit or Poppins, which is
+ * the trait BB Casual is built around — and it carries a true Medium, so the
+ * named weight survives the substitution.
+ */
+const sign = Gabarito({
+  subsets: ["latin"],
+  weight: "500",
+  variable: "--font-sign",
   display: "swap",
 });
 
@@ -59,7 +85,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${mono.variable}`}
+      className={`${sans.variable} ${mono.variable} ${sign.variable}`}
       style={
         {
           "--font-display": "var(--font-sans)",

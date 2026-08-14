@@ -1,5 +1,6 @@
 import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
+import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
 import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
@@ -26,6 +27,7 @@ import {
   githubUsername,
   FAVORITE_REPO,
   featuredRepos,
+  privacyScreen,
   SITE_REPO_NAME,
   siteRepoUrl,
 } from "@/lib/profile-data";
@@ -76,28 +78,37 @@ export default async function Home() {
           ~649 / 12 / ~325 at ≥lg; stacks below that. The gap is 12px, Steam's
           own `.profile_customization` margin, not the 16 it used to be.
         */}
-        <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
-          <div className="flex min-w-0 flex-col gap-3">
-            {/*
+        {/*
+          The cover renders *instead of* the grid, not over it — see the note
+          on `privacyScreen`. The grid below is untouched; flipping the flag
+          brings it back exactly as it is.
+        */}
+        {privacyScreen ? (
+          <BoardedUp />
+        ) : (
+          <div className="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
+            <div className="flex min-w-0 flex-col gap-3">
+              {/*
               Order: Activity, Experience, Favorite Project. Activity leads
               because what he's working on now reads before where he's been,
               and Favorite Project sits last as the closing note rather than
               the opening one.
             */}
-            <ActivityFeed snapshot={snapshot} featured={featured} />
-            <Experience featured={featured} />
-            <FavoriteProject repo={favorite} />
-            {/* <Comments /> */}
-          </div>
+              <ActivityFeed snapshot={snapshot} featured={featured} />
+              <Experience featured={featured} />
+              <FavoriteProject repo={favorite} />
+              {/* <Comments /> */}
+            </div>
 
-          <Sidebar
-            snapshot={snapshot}
-            deveval={deveval}
-            contributions={contributions}
-            languages={languages}
-            lastPush={lastPush}
-          />
-        </div>
+            <Sidebar
+              snapshot={snapshot}
+              deveval={deveval}
+              contributions={contributions}
+              languages={languages}
+              lastPush={lastPush}
+            />
+          </div>
+        )}
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
           <span>

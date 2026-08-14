@@ -123,6 +123,25 @@ export const githubUsername: string = "brad945";
 export const siteOrigin = "https://www.bradleytsou.com";
 
 /**
+ * The "Coming soon" cover. **Flip to `false` to bring the page back** — that's
+ * the only edit; nothing else is changed to accommodate it.
+ *
+ * While it's on, `page.tsx` renders `BoardedUp` **instead of** the profile
+ * grid, and `ProfileHeader` drops the Message / More row. A visitor gets the
+ * nav, the profile header, and a "Coming soon" panel.
+ *
+ * It was an overlay over the grid first, and that could not hold. The cover
+ * sat inside the clipped wrapper, so an anchor jump from the nav scrolled the
+ * container and carried the cover off with it; every link underneath stayed in
+ * the tab order regardless of what was painted on top; and the whole lot sat
+ * in the page source. **Covering pixels doesn't disable a document.**
+ *
+ * `/play` is deliberately *not* covered: it holds nothing but one line, so
+ * there's nothing there to hide.
+ */
+export const privacyScreen = true;
+
+/**
  * The balance shown under the login in the nav, where Steam puts an account
  * balance.
  *

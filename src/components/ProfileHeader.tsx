@@ -7,6 +7,7 @@ import {
   aliases,
   experience,
   profile,
+  privacyScreen,
   profileLevel,
   steamProfileUrl,
   type BioLine,
@@ -426,15 +427,23 @@ export default function ProfileHeader({
             </div>
           </HoverNote>
 
-          {/* Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is. */}
-          <div className="mt-4">
-            <HeaderActions
-              profileUrl={stats?.profileUrl ?? null}
-              sourceUrl={sourceUrl}
-              email={profile.email}
-              steamUrl={steamProfileUrl}
-            />
-          </div>
+          {/*
+            Steam's Add Friend / Message / ⋯ row, sat where Edit Profile is.
+
+            Gone while the cover is up: it sits above the cover, so it stayed
+            live and clickable on a page that otherwise reads as closed — and
+            the ⋯ menu still opened onto View source and the GitHub profile.
+          */}
+          {!privacyScreen && (
+            <div className="mt-4">
+              <HeaderActions
+                profileUrl={stats?.profileUrl ?? null}
+                sourceUrl={sourceUrl}
+                email={profile.email}
+                steamUrl={steamProfileUrl}
+              />
+            </div>
+          )}
         </div>
       </div>
     </header>

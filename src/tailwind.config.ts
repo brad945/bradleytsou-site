@@ -242,6 +242,12 @@ const config: Config = {
           "system-ui",
           "sans-serif",
         ],
+        /*
+         * Signage only — the "Coming soon" cover. Kept out of `display` and
+         * `body` on purpose: a poster face has no business in the page's own
+         * typography, which is one family at light weights.
+         */
+        sign: ["var(--font-sign)", "ui-sans-serif", "sans-serif"],
         mono: [
           "var(--font-mono)",
           "ui-monospace",
