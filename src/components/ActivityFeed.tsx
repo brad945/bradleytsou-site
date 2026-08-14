@@ -1,5 +1,5 @@
 import type { FeaturedRepo, GitHubSnapshot, RepoCard } from "@/lib/github";
-import { monogram } from "@/lib/profile-data";
+import { repoDisplayNames } from "@/lib/profile-data";
 import { GitHubIcon } from "@/components/SocialIcons";
 
 interface ActivityFeedProps {
@@ -89,7 +89,7 @@ function PlannedSources() {
 }
 
 /**
- * How many repos the panel shows.
+ * How many repos the GitHub block lists.
  *
  * Sliced here rather than trimmed out of `featuredRepos`, because that list
  * also drives the sidebar's repo block and the `ghRepo` lookups behind the
@@ -99,7 +99,7 @@ function PlannedSources() {
  * So a fourth repo added to `featuredRepos` still fetches and still appears
  * elsewhere; it just doesn't show up here.
  */
-const MAX_ROWS = 2;
+const MAX_ROWS = 3;
 
 /**
  * A featured repo in Steam's "recently played" slot.
@@ -116,112 +116,56 @@ const MAX_ROWS = 2;
  * Private repos aren't linked — a visitor gets a 404.
  */
 function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
+  const label = repoDisplayNames[repo.nameWithOwner] ?? repo.name;
+
   const title = repo.isPrivate ? (
-    <span className="text-[17px] font-light leading-tight text-copy">
-      {repo.name}
-    </span>
+    <span className="text-[15px] leading-tight text-copy">{label}</span>
   ) : (
     <a
       href={repo.url}
       target="_blank"
       rel="noreferrer"
-      className="steam-link text-[17px] font-light leading-tight"
+      className="steam-link text-[15px] leading-tight"
     >
-      {repo.name}
+      {label}
     </a>
   );
 
   return (
-    <li className="bg-panel2/70">
-      <div className="flex flex-col gap-3 p-3 sm:flex-row">
-        <div className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 sm:w-[184px]">
-          <span
-            className={`text-[26px] font-light leading-none ${
-              repo.isPrivate ? "text-muted" : "text-link/80"
-            }`}
-          >
-            {monogram(repo.name)}
+    <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-t border-line/40 py-2 first:border-t-0">
+      <span className="flex flex-wrap items-baseline gap-2">
+        {title}
+        {repo.isPrivate && (
+          <span className="border border-line px-1.5 py-px text-[10px] uppercase tracking-wider text-muted">
+            Private
           </span>
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-            <span className="flex flex-wrap items-center gap-2">
-              {title}
-              {repo.isPrivate && (
-                <span className="border border-line px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-muted">
-                  Private
-                </span>
-              )}
-            </span>
-            <div className="t-meta text-right leading-tight">
-              {/* Commit count removed at Bradley's request; the language
-                  was sharing this line and stays. */}
-              {repo.language && <p>{repo.language}</p>}
-              <p>
-                last pushed on {shortDate(repo.pushedAt)} ·{" "}
-                {relativeTime(repo.pushedAt, now)} ago
-              </p>
-            </div>
-          </div>
-
-          {repo.description && (
-            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
-              {repo.description}
-            </p>
-          )}
-        </div>
-      </div>
+        )}
+      </span>
+      <span className="t-meta leading-tight">
+        {[repo.language, `${relativeTime(repo.pushedAt, now)} ago`]
+          .filter(Boolean)
+          .join(" · ")}
+      </span>
     </li>
   );
 }
 
-/** Fallback row, used only when there's no token to fetch the featured repos. */
 function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
   return (
-    <li className="bg-panel2/70">
-      <div className="flex flex-col gap-3 p-3 sm:flex-row">
-        <a
-          href={repo.url}
-          target="_blank"
-          rel="noreferrer"
-          className="flex h-[87px] w-full shrink-0 items-center justify-center border border-line/70 bg-panel2/70 transition-colors hover:border-link/50 sm:w-[184px]"
-        >
-          <span className="text-[26px] font-light leading-none text-link/80">
-            {monogram(repo.name)}
-          </span>
-        </a>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-            <a
-              href={repo.url}
-              target="_blank"
-              rel="noreferrer"
-              className="steam-link text-[17px] font-light leading-tight"
-            >
-              {repo.name}
-            </a>
-            <div className="t-meta text-right leading-tight">
-              <p>
-                {repo.stars.toLocaleString()}{" "}
-                {repo.stars === 1 ? "star" : "stars"} on record
-                {repo.language ? ` · ${repo.language}` : ""}
-              </p>
-              <p>
-                last pushed on {shortDate(repo.pushedAt)} ·{" "}
-                {relativeTime(repo.pushedAt, now)} ago
-              </p>
-            </div>
-          </div>
-
-          {repo.description && (
-            <p className="t-meta mt-1.5 line-clamp-2 leading-relaxed">
-              {repo.description}
-            </p>
-          )}
-        </div>
-      </div>
+    <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-t border-line/40 py-2 first:border-t-0">
+      <a
+        href={repo.url}
+        target="_blank"
+        rel="noreferrer"
+        className="steam-link text-[15px] leading-tight"
+      >
+        {repo.name}
+      </a>
+      <span className="t-meta leading-tight">
+        {[repo.language, `${relativeTime(repo.pushedAt, now)} ago`]
+          .filter(Boolean)
+          .join(" · ")}
+      </span>
     </li>
   );
 }
@@ -244,13 +188,13 @@ export default function ActivityFeed({
         </h2>
       </div>
 
-      <div className="flex flex-col gap-5 p-5">
+      <div className="flex flex-col gap-5 p-5 pt-3">
         <SourceBlock
           name="GitHub"
           icon={<GitHubIcon className="h-4 w-4 text-muted" />}
         >
           {hasRows ? (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col">
               {useFeatured
                 ? featured
                     .slice(0, MAX_ROWS)
