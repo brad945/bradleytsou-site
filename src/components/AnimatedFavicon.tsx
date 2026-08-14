@@ -58,21 +58,18 @@ const MARK_H = Math.round((MARK_W * 292) / 408);
 /**
  * How often the tab icon is redrawn, per second.
  *
- * **30 is about where this stops paying off, and 60 is not worth it.** Three
- * limits, in the order they bite:
+ * 60 is only affordable because frames are cached — see `FRAME_CACHE`. Without
+ * it this would be 60 synchronous PNG encodes a second on the main thread,
+ * which janks the *page*, not just the icon. That was the "laggy" at 30.
  *
- * 1. Every redraw is a `toDataURL` — a synchronous PNG encode and base64 on
- *    the main thread. Small at 32x32, but it's a fixed tax per frame.
- * 2. The icon renders at 16 CSS px and the mark's whole horizontal travel is
- *    11px. At 60fps it advances ~0.18px a frame, under one device pixel;
- *    antialiasing means those frames aren't identical, but they're close.
- * 3. Browsers coalesce rapid favicon changes. Setting `href` queues a load and
- *    decode, so writes past a certain rate are dropped rather than painted.
+ * The remaining limit is the display, not the CPU: the icon renders at 16 CSS
+ * px and the mark's whole horizontal travel is 11px, so past ~60 it advances
+ * well under a device pixel per frame and browsers coalesce the writes anyway.
  *
- * Raising this is safe — motion is time-based, so speed doesn't change with it
- * (which was not true when this moved in pixels-per-frame).
+ * Motion is time-based, so changing this doesn't change how fast the mark
+ * moves — only how finely that movement is sampled.
  */
-const FPS = 30;
+const FPS = 60;
 
 /**
  * Speed in **pixels per second**, not per frame.
@@ -84,8 +81,29 @@ const FPS = 30;
  * The two axes are deliberately unequal, so the path doesn't retrace itself
  * into a short loop the way matching speeds would.
  */
-const SPEED_X = 11;
-const SPEED_Y = 9;
+const SPEED_X = 17;
+const SPEED_Y = 13;
+
+/**
+ * Position is snapped to half-pixels before drawing.
+ *
+ * This is what makes caching possible: without it, time-based motion produces
+ * a new sub-pixel position every frame and no two are ever reusable. At 0.5px
+ * on a 32px tile the steps are a quarter of a CSS pixel in the tab — finer
+ * than the display resolves — while bounding the cache to a few hundred
+ * entries.
+ */
+const STEP = 0.5;
+
+/**
+ * Rendered frames, keyed by snapped position.
+ *
+ * The mark retraces the same box forever, so after roughly one circuit every
+ * frame it needs is already encoded and a "frame" costs one string assignment
+ * instead of a PNG encode. That's the difference between 60fps being free and
+ * 60fps being the reason the page stutters.
+ */
+const FRAME_CACHE = new Map<string, string>();
 
 /**
  * `bright` white, and it stays white.
@@ -205,9 +223,19 @@ export default function AnimatedFavicon() {
       sinceDraw += dt;
       if (sinceDraw >= 1 / FPS) {
         sinceDraw = 0;
-        ctx.clearRect(0, 0, SIZE, SIZE);
-        drawMark(ctx, x, y, MARK_W, MARK_H, MARK_COLOUR);
-        if (link) link.href = canvas.toDataURL("image/png");
+
+        const qx = Math.round(x / STEP) * STEP;
+        const qy = Math.round(y / STEP) * STEP;
+        const key = `${qx}:${qy}`;
+
+        let url = FRAME_CACHE.get(key);
+        if (url === undefined) {
+          ctx.clearRect(0, 0, SIZE, SIZE);
+          drawMark(ctx, qx, qy, MARK_W, MARK_H, MARK_COLOUR);
+          url = canvas.toDataURL("image/png");
+          FRAME_CACHE.set(key, url);
+        }
+        if (link) link.href = url;
       }
 
       raf = requestAnimationFrame(frame);
