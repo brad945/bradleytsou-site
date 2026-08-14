@@ -9,10 +9,11 @@ import BtMark from "@/components/BtMark";
  * `BtMark`, shared with the nav wordmark; this file is only the tile and the
  * placement.
  *
- * Colours are `base` and `bright` from tailwind.config.ts, matching the
- * artwork's own black field and white mark. Literal here because this runs in
- * the edge runtime and can't import the config — and `fill` is passed
- * explicitly because Satori can't resolve `currentColor`.
+ * The mark is `bright` white on a transparent tile. The artwork's own black
+ * field is deliberately not reproduced: as a favicon it read as a black square
+ * on a light tab strip and vanished into a dark one. Literal hex here because
+ * this runs in the edge runtime and can't import the config — and `fill` is
+ * passed explicitly because Satori can't resolve `currentColor`.
  */
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
@@ -26,7 +27,14 @@ export default function Icon() {
           height: "100%",
           display: "flex",
           position: "relative",
-          background: "#000000", // `base`
+          /*
+             No background — the tile is transparent, so the mark sits on
+             whatever the browser's tab strip is rather than on a black square.
+             `bright` white is what actually renders, which reads on both light
+             and dark chrome; the black tile it replaced disappeared into a dark
+             tab strip and stood out as a block on a light one.
+          */
+          background: "transparent",
         }}
       >
         {/*
