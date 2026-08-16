@@ -9,46 +9,74 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * him anywhere on the page, and his frames swap to match the direction he's
  * heading. Click again (or press Escape) and he sits back down.
  *
- * **NOT wired into app/page.tsx yet** — same holding pattern as Comments.tsx.
- * He needs the frames below to exist in `public/exy/` first; without them he'd
- * render as a column of broken images. Uncomment the import in page.tsx once
- * they're in.
- *
  * This is a real mechanic rather than decoration, which is the only reason it
  * belongs on a site whose brief bans ornamental motion: nothing here moves
  * unless a key is held. It's the same category as the planned bhop gate.
  *
- * ## What the assets have to be
+ * ## The frames
  *
- * In `public/exy/`, PNGs **with transparency** — a photo with its background
- * still attached renders as a rectangle sliding over the page:
+ * Cut from phone clips of the real dog, in `public/exy/`:
  *
- *   walk-front-1.png … walk-front-6.png   (walking toward the viewer)
- *   walk-back-1.png  … walk-back-6.png    (walking away)
- *   walk-side-1.png  … walk-side-6.png    (walking to the RIGHT)
+ *   walk-front-1.png … walk-front-7.png   (walking toward the viewer)
+ *   walk-side-1.png  … walk-side-7.png    (walking to the RIGHT)
  *   sit.png                               (idle, and the corner sprite)
- *   bark.mp3
+ *   growl.mp3
  *
- * Only one side cycle is needed. Walking left is the right-facing cycle
- * mirrored with `scaleX(-1)`, which is why `FACING` exists below.
+ * **There is no back cycle** — that shot was dropped, so `CYCLE` maps walking
+ * up the page onto the side frames. See the note there.
  *
- * Every frame must share the same pixel dimensions and framing. Inconsistent
- * crops are the single most likely thing to look wrong: the dog appears to
- * jitter and resize as he walks, and it reads as a bug rather than as bad art.
+ * One side cycle covers both directions: walking left is the right-facing
+ * cycle mirrored with `scaleX(-1)`, which is why `CYCLE` carries `flip`. The
+ * source clip has him walking right-to-left, so the PNGs were mirrored on the
+ * way out — **he faces RIGHT in the files.**
+ *
+ * Every frame in a cycle shares one canvas size, and `sit.png` shares the
+ * front canvas so he doesn't resize when he stops walking. That matters more
+ * than image quality: inconsistent crops make him appear to jitter and rescale
+ * as he moves, which reads as a bug rather than as rough art.
  */
 
-/** Where the frames live, and how many there are per cycle. */
+/**
+ * Where the frames live, and how many there are per cycle.
+ *
+ * **Seven, not six, because his real gait measured 21 frames at 60fps** and 21
+ * divides evenly by 7. Six would have needed 3.5-frame spacing, i.e. a cycle
+ * that stutters slightly at two of its six steps.
+ */
 const ASSETS = "/exy";
-const WALK_FRAMES = 6;
+const WALK_FRAMES = 7;
 
-/** Rendered height in px. Source art should be ~3x this to stay sharp at 2x. */
+/** Rendered height in px. The art is 2x this, which is all a 2x display uses. */
 const SPRITE_PX = 104;
 
 /** Walking speed, px per second. */
 const SPEED = 190;
 
-/** Frames per second of the walk cycle. Under ~6 he moonwalks. */
-const WALK_FPS = 9;
+/**
+ * Frames per second of the walk cycle.
+ *
+ * Not a taste value — it's the one that stops his feet sliding. A walk cycle
+ * has to advance at the rate the character actually travels, or he moonwalks
+ * (too slow) or skates (too fast).
+ *
+ * Measured off the source clip: one gait cycle is 21 frames at 60fps (0.35s),
+ * during which he covers ~0.70 of his own body length. Rendered here his body
+ * is ~150px, so a cycle should carry him ~105px; at SPEED that takes 0.55s,
+ * and 7 frames in 0.55s is ~13fps.
+ *
+ * **So this is tied to SPEED and to the sprite's proportions.** Change either
+ * and re-derive it, or the feet start to slip.
+ */
+const WALK_FPS = 13;
+
+/**
+ * What he says when woken.
+ *
+ * A growl, because that's the recording Bradley had — the bark is still to
+ * come. Named as a constant rather than inlined so swapping it is one edit and
+ * so the filename doesn't claim to be a sound it isn't.
+ */
+const WAKE_SOUND = "growl.mp3";
 
 /** Keys, lowercased. Arrow keys are deliberately not bound — they scroll. */
 const KEY_DIRECTION: Record<string, "up" | "down" | "left" | "right"> = {
@@ -61,14 +89,23 @@ const KEY_DIRECTION: Record<string, "up" | "down" | "left" | "right"> = {
 type Heading = "up" | "down" | "left" | "right";
 
 /** Which cycle each heading uses, and whether it's mirrored. */
-const CYCLE: Record<Heading, { name: "front" | "back" | "side"; flip: boolean }> =
-  {
-    // Walking "up" the page is walking away from the viewer.
-    up: { name: "back", flip: false },
-    down: { name: "front", flip: false },
-    right: { name: "side", flip: false },
-    left: { name: "side", flip: true },
-  };
+const CYCLE: Record<Heading, { name: "front" | "side"; flip: boolean }> = {
+  /*
+   * Walking up the page is walking away from the viewer, which wants a back
+   * cycle — and there isn't one, because that clip was dropped as too awkward
+   * to shoot.
+   *
+   * Side is the stand-in rather than front. A front-facing dog moving up the
+   * page reads as moonwalking, because he'd be looking straight at you while
+   * travelling away; side-on is directionally neutral and just reads as
+   * moving. Shoot the back cycle and this becomes `{ name: "back" }` plus the
+   * seven files.
+   */
+  up: { name: "side", flip: false },
+  down: { name: "front", flip: false },
+  right: { name: "side", flip: false },
+  left: { name: "side", flip: true },
+};
 
 export default function Exy() {
   const [awake, setAwake] = useState(false);
@@ -105,11 +142,11 @@ export default function Exy() {
     setAwake(true);
 
     /*
-     * Bark is best-effort. Browsers block audio without a user gesture, but
-     * this only ever runs from a click, so the catch is for a missing file
-     * rather than for autoplay policy — a 404 on the mp3 shouldn't throw.
+     * Best-effort. Browsers block audio without a user gesture, but this only
+     * ever runs from a click, so the catch is for a missing file rather than
+     * for autoplay policy — a 404 on the mp3 shouldn't throw.
      */
-    void new Audio(`${ASSETS}/bark.mp3`).play().catch(() => {});
+    void new Audio(`${ASSETS}/${WAKE_SOUND}`).play().catch(() => {});
   }, [clamp]);
 
   const sleep = useCallback(() => {
