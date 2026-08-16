@@ -217,7 +217,8 @@ export default function ProfileHeader({
       <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
-          <div className="shrink-0">
+          {/* `relative` so `#exy-den` below can anchor to the frame's edge. */}
+          <div className="relative shrink-0">
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
             {/*
@@ -234,7 +235,46 @@ export default function ProfileHeader({
               left edges, dark on the bottom and right, with the photo sitting
               in a sunken well (the reverse) below it.
             */}
-            <div className="w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[17px] py-[9px]">
+            {/*
+              Exy hides behind the photo, and only his tail shows.
+
+              `#exy-den` is an empty anchor, not the sprite — the sprite and
+              all of his state live in `components/Exy.tsx`, which portals into
+              this element once it's mounted. That keeps one component owning
+              whether he's asleep, awake or walking, and leaves this file
+              owning only *where* he hides. No props, no context, no lifted
+              state.
+
+              **It must stay before the frame in DOM order.** Both are
+              positioned with `z-index: auto`, so the later sibling paints on
+              top — which is what puts the photo over him and leaves only the
+              tail poking out. It's also what makes the click target correct:
+              the covered part of the tail isn't clickable because the frame is
+              genuinely over it.
+
+              Empty, so it shrink-wraps to nothing until the portal fills it;
+              the 58% is a percentage of its own width and only means anything
+              once the tail is in.
+
+              **Left edge, not right, and that's a measurement rather than a
+              preference.** The tail renders 86 x 77, so it stands ~32px clear
+              of the frame. On the right that lands it inside the bio text,
+              which is only a 20px `gap-5` away and paints over him — a fluffy
+              tail behind the words. On the left it has the header's `p-6` plus
+              the column's `px-4` to sit in, ~40px of empty margin, and touches
+              nothing.
+
+              The 58% is what keeps it there: it leaves the tip 8px inside the
+              column. Lower percentages push more tail out and walk it toward
+              the black surround — at 52% the tip is 3px off the edge, which
+              reads as falling off the card.
+            */}
+            <div
+              id="exy-den"
+              className="absolute right-full top-[52%] translate-x-[58%] -translate-y-1/2"
+            />
+
+            <div className="relative w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[17px] py-[9px]">
               <div className="relative h-[169px] w-[169px] overflow-hidden border border-b-frameHi border-l-frameLo border-r-frameHi border-t-frameLo bg-base">
                 {/* The `profile.initials` fallback that used to sit here is
                     gone with it: it existed because the GitHub avatar could

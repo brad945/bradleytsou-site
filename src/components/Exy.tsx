@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * Exy — Bradley's dog, as a controllable character.
@@ -70,6 +71,20 @@ const SPEED = 190;
 const WALK_FPS = 13;
 
 /**
+ * Where he hides while asleep: an empty anchor rendered by `ProfileHeader`,
+ * tucked behind the avatar frame so only his tail shows.
+ *
+ * He's portalled into it rather than positioned against it, so this component
+ * still owns every bit of his state and `ProfileHeader` owns only the spot.
+ * If the element isn't on the page — any route without a profile header — he
+ * falls back to sitting in the corner.
+ */
+const DEN_ID = "exy-den";
+
+/** Rendered height of the tail, px. The art is 2x it. */
+const TAIL_PX = 86;
+
+/**
  * What he says when woken.
  *
  * A growl, because that's the recording Bradley had — the bark is still to
@@ -114,6 +129,15 @@ export default function Exy() {
   const [walking, setWalking] = useState(false);
 
   /*
+   * Three states, not two: `undefined` means "not looked yet". The lookup can
+   * only run after mount, and rendering the corner fallback in the meantime
+   * would flash a dog in the bottom-left for a frame before he jumped behind
+   * the avatar. Staying null until we know avoids that.
+   */
+  const [den, setDen] = useState<HTMLElement | null | undefined>(undefined);
+  useEffect(() => setDen(document.getElementById(DEN_ID)), []);
+
+  /*
    * Position lives in a ref, not state: it changes every animation frame, and
    * putting it in state would re-render the tree ~60x a second. The ref drives
    * a transform written straight to the node instead.
@@ -133,11 +157,18 @@ export default function Exy() {
   }, []);
 
   const wake = useCallback(() => {
-    // Start him where the corner sprite was, so he doesn't teleport on waking.
-    pos.current = {
-      x: 24,
-      y: window.innerHeight - SPRITE_PX - 24,
-    };
+    /*
+     * Come out where he was hiding, so waking reads as him stepping out from
+     * behind the photo rather than teleporting across the page. Measured at
+     * click time rather than stored, because the den moves with the layout.
+     *
+     * The corner is the fallback for a page with no den on it.
+     */
+    const den = document.getElementById(DEN_ID)?.getBoundingClientRect();
+    pos.current =
+      den && den.width > 0
+        ? { x: den.right - SPRITE_PX / 2, y: den.bottom - SPRITE_PX / 2 }
+        : { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
     clamp();
     setAwake(true);
 
@@ -278,8 +309,41 @@ export default function Exy() {
     ? `${ASSETS}/walk-${cycle.name}-${frame}.png`
     : `${ASSETS}/sit.png`;
 
-  /* Asleep: a small sitting sprite in the corner, waiting to be clicked. */
+  /*
+   * Asleep: he's behind the avatar and only his tail shows.
+   *
+   * The button wraps just the tail, so the click target is the tail itself.
+   * The half tucked behind the photo genuinely isn't clickable — the frame
+   * paints over it — which is the behaviour you'd want anyway.
+   */
   if (!awake) {
+    if (den === undefined) return null; // not looked for the den yet
+
+    const tail = (
+      <button
+        type="button"
+        onClick={wake}
+        aria-label="Wake up Exy"
+        title="Exy"
+        className="block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- see below. */}
+        <img
+          src={`${ASSETS}/tail.png`}
+          alt="Exy's tail, poking out from behind the photo"
+          height={TAIL_PX}
+          /* The art curves to the right, and the den is on the avatar's left
+             edge, so it's mirrored to curve away from the photo. Moving the
+             den to the other side means dropping this one class. */
+          className="-scale-x-100"
+          style={{ height: TAIL_PX, width: "auto" }}
+        />
+      </button>
+    );
+
+    if (den) return createPortal(tail, den);
+
+    /* No den on this page — sit in the corner instead. */
     return (
       <button
         type="button"
@@ -289,7 +353,7 @@ export default function Exy() {
         className="fixed bottom-6 left-6 z-30 transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- frames swap
-            every ~110ms; routing each through the image optimiser would add a
+            every ~77ms; routing each through the image optimiser would add a
             request per frame for no benefit on an already-tiny PNG. */}
         <img
           src={`${ASSETS}/sit.png`}
