@@ -363,6 +363,38 @@ const config: Config = {
           "0%, 100%": { transform: "rotate(-13deg)" },
           "50%": { transform: "rotate(13deg)" },
         },
+
+        /*
+         * The nav's `bt.` mark hopping while the pointer is on it.
+         *
+         * The per-keyframe easing is what makes it a bounce rather than a
+         * float: a thrown object decelerates on the way up and accelerates on
+         * the way down, so the rise is ease-out and the fall ease-in. A single
+         * ease-in-out across the whole thing reads as bobbing in water.
+         *
+         * The second, smaller hop at 72% is the settle — one bounce alone
+         * stops dead at the floor. It rests from 86% to 100% so repeats land
+         * as separate hops instead of a continuous jiggle.
+         */
+        "mark-hop": {
+          "0%": {
+            transform: "translateY(0)",
+            animationTimingFunction: "cubic-bezier(0.33, 0, 0.2, 1)",
+          },
+          "30%": {
+            transform: "translateY(-7px)",
+            animationTimingFunction: "cubic-bezier(0.6, 0, 0.9, 0.4)",
+          },
+          "58%": {
+            transform: "translateY(0)",
+            animationTimingFunction: "cubic-bezier(0.33, 0, 0.2, 1)",
+          },
+          "72%": {
+            transform: "translateY(-2px)",
+            animationTimingFunction: "cubic-bezier(0.6, 0, 0.9, 0.4)",
+          },
+          "86%, 100%": { transform: "translateY(0)" },
+        },
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
@@ -376,6 +408,9 @@ const config: Config = {
         // swing and snaps back through the middle. Linear reads mechanical.
         wag: "wag 1.9s ease-in-out infinite",
         "wag-fast": "wag-fast 0.5s ease-in-out infinite",
+        // No timing function here on purpose — the keyframes set their own
+        // per-segment easing, and one declared here would override all of it.
+        "mark-hop": "mark-hop 0.9s infinite",
       },
     },
   },

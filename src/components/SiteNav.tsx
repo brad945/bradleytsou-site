@@ -83,15 +83,29 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           The svg is aria-hidden, so the link takes its accessible name from
           the label — without it this is an anchor with no text at all.
         */}
+        {/*
+          The hop lives on the mark, but the hover has to be read on the
+          anchor — that's the thing with a hit area. Hence the named group.
+          Named rather than bare `group` to match the convention the rest of
+          the site uses, so a group added to an ancestor later can't fire it.
+
+          `motion-reduce:` keeps a fade for anyone who's asked for less
+          motion; without it, turning the animation off would leave the only
+          interactive element in the bar with no hover feedback at all.
+        */}
         <a
           href="/#profile"
           aria-label={`${profile.name} — home`}
-          className="text-bright transition-opacity hover:opacity-80"
+          className="group/mark text-bright motion-reduce:transition-opacity motion-reduce:hover:opacity-80"
         >
           {/* `block` so the svg doesn't sit on a text baseline — inline it
               would carry the line-box's descender space and ride high of the
               nav items it's meant to be centred against. */}
-          <BtMark width={50} height={36} className="block" />
+          <BtMark
+            width={50}
+            height={36}
+            className="block motion-safe:group-hover/mark:animate-mark-hop"
+          />
         </a>
 
         {/*
