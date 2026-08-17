@@ -59,7 +59,9 @@ const SPRITE_PX = 104;
  * viewer, where most of his real movement is into the screen and only a little
  * of it registers as travel — so the same number reads far too fast there.
  *
- * Changing `SPEED_X` means re-deriving `WALK_FPS_SIDE`, or his feet slide.
+ * Both are multiplied by his current scale in the loop, so these are his
+ * speeds at 1x. Changing `SPEED_X` means re-deriving `WALK_FPS_SIDE`, or his
+ * feet slide.
  */
 const SPEED_X = 230;
 const SPEED_Y = 120;
@@ -377,10 +379,21 @@ export default function Exy() {
       const moving = dx !== 0 || dy !== 0;
 
       if (moving) {
-        // Normalise, or holding two keys makes him 41% faster on the diagonal.
+        /*
+         * Normalise, or holding two keys makes him 41% faster on the diagonal.
+         *
+         * Speed rides on `scale`, because near things cross your view faster
+         * than far ones at the same real speed — without it he'd trudge when
+         * close and scurry when distant, which is the depth cue backwards.
+         *
+         * It also costs nothing: a cycle carries him a fixed fraction of his
+         * own body length, and both his body and his speed scale together, so
+         * the time per cycle is unchanged. `WALK_FPS_SIDE` stays derived at
+         * every size rather than only at 1x.
+         */
         const len = Math.hypot(dx, dy);
-        pos.current.x += (dx / len) * SPEED_X * dt;
-        pos.current.y += (dy / len) * SPEED_Y * dt;
+        pos.current.x += (dx / len) * SPEED_X * scale.current * dt;
+        pos.current.y += (dy / len) * SPEED_Y * scale.current * dt;
 
         /*
          * Down is toward the viewer, so he grows; up is away, so he shrinks.
