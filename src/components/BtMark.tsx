@@ -49,6 +49,7 @@ export default function BtMark({
   fill = "currentColor",
   style,
   className,
+  glyphClassName,
 }: {
   width: number;
   height: number;
@@ -56,7 +57,62 @@ export default function BtMark({
   fill?: string;
   style?: React.CSSProperties;
   className?: string;
+  /**
+   * Per-glyph classes, for animating the three letterforms independently.
+   *
+   * Passing this wraps each glyph in its own `<g>`. **Omitting it leaves the
+   * markup exactly as it was**, ungrouped — that path is what `app/icon.tsx`
+   * renders through Satori, whose SVG support is a subset, and there's no
+   * reason to make the favicon the test of whether it handles nested groups.
+   *
+   * Anything animating these should read the note on `glyph-hop` in
+   * `tailwind.config.ts` first: transforms on an SVG child are in **viewBox
+   * user units, not CSS pixels**, and the glyphs sit flush against the
+   * viewBox edges, so any upward movement clips without `overflow-visible`.
+   */
+  glyphClassName?: { b?: string; t?: string; dot?: string };
 }) {
+  /*
+   * Two whole returns rather than one svg with conditional children, and the
+   * duplication is deliberate.
+   *
+   * **Satori cannot render React Fragments** — it walks the element tree and
+   * tries to stringify the fragment's Symbol type, which throws
+   * `Cannot convert a Symbol value to a string` and turns `/icon` into a 500.
+   * Any shared structure here needs either a ternary or a grouping element,
+   * and both put a Fragment in the path Satori takes.
+   *
+   * So the ungrouped branch below is exactly the markup that has always
+   * worked, with nothing between it and the svg. The geometry is still stated
+   * once — it's in `B` and in these literal numbers, and a change has to be
+   * made in both branches.
+   */
+  if (glyphClassName) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 408 292"
+        style={style}
+        className={className}
+        aria-hidden
+      >
+        <g className={glyphClassName.b}>
+          <path d={B} fill={fill} />
+        </g>
+        {/* t: crossbar, then the stem over it. */}
+        <g className={glyphClassName.t}>
+          <rect x="196" y="116" width="127" height="55" fill={fill} />
+          <rect x="226" y="58" width="67" height="223" fill={fill} />
+        </g>
+        {/* The period, sitting 11 below the baseline the two stems share. */}
+        <g className={glyphClassName.dot}>
+          <circle cx="365" cy="250" r="42" fill={fill} />
+        </g>
+      </svg>
+    );
+  }
+
   return (
     <svg
       width={width}

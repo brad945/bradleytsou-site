@@ -101,10 +101,31 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           {/* `block` so the svg doesn't sit on a text baseline — inline it
               would carry the line-box's descender space and ride high of the
               nav items it's meant to be centred against. */}
+          {/*
+            Each glyph hops in turn rather than the mark hopping as a block,
+            staggered b -> t -> . like the animated favicon.
+
+            `overflow-visible` is not optional. The viewBox is the mark's exact
+            ink bounds, so the b's stem starts at y=0 and the svg's default
+            `overflow: hidden` would shear the top off every hop.
+
+            The stagger uses an arbitrary property because Tailwind's own
+            `delay-*` utilities set transition-delay, which does nothing to an
+            animation.
+
+            Don't write that arbitrary class inside a comment: the scanner
+            reads comments too, and a prose example of one gets emitted as a
+            real rule with whatever placeholder text it contained.
+          */}
           <BtMark
             width={50}
             height={36}
-            className="block motion-safe:group-hover/mark:animate-mark-hop"
+            className="block overflow-visible"
+            glyphClassName={{
+              b: "motion-safe:group-hover/mark:animate-glyph-hop",
+              t: "motion-safe:group-hover/mark:animate-glyph-hop [animation-delay:110ms]",
+              dot: "motion-safe:group-hover/mark:animate-glyph-hop [animation-delay:220ms]",
+            }}
           />
         </a>
 

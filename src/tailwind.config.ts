@@ -365,24 +365,37 @@ const config: Config = {
         },
 
         /*
-         * The nav's `bt.` mark hopping while the pointer is on it.
+         * One glyph of the nav's `bt.` mark hopping. The three are staggered
+         * by animation-delay at the call site, so the hop travels b -> t -> .
+         * — the same order the animated favicon uses.
+         *
+         * **The distances are viewBox user units, not CSS pixels.** This runs
+         * on `<g>` elements inside the mark's `0 0 408 292` viewBox, and a CSS
+         * length in a transform on an SVG child resolves in that coordinate
+         * system. So it scales with the mark rather than needing retuning per
+         * size: 90 of 292 units is ~31% of the mark's height whatever it
+         * renders at, which is ~11px in the 36px nav. Writing -11px here would
+         * have moved it 11 units — about 1.4px, near enough to nothing.
+         *
+         * **The mark's viewBox is its exact ink bounds, so the glyphs sit
+         * flush against the top edge and any hop clips.** The call site has to
+         * pass `overflow-visible`. Expanding the viewBox instead is not an
+         * option — `app/icon.tsx` places the mark by those bounds.
          *
          * The per-keyframe easing is what makes it a bounce rather than a
-         * float: a thrown object decelerates on the way up and accelerates on
-         * the way down, so the rise is ease-out and the fall ease-in. A single
-         * ease-in-out across the whole thing reads as bobbing in water.
-         *
-         * The second, smaller hop at 72% is the settle — one bounce alone
-         * stops dead at the floor. It rests from 86% to 100% so repeats land
-         * as separate hops instead of a continuous jiggle.
+         * float: a thrown object decelerates going up and accelerates coming
+         * down, so the rise is ease-out and the fall ease-in. One ease-in-out
+         * across the whole thing reads as bobbing in water. The smaller hop at
+         * 72% is the settle — a single bounce stops dead at the floor — and
+         * the rest from 86% keeps repeats landing as separate hops.
          */
-        "mark-hop": {
+        "glyph-hop": {
           "0%": {
             transform: "translateY(0)",
             animationTimingFunction: "cubic-bezier(0.33, 0, 0.2, 1)",
           },
           "30%": {
-            transform: "translateY(-7px)",
+            transform: "translateY(-90px)",
             animationTimingFunction: "cubic-bezier(0.6, 0, 0.9, 0.4)",
           },
           "58%": {
@@ -390,7 +403,7 @@ const config: Config = {
             animationTimingFunction: "cubic-bezier(0.33, 0, 0.2, 1)",
           },
           "72%": {
-            transform: "translateY(-2px)",
+            transform: "translateY(-26px)",
             animationTimingFunction: "cubic-bezier(0.6, 0, 0.9, 0.4)",
           },
           "86%, 100%": { transform: "translateY(0)" },
@@ -410,7 +423,7 @@ const config: Config = {
         "wag-fast": "wag-fast 0.5s ease-in-out infinite",
         // No timing function here on purpose — the keyframes set their own
         // per-segment easing, and one declared here would override all of it.
-        "mark-hop": "mark-hop 0.9s infinite",
+        "glyph-hop": "glyph-hop 0.9s infinite",
       },
     },
   },
