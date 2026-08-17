@@ -479,9 +479,15 @@ const config: Config = {
          * duration. No timing function on purpose — the keyframes set their
          * own per-segment easing.
          */
-        "glyph-hop": "glyph-hop 0.9s infinite",
-        "glyph-hop-2": "glyph-hop 0.9s 110ms infinite",
-        "glyph-hop-3": "glyph-hop 0.9s 220ms infinite",
+        /*
+         * One hop per hover, not a loop. The class only applies while the
+         * pointer is on the mark, so dropping `infinite` means it runs its
+         * single cycle and rests — and moving off and back on restarts it,
+         * because the class is removed and re-added.
+         */
+        "glyph-hop": "glyph-hop 0.9s",
+        "glyph-hop-2": "glyph-hop 0.9s 110ms",
+        "glyph-hop-3": "glyph-hop 0.9s 220ms",
         // 800ms is EMERGE_MS in Exy.tsx — his walking speed over the slot's
         // width. `forwards` holds him at the far edge until the component
         // hands off to free walking on the same frame.
