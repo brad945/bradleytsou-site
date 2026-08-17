@@ -365,8 +365,8 @@ const config: Config = {
         },
 
         /*
-         * One glyph of the nav's `bt.` mark hopping. The three are staggered
-         * by animation-delay at the call site, so the hop travels b -> t -> .
+         * One glyph of the nav's `bt.` mark hopping. Three animation names
+         * below share it at different delays, so the hop travels b -> t -> .
          * — the same order the animated favicon uses.
          *
          * **The distances are viewBox user units, not CSS pixels.** This runs
@@ -421,9 +421,26 @@ const config: Config = {
         // swing and snaps back through the middle. Linear reads mechanical.
         wag: "wag 1.9s ease-in-out infinite",
         "wag-fast": "wag-fast 0.5s ease-in-out infinite",
-        // No timing function here on purpose — the keyframes set their own
-        // per-segment easing, and one declared here would override all of it.
+        /*
+         * Three names for one keyframe set, differing only in delay — because
+         * **the delay has to live inside the `animation` shorthand.**
+         *
+         * The obvious spelling is one `animate-glyph-hop` plus a per-glyph
+         * arbitrary delay utility, and it silently does nothing: the shorthand
+         * resets every animation sub-property it omits, delay included, and
+         * Tailwind emits the arbitrary-property rule *before* the animation
+         * one. So the shorthand won and all three glyphs hopped together.
+         *
+         * (Don't spell that utility out here even as an example — the scanner
+         * reads comments, and it gets emitted as a real, dead rule.)
+         *
+         * Second time value in the shorthand is the delay; the first is the
+         * duration. No timing function on purpose — the keyframes set their
+         * own per-segment easing.
+         */
         "glyph-hop": "glyph-hop 0.9s infinite",
+        "glyph-hop-2": "glyph-hop 0.9s 110ms infinite",
+        "glyph-hop-3": "glyph-hop 0.9s 220ms infinite",
       },
     },
   },

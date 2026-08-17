@@ -218,8 +218,14 @@ export default function ProfileHeader({
       <div className="relative grid gap-6 p-6 lg:grid-cols-[2fr_1fr]">
         {/* Identity */}
         <div className="flex flex-col gap-5 sm:flex-row">
-          {/* `relative` so `#exy-den` below can anchor to the frame's edge. */}
-          <div className="relative shrink-0">
+          {/*
+            `relative` so `#exy-den` below can anchor to the frame's edge, and
+            `self-start` so it can anchor to the frame's *height*. Without it
+            this flex item stretches to the row — the text column is taller —
+            and the den's `top-%` would resolve against that instead of
+            against the photo.
+          */}
+          <div className="relative shrink-0 self-start">
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
             {/*
@@ -253,26 +259,30 @@ export default function ProfileHeader({
               the covered part of the tail isn't clickable because the frame is
               genuinely over it.
 
-              Empty, so it shrink-wraps to nothing until the portal fills it;
-              the 58% is a percentage of its own width and only means anything
-              once the tail is in.
+              **Sized explicitly, and offset with `left`, not `right-full` plus
+              a percentage translate.** That was the first spelling and the
+              tail never appeared: an absolutely positioned box with
+              `right: 100%` and `width: auto` shrink-to-fits against the space
+              between the containing block's left edge and its own right edge —
+              which is zero here — and a percentage translate on top of that
+              resolves against whatever width it ended up with. Stating the
+              77x86 outright removes both.
 
               **Left edge, not right, and that's a measurement rather than a
-              preference.** The tail renders 86 x 77, so it stands ~32px clear
-              of the frame. On the right that lands it inside the bio text,
-              which is only a 20px `gap-5` away and paints over him — a fluffy
-              tail behind the words. On the left it has the header's `p-6` plus
-              the column's `px-4` to sit in, ~40px of empty margin, and touches
-              nothing.
+              preference.** 32px of the tail stands clear of the frame. On the
+              right that lands it inside the bio text, only a 20px `gap-5`
+              away, which paints over him — a fluffy tail behind the words. On
+              the left it has the header's `p-6` plus the column's `px-4`,
+              ~40px of empty margin, and touches nothing. Pushing further out
+              than 32 walks the tip toward the black surround and it starts to
+              read as falling off the card.
 
-              The 58% is what keeps it there: it leaves the tip 8px inside the
-              column. Lower percentages push more tail out and walk it toward
-              the black surround — at 52% the tip is 3px off the edge, which
-              reads as falling off the card.
+              77x86 is the tail asset at its render height; changing
+              `TAIL_PX` in Exy.tsx means changing these.
             */}
             <div
               id="exy-den"
-              className="absolute right-full top-[52%] translate-x-[58%] -translate-y-1/2"
+              className="absolute left-[-32px] top-[52%] h-[86px] w-[77px] -translate-y-1/2"
             />
 
             <div className="relative w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[17px] py-[9px]">

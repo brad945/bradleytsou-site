@@ -109,13 +109,11 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
             ink bounds, so the b's stem starts at y=0 and the svg's default
             `overflow: hidden` would shear the top off every hop.
 
-            The stagger uses an arbitrary property because Tailwind's own
-            `delay-*` utilities set transition-delay, which does nothing to an
-            animation.
-
-            Don't write that arbitrary class inside a comment: the scanner
-            reads comments too, and a prose example of one gets emitted as a
-            real rule with whatever placeholder text it contained.
+            The stagger is three animation names rather than one name plus a
+            delay utility. A separate delay declaration loses to the
+            `animation` shorthand, which resets it — see the note in
+            tailwind.config.ts. That version looked right and hopped all three
+            glyphs at once.
           */}
           <BtMark
             width={50}
@@ -123,8 +121,8 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
             className="block overflow-visible"
             glyphClassName={{
               b: "motion-safe:group-hover/mark:animate-glyph-hop",
-              t: "motion-safe:group-hover/mark:animate-glyph-hop [animation-delay:110ms]",
-              dot: "motion-safe:group-hover/mark:animate-glyph-hop [animation-delay:220ms]",
+              t: "motion-safe:group-hover/mark:animate-glyph-hop-2",
+              dot: "motion-safe:group-hover/mark:animate-glyph-hop-3",
             }}
           />
         </a>
