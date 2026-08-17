@@ -180,6 +180,18 @@ export default function Exy() {
   const [heading, setHeading] = useState<Heading>("down");
   const [walking, setWalking] = useState(false);
 
+  /**
+   * Whether he's ever been walked. Drives the WASD hint, which is a one-time
+   * instruction rather than a label — once you've moved him you know, and it
+   * would just be a caption stuck to a dog from then on.
+   *
+   * Deliberately not reset by `sleep()`: putting him away doesn't make you
+   * forget the controls. Not persisted either — a fresh page is a fresh
+   * visitor as far as this is concerned, and a localStorage key for one hint
+   * is more machinery than it's worth.
+   */
+  const [hasWalked, setHasWalked] = useState(false);
+
   /*
    * Three states, not two: `undefined` means "not looked yet". The lookup can
    * only run after mount, and rendering the corner fallback in the meantime
@@ -320,6 +332,9 @@ export default function Exy() {
       // every shortcut on the page while he's out.
       event.preventDefault();
       held.current.add(key);
+      // Retires the hint. Safe to call on every keydown — React bails out of
+      // the re-render once the value stops changing.
+      setHasWalked(true);
     }
 
     function onUp(event: KeyboardEvent) {
@@ -560,7 +575,7 @@ export default function Exy() {
             imageRendering: "auto",
           }}
         />
-        {!walking && (
+        {!walking && !hasWalked && (
           <span className="label text-[9px] text-muted/70">WASD</span>
         )}
       </div>
