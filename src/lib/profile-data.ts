@@ -364,6 +364,7 @@ export const roles: Role[] = [
     end: "Dec 2024",
     blurb:
       "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
+  url: "https://briyouth.wixsite.com/briyouth",
   },
 ];
 
