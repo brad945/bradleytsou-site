@@ -1,2 +1,2 @@
 [bradleytsou.com
-](url)
+](bradleytsou.com)
