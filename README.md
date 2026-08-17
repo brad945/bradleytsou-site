@@ -1,1 +1,1 @@
-[👉 Click here to view the documentation](https://bradleytsou.com)
+[brad](https://bradleytsou.com)
