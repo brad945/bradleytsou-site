@@ -76,6 +76,18 @@ export interface Role {
    * couldn't express — it could only ever be last among the roles.
    */
   afterProjects?: boolean;
+  /**
+   * Keep the role in the file but off the page.
+   *
+   * A flag rather than deleting it, because "hide this for now" and "this
+   * never happened" are different things — the entry stays reviewable and
+   * comes back by flipping one word.
+   *
+   * **A hidden role also leaves the Tech Stack**, see `techStack`. Its tags
+   * would otherwise claim skills whose evidence isn't on the page any more,
+   * which is the one thing that panel is built to prevent.
+   */
+  hidden?: boolean;
 }
 
 /**
@@ -315,6 +327,9 @@ export const roles: Role[] = [
   },
   {
     org: "micro1",
+    // Hidden at Bradley's request. Nothing else was changed; unset this to
+    // bring it back, tags and all.
+    hidden: true,
     tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
     title: "Language and Audio Engineer",
     start: "Jun 2026",
@@ -645,7 +660,9 @@ STACK_ORDER.forEach((tier, t) =>
 
 export const techStack: string[] = Array.from(
   new Set([
-    ...roles.flatMap((role) => role.tags ?? []),
+    // Hidden roles contribute nothing: the panel's whole guarantee is that
+    // everything on it is attached to work visible elsewhere on this page.
+    ...roles.filter((role) => !role.hidden).flatMap((role) => role.tags ?? []),
     ...projects.flatMap((project) => project.tags),
     ...EVIDENCED_STACK,
   ]),

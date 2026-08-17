@@ -144,7 +144,7 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
       <div className="px-5 pb-5 pt-1">
         <ul className="flex flex-col">
           {roles
-            .filter((role) => !role.afterProjects)
+            .filter((role) => !role.hidden && !role.afterProjects)
             .map((role) =>
               roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
             )}
@@ -161,7 +161,7 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
             among the roles, never last overall.
           */}
           {roles
-            .filter((role) => role.afterProjects)
+            .filter((role) => !role.hidden && role.afterProjects)
             .map((role) =>
               roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
             )}
