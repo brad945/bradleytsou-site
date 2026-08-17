@@ -4,6 +4,7 @@ import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
 import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
+import Reactions from "@/components/Reactions";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
 import Comments from "@/components/Comments";
@@ -93,9 +94,14 @@ export default async function Home() {
               <ActivityFeed snapshot={snapshot} featured={featured} />
               <Experience featured={featured} />
               <FavoriteProject repo={favorite} />
-              {/* Last in the column on purpose: it's the one panel a visitor
-                  contributes to, so it reads as the end of the page rather
-                  than an interruption in the middle of it. */}
+              {/* The two panels a visitor contributes to, last in the column
+                  so they read as the end of the page rather than an
+                  interruption in it. Reactions first: it's the one that costs
+                  nothing, so it shouldn't sit behind a sign-in prompt.
+                  Both render nothing at all until they have something real —
+                  Reactions when no store is configured, Comments if giscus
+                  can't load. */}
+              <Reactions />
               <Comments />
             </div>
 

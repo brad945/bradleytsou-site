@@ -63,9 +63,16 @@ element should either be real data or a real mechanic.
 
 ## Stack
 
-Next.js 14 (App Router) + TypeScript + Tailwind. No backend/database —
-the GitHub activity feed calls the public GitHub REST API directly from a
-server component with a 5-minute revalidate.
+Next.js 14 (App Router) + TypeScript + Tailwind. Three runtime
+dependencies — `next`, `react`, `react-dom` — and it stays that way:
+`src/lib/reactions.ts` talks to Upstash over its REST API with plain
+`fetch` rather than pulling in a driver.
+
+**Almost everything here is read-only.** Server components fetch from
+the GitHub API and cache the result; nothing else is stored. The single
+exception is reactions, which is the one thing a visitor can *write* —
+`/api/reactions` is the site's only route handler of its own, and the
+Redis behind it is its only piece of state.
 
 Versions are pinned on purpose: `next@14.2.35` / `react@18` (the App Router
 API this was written against) and `tailwindcss@^3` (Tailwind v4 drops
@@ -386,7 +393,22 @@ class would stop emitting.
   `router.refresh()` on the revalidate interval so the feed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a
   new request; this supplies the request). Pauses while the tab is hidden.
-- `src/components/Comments.tsx` — built but NOT wired into the page yet.
+- `src/lib/reactions.ts` + `src/app/api/reactions/route.ts` +
+  `src/components/Reactions.tsx` — emoji reactions with **no sign-in**, and
+  the site's only writable state. Counts live in an Upstash Redis, so the
+  total is genuinely everyone's; a number kept in `localStorage` and
+  labelled "total" would be a fabricated figure, which is the rule that
+  removed the decorative meters. Unconfigured or unreachable -> the panel
+  **renders nothing**, same as the DevEval block; a zero would claim
+  counting had happened.
+  Keys are ASCII slugs, not emoji, and the server validates every slug
+  against a fixed list — so a hand-written POST can't create keys. There's
+  a crude per-IP ceiling (20/min) that fails **open**, because a store
+  hiccup should cost a lost limit rather than a broken button.
+  `localStorage` is used for one thing only: remembering which buttons
+  *you* pressed, so they read as spent. That's UI state about a browser,
+  which is what it's honest for. It is not the count and it is not a limit.
+- `src/components/Comments.tsx` — wired into the page.
   Uses giscus (GitHub Discussions-backed, not a fake widget). **Blocked on
   the repo being public** — giscus requires it, and as of now
   `brad945/bradleytsou-site` is private with Discussions disabled. Then:
@@ -683,6 +705,12 @@ Both optional; this was `.env.example` before the repo was flattened. Put
 real values in `.env.local`, which `.gitignore` already covers.
 
 ```sh
+# Optional, but reactions need BOTH or the panel hides itself entirely.
+# Create a free Upstash Redis (Vercel → Storage → Upstash, or upstash.com)
+# and copy its REST url and token. Nothing else uses these.
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+
 # Optional. Raises the GitHub API rate limit from 60/hr/IP to 5000/hr.
 # A fine-grained PAT with no scopes is enough — it only needs to be valid.
 GITHUB_TOKEN=
