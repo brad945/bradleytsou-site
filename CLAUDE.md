@@ -408,7 +408,12 @@ class would stop emitting.
   `localStorage` is used for one thing only: remembering which buttons
   *you* pressed, so they read as spent. That's UI state about a browser,
   which is what it's honest for. It is not the count and it is not a limit.
-- `src/components/Comments.tsx` — wired into the page.
+- `src/components/Comments.tsx` — **parked again, and this time not
+  because it's unfinished.** It's fully configured: repo public,
+  Discussions on, giscus app installed, pinned to discussion 1 by number.
+  Commenting just needs a GitHub sign-in, and Reactions is the
+  sign-in-free version of the same idea, so it went first. Uncomment two
+  lines in `page.tsx` to bring it back; nothing else needs changing.
   Uses giscus (GitHub Discussions-backed, not a fake widget). **Blocked on
   the repo being public** — giscus requires it, and as of now
   `brad945/bradleytsou-site` is private with Discussions disabled. Then:

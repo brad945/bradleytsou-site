@@ -7,7 +7,11 @@ import ProfileHeader from "@/components/ProfileHeader";
 import Reactions from "@/components/Reactions";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
-import Comments from "@/components/Comments";
+// Parked. The component works and is configured — pinned to discussion 1 by
+// number — but commenting needs a GitHub sign-in, and reactions is the
+// sign-in-free version of the same idea. Uncomment both lines to bring it
+// back; nothing else needs changing.
+// import Comments from "@/components/Comments";
 
 import Exy from "@/components/Exy";
 
@@ -94,15 +98,12 @@ export default async function Home() {
               <ActivityFeed snapshot={snapshot} featured={featured} />
               <Experience featured={featured} />
               <FavoriteProject repo={favorite} />
-              {/* The two panels a visitor contributes to, last in the column
-                  so they read as the end of the page rather than an
-                  interruption in it. Reactions first: it's the one that costs
-                  nothing, so it shouldn't sit behind a sign-in prompt.
-                  Both render nothing at all until they have something real —
-                  Reactions when no store is configured, Comments if giscus
-                  can't load. */}
+              {/* The panel a visitor contributes to, last in the column so it
+                  reads as the end of the page rather than an interruption in
+                  it. Renders nothing at all until it has real counts — see
+                  Reactions. Comments is parked above it. */}
               <Reactions />
-              <Comments />
+              {/* <Comments /> */}
             </div>
 
             <Sidebar
