@@ -6,9 +6,11 @@ import { createPortal } from "react-dom";
 /**
  * Exy — Bradley's dog, as a controllable character.
  *
- * He sits in the corner until clicked. Click him and he wakes up: WASD walks
- * him anywhere on the page, and his frames swap to match the direction he's
- * heading. Click again (or press Escape) and he sits back down.
+ * He hides behind the profile photo with only his tail showing. Click the tail
+ * and he walks out: WASD moves him, his frames swap to match the direction
+ * he's heading, and he grows walking toward you. Clicking him growls and
+ * shakes. **Escape is what puts him away** — clicking used to and no longer
+ * does.
  *
  * This is a real mechanic rather than decoration, which is the only reason it
  * belongs on a site whose brief bans ornamental motion: nothing here moves
@@ -202,6 +204,9 @@ export default function Exy() {
    */
   const [hasWalked, setHasWalked] = useState(false);
 
+  /** True for the length of one shake, after a click. */
+  const [shaking, setShaking] = useState(false);
+
   /*
    * Three states, not two: `undefined` means "not looked yet". The lookup can
    * only run after mount, and rendering the corner fallback in the meantime
@@ -296,8 +301,25 @@ export default function Exy() {
     void new Audio(`${ASSETS}/${WAKE_SOUND}`).play().catch(() => {});
   }, [contain]);
 
+  /**
+   * Poke him: he growls and shakes it off.
+   *
+   * **This replaced click-to-dismiss.** Clicking a dog to make it go away was
+   * the wrong verb for the thing on screen; Escape still puts him back behind
+   * the photo, and that's now the only way, which is worth knowing.
+   *
+   * A fresh `Audio` each time rather than one reused element, so clicking
+   * again while he's still growling overlaps instead of being ignored — a
+   * reused element would need rewinding and would swallow rapid pokes.
+   */
+  const poke = useCallback(() => {
+    void new Audio(`${ASSETS}/${WAKE_SOUND}`).play().catch(() => {});
+    setShaking(true);
+  }, []);
+
   const sleep = useCallback(() => {
     setPhase("asleep");
+    setShaking(false);
     setWalking(false);
     scale.current = 1;
     held.current.clear();
@@ -622,22 +644,38 @@ export default function Exy() {
         ref={body}
         className="pointer-events-auto flex origin-bottom flex-col items-center gap-1"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element -- see above. */}
-        <img
-          src={src}
-          alt="Exy"
-          height={SPRITE_PX}
-          onClick={sleep}
-          style={{
-            height: SPRITE_PX,
-            width: "auto",
-            cursor: "pointer",
-            // Mirrored for the left-facing walk — one side cycle covers both.
-            transform: cycle.flip ? "scaleX(-1)" : undefined,
-            // Nearest-neighbour keeps hand-cut frames crisp rather than mushy.
-            imageRendering: "auto",
-          }}
-        />
+        {/*
+          The shake goes on this wrapper, not on the image. The image carries
+          an inline `scaleX(-1)` when he faces left, and a running animation's
+          transform beats an inline style in the cascade — animating the image
+          itself would flip him round for the length of every shake.
+
+          `onAnimationEnd` clears it rather than a timer, so the flag can't
+          drift out of step with the animation's real duration, and a second
+          click always restarts it.
+        */}
+        <div
+          onClick={poke}
+          onAnimationEnd={() => setShaking(false)}
+          className={shaking ? "animate-exy-shake" : undefined}
+          style={{ cursor: "pointer" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- see above. */}
+          <img
+            src={src}
+            alt="Exy"
+            height={SPRITE_PX}
+            style={{
+              height: SPRITE_PX,
+              width: "auto",
+              display: "block",
+              // Mirrored for the left-facing walk — one side cycle covers both.
+              transform: cycle.flip ? "scaleX(-1)" : undefined,
+              // Nearest-neighbour keeps hand-cut frames crisp rather than mushy.
+              imageRendering: "auto",
+            }}
+          />
+        </div>
         {!walking && !hasWalked && (
           <span className="label text-[9px] text-muted/70">WASD</span>
         )}

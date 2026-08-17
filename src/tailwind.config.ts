@@ -406,6 +406,30 @@ const config: Config = {
           to: { transform: "translateX(0)" },
         },
 
+        /*
+         * Exy shaking himself when you poke him.
+         *
+         * The amplitude decays — 3px down to 1 — because a shake that stays
+         * even reads as a UI error state, the "wrong password" wobble. Losing
+         * energy is what makes it read as an animal rather than a widget.
+         *
+         * A degree and a half of roll rides along with it, so it's a body
+         * shaking rather than a picture sliding side to side.
+         *
+         * **It must live on a wrapper, not on the sprite.** The sprite carries
+         * an inline `scaleX(-1)` when he faces left, and an animation's
+         * transform beats inline styles in the cascade — so animating the
+         * image itself would flip him round for the duration of every shake.
+         */
+        "exy-shake": {
+          "0%, 100%": { transform: "translateX(0) rotate(0deg)" },
+          "15%": { transform: "translateX(-3px) rotate(-1.5deg)" },
+          "30%": { transform: "translateX(3px) rotate(1.5deg)" },
+          "45%": { transform: "translateX(-2px) rotate(-1deg)" },
+          "60%": { transform: "translateX(2px) rotate(1deg)" },
+          "80%": { transform: "translateX(-1px) rotate(-0.5deg)" },
+        },
+
         "glyph-hop": {
           "0%": {
             transform: "translateY(0)",
@@ -462,6 +486,7 @@ const config: Config = {
         // width. `forwards` holds him at the far edge until the component
         // hands off to free walking on the same frame.
         "exy-emerge": "exy-emerge 800ms linear forwards",
+        "exy-shake": "exy-shake 450ms ease-out",
       },
     },
   },
