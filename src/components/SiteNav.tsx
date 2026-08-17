@@ -32,7 +32,15 @@ import HoverNote from "@/components/HoverNote";
  * Giving an entry an href is the whole change when its section lands.
  */
 const NAV_ITEMS: { label: string; href?: string }[] = [
-  { label: "Profile", href: "/#profile" },
+  /*
+   * `/#top`, not `/#profile`, for the same reason the mark uses it: the nav
+   * isn't sticky, so `#profile` sits ~120px into the document and
+   * `scroll-padding-top: 64px` parks it 64px from the edge — scrolling the
+   * page down ~56px from the very top and eating half the nav. The profile
+   * *is* the top of the page here, so the two destinations were the same
+   * place anyway; only one of them arrives without a jolt.
+   */
+  { label: "Profile", href: "/#top" },
   /*
    * No href on purpose. The obvious one is `#profile`, but Profile already
    * points there — two items scrolling to the same place is worse than one
