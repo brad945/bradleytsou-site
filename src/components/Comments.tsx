@@ -25,12 +25,26 @@ import { githubUsername, SITE_REPO_NAME } from "@/lib/profile-data";
  * `data-strict` narrows that further. Swapping to a dedicated "Comments"
  * category later is a one-line id change.
  *
- * ## What it maps to
+ * ## Pinned to one discussion by number, not found by search
  *
- * `data-mapping="pathname"` means one discussion per path — and this is
- * effectively a one-page site, so in practice it's **a single guestbook
- * thread**, not per-post comments. That's the right shape here; don't expect
- * threads to multiply.
+ * `data-mapping="number"` with term `1` loads
+ * github.com/brad945/bradleytsou-site/discussions/1 directly.
+ *
+ * **This replaced `pathname` mapping, which was broken in practice.** Pathname
+ * mapping makes giscus *search* GitHub for a discussion whose title matches
+ * the path, and GitHub's search index lags creation by minutes. So giscus
+ * created the discussion, then couldn't find the thing it had just made:
+ * it rendered an empty box, and pressing Comment tried to create the
+ * discussion a second time and silently failed. Discussion 1 exists with zero
+ * comments because of exactly that.
+ *
+ * Loading by number does no search at all, so there's no lag, no fuzzy title
+ * matching, and no way for a stranger's discussion to be adopted as this
+ * page's thread. `data-strict` went with the search — it only tuned matching.
+ *
+ * The cost is that this is now **one fixed guestbook thread** rather than one
+ * per path. On a one-page site that was already true; it's just explicit now.
+ * A second commentable page would need its own discussion and its own number.
  *
  * If it renders an error box, the giscus app isn't installed on the repo:
  * https://github.com/apps/giscus
@@ -41,6 +55,13 @@ const GISCUS = {
   repoId: "R_kgDOTirmOQ",
   category: "Announcements",
   categoryId: "DIC_kwDOTirmOc4DDlm4",
+  /**
+   * The discussion this page's comments live in, by number.
+   *
+   * Already exists — giscus created it. Deleting it there means creating a
+   * replacement and changing this number, since nothing searches for it.
+   */
+  discussion: 1,
 } as const;
 
 export default function Comments() {
@@ -59,8 +80,8 @@ export default function Comments() {
     script.setAttribute("data-repo-id", GISCUS.repoId);
     script.setAttribute("data-category", GISCUS.category);
     script.setAttribute("data-category-id", GISCUS.categoryId);
-    script.setAttribute("data-mapping", "pathname");
-    script.setAttribute("data-strict", "1");
+    script.setAttribute("data-mapping", "number");
+    script.setAttribute("data-term", String(GISCUS.discussion));
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
