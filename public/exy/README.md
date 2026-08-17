@@ -8,13 +8,20 @@ the directory, so names have to match.
 ```
 walk-side-1.png  … walk-side-7.png     walking to the RIGHT   (408x232)
 walk-front-1.png … walk-front-7.png    walking toward you     (140x227)
-sit.png                                idle + corner sprite   (140x227)
+stand-side.png                         standing, side on      (408x232)
+sit.png                                idle facing you        (140x227)
 growl.mp3                              plays once when he's woken
 ```
 
 Cut from three phone clips with `ffmpeg` + `rembg`, and **`sit.png` is a
 standing frame, not a sitting one** — there was no sitting footage. It shares
 the front cycle's canvas so he doesn't change size when he stops.
+
+**`stand-side.png` is not one of the seven walk frames.** The clip is a trot,
+so every frame in the cycle has a leg mid-swing and reads as a freeze-frame
+when held. This is cut from between two of them (source frame 98), at the
+moment his legs are most nearly vertical under him, onto the walk cycle's exact
+canvas.
 
 ## Two things that are load-bearing
 

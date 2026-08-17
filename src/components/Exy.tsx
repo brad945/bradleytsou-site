@@ -22,7 +22,8 @@ import { createPortal } from "react-dom";
  *
  *   walk-front-1.png … walk-front-7.png   (walking toward the viewer)
  *   walk-side-1.png  … walk-side-7.png    (walking to the RIGHT)
- *   sit.png                               (idle, and the corner sprite)
+ *   stand-side.png                        (standing still, side on)
+ *   sit.png                               (idle facing you, and the fallback)
  *   growl.mp3
  *
  * **There is no back cycle** — that shot was dropped, so `CYCLE` maps walking
@@ -578,9 +579,12 @@ export default function Exy() {
    * thing the side sprite is for. It's still right after W or S, where he
    * genuinely was facing up or down the page.
    *
-   * Frame 1 is the side cycle's idle: it has the narrowest silhouette of the
-   * seven (493px against up to 583), which is the one with his legs most
-   * gathered under him. A mid-stride frame held still reads as a freeze.
+   * `stand-side.png` is its own frame rather than one of the seven, because
+   * none of them is a standing pose — they're a trot, so every one has a leg
+   * mid-swing and held still reads as a freeze-frame. This is cut from between
+   * two of them, at the moment his legs are most nearly vertical under him.
+   *
+   * It shares the walk cycle's exact canvas, so stopping doesn't resize him.
    * `cycle.flip` still applies, so stopping while walking left keeps him
    * facing left.
    */
@@ -588,7 +592,7 @@ export default function Exy() {
   const src = walking
     ? `${ASSETS}/walk-${cycle.name}-${frame}.png`
     : sideways
-      ? `${ASSETS}/walk-side-1.png`
+      ? `${ASSETS}/stand-side.png`
       : `${ASSETS}/sit.png`;
 
   /*
