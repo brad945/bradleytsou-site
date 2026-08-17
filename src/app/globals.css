@@ -6,7 +6,11 @@
   html {
     color-scheme: dark;
     /* Nav links are in-page anchors; ease to the section instead of jumping.
-       scroll-padding clears the 48px nav so a heading isn't left under it. */
+       scroll-padding leaves a section heading some air above it rather than
+       flush against the viewport edge. It is NOT clearing the nav — that's a
+       normal 104px block, not sticky, so it scrolls away on its own. (The
+       mark links to `#top` partly because of this: 64px of padding against a
+       target only ~120px down the page left the nav half cut off.) */
     scroll-behavior: smooth;
     scroll-padding-top: 64px;
   }

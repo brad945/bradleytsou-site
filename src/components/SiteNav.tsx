@@ -93,8 +93,21 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           motion; without it, turning the animation off would leave the only
           interactive element in the bar with no hover feedback at all.
         */}
+        {/*
+          **`/#top`, not `/#profile`.** Pointing the mark at the profile
+          section scrolled the page down ~56px on every click, from the very
+          top, for no visible reason: the nav isn't sticky, so `#profile`
+          already sits ~120px into the document, and `scroll-padding-top: 64px`
+          parks it 64px from the viewport edge — swallowing over half the nav
+          you just clicked in.
+
+          `top` is a fragment the HTML spec resolves to the top of the document
+          when nothing has that id, so this needs no element to point at and no
+          JS. Keeping the leading `/` is what makes it work from `/play` too:
+          there it's a real navigation home rather than a scroll.
+        */}
         <a
-          href="/#profile"
+          href="/#top"
           aria-label={`${profile.name} — home`}
           className="group/mark text-bright motion-reduce:transition-opacity motion-reduce:hover:opacity-80"
         >
