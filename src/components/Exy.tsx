@@ -497,9 +497,28 @@ export default function Exy() {
   }, [awake, contain]);
 
   const cycle = CYCLE[heading];
+
+  /*
+   * Standing still, he holds whichever way he was last walking rather than
+   * always turning to face you.
+   *
+   * `sit.png` is a front-on pose, so using it for every stop meant he spun to
+   * face the viewer the moment you let go of A or D — which undoes the one
+   * thing the side sprite is for. It's still right after W or S, where he
+   * genuinely was facing up or down the page.
+   *
+   * Frame 1 is the side cycle's idle: it has the narrowest silhouette of the
+   * seven (493px against up to 583), which is the one with his legs most
+   * gathered under him. A mid-stride frame held still reads as a freeze.
+   * `cycle.flip` still applies, so stopping while walking left keeps him
+   * facing left.
+   */
+  const sideways = heading === "left" || heading === "right";
   const src = walking
     ? `${ASSETS}/walk-${cycle.name}-${frame}.png`
-    : `${ASSETS}/sit.png`;
+    : sideways
+      ? `${ASSETS}/walk-side-1.png`
+      : `${ASSETS}/sit.png`;
 
   /*
    * Emerging: parented to the header slot, behind the photo, walked out of it
