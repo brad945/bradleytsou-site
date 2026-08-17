@@ -154,8 +154,21 @@
     @apply t-stat;
   }
 
+  /*
+   * Links read white and turn blue on hover — the reverse of Steam, and
+   * deliberate.
+   *
+   * Steam runs link-blue at rest because its pages are dense with them. Here
+   * a link is usually a proper noun inside a sentence — an org, a repo — so
+   * blue at rest tinted half the page and made ordinary words look like
+   * chrome. White at rest lets the text read as text, and the blue then means
+   * something: it's the thing under your pointer.
+   *
+   * `ink` rather than `bright`, so links sit level with body copy instead of
+   * competing with the headings, which own pure white.
+   */
   .steam-link {
-    @apply text-link transition-colors hover:text-ink;
+    @apply text-ink transition-colors hover:text-link;
   }
 
   /* Flat translucent button, Steam's secondary action style. */

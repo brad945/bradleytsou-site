@@ -529,6 +529,10 @@ accents used to have is moot while they stay unused.
 - `panel` #131c27, `panel2` #0e141c, `line` #323e4c
 - Text ramp: `bright` #ffffff (headings), `ink` #e5e8ea, `copy` #c7d5e0
   (body), `muted` #8f98a0
+- **Links are `ink` at rest and `link` blue on hover** (`.steam-link`), which
+  is the reverse of Steam. Steam runs blue at rest because its pages are
+  dense with links; here a link is usually a proper noun inside a sentence,
+  so blue at rest tinted half the page. Blue now means "under your pointer"
 - `accent` #de9b35, `live` #5cc98f, `link` #66c0f4
 - `chrome` #171a21 (global header), `teal` #2a475e (panel bars)
 - `steel` #8e9199 (avatar frame band), `menu` #464c58 (alias dropdown)
