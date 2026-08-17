@@ -48,7 +48,15 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    * there is one.
    */
   { label: "About" },
-  { label: "Chat" },
+  /*
+   * Chat is the comments panel. Not a separate feature — the page has one
+   * place a visitor can say something, and giving the nav item its own
+   * destination would have meant building a second one.
+   *
+   * Points at the heading id, so `scroll-padding-top` leaves it clear of the
+   * top of the viewport. Unlike Profile, this one *should* scroll.
+   */
+  { label: "Chat", href: "/#comments-heading" },
   { label: "Play", href: "/play" },
   /*
    * Also no href. There's no resume file in `public/` and no hosted copy to
