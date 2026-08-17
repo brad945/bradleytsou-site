@@ -1,24 +1,46 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { githubUsername, SITE_REPO_NAME } from "@/lib/profile-data";
 
 /**
  * giscus-backed comments — real GitHub Discussions, not a fake widget.
  *
- * NOT wired into app/page.tsx yet. Before importing it:
- *   1. Enable Discussions on the repo (Settings → Features → Discussions).
- *   2. Install the giscus app: https://github.com/apps/giscus
- *   3. Go to https://giscus.app, enter the repo, and copy the generated
- *      `data-repo-id` and `data-category-id` into GISCUS below.
+ * The whole thread lives on `brad945/bradleytsou-site`; visitors sign in with
+ * their own GitHub account and their comments are real discussion replies.
+ * Nothing is stored here, which is the point — the site has no backend, and a
+ * comment box that pretended to work would be exactly the fake chrome this
+ * page avoids.
  *
- * Until those IDs are real, giscus renders an error box — which is why the
- * import in app/page.tsx stays commented out.
+ * ## The ids
+ *
+ * `repoId` and `categoryId` are GitHub's GraphQL node ids, read off the API
+ * rather than copied out of giscus.app — the same values that page generates.
+ * They're **not secret**: giscus is a client-side script, so every visitor
+ * receives them. They only identify which repo and category to post into.
+ *
+ * The category is **Announcements**, and the type matters more than the name:
+ * only maintainers can open discussions in an Announcement-format category, so
+ * a stranger can't create one for giscus to then adopt as a page's thread.
+ * `data-strict` narrows that further. Swapping to a dedicated "Comments"
+ * category later is a one-line id change.
+ *
+ * ## What it maps to
+ *
+ * `data-mapping="pathname"` means one discussion per path — and this is
+ * effectively a one-page site, so in practice it's **a single guestbook
+ * thread**, not per-post comments. That's the right shape here; don't expect
+ * threads to multiply.
+ *
+ * If it renders an error box, the giscus app isn't installed on the repo:
+ * https://github.com/apps/giscus
  */
 const GISCUS = {
-  repo: "your-github-username/bradleytsou-site", // TODO(bradley)
-  repoId: "REPLACE_WITH_DATA_REPO_ID", // TODO(bradley): from giscus.app
-  category: "General",
-  categoryId: "REPLACE_WITH_DATA_CATEGORY_ID", // TODO(bradley): from giscus.app
+  // Derived, so it can't drift from the repo the rest of the page links to.
+  repo: `${githubUsername}/${SITE_REPO_NAME}`,
+  repoId: "R_kgDOTirmOQ",
+  category: "Announcements",
+  categoryId: "DIC_kwDOTirmOc4DDlm4",
 } as const;
 
 export default function Comments() {
@@ -50,17 +72,24 @@ export default function Comments() {
   }, []);
 
   return (
-    <section aria-labelledby="comments-heading" className="panel p-5 sm:p-6">
-      <h2
-        id="comments-heading"
-        className="font-display text-lg font-medium tracking-tight"
-      >
-        Comments
-      </h2>
-      <p className="mt-1 text-xs text-muted">
-        Backed by GitHub Discussions. Sign in with GitHub to post.
-      </p>
-      <div ref={container} className="mt-4" />
+    /*
+      Panel bar, like every other section. This was written before the Steam
+      typography scale existed and still carried `font-display text-lg
+      font-medium tracking-tight` — a heading style used nowhere else on the
+      page, which would have landed looking like a different site.
+    */
+    <section aria-labelledby="comments-heading" className="panel">
+      <div className="panel-bar">
+        <h2 id="comments-heading" className="panel-bar-title">
+          Comments
+        </h2>
+        <span className="panel-bar-meta">GitHub Discussions</span>
+      </div>
+
+      <div className="p-5">
+        <p className="t-meta">Sign in with GitHub to post.</p>
+        <div ref={container} className="mt-4" />
+      </div>
     </section>
   );
 }
