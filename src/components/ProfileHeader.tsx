@@ -225,7 +225,14 @@ export default function ProfileHeader({
             and the den's `top-%` would resolve against that instead of
             against the photo.
           */}
-          <div className="relative shrink-0 self-start">
+          {/*
+            `z-10` lifts the whole avatar block — frame, tail, and Exy walking
+            out — above the bio text beside it, which is otherwise a later
+            sibling and would paint over him as he emerges. It stays below the
+            `z-20` menus and Exy's own `z-30` free-walking layer, so nothing
+            else changes order.
+          */}
+          <div className="relative z-10 shrink-0 self-start">
             {/* Static brushed-grey frame with a dark inner edge, per the
                 reference. w-fit keeps it square when the header stacks. */}
             {/*
@@ -283,6 +290,27 @@ export default function ProfileHeader({
             <div
               id="exy-den"
               className="absolute left-[-32px] top-[52%] h-[86px] w-[77px] -translate-y-1/2"
+            />
+
+            {/*
+              Where he walks out, once the tail is clicked.
+
+              Also before the frame in DOM order, for the same reason: he
+              starts translated a full body-length left of this slot, which
+              puts him inside the photo's box with the frame painting over him,
+              and walks right until he's clear. See `exy-emerge`.
+
+              `left-full` is safe here — unlike the tail's den, this one is
+              sized outright, so there's no shrink-to-fit against zero
+              available width.
+
+              183x104 is the side sprite at its render height (408x232 scaled
+              to 104 tall). Sitting near the base of the photo, because a dog
+              walking out level with Bradley's head reads as floating.
+            */}
+            <div
+              id="exy-emerge"
+              className="absolute bottom-[6px] left-full h-[104px] w-[183px]"
             />
 
             <div className="relative w-fit border border-b-frameLo border-l-frameHi border-r-frameLo border-t-frameHi bg-avatar-frame px-[17px] py-[9px]">

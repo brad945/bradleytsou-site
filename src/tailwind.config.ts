@@ -389,6 +389,23 @@ const config: Config = {
          * 72% is the settle — a single bounce stops dead at the floor — and
          * the rest from 86% keeps repeats landing as separate hops.
          */
+        /*
+         * Exy walking out from behind the avatar when his tail is clicked.
+         *
+         * `-100%` is his own width, so he starts exactly one body-length left
+         * of the slot — which is inside the photo's box, where the frame
+         * paints over him — and ends flush against its right edge, fully out.
+         * Being a percentage, it stays correct if the sprite is resized.
+         *
+         * `linear`, because he's walking at a constant speed; any easing here
+         * would slide his feet at one end or the other. The duration is
+         * derived from that speed at the call site, not chosen.
+         */
+        "exy-emerge": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(0)" },
+        },
+
         "glyph-hop": {
           "0%": {
             transform: "translateY(0)",
@@ -441,6 +458,10 @@ const config: Config = {
         "glyph-hop": "glyph-hop 0.9s infinite",
         "glyph-hop-2": "glyph-hop 0.9s 110ms infinite",
         "glyph-hop-3": "glyph-hop 0.9s 220ms infinite",
+        // 800ms is EMERGE_MS in Exy.tsx — his walking speed over the slot's
+        // width. `forwards` holds him at the far edge until the component
+        // hands off to free walking on the same frame.
+        "exy-emerge": "exy-emerge 800ms linear forwards",
       },
     },
   },

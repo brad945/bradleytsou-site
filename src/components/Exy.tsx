@@ -50,25 +50,66 @@ const WALK_FRAMES = 7;
 /** Rendered height in px. The art is 2x this, which is all a 2x display uses. */
 const SPRITE_PX = 104;
 
-/** Walking speed, px per second. */
-const SPEED = 190;
+/**
+ * Walking speed, px per second — **faster across than up and down.**
+ *
+ * Not a fudge: the two axes are different motions. Left and right he's
+ * travelling across the page, and the side sprite shows a full stride, so it
+ * wants to cover ground. Up and down he's walking toward or away from the
+ * viewer, where most of his real movement is into the screen and only a little
+ * of it registers as travel — so the same number reads far too fast there.
+ *
+ * Changing `SPEED_X` means re-deriving `WALK_FPS_SIDE`, or his feet slide.
+ */
+const SPEED_X = 230;
+const SPEED_Y = 120;
 
 /**
- * Frames per second of the walk cycle.
+ * How he grows walking toward the viewer and shrinks walking away.
  *
- * Not a taste value — it's the one that stops his feet sliding. A walk cycle
- * has to advance at the rate the character actually travels, or he moonwalks
- * (too slow) or skates (too fast).
+ * The vertical axis is depth, so scale is the only thing that can say which
+ * way he's going — at a fixed size, walking down the page and walking up it
+ * look identical. It's a rate rather than a step so the change reads as him
+ * covering ground, and it persists when he stops, which a size tied to
+ * "currently holding S" could not.
  *
- * Measured off the source clip: one gait cycle is 21 frames at 60fps (0.35s),
- * during which he covers ~0.70 of his own body length. Rendered here his body
- * is ~150px, so a cycle should carry him ~105px; at SPEED that takes 0.55s,
- * and 7 frames in 0.55s is ~13fps.
- *
- * **So this is tied to SPEED and to the sprite's proportions.** Change either
- * and re-derive it, or the feet start to slip.
+ * 1.6 is where the 2x art starts to soften.
  */
-const WALK_FPS = 13;
+const SCALE_MIN = 1;
+const SCALE_MAX = 1.6;
+/** Multiplier per second held. */
+const SCALE_RATE = 0.5;
+
+/**
+ * How long he takes to walk clear of the photo, in ms.
+ *
+ * Derived, not chosen: the slot he crosses is 183px wide (`#exy-emerge` in
+ * ProfileHeader) and he crosses it at `SPEED_X`, so 183/230 = 0.8s. **It must
+ * match the `exy-emerge` animation's duration in tailwind.config.ts** — that
+ * moves him, this decides when to hand off to free walking, and if they
+ * disagree he jumps at the seam.
+ */
+const EMERGE_MS = 800;
+
+/**
+ * Frames per second of each walk cycle.
+ *
+ * **Side is not a taste value** — it's the one that stops his feet sliding. A
+ * walk cycle has to advance at the rate the character actually travels, or he
+ * moonwalks (too slow) or skates (too fast). Measured off the source clip: one
+ * gait cycle is 21 frames at 60fps, over which he covers ~0.70 of his own body
+ * length. Rendered here his body is ~150px, so a cycle should carry him
+ * ~105px; at `SPEED_X` that takes 0.46s, and 7 frames in 0.46s is ~15fps.
+ * **Tied to `SPEED_X` and to the sprite's proportions** — change either and
+ * re-derive this.
+ *
+ * Front is free of that constraint and set by eye, faster. Head-on you can't
+ * see a stride length, so there's no sliding to give it away; what you can see
+ * is his legs, and at the side's rate they looked sluggish against how little
+ * ground he covers on this axis.
+ */
+const WALK_FPS_SIDE = 15;
+const WALK_FPS_FRONT = 18;
 
 /**
  * Where he hides while asleep: an empty anchor rendered by `ProfileHeader`,
@@ -80,6 +121,9 @@ const WALK_FPS = 13;
  * falls back to sitting in the corner.
  */
 const DEN_ID = "exy-den";
+
+/** Where he walks out from, on the photo's other edge. Also in ProfileHeader. */
+const EMERGE_ID = "exy-emerge";
 
 /** Rendered height of the tail, px. The art is 2x it. */
 const TAIL_PX = 86;
@@ -123,7 +167,15 @@ const CYCLE: Record<Heading, { name: "front" | "side"; flip: boolean }> = {
 };
 
 export default function Exy() {
-  const [awake, setAwake] = useState(false);
+  /*
+   * Three phases rather than an awake flag, because emerging is neither: he's
+   * on screen and animating, but he isn't controllable and isn't positioned by
+   * the loop — he's still parented to the header, walking out from behind the
+   * photo.
+   */
+  const [phase, setPhase] = useState<"asleep" | "emerging" | "awake">("asleep");
+  const awake = phase === "awake";
+
   const [frame, setFrame] = useState(1);
   const [heading, setHeading] = useState<Heading>("down");
   const [walking, setWalking] = useState(false);
@@ -134,8 +186,18 @@ export default function Exy() {
    * would flash a dog in the bottom-left for a frame before he jumped behind
    * the avatar. Staying null until we know avoids that.
    */
-  const [den, setDen] = useState<HTMLElement | null | undefined>(undefined);
-  useEffect(() => setDen(document.getElementById(DEN_ID)), []);
+  const [slots, setSlots] = useState<
+    { den: HTMLElement | null; emerge: HTMLElement | null } | undefined
+  >(undefined);
+  useEffect(
+    () =>
+      setSlots({
+        den: document.getElementById(DEN_ID),
+        emerge: document.getElementById(EMERGE_ID),
+      }),
+    [],
+  );
+  const den = slots?.den;
 
   /*
    * Position lives in a ref, not state: it changes every animation frame, and
@@ -144,33 +206,48 @@ export default function Exy() {
    */
   const pos = useRef({ x: 0, y: 0 });
   const node = useRef<HTMLDivElement>(null);
+  /** The inner box, which carries the scale so the outer keeps the position. */
+  const body = useRef<HTMLDivElement>(null);
   const held = useRef(new Set<string>());
   const raf = useRef<number | null>(null);
   const lastTick = useRef(0);
   const frameClock = useRef(0);
+  /**
+   * Size, in the same place as position and for the same reason: it changes
+   * every frame while he's walking toward or away, and living in state would
+   * re-render the tree ~60x a second.
+   */
+  const scale = useRef(1);
 
   /** Keeps him fully on screen regardless of how the window is resized. */
   const clamp = useCallback(() => {
-    const w = SPRITE_PX;
+    // Scaled, so growing near an edge can't push him off it.
+    const w = SPRITE_PX * scale.current;
     pos.current.x = Math.min(Math.max(pos.current.x, 0), window.innerWidth - w);
     pos.current.y = Math.min(Math.max(pos.current.y, 0), window.innerHeight - w);
   }, []);
 
   const wake = useCallback(() => {
+    scale.current = 1;
+
     /*
-     * Come out where he was hiding, so waking reads as him stepping out from
-     * behind the photo rather than teleporting across the page. Measured at
-     * click time rather than stored, because the den moves with the layout.
+     * He walks out from behind the photo rather than appearing beside it. That
+     * happens in the header, parented to `#exy-emerge` — see the emerge effect
+     * — so all this does is start the phase; the handoff to free walking sets
+     * the position when he's clear.
      *
-     * The corner is the fallback for a page with no den on it.
+     * Without that slot (any page with no profile header) there's nothing to
+     * walk out from, so he just turns up in the corner.
      */
-    const den = document.getElementById(DEN_ID)?.getBoundingClientRect();
-    pos.current =
-      den && den.width > 0
-        ? { x: den.right - SPRITE_PX / 2, y: den.bottom - SPRITE_PX / 2 }
-        : { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
-    clamp();
-    setAwake(true);
+    if (document.getElementById(EMERGE_ID)) {
+      setHeading("right");
+      setFrame(1);
+      setPhase("emerging");
+    } else {
+      pos.current = { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
+      clamp();
+      setPhase("awake");
+    }
 
     /*
      * Best-effort. Browsers block audio without a user gesture, but this only
@@ -181,10 +258,44 @@ export default function Exy() {
   }, [clamp]);
 
   const sleep = useCallback(() => {
-    setAwake(false);
+    setPhase("asleep");
     setWalking(false);
+    scale.current = 1;
     held.current.clear();
   }, []);
+
+  /*
+   * Emerging: he's portalled into the header slot and walked out of it by
+   * `exy-emerge`, so nothing here moves him — this only cycles his frames, and
+   * then hands him to the free-walking loop at the position the animation left
+   * him at.
+   *
+   * The handoff reads the slot's box rather than assuming: the animation ends
+   * flush with its right edge, so the slot *is* where he's standing, in
+   * viewport coordinates, which is what the fixed layer wants.
+   */
+  useEffect(() => {
+    if (phase !== "emerging") return;
+
+    const step = window.setInterval(
+      () => setFrame((f) => (f % WALK_FRAMES) + 1),
+      1000 / WALK_FPS_SIDE,
+    );
+
+    const done = window.setTimeout(() => {
+      const slot = document.getElementById(EMERGE_ID)?.getBoundingClientRect();
+      pos.current = slot
+        ? { x: slot.left, y: slot.top }
+        : { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
+      clamp();
+      setPhase("awake");
+    }, EMERGE_MS);
+
+    return () => {
+      window.clearInterval(step);
+      window.clearTimeout(done);
+    };
+  }, [phase, clamp]);
 
   /* Key handling. Only while awake, and never while typing. */
   useEffect(() => {
@@ -253,8 +364,20 @@ export default function Exy() {
       if (moving) {
         // Normalise, or holding two keys makes him 41% faster on the diagonal.
         const len = Math.hypot(dx, dy);
-        pos.current.x += (dx / len) * SPEED * dt;
-        pos.current.y += (dy / len) * SPEED * dt;
+        pos.current.x += (dx / len) * SPEED_X * dt;
+        pos.current.y += (dy / len) * SPEED_Y * dt;
+
+        /*
+         * Down is toward the viewer, so he grows; up is away, so he shrinks.
+         * Applied before `clamp`, which reads the scaled size — otherwise
+         * growing against an edge would push him through it.
+         */
+        if (dy !== 0) {
+          scale.current = Math.min(
+            SCALE_MAX,
+            Math.max(SCALE_MIN, scale.current + dy * SCALE_RATE * dt),
+          );
+        }
         clamp();
 
         /*
@@ -265,8 +388,9 @@ export default function Exy() {
           dx < 0 ? "left" : dx > 0 ? "right" : dy < 0 ? "up" : "down";
         setHeading((current) => (current === next ? current : next));
 
+        // Front and side run at different rates — see WALK_FPS_SIDE.
         frameClock.current += dt;
-        const step = 1 / WALK_FPS;
+        const step = 1 / (next === "down" ? WALK_FPS_FRONT : WALK_FPS_SIDE);
         if (frameClock.current >= step) {
           frameClock.current %= step;
           setFrame((f) => (f % WALK_FRAMES) + 1);
@@ -279,6 +403,15 @@ export default function Exy() {
 
       if (node.current) {
         node.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
+      }
+      /*
+       * Scale goes on the inner box, not the outer one. The outer carries the
+       * position, and one element can hold one transform — combining them
+       * would make the translate scale too, so his speed would change with
+       * his size.
+       */
+      if (body.current) {
+        body.current.style.transform = `scale(${scale.current})`;
       }
 
       raf.current = requestAnimationFrame(tick);
@@ -310,6 +443,25 @@ export default function Exy() {
     : `${ASSETS}/sit.png`;
 
   /*
+   * Emerging: parented to the header slot, behind the photo, walked out of it
+   * by CSS. Deliberately not the fixed layer — that paints above the avatar,
+   * so he'd stroll over Bradley's face instead of out from behind it.
+   */
+  if (phase === "emerging" && slots?.emerge) {
+    return createPortal(
+      /* eslint-disable-next-line @next/next/no-img-element -- see below. */
+      <img
+        src={`${ASSETS}/walk-side-${frame}.png`}
+        alt=""
+        height={SPRITE_PX}
+        className="block animate-exy-emerge"
+        style={{ height: SPRITE_PX, width: "auto" }}
+      />,
+      slots.emerge,
+    );
+  }
+
+  /*
    * Asleep: he's behind the avatar and only his tail shows.
    *
    * The button wraps just the tail, so the click target is the tail itself.
@@ -317,7 +469,7 @@ export default function Exy() {
    * paints over it — which is the behaviour you'd want anyway.
    */
   if (!awake) {
-    if (den === undefined) return null; // not looked for the den yet
+    if (slots === undefined) return null; // not looked for the slots yet
 
     const tail = (
       <button
@@ -381,7 +533,17 @@ export default function Exy() {
       ref={node}
       className="pointer-events-none fixed left-0 top-0 z-30 will-change-transform"
     >
-      <div className="pointer-events-auto flex flex-col items-center gap-1">
+      {/*
+        Carries the scale, written straight to the node by the loop.
+
+        `origin-bottom` is what keeps him standing on the same spot as he
+        grows — scaled about its centre he'd sink into the page walking
+        toward you and lift off it walking away.
+      */}
+      <div
+        ref={body}
+        className="pointer-events-auto flex origin-bottom flex-col items-center gap-1"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element -- see above. */}
         <img
           src={src}
