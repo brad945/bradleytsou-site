@@ -90,7 +90,6 @@ export default function Comments() {
         <h2 id="comments-heading" className="panel-bar-title">
           Comments
         </h2>
-        <span className="panel-bar-meta">GitHub Discussions</span>
       </div>
 
       <div className="p-5">
