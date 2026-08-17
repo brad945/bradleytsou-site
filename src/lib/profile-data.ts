@@ -567,6 +567,15 @@ const EVIDENCED_STACK = [
   "Vercel",
   "GraphQL",
   "REST APIs",
+  /*
+   * These two are **Bradley's own statement, not evidenced in this repo** —
+   * which is a weaker footing than everything above, so it's worth saying.
+   * He works in Java (it's the Berkeley CS sequence) and with Codex
+   * alongside Claude; neither leaves a trace here, so nothing on this page
+   * can check them. That makes them the stack's equivalent of `profileLevel`.
+   */
+  "Java",
+  "Codex",
 ];
 
 /**
@@ -582,13 +591,74 @@ const EVIDENCED_STACK = [
  * has its own panel directly below this one, and repeating it here would make
  * the stack look bigger without saying anything new.
  */
+/**
+ * The order the stack is read in, most-recognisable first.
+ *
+ * **Order of appearance was the wrong order.** The panel is derived from the
+ * `tags` on roles and projects, so it came out in the sequence those happen to
+ * be authored in — which put Cybersecurity first and Python sixteenth. Nobody
+ * scanning a stack reads it that way; they look for the languages, then what
+ * you build with, then the interesting part.
+ *
+ * Grouped rather than a flat list so the reasoning survives: each tier is a
+ * kind of thing, and a new tag joins the tier it belongs to.
+ *
+ * **Anything not listed here still appears**, at the end, in the order it was
+ * authored. That matters more than the ranking: a tag added to a role should
+ * turn up on the page whether or not anyone remembered to rank it, rather than
+ * silently vanishing.
+ */
+const STACK_ORDER: readonly (readonly string[])[] = [
+  // Languages. What a reader looks for first, and what most filters key on.
+  ["Python", "Java", "TypeScript", "JavaScript"],
+  // What he builds with.
+  ["Next.js", "React", "Node.js", "Tailwind CSS"],
+  // The AI work, which is what the current roles actually are.
+  [
+    "Claude",
+    "Codex",
+    "Multi-agent Orchestration",
+    "Subagent Delegation",
+    "Hierarchical RL",
+    "Computer Vision",
+    "Fetch AI",
+    "Fish Audio",
+    "Bright Data",
+  ],
+  // Data and infrastructure.
+  ["Postgres", "Docker", "Vercel", "GraphQL", "REST APIs"],
+  // Domain competencies — real, but not what anyone scans a stack for.
+  [
+    "Cybersecurity",
+    "HIPAA / PHI",
+    "Vocal Synthesis",
+    "Audio Engineering",
+    "UI/UX",
+  ],
+];
+
+/** tag -> sort key. Unranked tags sort after every ranked one. */
+const STACK_RANK = new Map<string, number>();
+STACK_ORDER.forEach((tier, t) =>
+  tier.forEach((tag, i) => STACK_RANK.set(tag, t * 100 + i)),
+);
+
 export const techStack: string[] = Array.from(
   new Set([
     ...roles.flatMap((role) => role.tags ?? []),
     ...projects.flatMap((project) => project.tags),
     ...EVIDENCED_STACK,
   ]),
-).filter((tag) => !NON_STACK_TAGS.has(tag));
+)
+  .filter((tag) => !NON_STACK_TAGS.has(tag))
+  .map((tag, i) => ({ tag, i }))
+  .sort(
+    (a, b) =>
+      // Unranked entries keep their authored order, after everything ranked.
+      (STACK_RANK.get(a.tag) ?? Number.MAX_SAFE_INTEGER) -
+        (STACK_RANK.get(b.tag) ?? Number.MAX_SAFE_INTEGER) || a.i - b.i,
+  )
+  .map((x) => x.tag);
 
 
 /**

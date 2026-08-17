@@ -381,7 +381,13 @@ class would stop emitting.
   decorative meters") and the LinkedIn follower count.
   Tech Stack is derived from the `tags` on roles and projects minus
   `NON_STACK_TAGS`, plus `EVIDENCED_STACK` — so nothing can appear there
-  that isn't attached to real work elsewhere on the page. Links is a row
+  that isn't attached to real work elsewhere on the page. **Ordered by
+  `STACK_ORDER`**, grouped languages -> frameworks -> AI -> infra ->
+  domain, because order of appearance put Cybersecurity first and Python
+  sixteenth. An unranked tag still appears, at the end — showing up
+  unranked beats vanishing.
+  `Java` and `Codex` in `EVIDENCED_STACK` are Bradley's own statement
+  rather than evidenced in this repo, unlike the rest of that list. Links is a row
   of icons; an entry with no `href` renders greyed and unlinked rather
   than pointing somewhere invented.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
