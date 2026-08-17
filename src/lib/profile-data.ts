@@ -83,9 +83,11 @@ export interface Role {
    * never happened" are different things — the entry stays reviewable and
    * comes back by flipping one word.
    *
-   * **A hidden role also leaves the Tech Stack**, see `techStack`. Its tags
-   * would otherwise claim skills whose evidence isn't on the page any more,
-   * which is the one thing that panel is built to prevent.
+   * **Its tags stay on the Tech Stack**, deliberately, at Bradley's call.
+   * Hiding the row hides where he did the work, not that he can do it — the
+   * skill didn't stop being real. The cost is that those tags are the one
+   * part of that panel a reader can't trace to anything visible, so treat
+   * this flag as a small exception to its guarantee rather than a free one.
    */
   hidden?: boolean;
 }
@@ -661,9 +663,13 @@ STACK_ORDER.forEach((tier, t) =>
 
 export const techStack: string[] = Array.from(
   new Set([
-    // Hidden roles contribute nothing: the panel's whole guarantee is that
-    // everything on it is attached to work visible elsewhere on this page.
-    ...roles.filter((role) => !role.hidden).flatMap((role) => role.tags ?? []),
+    /*
+     * Hidden roles still contribute their tags. The panel's usual guarantee
+     * is that everything on it is attached to work visible elsewhere on the
+     * page, and this is the deliberate exception: hiding a row hides where
+     * the work happened, not the skill. See `Role.hidden`.
+     */
+    ...roles.flatMap((role) => role.tags ?? []),
     ...projects.flatMap((project) => project.tags),
     ...EVIDENCED_STACK,
   ]),

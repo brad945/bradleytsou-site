@@ -387,7 +387,11 @@ class would stop emitting.
   sixteenth. An unranked tag still appears, at the end — showing up
   unranked beats vanishing.
   `Java` and `Codex` in `EVIDENCED_STACK` are Bradley's own statement
-  rather than evidenced in this repo, unlike the rest of that list. Links is a row
+  rather than evidenced in this repo, unlike the rest of that list.
+  A role with `hidden: true` is off the page but **still contributes its
+  tags** — Bradley's call: hiding the row hides where the work happened,
+  not the skill. Those tags are the one part of the panel a reader can't
+  trace to anything visible. Links is a row
   of icons; an entry with no `href` renders greyed and unlinked rather
   than pointing somewhere invented.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
