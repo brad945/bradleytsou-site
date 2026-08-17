@@ -423,9 +423,42 @@ export const repoDisplayNames: Record<string, string> = {
   "sennaicodes/codearenamvp": "DevEval",
 };
 
+/**
+ * giscus, the GitHub-Discussions-backed comments.
+ *
+ * **Lives here rather than in `Comments.tsx` because that file is
+ * `"use client"`, and a server component cannot read a property off a client
+ * module** — `page.tsx` needs the repo and discussion number to fetch the
+ * comment count for the sidebar. Next fails that at runtime, not at build, so
+ * it's worth stating: this is the shared config, the component only consumes
+ * it.
+ *
+ * `repoId` and `categoryId` are GitHub's GraphQL node ids, read off the API
+ * rather than copied out of giscus.app. They're **not secret**: giscus is a
+ * client-side script, so every visitor receives them. They only say which repo
+ * and category to post into.
+ *
+ * The category is **Announcements**, and the type matters more than the name:
+ * only maintainers can open discussions in an Announcement-format category, so
+ * a stranger can't create one for giscus to adopt as this page's thread.
+ *
+ * `discussion` pins it by **number**, which does no search. Pathname mapping
+ * makes giscus search GitHub by title, and that index lags creation by
+ * minutes — giscus created the discussion and then couldn't find what it had
+ * just made, so the box came up empty and commenting silently failed.
+ */
+export const giscus = {
+  repoId: "R_kgDOTirmOQ",
+  category: "Announcements",
+  categoryId: "DIC_kwDOTirmOc4DDlm4",
+  discussion: 1,
+} as const;
+
 /** This site's own repo. Used by the header ⋯ menu and the showcase entry. */
 export const SITE_REPO_NAME = "bradleytsou-site";
 export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;
+/** "owner/name", the form giscus and the GraphQL API both want. */
+export const siteRepoSlug = `${githubUsername}/${SITE_REPO_NAME}`;
 
 export const socials: SocialLink[] = [
   /*

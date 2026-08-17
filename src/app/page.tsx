@@ -23,6 +23,7 @@ import {
   getFeaturedRepos,
   getLanguages,
   getLastPush,
+  getDiscussionComments,
   REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
@@ -30,21 +31,34 @@ import {
   FAVORITE_REPO,
   featuredRepos,
   privacyScreen,
+  giscus,
+  siteRepoSlug,
 } from "@/lib/profile-data";
 
 /** ISR window for the whole page — matches the feed's fetch revalidate. */
 export const revalidate = 300;
 
 export default async function Home() {
-  const [snapshot, deveval, contributions, featured, languages, lastPush] =
-    await Promise.all([
-      getGitHubSnapshot(githubUsername),
-      getDevEvalStats(),
-      getContributions(githubUsername),
-      getFeaturedRepos(featuredRepos),
-      getLanguages(),
-      getLastPush(),
-    ]);
+  const [owner, repo] = siteRepoSlug.split("/");
+  const [
+    snapshot,
+    deveval,
+    contributions,
+    featured,
+    languages,
+    lastPush,
+    commentCount,
+  ] = await Promise.all([
+    getGitHubSnapshot(githubUsername),
+    getDevEvalStats(),
+    getContributions(githubUsername),
+    getFeaturedRepos(featuredRepos),
+    getLanguages(),
+    getLastPush(),
+    // The comments panel is a real GitHub Discussion, so the sidebar's
+    // Comments row can finally be a number instead of an em-dash.
+    getDiscussionComments(owner, repo, giscus.discussion),
+  ]);
 
   const favorite =
     featured.find((r) => r.nameWithOwner === FAVORITE_REPO) ?? null;
@@ -104,6 +118,7 @@ export default async function Home() {
               contributions={contributions}
               languages={languages}
               lastPush={lastPush}
+              commentCount={commentCount}
             />
           </div>
         )}

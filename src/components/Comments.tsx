@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { githubUsername, SITE_REPO_NAME } from "@/lib/profile-data";
+import { giscus, siteRepoSlug } from "@/lib/profile-data";
 
 /**
  * giscus-backed comments — real GitHub Discussions, not a fake widget.
@@ -49,20 +49,6 @@ import { githubUsername, SITE_REPO_NAME } from "@/lib/profile-data";
  * If it renders an error box, the giscus app isn't installed on the repo:
  * https://github.com/apps/giscus
  */
-const GISCUS = {
-  // Derived, so it can't drift from the repo the rest of the page links to.
-  repo: `${githubUsername}/${SITE_REPO_NAME}`,
-  repoId: "R_kgDOTirmOQ",
-  category: "Announcements",
-  categoryId: "DIC_kwDOTirmOc4DDlm4",
-  /**
-   * The discussion this page's comments live in, by number.
-   *
-   * Already exists — giscus created it. Deleting it there means creating a
-   * replacement and changing this number, since nothing searches for it.
-   */
-  discussion: 1,
-} as const;
 
 export default function Comments() {
   const container = useRef<HTMLDivElement>(null);
@@ -76,12 +62,12 @@ export default function Comments() {
     script.async = true;
     script.crossOrigin = "anonymous";
 
-    script.setAttribute("data-repo", GISCUS.repo);
-    script.setAttribute("data-repo-id", GISCUS.repoId);
-    script.setAttribute("data-category", GISCUS.category);
-    script.setAttribute("data-category-id", GISCUS.categoryId);
+    script.setAttribute("data-repo", siteRepoSlug);
+    script.setAttribute("data-repo-id", giscus.repoId);
+    script.setAttribute("data-category", giscus.category);
+    script.setAttribute("data-category-id", giscus.categoryId);
     script.setAttribute("data-mapping", "number");
-    script.setAttribute("data-term", String(GISCUS.discussion));
+    script.setAttribute("data-term", String(giscus.discussion));
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");

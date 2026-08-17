@@ -17,23 +17,48 @@ interface SidebarProps {
   languages: LanguageCount[];
   /** ISO timestamp of the most recent push, or null without a token. */
   lastPush: string | null;
+  /**
+   * Comments on the site's own discussion thread. Null without a token, in
+   * which case the row keeps its em-dash rather than claiming a zero.
+   */
+  commentCount: number | null;
 }
 
-/** A grey label with a large light number, Steam's sidebar stat row. */
+/**
+ * A grey label with a large light number, Steam's sidebar stat row.
+ *
+ * `href` turns the whole row into a jump link — used by Comments, which has a
+ * panel further down the page to land on. The row still looks identical; only
+ * the label picks up a hover colour, because underlining a stat row or
+ * colouring the number would make it read as a different kind of thing from
+ * the rows either side of it.
+ */
 function Stat({
   label,
   value,
+  href,
 }: {
   label: string;
   value?: number | string | null;
+  href?: string;
 }) {
-  return (
-    <div className="stat-row">
-      <span className="stat-label">{label}</span>
+  const body = (
+    <>
+      <span className={`stat-label ${href ? "group-hover/stat:text-link" : ""}`}>
+        {label}
+      </span>
       {value !== null && value !== undefined && (
         <span className="stat-value">{value}</span>
       )}
-    </div>
+    </>
+  );
+
+  return href ? (
+    <a href={href} className="stat-row group/stat transition-colors">
+      {body}
+    </a>
+  ) : (
+    <div className="stat-row">{body}</div>
   );
 }
 
@@ -74,6 +99,7 @@ export default function Sidebar({
   contributions,
   languages,
   lastPush,
+  commentCount,
 }: SidebarProps) {
   const { stats } = snapshot;
   const now = Date.parse(snapshot.fetchedAt);
@@ -185,7 +211,17 @@ export default function Sidebar({
           nothing but the label if the value is null, so passing the number is
           the whole change.
         */}
-        <Stat label="Comments" value="—" />
+        {/*
+          A real count now, and a link down to the panel it counts. It was an
+          em-dash because nothing counted comments; giscus posts into a GitHub
+          Discussion, so `getDiscussionComments` can. Without a token it falls
+          back to the dash rather than claiming a zero.
+        */}
+        <Stat
+          label="Comments"
+          value={commentCount ?? "—"}
+          href="#comments-heading"
+        />
         <Stat label="Artwork / Portfolio" value="—" />
       </section>
 

@@ -818,3 +818,83 @@ export async function getLastPush(): Promise<string | null> {
     return null;
   }
 }
+
+/**
+ * How many comments are on the site's own discussion thread.
+ *
+ * This is what turns the sidebar's Comments row from an em-dash into a number.
+ * The row showed a dash because nothing counted them; giscus posts into a real
+ * GitHub Discussion, so now something can.
+ *
+ * **Counts replies too.** giscus renders a reply as a comment, so counting only
+ * top-level ones would show a smaller number than the panel visibly contains —
+ * the row would contradict the thing it sits above.
+ *
+ * Auth-only, like the rest of the GraphQL here: no token, `null`, and the row
+ * falls back to the dash rather than claiming a zero it never counted.
+ */
+export async function getDiscussionComments(
+  owner: string,
+  repo: string,
+  number: number,
+): Promise<number | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return null;
+
+  const query = `
+    query($owner: String!, $repo: String!, $number: Int!) {
+      repository(owner: $owner, name: $repo) {
+        discussion(number: $number) {
+          comments(first: 100) {
+            totalCount
+            nodes { replies(first: 0) { totalCount } }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const res = await fetch(`${API}/graphql`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "bradleytsou-site",
+      },
+      body: JSON.stringify({ query, variables: { owner, repo, number } }),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return null;
+
+    const body = (await res.json()) as {
+      data?: {
+        repository?: {
+          discussion?: {
+            comments?: {
+              totalCount?: number;
+              nodes?: { replies?: { totalCount?: number } }[];
+            };
+          };
+        };
+      };
+    };
+
+    const comments = body.data?.repository?.discussion?.comments;
+    if (!comments || typeof comments.totalCount !== "number") return null;
+
+    /*
+     * `first: 100` caps the reply tally, not the top-level count. Past 100
+     * top-level comments the replies of the rest go uncounted — the number
+     * would read low rather than wrong, and this is a personal site's
+     * guestbook. Paginate if that ever stops being true.
+     */
+    const replies = (comments.nodes ?? []).reduce(
+      (sum, n) => sum + (n.replies?.totalCount ?? 0),
+      0,
+    );
+    return comments.totalCount + replies;
+  } catch {
+    return null;
+  }
+}
