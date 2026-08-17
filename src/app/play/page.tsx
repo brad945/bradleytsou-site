@@ -39,7 +39,6 @@ export default async function Play() {
             <h1 id="play-heading" className="panel-bar-title">
               Play
             </h1>
-            <span className="panel-bar-meta">Nothing here yet</span>
           </div>
 
           {/*
@@ -49,9 +48,14 @@ export default async function Play() {
             revisiting the moment anything lands here.
           */}
           <div className="flex min-h-[320px] items-center justify-center px-6 py-16">
-            <p className="max-w-[46ch] text-center text-[17px] leading-relaxed text-copy">
-              All of these brought to you and built by yours truly (Claude
-              code).
+            {/*
+              `font-sign`, the same face and treatment `BoardedUp` uses for the
+              privacy cover. The site already has a way of saying "coming
+              soon"; saying it a second way in body copy would read as a
+              different site's placeholder.
+            */}
+            <p className="font-sign text-[44px] leading-none tracking-[-0.01em] text-bright sm:text-[56px]">
+              Coming soon
             </p>
           </div>
         </section>
