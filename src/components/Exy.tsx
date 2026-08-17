@@ -151,12 +151,23 @@ const TAIL_PX = 86;
  */
 const WAKE_SOUND = "growl.mp3";
 
-/** Keys, lowercased. Arrow keys are deliberately not bound — they scroll. */
+/**
+ * Keys, lowercased against `event.key`.
+ *
+ * **Arrows are bound as well as WASD, and that costs page scrolling** while
+ * he's out: every key here is `preventDefault`ed, or the page would slide
+ * under him as he walks. Escape puts him away and gives the arrows back. WASD
+ * has no such cost, which is why the hint still names it.
+ */
 const KEY_DIRECTION: Record<string, "up" | "down" | "left" | "right"> = {
   w: "up",
   s: "down",
   a: "left",
   d: "right",
+  arrowup: "up",
+  arrowdown: "down",
+  arrowleft: "left",
+  arrowright: "right",
 };
 
 type Heading = "up" | "down" | "left" | "right";
@@ -449,12 +460,26 @@ export default function Exy() {
       const dt = lastTick.current ? (now - lastTick.current) / 1000 : 0;
       lastTick.current = now;
 
+      /*
+       * Resolve held keys to directions first, rather than testing for "w" and
+       * "a" literally. W and ArrowUp are the same instruction, so holding both
+       * has to count once — testing keys would have added their contributions
+       * and sent him up at double speed.
+       */
+      // `forEach` rather than `for…of`: this project's TS target predates
+      // iterating a Set without `downlevelIteration`.
+      const going = new Set<Heading>();
+      held.current.forEach((key) => {
+        const dir = KEY_DIRECTION[key];
+        if (dir) going.add(dir);
+      });
+
       let dx = 0;
       let dy = 0;
-      if (held.current.has("w")) dy -= 1;
-      if (held.current.has("s")) dy += 1;
-      if (held.current.has("a")) dx -= 1;
-      if (held.current.has("d")) dx += 1;
+      if (going.has("up")) dy -= 1;
+      if (going.has("down")) dy += 1;
+      if (going.has("left")) dx -= 1;
+      if (going.has("right")) dx += 1;
 
       const moving = dx !== 0 || dy !== 0;
 
