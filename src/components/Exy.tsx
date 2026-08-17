@@ -51,6 +51,14 @@ const WALK_FRAMES = 7;
 const SPRITE_PX = 104;
 
 /**
+ * Rendered width of the *side* sprite, px — its 408x232 canvas at SPRITE_PX
+ * tall. Only used for the horizontal wrap, so the widest pose is the right one
+ * to measure: it decides when he's fully off screen, and using the narrower
+ * front width would pop him back on with his nose still showing.
+ */
+const SPRITE_W = 183;
+
+/**
  * Walking speed, px per second — **faster across than up and down.**
  *
  * Not a fudge: the two axes are different motions. Left and right he's
@@ -233,12 +241,29 @@ export default function Exy() {
    */
   const scale = useRef(1);
 
-  /** Keeps him fully on screen regardless of how the window is resized. */
-  const clamp = useCallback(() => {
-    // Scaled, so growing near an edge can't push him off it.
-    const w = SPRITE_PX * scale.current;
-    pos.current.x = Math.min(Math.max(pos.current.x, 0), window.innerWidth - w);
-    pos.current.y = Math.min(Math.max(pos.current.y, 0), window.innerHeight - w);
+  /**
+   * Keeps him reachable: wraps horizontally, clamps vertically.
+   *
+   * **The two axes differ because the edges mean different things.** Left and
+   * right are just the sides of a viewport he's walking across, so walking off
+   * one and back on at the other reads as the page being a loop. Up and down
+   * are the top and bottom of the visible page, and a dog dropping off the
+   * bottom edge to reappear at the top reads as falling, not as walking.
+   *
+   * The wrap only fires once he's *fully* gone, so he exits and enters
+   * completely rather than being cut in half at both edges at once.
+   *
+   * Both dimensions are scaled — otherwise growing near an edge would push him
+   * through it.
+   */
+  const contain = useCallback(() => {
+    const w = SPRITE_W * scale.current;
+    const h = SPRITE_PX * scale.current;
+
+    if (pos.current.x > window.innerWidth) pos.current.x = -w;
+    else if (pos.current.x + w < 0) pos.current.x = window.innerWidth;
+
+    pos.current.y = Math.min(Math.max(pos.current.y, 0), window.innerHeight - h);
   }, []);
 
   const wake = useCallback(() => {
@@ -259,7 +284,7 @@ export default function Exy() {
       setPhase("emerging");
     } else {
       pos.current = { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
-      clamp();
+      contain();
       setPhase("awake");
     }
 
@@ -269,7 +294,7 @@ export default function Exy() {
      * for autoplay policy — a 404 on the mp3 shouldn't throw.
      */
     void new Audio(`${ASSETS}/${WAKE_SOUND}`).play().catch(() => {});
-  }, [clamp]);
+  }, [contain]);
 
   const sleep = useCallback(() => {
     setPhase("asleep");
@@ -301,7 +326,7 @@ export default function Exy() {
       pos.current = slot
         ? { x: slot.left, y: slot.top }
         : { x: 24, y: window.innerHeight - SPRITE_PX - 24 };
-      clamp();
+      contain();
       setPhase("awake");
     }, EMERGE_MS);
 
@@ -309,7 +334,7 @@ export default function Exy() {
       window.clearInterval(step);
       window.clearTimeout(done);
     };
-  }, [phase, clamp]);
+  }, [phase, contain]);
 
   /* Key handling. Only while awake, and never while typing. */
   useEffect(() => {
@@ -403,7 +428,7 @@ export default function Exy() {
          * resizing there made every stray brush of S or W nudge his size, and
          * it drifted. Requiring the key alone makes the resize deliberate.
          *
-         * Before `clamp`, which reads the scaled size — otherwise growing
+         * Before `contain`, which reads the scaled size — otherwise growing
          * against an edge would push him through it.
          */
         if (dy !== 0 && dx === 0) {
@@ -412,7 +437,7 @@ export default function Exy() {
             Math.max(SCALE_MIN, scale.current + dy * SCALE_RATE * dt),
           );
         }
-        clamp();
+        contain();
 
         /*
          * Left/right wins over up/down when both are held: a side-on dog
@@ -456,20 +481,20 @@ export default function Exy() {
       if (raf.current !== null) cancelAnimationFrame(raf.current);
       lastTick.current = 0;
     };
-  }, [awake, clamp]);
+  }, [awake, contain]);
 
   /* Keep him on screen when the window is resized. */
   useEffect(() => {
     if (!awake) return;
     function onResize() {
-      clamp();
+      contain();
       if (node.current) {
         node.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
       }
     }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [awake, clamp]);
+  }, [awake, contain]);
 
   const cycle = CYCLE[heading];
   const src = walking
