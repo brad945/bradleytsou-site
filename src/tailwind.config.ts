@@ -332,6 +332,37 @@ const config: Config = {
           dvd.green,
           dvd.orange,
         ]),
+
+        /*
+         * Exy's tail, wagging where it pokes out from behind the avatar.
+         *
+         * A rotation of the one real tail frame rather than a cut sequence of
+         * them. His tail moves fast enough that every frame of the source
+         * clip is motion-blurred into a different shape, so a real sequence
+         * read as several different tails flashing rather than as one tail
+         * swinging. Rotating a single clean frame is the thing that actually
+         * looks like a wag.
+         *
+         * **The pivot is the point, and it lives at the call site**
+         * (`origin-[92%_83%]`): that's the tail's base, measured off the
+         * asset as the widest row of its alpha. Rotating about the element's
+         * default centre swings the whole tail like a propeller, and worse,
+         * swings its cropped root out from behind the photo where the straight
+         * cut edge becomes visible. About the base, the root stays put and
+         * hidden, and only the tip travels.
+         *
+         * Two amplitudes: a slow, shallow idle so a static tail doesn't read
+         * as a broken image, and a faster, wider one on hover that answers the
+         * pointer. Both are `motion-safe` at the call site.
+         */
+        wag: {
+          "0%, 100%": { transform: "rotate(-6deg)" },
+          "50%": { transform: "rotate(6deg)" },
+        },
+        "wag-fast": {
+          "0%, 100%": { transform: "rotate(-13deg)" },
+          "50%": { transform: "rotate(13deg)" },
+        },
       },
       animation: {
         "pulse-live": "pulse-live 2.4s ease-in-out infinite",
@@ -341,6 +372,10 @@ const config: Config = {
         "dvd-x": `dvd-x ${X_HIT}s steps(15, jump-none) infinite alternate`,
         "dvd-y": `dvd-y ${Y_HIT}s steps(17, jump-none) infinite alternate`,
         "dvd-tint": `dvd-tint ${HIT_CYCLE}s linear infinite`,
+        // ease-in-out, not linear: a tail decelerates at the end of each
+        // swing and snaps back through the middle. Linear reads mechanical.
+        wag: "wag 1.9s ease-in-out infinite",
+        "wag-fast": "wag-fast 0.5s ease-in-out infinite",
       },
     },
   },

@@ -325,17 +325,28 @@ export default function Exy() {
         onClick={wake}
         aria-label="Wake up Exy"
         title="Exy"
-        className="block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
+        className="group/tail block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- see below. */}
         <img
           src={`${ASSETS}/tail.png`}
           alt="Exy's tail, poking out from behind the photo"
           height={TAIL_PX}
-          /* The art curves to the right, and the den is on the avatar's left
-             edge, so it's mirrored to curve away from the photo. Moving the
-             den to the other side means dropping this one class. */
-          className="-scale-x-100"
+          /*
+           * The art already points left, so there's no mirror here — moving
+           * the den to the avatar's other edge would need `-scale-x-100` and
+           * a mirrored `origin-*`.
+           *
+           * `origin-[92%_83%]` is the tail's base, measured off the asset.
+           * It is the whole trick: about the default centre the tail swings
+           * like a propeller and drags its cropped root out from behind the
+           * photo, showing the straight cut edge. About the base, the root
+           * stays hidden and only the tip moves.
+           *
+           * `motion-safe` on both, so it's still under
+           * prefers-reduced-motion — as `scroll-behavior` is on `html`.
+           */
+          className="origin-[92%_83%] motion-safe:animate-wag motion-safe:group-hover/tail:animate-wag-fast"
           style={{ height: TAIL_PX, width: "auto" }}
         />
       </button>
