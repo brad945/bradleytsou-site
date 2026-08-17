@@ -1,2 +1,1 @@
-[bradleytsou.com
-](bradleytsou.com)
+[👉 Click here to view the documentation](https://bradleytsou.com)
