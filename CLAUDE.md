@@ -17,7 +17,10 @@ is real, not decorative:
   **`profileLevel` (26) is hand-set** — nothing derives or checks it, so
   it joins `codingSince` and the badge dates on the list of values that
   can't self-correct. Bradley asked for it directly
-- Favorite Project = Steam's "Favorite Game" slot
+- Favorite Game = Steam's own slot, holding an actual game (CS2), with
+  live hours from Steam's Web API. **It replaced Favorite Project**, which
+  held DevEval — already the first row of Experience & Projects, so the
+  panel restated what the page had just said
 - **Item Showcase is gone.** It was projects as an inventory grid with
   rarity-tiered tiles. Removed at Bradley's request, and with it the
   `#showcase-heading` anchor, `rarityStyles`/`rarityLabels`/`monogram`
@@ -341,7 +344,19 @@ class would stop emitting.
   putting the box's top-left directly under the arrow. Content comes from
   `aliases` in `src/lib/profile-data.ts` — brad945 / bradoom /
   bradleytsou / bt, real handles rather than the old placeholders.
-- `src/components/ItemShowcase.tsx` — **exports only `FavoriteProject`
+- `src/components/FavoriteGame.tsx` + `src/lib/steam.ts` — Steam's Favorite
+  Game slot with real playtime. **Renders without the numbers when there's
+  no key** rather than hiding: the favourite is hand-picked and true either
+  way, so hiding it would lose a real fact to protect a missing one — the
+  opposite call from the DevEval block, which is only numbers and has
+  nothing left without them.
+  The capsule is generated from the palette, not Steam cover art, per the
+  carve-out on resembling Steam.
+  `lib/steam.ts` records why a key is needed at all when the profile is
+  public, which is not obvious and cost a wrong diagnosis once.
+- **`ItemShowcase.tsx` is deleted.** Its grid went earlier and
+  `FavoriteProject` has now gone too; `FAVORITE_REPO` went with it.
+  (Historical note follows.) — **exports only `FavoriteProject`
   now**; the inventory grid that was the default export is deleted.
   `FavoriteProject`
   is Steam's "Favorite Game" slot. `FAVORITE_REPO` picks which repo, and
@@ -737,6 +752,17 @@ Both optional; this was `.env.example` before the repo was flattened. Put
 real values in `.env.local`, which `.gitignore` already covers.
 
 ```sh
+# Optional. Without it the Favorite Game panel still renders, minus the
+# hours — it never invents them. Free and instant from
+# https://steamcommunity.com/dev/apikey
+#
+# A key is needed even though the profile is public: Steam closed the
+# key-free games list (steamcommunity.com/.../games?xml=1 now redirects
+# everyone to sign-in) and api.steampowered.com 401s without one. The
+# account's "Game details" must also be Public, or the API returns an
+# empty response.
+STEAM_API_KEY=
+
 # Optional, but reactions need BOTH or the panel hides itself entirely.
 # Create a free Upstash Redis (Vercel → Storage → Upstash, or upstash.com)
 # and copy its REST url and token. Nothing else uses these.

@@ -2,7 +2,7 @@ import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
 import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
-import { FavoriteProject } from "@/components/ItemShowcase";
+import FavoriteGame from "@/components/FavoriteGame";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
@@ -17,6 +17,7 @@ import Comments from "@/components/Comments";
 import Exy from "@/components/Exy";
 
 import { getDevEvalStats } from "@/lib/deveval";
+import { getSteamPlaytime } from "@/lib/steam";
 import {
   getContributions,
   getGitHubSnapshot,
@@ -28,11 +29,12 @@ import {
 } from "@/lib/github";
 import {
   githubUsername,
-  FAVORITE_REPO,
   featuredRepos,
   privacyScreen,
   giscus,
   siteRepoSlug,
+  favoriteGame,
+  steamId64,
 } from "@/lib/profile-data";
 
 /** ISR window for the whole page — matches the feed's fetch revalidate. */
@@ -48,6 +50,7 @@ export default async function Home() {
     languages,
     lastPush,
     commentCount,
+    playtime,
   ] = await Promise.all([
     getGitHubSnapshot(githubUsername),
     getDevEvalStats(),
@@ -58,10 +61,8 @@ export default async function Home() {
     // The comments panel is a real GitHub Discussion, so the sidebar's
     // Comments row can finally be a number instead of an em-dash.
     getDiscussionComments(owner, repo, giscus.discussion),
+    getSteamPlaytime(steamId64, favoriteGame.appId),
   ]);
-
-  const favorite =
-    featured.find((r) => r.nameWithOwner === FAVORITE_REPO) ?? null;
 
   return (
     <>
@@ -104,7 +105,7 @@ export default async function Home() {
             */}
               <ActivityFeed snapshot={snapshot} featured={featured} />
               <Experience featured={featured} />
-              <FavoriteProject repo={favorite} />
+              <FavoriteGame playtime={playtime} />
               {/* The panel a visitor contributes to, last in the column so it
                   reads as the end of the page rather than an interruption in
                   it. Reactions is parked above; this is the swap. */}

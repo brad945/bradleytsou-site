@@ -202,6 +202,33 @@ export const linkedinUrl: string | null =
   "https://www.linkedin.com/in/bradleytsou";
 
 /**
+ * Steam account id, and the game the "Favorite Game" panel features.
+ *
+ * The id is the 64-bit one, not the vanity name — every Steam API takes that
+ * form, and the vanity URL is only an alias that can be changed.
+ *
+ * `appId` is Steam's own app id (730 is Counter-Strike 2), which is what the
+ * playtime lookup keys on. `name`, `studio` and `released` are display text;
+ * they could be fetched from the store API but that's a second call to say
+ * something that never changes.
+ *
+ * **`blurb` is Bradley's, not a store description.** The point of the panel is
+ * why *he* likes it, which no API knows.
+ *
+ * Valorant can't ever go here: it's Riot's, not on Steam, so there'd be no
+ * hours to show and the panel would be a picture of a name.
+ */
+export const steamId64 = "76561198438468192";
+
+export const favoriteGame = {
+  appId: 730,
+  name: "Counter-Strike 2",
+  studio: "Valve",
+  released: "2023",
+  blurb: "Where the bhop mechanic planned for /play comes from.",
+} as const;
+
+/**
  * Hackathon wins, for the sidebar row.
  *
  * Hand-set, from Bradley directly.
@@ -382,17 +409,6 @@ export const roles: Role[] = [
  * exception to `namedPrivateRepos` below: these are hand-picked. Don't add
  * coursework repos.
  */
-/**
- * The repo the "Favorite Project" panel features. Still `codearenamvp` — the
- * product renamed to DevEval but the repo did not, and this is an API
- * identifier, not display text. Renaming it breaks the live commit count.
- */
-/**
- * The repo the "Favorite Project" panel features. Its `id` in `projects`
- * below must match the repo name, lowercased.
- */
-export const FAVORITE_REPO = "sennaicodes/codearenamvp";
-
 export const featuredRepos: string[] = [
   /*
    * Order is manual and it is what Recent Activity shows — the panel takes the
