@@ -305,9 +305,9 @@ export default function Sidebar({
           The LinkedIn follower count went with the words. It was the only
           number here and had nowhere to sit once the label became a 20px
           icon — and it was the one figure on this page typed by hand rather
-          than fetched, since LinkedIn has no public API. `linkedinFollowers`
-          is still exported and still carries that warning if it's ever wanted
-          back.
+          than fetched, since LinkedIn has no public API. The constant behind
+          it has since been deleted; wanting it back means re-adding it, and
+          re-checking it, by hand.
 
           Each icon keeps its label as the accessible name and as the tooltip,
           so nothing is lost to someone who can't identify a mark on sight.

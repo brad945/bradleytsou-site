@@ -18,7 +18,15 @@ export interface Project {
   kind: "Software" | "Research" | "Design";
   /** One line. What it is, not how impressive it is. */
   blurb: string;
-  /** How central this is to Bradley's work — drives the left-border colour. */
+  /**
+   * How central this is to Bradley's work.
+   *
+   * **Nothing renders this today.** It drove the Item Showcase's tier colours,
+   * and that panel is gone. Kept because it's Bradley's own judgement about
+   * his work rather than a styling detail, and it's the input the planned
+   * skills map would want — but note that it can't be seen, so it can't be
+   * checked.
+   */
   rarity: Rarity;
   /** Stack / role tags, shown as mono chips. */
   tags: string[];
@@ -395,20 +403,6 @@ export const repoDisplayNames: Record<string, string> = {
 export const SITE_REPO_NAME = "bradleytsou-site";
 export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;
 
-/**
- * LinkedIn follower count.
- *
- * Hand-entered, and it's the only number on the page that can't self-correct:
- * LinkedIn has no public API, so nothing refreshes this. It WILL drift.
- * TODO(bradley): re-check it when you remember to.
- *
- * Annotated `: number` for the same reason `githubUsername` is annotated
- * `: string` — otherwise TypeScript infers the literal type `1457`, and the
- * singular/plural check in Sidebar becomes a "no overlap" build error now that
- * this is the only reach value left.
- */
-export const linkedinFollowers: number = 1457;
-
 export const socials: SocialLink[] = [
   /*
    * Devpost replaced GitHub here at Bradley's request. GitHub isn't lost —
@@ -590,76 +584,6 @@ export const techStack: string[] = Array.from(
   ]),
 ).filter((tag) => !NON_STACK_TAGS.has(tag));
 
-
-/** Human labels per tier. Kept for ordering; no longer rendered as a legend. */
-export const rarityLabels: Record<Rarity, string> = {
-  core: "Core",
-  major: "Major",
-  side: "Side",
-};
-
-/**
- * Static Tailwind class strings per tier. Written out in full — Tailwind's
- * scanner can't see class names built by string concatenation.
- */
-export const rarityStyles: Record<
-  Rarity,
-  {
-    /** Left accent bar, for wide cards. */
-    border: string;
-    /** Full 1px outline, for the square inventory tiles. */
-    tileBorder: string;
-    text: string;
-    dot: string;
-    tint: string;
-  }
-> = {
-  core: {
-    border: "border-l-rarity-core",
-    tileBorder: "border-rarity-core/70",
-    text: "text-rarity-core",
-    dot: "bg-rarity-core",
-    tint: "hover:bg-rarity-core/[0.10]",
-  },
-  major: {
-    border: "border-l-rarity-major",
-    tileBorder: "border-rarity-major/70",
-    text: "text-rarity-major",
-    dot: "bg-rarity-major",
-    tint: "hover:bg-rarity-major/[0.12]",
-  },
-  side: {
-    border: "border-l-rarity-side",
-    tileBorder: "border-rarity-side/60",
-    text: "text-rarity-side",
-    dot: "bg-rarity-side",
-    tint: "hover:bg-rarity-side/[0.10]",
-  },
-};
-
-/**
- * One- or two-character stand-in for item art, used on every square tile and
- * repo capsule. Prefers word initials, then internal capitals ("DevEval" →
- * "DE"), then the first two letters.
- */
-export function monogram(name: string): string {
-  const words = name
-    .replace(/[^A-Za-z0-9 .\-_]/g, "")
-    .split(/[ .\-_]+/)
-    .filter(Boolean);
-
-  if (words.length >= 2) {
-    return words
-      .slice(0, 2)
-      .map((word) => word[0].toUpperCase())
-      .join("");
-  }
-
-  const word = words[0] ?? "";
-  const capitals = word.match(/[A-Z0-9]/g);
-  if (capitals && capitals.length >= 2) return capitals.slice(0, 2).join("");
-  return word.slice(0, 2).toUpperCase();
-}
 
 /**
  * The number in the Level circle. Set by hand.

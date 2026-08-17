@@ -26,7 +26,6 @@ const tokens = {
   copy: "#c7d5e0",
   muted: "#8f98a0",
   accent: "#de9b35",
-  nebula: "#417a9b",
   live: "#5cc98f",
 
   // Added for the Steam-profile layout.
@@ -65,10 +64,6 @@ const tokens = {
   berkeley: "#dca009",
   deveval: "#60ebdb",
   medimpact: "#b771f4",
-  /** Steam blue, used for panel bars. */
-  plum: "#2a475e",
-  /** Steam global-header near-black. */
-  wine: "#171d25",
   /** Panel header bar — flat, was the left stop of a teal->purple gradient. */
   teal: "#2a475e",
   /** Profile header background — flat, was a five-stop purple sweep. */
@@ -94,17 +89,6 @@ const tokens = {
   menu: "#464c58",
   /** Global nav bar — Steam's header sits darker and bluer than the page. */
   chrome: "#171a21",
-};
-
-/**
- * Item Showcase rarity tiers. Rarity encodes how central a project is to
- * Bradley's work — not how "cool" it is. Derived from the palette above so
- * the showcase never drifts off-system.
- */
-const rarity = {
-  core: tokens.accent,
-  major: tokens.nebula,
-  side: tokens.muted,
 };
 
 /**
@@ -212,7 +196,6 @@ const config: Config = {
     extend: {
       colors: {
         ...tokens,
-        rarity,
         dvd,
       },
       fontFamily: {
