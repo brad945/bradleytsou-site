@@ -17,21 +17,20 @@ is real, not decorative:
   **`profileLevel` (26) is hand-set** — nothing derives or checks it, so
   it joins `codingSince` and the badge dates on the list of values that
   can't self-correct. Bradley asked for it directly
-- Favorite Project = Steam's "Favorite Game" slot, given to the highest-
-  rarity project
-- Item Showcase = real projects as an inventory grid, rarity tier = how
-  central the project is to his work, with an always-visible detail list
-  underneath (a monogram tile isn't self-describing the way item art is,
-  and `title` never fires on touch)
-- Recent Activity = hand-picked repos in Steam's "recently played" slot,
-  each with a commits-past-2-weeks strip where Steam puts achievement
-  progress — **hidden entirely when that count is 0**, since a row reading
-  "Commits past 2 weeks: 0" is noise. It's live, so it reappears by itself
-  on the next commit. Language and recency moved into the right-hand meta
-  so they survive when the strip is hidden. The same figure, summed, sits in the header bar exactly where
-  Steam shows "X hours past 2 weeks". A CS2-style killfeed lived here and
-  was **removed** at Bradley's request — it duplicated what the repo rows
-  already said
+- Favorite Project = Steam's "Favorite Game" slot
+- **Item Showcase is gone.** It was projects as an inventory grid with
+  rarity-tiered tiles. Removed at Bradley's request, and with it the
+  `#showcase-heading` anchor, `rarityStyles`/`rarityLabels`/`monogram`
+  and the `rarity` colour tokens. The `rarity` field survives on each
+  project, rendered by nothing — see `profile-data`
+- Recent Activity = one GitHub block of compact rows, three hand-picked
+  repos, each showing name, language and how long ago it was pushed. Plus
+  a dashed placeholder naming the sources that aren't built. **Every
+  commit count here is gone** at Bradley's request — the per-row total,
+  the "commits past 2 weeks" strip, and the panel-bar sum that was the
+  analogue of Steam's hours-past-2-weeks. The data layer still fetches
+  them, so putting any of it back is a render change only. A CS2-style
+  killfeed lived here and was removed for duplicating the repo rows
 - Experience & Projects = roles and built things in **one** panel. They
   were two, which split the same story in half and listed UCSB and BRI
   Youth in both. Those two are kept as roles only, since that's where the
@@ -42,9 +41,20 @@ is real, not decorative:
   by date can't express. Don't re-add it. Roles are hand-maintained
   (LinkedIn has no public API); project rows pull live commits and
   language via `ghRepo`
-- Right sidebar = status, real GitHub counts (repos / followers /
-  following / gists / member since), milestone badge tiles, a language
-  breakdown, and a stars-ranked repo list in Steam's friends-list slot
+- Right sidebar = status heading derived from the last push, stat rows
+  (Repos / Hackathon Wins / Following / Gists / Contributions, plus
+  Comments and Artwork-Portfolio as em-dashes because nothing counts them
+  yet), then DevEval, Tech Stack, Languages and a Links row of icons.
+  **No badge tiles and no stars-ranked repo list** — both removed
+- Exy = Bradley's actual dog, as a controllable character. He hides
+  behind the profile photo with only his tail showing; click the tail and
+  he walks out from behind it, WASD or arrows move him, clicking him
+  growls and shakes, Escape puts him away. Built from three phone clips
+  of the real dog. See `src/components/Exy.tsx`
+
+**The site is live at https://www.bradleytsou.com** (Vercel, `www`
+primary, apex 308-redirects to it). `siteOrigin` in `profile-data` must
+match whichever domain is Primary there.
 
 Bradley's favorite games are CS2 and Valorant — that's where the future
 bhop mechanic comes from. He explicitly does NOT want fake
@@ -85,16 +95,20 @@ class would stop emitting.
 
 ## Current file structure
 
-- `src/lib/profile-data.ts` — all editable content (name, badges, projects,
-  GitHub username). `githubUsername` is set to `brad945`, so the live
+- `src/lib/profile-data.ts` — all editable content (name, projects,
+  roles, GitHub username). `githubUsername` is set to `brad945`, so the live
   data layer is on. Projects are real now — every `blurb` is the repo's
   own GitHub description, copied verbatim so it can be checked.
-  **Two invented values remain and they undercut the site's whole claim:**
-  `profile.codingSince` (2019-09-01) is a placeholder from the original
-  scaffold and it is what `Level` counts from, and all four `badges` dates
-  are made up. Everything else on the page is fetched. Also outstanding:
-  the LinkedIn URL, real project start dates, and the `tags` marked
-  `TODO(bradley)` as inferred rather than known.
+  **The invented values are gone.** `badges` was deleted outright and
+  `codingSince` is Bradley's real 2021-01-01, so nothing on the page is
+  made up. Three figures are still hand-set and *cannot* self-correct,
+  each deliberately: `profileLevel` (26, his real Steam level),
+  `hackathonWins` (3 — Devpost has no public API) and `accountBalance`
+  ($0.01, Steam chrome reproduced as a prop, not data).
+  Also here now: `privacyScreen` (the "Coming soon" cover),
+  `steamProfileUrl`, `linkedinUrl`, `repoDisplayNames` and `techStack`,
+  which is derived from the `tags` on roles and projects rather than
+  hand-kept.
   `PLACEHOLDER_GITHUB_USERNAME` is still exported as the "not configured"
   sentinel the empty states check against.
   `githubUsername` carries an explicit `: string` annotation — without it
@@ -135,11 +149,11 @@ class would stop emitting.
   shape, fed by `roles` in `profile-data.ts`. Transcribed verbatim from
   Bradley's LinkedIn; don't embellish it, and remember it's the only panel
   that can go stale silently since there's nothing to fetch.
-- `src/components/ContributionSummary.tsx` — contributions as counts, not a
-  chart. A weekly bar chart lived here first; it showed *when* the work
-  happened but never what it was, which is the question a reader actually
-  has. Fed by `getContributions()` in `src/lib/github.ts` — **GraphQL, so
-  auth-only**: no `GITHUB_TOKEN`, no panel.
+- **`ContributionSummary.tsx` no longer exists.** Contributions is a
+  single stat row inside `Sidebar`. A weekly bar chart lived here first;
+  it showed *when* the work happened but never what it was. Fed by
+  `getContributions()` in `src/lib/github.ts` — **GraphQL, so auth-only**:
+  no `GITHUB_TOKEN`, no row.
   The type breakdown comes from **author-scoped search**, not from
   `contributionsCollection.total*Contributions`. Those count public
   contributions only, so for this account they report "0 pull requests"
@@ -255,20 +269,41 @@ class would stop emitting.
   (skewed wordmark over an ellipse) rather than embedding the real logo
   file, and paints entirely with `currentColor` so one animated `color`
   drives it.
+  **It also hosts Exy's two slots**, `#exy-den` (his tail, left edge) and
+  `#exy-emerge` (where he walks out, right edge). Both are empty anchors;
+  `Exy.tsx` portals into them, so this file owns only *where* he hides.
+  Both must stay **before** the frame in DOM order — later siblings paint
+  on top, and that's what puts the photo over him. The avatar block
+  carries `z-10` so he passes in front of the bio text, and `self-start`
+  so the den's `top-%` resolves against the photo rather than the
+  stretched flex row.
   The header must **not** get `overflow-hidden` — it would clip the alias
   dropdown. The gradient overlay is `absolute inset-0`, so nothing spills.
 - `src/components/SiteNav.tsx` — Steam's global header: dark full-width bar
   (`chrome` #171a21), wordmark left, uppercase nav items beside it,
   signed-in user + avatar right. Uppercase with tracking is wrong nearly
   everywhere else here but it's exactly what Steam's nav does, so it
-  stays. The links are real in-page anchors rather than dead tabs — this
-  is one page, and a nav of hrefs going nowhere is the fake chrome the
-  site avoids. They target section heading ids (`#profile`,
-  `#experience-heading`, `#activity-heading`, `#showcase-heading`), so
-  renaming those breaks them. `scroll-behavior: smooth` plus a 64px
-  `scroll-padding-top` on `html` eases to the section and keeps the
-  heading clear of the nav; both are disabled under
-  `prefers-reduced-motion`.
+  stays.
+  **The wordmark is the `bt.` mark, not text** — `BtMark`, at 50x36. It
+  links to `/#top`, not `/#profile`: the nav isn't sticky, so `#profile`
+  already sits ~120px down and `scroll-padding-top: 64px` parked it 64px
+  from the edge, scrolling the page down ~56px on every click and eating
+  half the nav. `top` is a fragment the HTML spec resolves to the document
+  top with no element to point at. On hover each glyph hops in turn, 110ms
+  apart, once per hover — see `glyph-hop` in the Tailwind config, and note
+  the transform units there are viewBox units, not pixels.
+  Nav items are **Profile / About / Chat / Play / Resume**. Only Profile
+  (`/#profile`) and Play (`/play`) are links; the rest render as dim,
+  non-clickable text, because an `href="#"` that silently does nothing is
+  worse than something visibly unfinished. Giving an entry an href is the
+  whole change when its section lands. Targets are written root-relative
+  so they also work from `/play`.
+  Right side: the GitHub login, the `$0.01` balance under it, and the
+  avatar, all inside one `HoverNote` reading "pulled live from cashapp
+  api" — **a joke, not a description**; there is no Cash App call in this
+  repo.
+  `scroll-behavior: smooth` plus `scroll-padding-top: 64px` on `html`
+  eases to sections; both are disabled under `prefers-reduced-motion`.
 - `src/components/HeaderActions.tsx` — Steam's profile action row, sat where
   Steam puts Edit Profile. Every visitor is "someone else", so it mirrors
   Steam's other-profile set rather than Edit — pared to **Message /
@@ -284,7 +319,7 @@ class would stop emitting.
   site avoids. Besides Follow, the items point at the machinery behind the page:
   **View source**, **View raw API response** (`api.github.com/users/:login`
   — the JSON the page is built from) and **Activity feed**
-  (`github.com/:login.atom` — the same events as the killfeed). Closes on
+  (`github.com/:login.atom` — the raw event feed). Closes on
   Escape and outside click like NameHistory.
   A "Copy profile link" entry was tried and cut: Steam needs one because
   its profile URLs are long numeric strings, but this is one page whose
@@ -302,8 +337,11 @@ class would stop emitting.
   click. The dropdown anchors to the **caret**, not the name — the caret
   sits in its own `relative` span so that span is the containing block,
   putting the box's top-left directly under the arrow. Content comes from
-  `aliases` in `src/lib/profile-data.ts` and is still placeholder.
-- `src/components/ItemShowcase.tsx` — exports two panels. `FavoriteProject`
+  `aliases` in `src/lib/profile-data.ts` — brad945 / bradoom /
+  bradleytsou / bt, real handles rather than the old placeholders.
+- `src/components/ItemShowcase.tsx` — **exports only `FavoriteProject`
+  now**; the inventory grid that was the default export is deleted.
+  `FavoriteProject`
   is Steam's "Favorite Game" slot. `FAVORITE_REPO` picks which repo, and
   the matching `projects` entry is found by id == repo name lowercased.
   Its copy comes from the **live repo description**, not `profile-data` —
@@ -314,30 +352,94 @@ class would stop emitting.
   Experience & Projects, so nothing was lost. Tags stay hand-curated; the
   API has no equivalent. Falls back to the `profile-data` entry without a
   token.
-  The default export is the default export is the square inventory
-  grid with rarity-coloured tile outlines and the "N Projects Shown"
-  counter in the grid's leftover space. Tile detail lives in `title`.
-- `src/components/ActivityFeed.tsx` — Steam's Recent Activity panel: the
-  commits-past-2-weeks total in the header bar, then a row per featured
-  repo. Each row's progress strip is **commits in the last two weeks**,
-  author-scoped — it replaced a "your share of commits" bar that measured
-  the wrong thing, since what fraction of a repo someone wrote says
-  nothing about whether they're working on it now. The header count is
-  summed from the rows rather than using `stats.eventsPast2Weeks`, which
-  sees only public events and reads near-zero for a mostly-private
-  account. `PublicRepoRow` is the no-token fallback.
-- `src/components/Sidebar.tsx` — the right column: status heading, stat rows
-  (repos / followers / following / gists / member since), badge tiles,
-  focus, a language breakdown, and a stars-ranked Top Repositories list
-  that fills the slot Steam uses for the friends list.
+- `src/components/ActivityFeed.tsx` — Steam's Recent Activity panel,
+  restructured as **one labelled GitHub source block** plus a dashed
+  `PlannedSources` placeholder naming what isn't built (Spotify, YouTube,
+  videogame, books — and which of those have APIs and which would be
+  hand-kept, because that distinction is the site's whole premise). Rows
+  are single-line: name on the left, language and relative push time on
+  the right. `MAX_ROWS` is 3, sliced here rather than trimmed out of
+  `featuredRepos`, which also feeds the Experience rows. Private repos
+  get a Private tag instead of a link. **All commit counts were removed**
+  at Bradley's request, including the panel-bar total; `myCommits` and
+  `myCommitsPast2Weeks` are still fetched, so restoring any of it is a
+  render change. `PublicRepoRow` is the no-token fallback.
+- `src/components/Sidebar.tsx` — the right column, in order: a status
+  heading derived from the last push (Currently Online / Recently Active /
+  Currently Offline, thresholded on hours, linked to the GitHub profile
+  because that's the thing being measured), then stat rows — Repos,
+  Hackathon Wins, Following, Gists, Contributions, Comments, Artwork /
+  Portfolio. Then DevEval, Tech Stack, Languages, Links.
+  **Zero-value rows hide themselves**, and the check is live, so each
+  returns on its own once the number moves. Comments and Artwork show an
+  em-dash rather than 0: nothing counts them, and "0" would claim it had
+  been counted.
+  **Gone from here:** followers, badge tiles, the focus list, the
+  stars-ranked Top Repositories list, the language bars (see "No
+  decorative meters") and the LinkedIn follower count.
+  Tech Stack is derived from the `tags` on roles and projects minus
+  `NON_STACK_TAGS`, plus `EVIDENCED_STACK` — so nothing can appear there
+  that isn't attached to real work elsewhere on the page. Links is a row
+  of icons; an entry with no `href` renders greyed and unlinked rather
+  than pointing somewhere invented.
 - `src/components/AutoRefresh.tsx` — tiny client component that calls
-  `router.refresh()` on the revalidate interval so the killfeed actually
+  `router.refresh()` on the revalidate interval so the feed actually
   ticks over for someone leaving the tab open (ISR only revalidates on a
   new request; this supplies the request). Pauses while the tab is hidden.
-- `src/components/Comments.tsx` — built but NOT wired into the page yet
-  (deliberately parked). Uses giscus (GitHub Discussions-backed comments,
-  not a fake widget). Needs `data-repo-id` / `data-category-id` from
-  giscus.app once Discussions are enabled on the repo.
+- `src/components/Comments.tsx` — built but NOT wired into the page yet.
+  Uses giscus (GitHub Discussions-backed, not a fake widget). **Blocked on
+  the repo being public** — giscus requires it, and as of now
+  `brad945/bradleytsou-site` is private with Discussions disabled. Then:
+  enable Discussions, install the giscus app, paste `data-repo-id` and
+  `data-category-id` into `GISCUS`, uncomment two lines in `page.tsx`.
+  Making the repo public also lights up "View source" in the ⋯ menu by
+  itself.
+- `src/components/Exy.tsx` — Bradley's dog as a controllable character,
+  and the biggest thing here. Asleep he's portalled into `#exy-den`
+  behind the avatar with only his tail out; clicking it plays a growl and
+  starts an `emerging` phase parented to `#exy-emerge` on the photo's
+  other edge, where CSS walks him out from behind it before handing off
+  to the free-walking layer. Then WASD **or arrows** move him, clicking
+  him growls and shakes, Escape puts him away (clicking no longer does).
+  Load-bearing details, all with their reasoning in the file: speeds are
+  per-axis and multiplied by his scale; he grows walking down and shrinks
+  walking up, but only when the vertical key is held alone; the side
+  frame rate is *derived* from speed so his feet don't slide; he's drawn
+  twice a viewport apart so the horizontal wrap is seamless; vertical
+  clamps rather than wraps.
+  Frames were cut from three phone clips with ffmpeg + rembg — see
+  `public/exy/README.md`, which records the pipeline and the two things
+  still missing (a back cycle, and a real bark; `growl.mp3` stands in).
+- `src/components/BtMark.tsx` — the `bt.` mark as vector primitives,
+  shared by the favicon and the nav. viewBox is the mark's exact ink
+  bounds (408x292), and the b's counter is a real hole done by winding.
+  Passing `glyphClassName` wraps each glyph in its own `<g>` for
+  animating; **omitting it leaves the markup ungrouped, and that path is
+  the one Satori renders** — Satori cannot handle React Fragments, so the
+  component has two whole returns rather than shared structure.
+- `src/components/AnimatedFavicon.tsx` — swaps the static `/icon` for a
+  four-frame stepped hop after hydration. Whole-pixel offsets on purpose:
+  sub-pixel positions blur at 16px, and browsers coalesce favicon writes,
+  so raising the frame rate does nothing. Chrome repaints tab icons about
+  once a second, which is the hard ceiling on this.
+- `src/components/HoverNote.tsx` — an instant hover note, because native
+  `title` has a ~1s delay nothing can shorten. `w-max` and the *named*
+  group are both load-bearing; see the file.
+- `src/components/BoardedUp.tsx` — the "Coming soon" cover, rendered
+  **instead of** the profile grid when `privacyScreen` is on. An overlay
+  was tried and couldn't hold: covering pixels doesn't disable a document.
+- `src/components/SocialIcons.tsx` — the Links row marks, drawn as paths
+  rather than pulled from an icon package.
+- `src/app/play/page.tsx` — `/play`, deliberately near-empty. It exists so
+  the nav's Play item can be a real link. It fetches the snapshot for one
+  reason: `SiteNav` hides its whole right-hand block when `stats` is null,
+  so without it the nav there would be visibly shorter.
+- `src/app/icon.tsx`, `opengraph-image.tsx` — the favicon and the 1200x630
+  share card, both generated at build time from `profile-data` rather than
+  checked in as binaries.
+- `src/app/robots.ts`, `sitemap.ts` — allow-all plus the sitemap, and two
+  URLs. `lastModified` is deliberately omitted: content changes when
+  Bradley commits, not when Vercel rebuilds.
 - `src/app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split that stacks below `lg`. `max-w-profile`
   is **990px**, not Steam's 940 — widened 25px per side at Bradley's
@@ -352,10 +454,20 @@ class would stop emitting.
   again.
 
   Main column order: **Recent Activity, Experience, Favorite Project**.
-  Contributions moved to the sidebar — as five short counts it never
-  needed the main column's width. Comments import is commented out on purpose.
-- `src/app/layout.tsx` — fonts (next/font), metadata, and the two fixed
-  background layers (nebula glow, then a tiled starfield).
+  Contributions moved to the sidebar. Comments import is commented out on
+  purpose; `<Exy />` sits outside the column, since he walks the whole
+  viewport rather than the centred block.
+- `src/app/layout.tsx` — fonts (next/font), metadata, `metadataBase` and
+  the canonical, and the fixed starfield layer. The nebula glow went with
+  the rest of the decorative gradients; the starfield is 12
+  radial-gradients each painting a single 1px dot. Mounts
+  `<AnimatedFavicon />`.
+  **Three fonts, not two.** Open Sans (display + body), JetBrains Mono
+  (`.label` chrome only), and **Gabarito** as `--font-sign`, used by
+  exactly one element: the "Coming soon" line. It's a free stand-in for BB
+  Casual Pro Medium, which Bradley asked for and the site cannot load —
+  Bold Studio sells it per-licence and embedding needs a paid webfont
+  licence, the same wall as Motiva Sans.
 
 ## Design tokens (already in tailwind.config.ts)
 
@@ -405,8 +517,8 @@ accents used to have is moot while they stay unused.
   more saturated and slightly darker, **not bluer** — 180 is cyan. The
   trap is re-harmonising all three to a shared saturation, which is what
   read as highlighters at 60/65/76%.
-- Fonts: Mulish (display + body), JetBrains Mono (killfeed and `.label`
-  chrome only)
+- Fonts: Open Sans (display + body), JetBrains Mono (`.label` chrome
+  only), Gabarito (`font-sign`, the "Coming soon" line and nothing else)
 
 ## Typography
 
@@ -437,7 +549,7 @@ of the resemblance, and all four are easy to lose:
 - **very light weights** (200-300) on anything large — sidebar counts and
   the showcase counter are weight 200, the persona name 300
 - **no letter-spacing and no uppercase** outside the tiny mono `.label`
-  used by the killfeed. Tracked uppercase is the single most un-Steam
+  used for chrome labels. Tracked uppercase is the single most un-Steam
   thing you can add
 - **pure white for headings, blue-grey for copy** — not one flat colour
 - **tight leading on headings, ~1.5 on body**
@@ -466,36 +578,61 @@ new ones.
 Reusable Steam-shaped classes (`.panel`, `.panel-bar`, `.stat-row`,
 `.steam-link`, `.steam-button`) live in `src/app/globals.css`.
 
-Rarity tiers (`rarity.core` / `rarity.major` / `rarity.side`) are derived
-from `accent` / `nebula` / `muted` so the showcase can't drift off-palette.
-Class strings per tier live in `rarityStyles` in `src/lib/profile-data.ts` and
-are written out in full — Tailwind's scanner can't see concatenated names.
+**The rarity tokens are gone**, along with `nebula`, `plum` and `wine`.
+The first three fed only the deleted Item Showcase; `plum` and `wine` were
+never referenced at all, shadowed by `teal` and `chrome`. If tiers ever
+come back they were `accent` / `nebula #417a9b` / `muted`.
+
+Class strings built by concatenation are still the trap that made those
+written out in full — **Tailwind's scanner reads source as text**, so it
+can't see a name assembled at runtime. It also reads *comments*: writing
+an arbitrary-value class inside one emits it as a real, dead rule. That
+has happened twice.
 
 ## Explicitly NOT built yet — do these next, in this order
 
-1. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
+**Exy is done** and is no longer on this list.
+
+1. **Wire up Comments.tsx.** The code is finished; the blocker is that
+   giscus needs a public repo and this one is private with Discussions
+   off. That's Bradley's call, not a code task.
+2. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
    Real skill-based mechanic (WASD + jump timing / simple physics), not a
    decorative loading animation. Should have a skip option — don't hard-gate
-   the site behind it.
-2. **Radar-style "about me" map** — a custom map-like layout (doesn't need
+   the site behind it. `/play` exists and is empty, so it has a home now.
+3. **Radar-style "about me" map** — a custom map-like layout (doesn't need
    to be a literal CS2 map, can be styled abstractly) where pins are skill
-   categories. Clicking a pin opens a loadout-card style panel (rarity-tiered
-   tech stack grid, similar visual language to Item Showcase).
-3. **Wire up Comments.tsx** into `src/app/page.tsx` once Bradley has enabled
-   GitHub Discussions on the repo and has real giscus IDs.
+   categories. Clicking a pin opens a loadout-card style panel. Note it was
+   going to reuse the Item Showcase's rarity visual language, and that is
+   deleted — the `rarity` field on each project survives as its input.
 
-## Deployment (Bradley needs to do the account-specific parts himself)
+### Waiting on Bradley, not on code
 
-1. `npm install && npm run dev` to run locally.
-2. `git init`, create a GitHub repo named `bradleytsou-site`, push.
-3. Import that repo on vercel.com (auto-detects Next.js, zero config needed).
-4. Buy `bradleytsou.com` or `bradleytsou.dev` (Porkbun or Namecheap).
-5. In Vercel → Settings → Domains, add the domain; Vercel gives an A record
-   + CNAME to add at the registrar's DNS settings. Propagates in under an hour.
+- A **Discord URL** (last greyed icon in the Links row) and a **resume
+  PDF** in `public/` (the nav item lights up on its own once its href is
+  filled in).
+- **Bio copy.** The `Bio` heading is on the page with nothing under it,
+  and it's also what would let the About nav item become a real link.
+- **Exy's back cycle and a real bark** — see `public/exy/README.md`.
 
-Optional: add `GITHUB_TOKEN` (a fine-grained PAT with no scopes — it only
-needs to be a valid token) as a Vercel environment variable if the feed
-ever hits the unauthenticated rate limit.
+## Deployment — already done
+
+**Live at https://www.bradleytsou.com**, on Vercel, from
+`brad945/bradleytsou-site` (private). `www` is Primary and the apex
+308-redirects to it; `siteOrigin` in `profile-data` is hardcoded to match
+and **must be changed if that's ever flipped**, or every canonical points
+at a URL that redirects.
+
+`npm run dev` serves on **port 3003**, not 3000.
+
+`GITHUB_TOKEN` needs to be set in Vercel's environment variables, not
+just locally — without it the status line, contributions, languages and
+every featured-repo row degrade to their empty states.
+
+**The "Coming soon" cover is `privacyScreen` in `profile-data`, and it is
+currently `false` on this branch.** Pushing takes the cover down. That is
+a one-word edit either way, but it isn't obvious from a diff summary, so
+check it before pushing.
 
 ## No decorative meters
 
@@ -519,8 +656,12 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
   read these as licence to add decorative motion elsewhere.
   A third was added and removed within the hour — `cal-swap`, the tagline
   cycling Berkeley Blue to California Gold. It was the only one that was
-  decoration rather than a real feature, and it went. The line is static
-  `berkeley` blue now.
+  decoration rather than a real feature, and it went.
+  **Three more have since been added, all at Bradley's explicit request
+  after the rule was put to him:** Exy's tail wagging where it pokes out
+  from behind the photo (idle slow, faster on hover), the `bt.` mark's
+  per-glyph hop on hover, and Exy's shake when clicked. All are
+  `motion-safe`. The rule still stands — don't read these as licence.
 - **Close visual fidelity to Steam's profile layout is intentional** —
   Bradley asked for it directly, superseding the earlier "inspired by the
   structure of, not a literal skin" note. Don't undo it. The carve-out
