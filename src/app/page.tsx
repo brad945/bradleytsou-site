@@ -4,14 +4,15 @@ import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
 import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
-import Reactions from "@/components/Reactions";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
-// Parked. The component works and is configured — pinned to discussion 1 by
-// number — but commenting needs a GitHub sign-in, and reactions is the
-// sign-in-free version of the same idea. Uncomment both lines to bring it
-// back; nothing else needs changing.
-// import Comments from "@/components/Comments";
+import Comments from "@/components/Comments";
+
+// Parked, and swapped for Comments. Everything works — the route, the store,
+// the flying emoji — it's just not what's wanted on the page right now.
+// Uncomment this and the tag below to bring it back; the Upstash env vars are
+// still what decides whether it renders at all.
+// import Reactions from "@/components/Reactions";
 
 import Exy from "@/components/Exy";
 
@@ -92,10 +93,9 @@ export default async function Home() {
               <FavoriteProject repo={favorite} />
               {/* The panel a visitor contributes to, last in the column so it
                   reads as the end of the page rather than an interruption in
-                  it. Renders nothing at all until it has real counts — see
-                  Reactions. Comments is parked above it. */}
-              <Reactions />
-              {/* <Comments /> */}
+                  it. Reactions is parked above; this is the swap. */}
+              {/* <Reactions /> */}
+              <Comments />
             </div>
 
             <Sidebar
