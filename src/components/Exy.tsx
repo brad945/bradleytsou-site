@@ -53,12 +53,14 @@ const WALK_FRAMES = 7;
 const SPRITE_PX = 104;
 
 /**
- * Rendered width of the *side* sprite, px — its 408x232 canvas at SPRITE_PX
- * tall. Only used for the horizontal wrap, so the widest pose is the right one
- * to measure: it decides when he's fully off screen, and using the narrower
- * front width would pop him back on with his nose still showing.
+ * He's drawn twice, one viewport-width apart, so the horizontal wrap is
+ * seamless — as he leaves one edge the other copy is already arriving at the
+ * opposite one, and no part of him is ever missing from the screen.
+ *
+ * Index 0 is the real one and carries the WASD hint; index 1 trails a viewport
+ * to its left and is off screen entirely except while he's straddling an edge.
  */
-const SPRITE_W = 183;
+const COPIES = [0, 1];
 
 /**
  * Walking speed, px per second — **faster across than up and down.**
@@ -232,9 +234,10 @@ export default function Exy() {
    * a transform written straight to the node instead.
    */
   const pos = useRef({ x: 0, y: 0 });
-  const node = useRef<HTMLDivElement>(null);
+  /** One entry per copy in COPIES; index 0 is the real one. */
+  const nodes = useRef<(HTMLDivElement | null)[]>([]);
   /** The inner box, which carries the scale so the outer keeps the position. */
-  const body = useRef<HTMLDivElement>(null);
+  const bodies = useRef<(HTMLDivElement | null)[]>([]);
   const held = useRef(new Set<string>());
   const raf = useRef<number | null>(null);
   const lastTick = useRef(0);
@@ -250,25 +253,55 @@ export default function Exy() {
    * Keeps him reachable: wraps horizontally, clamps vertically.
    *
    * **The two axes differ because the edges mean different things.** Left and
-   * right are just the sides of a viewport he's walking across, so walking off
-   * one and back on at the other reads as the page being a loop. Up and down
-   * are the top and bottom of the visible page, and a dog dropping off the
-   * bottom edge to reappear at the top reads as falling, not as walking.
+   * right are just the sides of a viewport he's walking across, so looping
+   * reads as the page being continuous. Up and down are the top and bottom of
+   * the visible page, and a dog dropping off the bottom to reappear at the top
+   * reads as falling, not as walking.
    *
-   * The wrap only fires once he's *fully* gone, so he exits and enters
-   * completely rather than being cut in half at both edges at once.
+   * The horizontal wrap is a modulo rather than a teleport-when-fully-gone,
+   * which is what makes it seamless: `x` is always inside one viewport width,
+   * and the second copy drawn a viewport to its left supplies the part that
+   * has crossed the edge. He's never off screen and never cut short — the two
+   * halves are always on at once. See `COPIES`.
    *
-   * Both dimensions are scaled — otherwise growing near an edge would push him
-   * through it.
+   * Height is scaled, or growing near the bottom would push him through it.
    */
   const contain = useCallback(() => {
-    const w = SPRITE_W * scale.current;
+    const width = window.innerWidth;
     const h = SPRITE_PX * scale.current;
 
-    if (pos.current.x > window.innerWidth) pos.current.x = -w;
-    else if (pos.current.x + w < 0) pos.current.x = window.innerWidth;
+    // `%` keeps the sign of the dividend in JS, so walking left off zero would
+    // give a negative x and put both copies off screen. The double modulo
+    // folds it back into [0, width).
+    pos.current.x = ((pos.current.x % width) + width) % width;
 
     pos.current.y = Math.min(Math.max(pos.current.y, 0), window.innerHeight - h);
+  }, []);
+
+  /**
+   * Writes position and size straight to the DOM for every copy.
+   *
+   * Copy `i` sits `i` viewport-widths to the left of the real one, which is
+   * what draws the part of him that has crossed the right edge back in at the
+   * left. Only ever one of them is on screen unless he's mid-wrap, when both
+   * are and together they show a whole dog.
+   *
+   * Position and scale are on separate elements. On one element they'd have to
+   * share a transform, and `translate(...) scale(...)` scales about the box's
+   * origin — with `origin-bottom` on the same node the translate would fight
+   * the scale for what "bottom" means as he grows. Splitting them keeps the
+   * outer purely positional.
+   */
+  const paint = useCallback(() => {
+    const width = window.innerWidth;
+    for (const i of COPIES) {
+      const n = nodes.current[i];
+      if (n) {
+        n.style.transform = `translate3d(${pos.current.x - i * width}px, ${pos.current.y}px, 0)`;
+      }
+      const b = bodies.current[i];
+      if (b) b.style.transform = `scale(${scale.current})`;
+    }
   }, []);
 
   const wake = useCallback(() => {
@@ -482,41 +515,32 @@ export default function Exy() {
 
       setWalking((was) => (was === moving ? was : moving));
 
-      if (node.current) {
-        node.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
-      }
-      /*
-       * Scale goes on the inner box, not the outer one. The outer carries the
-       * position, and one element can hold one transform — combining them
-       * would make the translate scale too, so his speed would change with
-       * his size.
-       */
-      if (body.current) {
-        body.current.style.transform = `scale(${scale.current})`;
-      }
+      paint();
 
       raf.current = requestAnimationFrame(tick);
     }
 
+    // Place him before the first frame runs. Both copies start with no
+    // transform, i.e. at 0,0 — without this he flashes in the top-left corner
+    // for one frame every time he wakes.
+    paint();
     raf.current = requestAnimationFrame(tick);
     return () => {
       if (raf.current !== null) cancelAnimationFrame(raf.current);
       lastTick.current = 0;
     };
-  }, [awake, contain]);
+  }, [awake, contain, paint]);
 
   /* Keep him on screen when the window is resized. */
   useEffect(() => {
     if (!awake) return;
     function onResize() {
       contain();
-      if (node.current) {
-        node.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
-      }
+      paint();
     }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [awake, contain]);
+  }, [awake, contain, paint]);
 
   const cycle = CYCLE[heading];
 
@@ -629,57 +653,72 @@ export default function Exy() {
   }
 
   return (
-    <div
-      ref={node}
-      className="pointer-events-none fixed left-0 top-0 z-30 will-change-transform"
-    >
-      {/*
-        Carries the scale, written straight to the node by the loop.
-
-        `origin-bottom` is what keeps him standing on the same spot as he
-        grows — scaled about its centre he'd sink into the page walking
-        toward you and lift off it walking away.
-      */}
-      <div
-        ref={body}
-        className="pointer-events-auto flex origin-bottom flex-col items-center gap-1"
-      >
-        {/*
-          The shake goes on this wrapper, not on the image. The image carries
-          an inline `scaleX(-1)` when he faces left, and a running animation's
-          transform beats an inline style in the cascade — animating the image
-          itself would flip him round for the length of every shake.
-
-          `onAnimationEnd` clears it rather than a timer, so the flag can't
-          drift out of step with the animation's real duration, and a second
-          click always restarts it.
-        */}
+    <>
+      {COPIES.map((i) => (
         <div
-          onClick={poke}
-          onAnimationEnd={() => setShaking(false)}
-          className={shaking ? "animate-exy-shake" : undefined}
-          style={{ cursor: "pointer" }}
+          key={i}
+          ref={(el) => {
+            nodes.current[i] = el;
+          }}
+          className="pointer-events-none fixed left-0 top-0 z-30 will-change-transform"
+          /* Copy 1 exists only to fill in the far edge mid-wrap; it's a
+             duplicate of the same dog, so it shouldn't be announced twice. */
+          aria-hidden={i > 0}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- see above. */}
-          <img
-            src={src}
-            alt="Exy"
-            height={SPRITE_PX}
-            style={{
-              height: SPRITE_PX,
-              width: "auto",
-              display: "block",
-              // Mirrored for the left-facing walk — one side cycle covers both.
-              transform: cycle.flip ? "scaleX(-1)" : undefined,
-              // Nearest-neighbour keeps hand-cut frames crisp rather than mushy.
-              imageRendering: "auto",
+          {/*
+            Carries the scale, written straight to the node by the loop.
+
+            `origin-bottom` is what keeps him standing on the same spot as he
+            grows — scaled about its centre he'd sink into the page walking
+            toward you and lift off it walking away.
+          */}
+          <div
+            ref={(el) => {
+              bodies.current[i] = el;
             }}
-          />
+            className="pointer-events-auto flex origin-bottom flex-col items-center gap-1"
+          >
+            {/*
+              The shake goes on this wrapper, not on the image. The image
+              carries an inline `scaleX(-1)` when he faces left, and a running
+              animation's transform beats an inline style in the cascade —
+              animating the image itself would flip him round for the length of
+              every shake.
+
+              `onAnimationEnd` clears it rather than a timer, so the flag can't
+              drift out of step with the animation's real duration, and a
+              second click always restarts it. Both copies animate off the one
+              flag, so a poke mid-wrap shakes the whole dog rather than half.
+            */}
+            <div
+              onClick={poke}
+              onAnimationEnd={() => setShaking(false)}
+              className={shaking ? "animate-exy-shake" : undefined}
+              style={{ cursor: "pointer" }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- see above. */}
+              <img
+                src={src}
+                alt={i === 0 ? "Exy" : ""}
+                height={SPRITE_PX}
+                style={{
+                  height: SPRITE_PX,
+                  width: "auto",
+                  display: "block",
+                  // Mirrored for the left-facing walk — one side cycle covers both.
+                  transform: cycle.flip ? "scaleX(-1)" : undefined,
+                  // Nearest-neighbour keeps hand-cut frames crisp rather than mushy.
+                  imageRendering: "auto",
+                }}
+              />
+            </div>
+            {/* Hint on the real copy only, or it would read twice mid-wrap. */}
+            {!walking && !hasWalked && i === 0 && (
+              <span className="label text-[9px] text-muted/70">WASD</span>
+            )}
+          </div>
         </div>
-        {!walking && !hasWalked && (
-          <span className="label text-[9px] text-muted/70">WASD</span>
-        )}
-      </div>
-    </div>
+      ))}
+    </>
   );
 }
