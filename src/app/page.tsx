@@ -29,8 +29,6 @@ import {
   FAVORITE_REPO,
   featuredRepos,
   privacyScreen,
-  SITE_REPO_NAME,
-  siteRepoUrl,
 } from "@/lib/profile-data";
 
 /** ISR window for the whole page — matches the feed's fetch revalidate. */
@@ -50,12 +48,6 @@ export default async function Home() {
   const favorite =
     featured.find((r) => r.nameWithOwner === FAVORITE_REPO) ?? null;
 
-  // Only offer "View source" once the repo is actually public — the API only
-  // lists public repos, so this flips on by itself the day it's flipped there.
-  const sourceUrl = snapshot.publicRepoNames.includes(SITE_REPO_NAME)
-    ? siteRepoUrl
-    : null;
-
   return (
     <>
       <SiteNav stats={snapshot.stats} />
@@ -68,7 +60,7 @@ export default async function Home() {
         nothing under the column to break against.
       */}
       <main className="mx-auto w-full max-w-profile bg-hero px-3 pb-6 pt-3 sm:px-4 sm:pb-8 sm:pt-4">
-        <ProfileHeader stats={snapshot.stats} sourceUrl={sourceUrl} />
+        <ProfileHeader stats={snapshot.stats} />
 
         {/*
           Steam's main/sidebar split, restored. It was flattened to a single

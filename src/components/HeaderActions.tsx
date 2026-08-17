@@ -5,11 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 interface HeaderActionsProps {
   /** GitHub profile URL, or null when the username isn't configured. */
   profileUrl: string | null;
-  /**
-   * This site's own repo — null when it isn't publicly visible, in which case
-   * the row is omitted rather than linking somewhere a visitor gets a 404.
-   */
-  sourceUrl: string | null;
   email: string;
   /** Steam profile or friend-invite link. Null until Bradley supplies one. */
   steamUrl: string | null;
@@ -41,7 +36,6 @@ interface HeaderActionsProps {
  */
 export default function HeaderActions({
   profileUrl,
-  sourceUrl,
   email,
   steamUrl,
   linkedinUrl,
@@ -213,17 +207,6 @@ export default function HeaderActions({
               </a>
             )}
 
-            {/* How the page is built. Hidden while the repo is private. */}
-            {sourceUrl && (
-              <a
-                href={sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={menuItem}
-              >
-                View source
-              </a>
-            )}
           </div>
         )}
       </span>

@@ -333,11 +333,6 @@ class would stop emitting.
   URL is already in the address bar, so it filled a slot rather than
   earning one. Removing it also removed the clipboard code, which needed
   a focused document and so could never be verified headlessly.
-  **View source only renders when the repo is actually public.** The
-  unauthenticated `/users/:u/repos` endpoint returns public repos only, so
-  `snapshot.publicRepoNames` is a truthful visibility check — the row
-  appears by itself the day the repo is flipped public, and until then it
-  can't send visitors to a 404.
 - `src/components/NameHistory.tsx` — client component for the caret next to
   the name that opens Steam's alias history ("This user has also played
   as:"). Closes on Escape (returning focus to the caret) and on outside

@@ -45,8 +45,6 @@ const YEARS_IN_WORDS: Record<number, string> = {
 
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
-  /** Null while this site's repo is private. */
-  sourceUrl: string | null;
 }
 
 /**
@@ -163,10 +161,7 @@ function renderBioLine(line: BioLine) {
   );
 }
 
-export default function ProfileHeader({
-  stats,
-  sourceUrl,
-}: ProfileHeaderProps) {
+export default function ProfileHeader({ stats }: ProfileHeaderProps) {
   const { years } = experience();
 
   /*
@@ -517,7 +512,6 @@ export default function ProfileHeader({
             <div className="mt-4">
               <HeaderActions
                 profileUrl={stats?.profileUrl ?? null}
-                sourceUrl={sourceUrl}
                 email={profile.email}
                 steamUrl={steamProfileUrl}
                 linkedinUrl={linkedinUrl}
