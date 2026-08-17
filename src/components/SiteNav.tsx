@@ -72,10 +72,13 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           is a logo, not a name — the name is already the persona heading a few
           hundred pixels below, so spelling it twice was the redundancy.
 
-          28px tall is matched to what it replaced: the old 26px text stood
-          about 24px from the b's ascender to the y's descender, and a mark
-          wants to sit a shade above the type it stands in for rather than
-          level with it. Width follows from the mark's own 1.4:1.
+          36px tall, up from 28. The original was sized against the handle it
+          replaced — the old 26px text stood about 24px from the b's ascender
+          to the y's descender — which made it a wordmark's height rather than
+          a logo's, and left it small in a 104px bar. Width follows from the
+          mark's own 1.4:1 (`BT_MARK_ASPECT`): 36 x 1.397 = 50.3, rounded to
+          50. The svg's viewBox letterboxes rather than distorting, so that
+          rounding costs nothing.
 
           The svg is aria-hidden, so the link takes its accessible name from
           the label — without it this is an anchor with no text at all.
@@ -88,7 +91,7 @@ export default function SiteNav({ stats }: { stats: GitHubStats | null }) {
           {/* `block` so the svg doesn't sit on a text baseline — inline it
               would carry the line-box's descender space and ride high of the
               nav items it's meant to be centred against. */}
-          <BtMark width={39} height={28} className="block" />
+          <BtMark width={50} height={36} className="block" />
         </a>
 
         {/*
