@@ -390,6 +390,72 @@ const config: Config = {
         },
 
         /*
+         * A reaction emoji flying up the screen, the way they do in a Teams
+         * call. Spawned on click and removed when it finishes.
+         *
+         * **Three paths, not one**, because identical arcs read as a UI
+         * effect rather than as people reacting: `rise` goes more or less
+         * straight up, `arc-l` and `arc-r` swing out and back. The component
+         * picks one at random per emoji and randomises the drift, spin,
+         * distance and duration on top, so no two are the same.
+         *
+         * Distances and angles come from custom properties set inline per
+         * element. Custom properties can't be *interpolated* without being
+         * registered, but they resolve fine as static values inside a
+         * keyframe, and the browser interpolates between the resolved
+         * results — which is all this needs.
+         *
+         * The fade is deliberately late. Fading from 0% makes them look like
+         * they were never really there; holding full opacity most of the way
+         * and dropping at the end reads as flying off the top.
+         */
+        "emoji-rise": {
+          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
+          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform:
+              "translate(var(--dx), var(--dy)) scale(var(--end-scale)) rotate(var(--spin))",
+            opacity: "0",
+          },
+        },
+        "emoji-arc-l": {
+          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
+          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "45%": {
+            transform:
+              "translate(calc(var(--dx) - 26px), calc(var(--dy) * 0.45)) scale(1) rotate(calc(var(--spin) * 0.4))",
+            opacity: "1",
+          },
+          "100%": {
+            transform:
+              "translate(var(--dx), var(--dy)) scale(var(--end-scale)) rotate(var(--spin))",
+            opacity: "0",
+          },
+        },
+        "emoji-arc-r": {
+          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
+          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "45%": {
+            transform:
+              "translate(calc(var(--dx) + 26px), calc(var(--dy) * 0.45)) scale(1) rotate(calc(var(--spin) * 0.4))",
+            opacity: "1",
+          },
+          "100%": {
+            transform:
+              "translate(var(--dx), var(--dy)) scale(var(--end-scale)) rotate(var(--spin))",
+            opacity: "0",
+          },
+        },
+
+        /* The button itself kicking back when pressed. */
+        "emoji-pop": {
+          "0%, 100%": { transform: "scale(1)" },
+          "35%": { transform: "scale(0.92)" },
+          "70%": { transform: "scale(1.06)" },
+        },
+
+        /*
          * Exy shaking himself when you poke him.
          *
          * The amplitude decays — 3px down to 1 — because a shake that stays
@@ -476,6 +542,13 @@ const config: Config = {
         // hands off to free walking on the same frame.
         "exy-emerge": "exy-emerge 800ms linear forwards",
         "exy-shake": "exy-shake 450ms ease-out",
+        // `forwards` so the last keyframe (opacity 0) holds for the frame
+        // between the animation ending and React removing the node.
+        // ease-out: they leave the button fast and coast, like a thrown thing.
+        "emoji-rise": "emoji-rise var(--dur) ease-out forwards",
+        "emoji-arc-l": "emoji-arc-l var(--dur) ease-out forwards",
+        "emoji-arc-r": "emoji-arc-r var(--dur) ease-out forwards",
+        "emoji-pop": "emoji-pop 260ms ease-out",
       },
     },
   },

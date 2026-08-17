@@ -685,11 +685,16 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
   A third was added and removed within the hour — `cal-swap`, the tagline
   cycling Berkeley Blue to California Gold. It was the only one that was
   decoration rather than a real feature, and it went.
-  **Three more have since been added, all at Bradley's explicit request
+  **Four more have since been added, all at Bradley's explicit request
   after the rule was put to him:** Exy's tail wagging where it pokes out
   from behind the photo (idle slow, faster on hover), the `bt.` mark's
-  per-glyph hop on hover, and Exy's shake when clicked. All are
-  `motion-safe`. The rule still stands — don't read these as licence.
+  per-glyph hop on hover, Exy's shake when clicked, and the reaction
+  emoji flying up the screen. Every one of them except the idle wag fires
+  only in response to a click or a hover, which is the line that keeps
+  them out of the "scroll-triggered decoration" the brief bans. All are
+  `motion-safe`, and the flying emoji don't spawn at all under
+  `prefers-reduced-motion`. The rule still stands — don't read these as
+  licence.
 - **Close visual fidelity to Steam's profile layout is intentional** —
   Bradley asked for it directly, superseding the earlier "inspired by the
   structure of, not a literal skin" note. Don't undo it. The carve-out
