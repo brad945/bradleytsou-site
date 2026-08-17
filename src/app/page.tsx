@@ -6,9 +6,7 @@ import { FavoriteProject } from "@/components/ItemShowcase";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
 import Sidebar from "@/components/Sidebar";
-// Parked until GitHub Discussions is enabled and giscus IDs are real.
-// See components/Comments.tsx.
-// import Comments from "@/components/Comments";
+import Comments from "@/components/Comments";
 
 import Exy from "@/components/Exy";
 
@@ -95,7 +93,10 @@ export default async function Home() {
               <ActivityFeed snapshot={snapshot} featured={featured} />
               <Experience featured={featured} />
               <FavoriteProject repo={favorite} />
-              {/* <Comments /> */}
+              {/* Last in the column on purpose: it's the one panel a visitor
+                  contributes to, so it reads as the end of the page rather
+                  than an interruption in the middle of it. */}
+              <Comments />
             </div>
 
             <Sidebar
