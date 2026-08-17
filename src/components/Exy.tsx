@@ -79,7 +79,7 @@ const SPEED_Y = 120;
  */
 const SCALE_MIN = 1;
 const SCALE_MAX = 1.6;
-/** Multiplier per second held. */
+/** Multiplier per second held. Only counts while the key is held alone. */
 const SCALE_RATE = 0.5;
 
 /**
@@ -397,10 +397,16 @@ export default function Exy() {
 
         /*
          * Down is toward the viewer, so he grows; up is away, so he shrinks.
-         * Applied before `clamp`, which reads the scaled size — otherwise
-         * growing against an edge would push him through it.
+         *
+         * **Only when the vertical key is held on its own.** On a diagonal
+         * he's mostly crossing the page rather than closing on you, so
+         * resizing there made every stray brush of S or W nudge his size, and
+         * it drifted. Requiring the key alone makes the resize deliberate.
+         *
+         * Before `clamp`, which reads the scaled size — otherwise growing
+         * against an edge would push him through it.
          */
-        if (dy !== 0) {
+        if (dy !== 0 && dx === 0) {
           scale.current = Math.min(
             SCALE_MAX,
             Math.max(SCALE_MIN, scale.current + dy * SCALE_RATE * dt),
