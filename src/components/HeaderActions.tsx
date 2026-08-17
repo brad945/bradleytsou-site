@@ -13,6 +13,8 @@ interface HeaderActionsProps {
   email: string;
   /** Steam profile or friend-invite link. Null until Bradley supplies one. */
   steamUrl: string | null;
+  /** LinkedIn profile. Null omits the row rather than linking nowhere. */
+  linkedinUrl: string | null;
 }
 
 /**
@@ -42,6 +44,7 @@ export default function HeaderActions({
   sourceUrl,
   email,
   steamUrl,
+  linkedinUrl,
 }: HeaderActionsProps) {
   /** Which menu is open, if either. Only one at a time. */
   const [open, setOpen] = useState<"message" | "more" | null>(null);
@@ -175,6 +178,22 @@ export default function HeaderActions({
                 className={menuItem}
               >
                 Follow on GitHub
+              </a>
+            )}
+
+            {/*
+              Sits directly under Follow on GitHub because the two are the same
+              kind of thing — the places a visitor can actually follow him —
+              and above the Steam and source rows, which are the novelties.
+            */}
+            {linkedinUrl && (
+              <a
+                href={linkedinUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={menuItem}
+              >
+                Connect on LinkedIn
               </a>
             )}
 

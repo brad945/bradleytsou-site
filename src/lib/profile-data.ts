@@ -169,6 +169,17 @@ export const steamProfileUrl: string | null =
   "https://steamcommunity.com/id/bushhammer";
 
 /**
+ * LinkedIn profile.
+ *
+ * Its own export rather than living only inside `socials`, because two places
+ * need it now — the sidebar's Links row and the header's ⋯ menu — and digging
+ * it back out of that array by label would break silently the moment the label
+ * were reworded.
+ */
+export const linkedinUrl: string | null =
+  "https://www.linkedin.com/in/bradleytsou";
+
+/**
  * Hackathon wins, for the sidebar row.
  *
  * Hand-set, from Bradley directly.
@@ -409,7 +420,7 @@ export const socials: SocialLink[] = [
    * referral tracking picked up by copying from a signed-in page. They say
    * where *he* clicked from, and would follow every visitor who used this link.
    */
-  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/in/bradleytsou" },
+  { label: "LinkedIn", icon: "linkedin", href: linkedinUrl ?? undefined },
   { label: "Devpost", icon: "devpost", href: "https://devpost.com/bradley_tsou" },
   { label: "Email", icon: "mail", href: `mailto:${profile.email}` },
   /*

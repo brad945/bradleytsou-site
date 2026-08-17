@@ -6,6 +6,7 @@ import type { GitHubStats } from "@/lib/github";
 import {
   aliases,
   experience,
+  linkedinUrl,
   profile,
   privacyScreen,
   profileLevel,
@@ -481,6 +482,7 @@ export default function ProfileHeader({
                 sourceUrl={sourceUrl}
                 email={profile.email}
                 steamUrl={steamProfileUrl}
+                linkedinUrl={linkedinUrl}
               />
             </div>
           )}
