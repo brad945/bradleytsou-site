@@ -266,7 +266,13 @@ export const profile = {
  * name. These are the ones Bradley wants shown. Set to `[]` and the dropdown
  * reads "No previous aliases" instead.
  */
-export const aliases: string[] = ["brad945", "bradoom", "bradleytsou", "bt"];
+export const aliases: string[] = [
+  "brad945",
+  "bradoom",
+  "bradleytsou",
+  "algebradley",
+  "bt",
+];
 
 /**
  * Experience in the order Bradley wants it shown — roughly newest first, but
