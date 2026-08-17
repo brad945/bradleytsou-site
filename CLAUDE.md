@@ -413,6 +413,19 @@ class would stop emitting.
   `localStorage` is used for one thing only: remembering which buttons
   *you* pressed, so they read as spent. That's UI state about a browser,
   which is what it's honest for. It is not the count and it is not a limit.
+- `public/giscus.css` — a **custom giscus theme**, and the only way to
+  change anything inside that widget: it renders in a cross-origin iframe,
+  so this site's stylesheet can't reach it and `data-theme` accepting a URL
+  is the entire lever. It **replaces** the theme rather than adding to one,
+  so giscus's own `transparent_dark` palette is inlined before the
+  overrides — refetch that file and re-append if it ever needs updating.
+  Two overrides today: the reaction bar moved below the comments (flex
+  `order` on `.gsc-main`'s children, since the DOM isn't reachable but the
+  layout is), and "powered by giscus" hidden. That line has no class of its
+  own — it's a bare `<em>` in `.gsc-left-header` — so the element type is
+  the only handle.
+  `Comments.tsx` builds the URL from `location.origin`, so it needs no
+  per-environment config; the browser fetches it from inside the iframe.
 - `src/components/Comments.tsx` — **parked again, and this time not
   because it's unfinished.** It's fully configured: repo public,
   Discussions on, giscus app installed, pinned to discussion 1 by number.

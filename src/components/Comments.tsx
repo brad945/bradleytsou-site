@@ -71,7 +71,25 @@ export default function Comments() {
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", "transparent_dark");
+    /*
+     * A theme URL rather than one of giscus's named themes.
+     *
+     * The widget is a cross-origin iframe, so this site's CSS can't reach into
+     * it — a theme file is the only way to change anything inside. `public/
+     * giscus.css` is giscus's own `transparent_dark` with two overrides
+     * appended: the reaction bar moved below the comments, and the "powered by
+     * giscus" line hidden.
+     *
+     * Built from `location.origin`, so it points at whichever host is serving
+     * the page and needs no per-environment config. **The browser fetches it
+     * from inside the iframe**, so it has to be publicly reachable from there
+     * — which it is on any host you can actually load the page from,
+     * localhost included.
+     */
+    script.setAttribute(
+      "data-theme",
+      `${window.location.origin}/giscus.css`,
+    );
     script.setAttribute("data-lang", "en");
     script.setAttribute("data-loading", "lazy");
 
