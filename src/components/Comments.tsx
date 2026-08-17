@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { GISCUS_THEME_CSS } from "@/lib/giscus-theme";
 import { giscus, siteRepoSlug } from "@/lib/profile-data";
 
 /**
@@ -72,23 +73,20 @@ export default function Comments() {
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
     /*
-     * A theme URL rather than one of giscus's named themes.
+     * A `data:` URL rather than a hosted file or a named giscus theme.
      *
-     * The widget is a cross-origin iframe, so this site's CSS can't reach into
-     * it — a theme file is the only way to change anything inside. `public/
-     * giscus.css` is giscus's own `transparent_dark` with two overrides
-     * appended: the reaction bar moved below the comments, and the "powered by
-     * giscus" line hidden.
+     * The widget is a cross-origin iframe, so this site's CSS can't reach
+     * into it — a theme is the only lever. A hosted file didn't work: the
+     * iframe is https, so an http://localhost URL is blocked mixed content
+     * and the theme silently never loaded. A data: URL isn't mixed content,
+     * needs no host, and behaves the same in dev and production.
      *
-     * Built from `location.origin`, so it points at whichever host is serving
-     * the page and needs no per-environment config. **The browser fetches it
-     * from inside the iframe**, so it has to be publicly reachable from there
-     * — which it is on any host you can actually load the page from,
-     * localhost included.
+     * `encodeURIComponent` rather than base64, so the CSS survives any
+     * non-ASCII in it and stays readable in devtools.
      */
     script.setAttribute(
       "data-theme",
-      `${window.location.origin}/giscus.css`,
+      `data:text/css,${encodeURIComponent(GISCUS_THEME_CSS)}`,
     );
     script.setAttribute("data-lang", "en");
     script.setAttribute("data-loading", "lazy");

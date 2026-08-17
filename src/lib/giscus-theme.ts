@@ -1,23 +1,36 @@
-/*
- * Custom giscus theme.
+/**
+ * The giscus widget's stylesheet, inlined as a string.
  *
- * giscus renders in a cross-origin iframe, so this site's stylesheet cannot
- * reach inside it. A theme URL is the only lever there is — `data-theme` on
- * the giscus script accepts one, and the iframe loads it as its stylesheet.
- * That means everything here has to be self-contained: it REPLACES the theme
- * rather than adding to it, so giscus's own dark palette is inlined below
- * before any of our overrides.
+ * ## Why a string and not a file in `public/`
  *
- * Generated from giscus's `transparent_dark` theme. To refresh it, refetch
- * https://giscus.app/themes/transparent_dark.css and re-append the overrides
- * at the bottom of this file.
+ * It was a file, and it silently did nothing. giscus renders in an
+ * `https://giscus.app` iframe and loads its theme from there, so a
+ * `http://localhost:3003/giscus.css` URL is **blocked mixed content** —
+ * and stylesheets are in the always-blocked category, not the
+ * warn-and-allow one. The theme never loaded in dev, so the overrides never
+ * applied and the widget looked untouched.
  *
- * **The URL must be publicly reachable by the browser rendering the iframe.**
- * Comments.tsx builds it from `window.location.origin`, so it follows
- * whatever host the page is on.
+ * Pointing at the production https URL fixes that, but only after a deploy:
+ * you could never see a theme change before shipping it.
+ *
+ * A `data:` URL has neither problem. It isn't mixed content, needs no host,
+ * and behaves identically in dev and production. giscus passes `data-theme`
+ * straight through as the stylesheet href with no validation at all — see
+ * `getThemeUrl` in their `lib/utils.ts` — so this is supported by
+ * construction rather than by accident.
+ *
+ * ## What it is
+ *
+ * giscus's own `transparent_dark` theme inlined, then the overrides. It
+ * **replaces** the theme rather than extending one, which is why the entire
+ * palette has to be here: drop it and the widget renders unstyled. To
+ * refresh, refetch https://giscus.app/themes/transparent_dark.css and
+ * re-append the override block at the bottom.
+ *
+ * Backticks in the comments below are escaped because this is a template
+ * literal.
  */
-
-/*! Modified from GitHub's dark theme in primer/primitives.
+export const GISCUS_THEME_CSS = `/*! Modified from GitHub's dark theme in primer/primitives.
  * MIT License
  * Copyright (c) 2018 GitHub Inc.
  * https://github.com/primer/primitives/blob/main/LICENSE
@@ -32,10 +45,10 @@
 /*
  * Reactions to the bottom.
  *
- * giscus renders `.gsc-reactions` as the first child of `.gsc-main`, above
+ * giscus renders \`.gsc-reactions\` as the first child of \`.gsc-main\`, above
  * the comment count and the box. Reordering is the one structural change CSS
  * can make from outside the iframe — the DOM isn't reachable, but flex order
- * is. `.gsc-main` isn't a flex container by default, hence declaring it here.
+ * is. \`.gsc-main\` isn't a flex container by default, hence declaring it here.
  *
  * Explicit orders on both children rather than one: an unordered flex item
  * defaults to 0 and would sort ahead of anything positive, so setting only
@@ -61,11 +74,12 @@
 /*
  * "Powered by giscus".
  *
- * It has no class of its own — it's a bare `<em>` inside `.gsc-left-header`,
- * next to the comment and reply counts, which are `<h4>`s. So the element
+ * It has no class of its own — it's a bare \`<em>\` inside \`.gsc-left-header\`,
+ * next to the comment and reply counts, which are \`<h4>\`s. So the element
  * type is the only handle, and it's specific enough: nothing else in that
  * header is emphasised text.
  */
 .gsc-left-header > em {
   display: none;
 }
+`;
