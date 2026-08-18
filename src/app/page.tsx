@@ -18,6 +18,7 @@ import Exy from "@/components/Exy";
 
 import { getDevEvalStats } from "@/lib/deveval";
 import { getSteamPlaytime } from "@/lib/steam";
+import { getRecentTracks } from "@/lib/spotify";
 import {
   getContributions,
   getGitHubSnapshot,
@@ -51,6 +52,7 @@ export default async function Home() {
     lastPush,
     commentCount,
     playtime,
+    tracks,
   ] = await Promise.all([
     getGitHubSnapshot(githubUsername),
     getDevEvalStats(),
@@ -62,6 +64,7 @@ export default async function Home() {
     // Comments row can finally be a number instead of an em-dash.
     getDiscussionComments(owner, repo, giscus.discussion),
     getSteamPlaytime(steamId64, favoriteGame.appId),
+    getRecentTracks(),
   ]);
 
   return (
@@ -103,7 +106,7 @@ export default async function Home() {
               and Favorite Project sits last as the closing note rather than
               the opening one.
             */}
-              <ActivityFeed snapshot={snapshot} featured={featured} />
+              <ActivityFeed snapshot={snapshot} featured={featured} tracks={tracks} />
               <Experience featured={featured} />
               <FavoriteGame playtime={playtime} />
               {/* The panel a visitor contributes to, last in the column so it

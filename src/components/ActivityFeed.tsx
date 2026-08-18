@@ -1,11 +1,14 @@
 import type { FeaturedRepo, GitHubSnapshot, RepoCard } from "@/lib/github";
 import { repoDisplayNames } from "@/lib/profile-data";
-import { GitHubIcon } from "@/components/SocialIcons";
+import { GitHubIcon, SpotifyIcon } from "@/components/SocialIcons";
+import type { Track } from "@/lib/spotify";
 
 interface ActivityFeedProps {
   snapshot: GitHubSnapshot;
   /** Hand-picked repos. Empty without a token — falls back to the public list. */
   featured: FeaturedRepo[];
+  /** Recently played. Empty when Spotify isn't configured; the block hides. */
+  tracks: Track[];
 }
 
 function relativeTime(iso: string, now: number): string {
@@ -67,6 +70,32 @@ function SourceBlock({
 }
 
 /**
+ * A single Spotify row: track on the left, artist and when on the right.
+ *
+ * Same shape as the repo rows above it deliberately — two sources reading the
+ * same way is what makes this a feed rather than two widgets in a box.
+ */
+function TrackRow({ track, now }: { track: Track; now: number }) {
+  return (
+    <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-t border-line/40 py-2 first:border-t-0">
+      <a
+        href={track.url}
+        target="_blank"
+        rel="noreferrer"
+        className="steam-link text-[15px] leading-tight"
+      >
+        {track.title}
+      </a>
+      <span className="t-meta leading-tight">
+        {[track.artist, `${relativeTime(track.playedAt, now)} ago`]
+          .filter(Boolean)
+          .join(" · ")}
+      </span>
+    </li>
+  );
+}
+
+/**
  * The sources that aren't built yet, named rather than implied.
  *
  * A draft on purpose — Bradley wants the shape of a multi-source feed before
@@ -81,8 +110,8 @@ function PlannedSources() {
     <div className="border border-dashed border-line/70 px-4 py-4">
       <p className="t-label text-muted">More sources</p>
       <p className="t-meta mt-1.5 leading-relaxed">
-        Spotify, YouTube, videogame, books, etc. Not built — Spotify and YouTube
-        have APIs to pull from; books and games would be hand-kept.
+        YouTube and videogames next. Books are on /about and stay hand-kept —
+        there's no API worth using since Goodreads closed theirs.
       </p>
     </div>
   );
@@ -190,6 +219,7 @@ function PublicRepoRow({ repo, now }: { repo: RepoCard; now: number }) {
 export default function ActivityFeed({
   snapshot,
   featured,
+  tracks,
 }: ActivityFeedProps) {
   const { stats, repos, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
@@ -236,6 +266,24 @@ export default function ActivityFeed({
             </div>
           )}
         </SourceBlock>
+
+        {/*
+          Hidden entirely when Spotify isn't configured or returned nothing —
+          same contract as the DevEval block. An empty "Spotify" heading would
+          claim a source the page doesn't actually have.
+        */}
+        {tracks.length > 0 && (
+          <SourceBlock
+            name="Spotify"
+            icon={<SpotifyIcon className="h-4 w-4 text-muted" />}
+          >
+            <ul className="flex flex-col">
+              {tracks.map((track) => (
+                <TrackRow key={track.url} track={track} now={now} />
+              ))}
+            </ul>
+          </SourceBlock>
+        )}
 
         <PlannedSources />
 
