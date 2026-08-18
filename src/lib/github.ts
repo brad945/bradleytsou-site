@@ -554,6 +554,14 @@ export interface FeaturedRepo {
   owner: string;
   isPrivate: boolean;
   url: string;
+  /**
+   * The repo's own "Website" field on GitHub, when it has one.
+   *
+   * Fetched rather than kept in a map here, because GitHub already holds it —
+   * `sennaicodes/codearenamvp` has deveval.com set. A hand-kept list would be
+   * a second copy of a fact that already exists and can go stale against it.
+   */
+  homepage: string | null;
   description: string | null;
   language: string | null;
   pushedAt: string;
@@ -630,7 +638,7 @@ export async function getFeaturedRepos(
          ${fields}
        }
        fragment S on Repository {
-         nameWithOwner name owner { login } isPrivate url description pushedAt stargazerCount
+         nameWithOwner name owner { login } isPrivate url homepageUrl description pushedAt stargazerCount
          primaryLanguage { name }
          defaultBranchRef { target { ... on Commit {
            all: history { totalCount }
@@ -658,6 +666,8 @@ export async function getFeaturedRepos(
         owner: r.owner?.login ?? "",
         isPrivate: Boolean(r.isPrivate),
         url: r.url,
+        // Empty string is what GitHub returns for "no website", not null.
+        homepage: r.homepageUrl?.trim() ? r.homepageUrl.trim() : null,
         description: r.description ?? null,
         language: r.primaryLanguage?.name ?? null,
         pushedAt: r.pushedAt ?? "",

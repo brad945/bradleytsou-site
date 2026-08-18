@@ -118,24 +118,41 @@ const MAX_ROWS = 3;
 function FeaturedRepoRow({ repo, now }: { repo: FeaturedRepo; now: number }) {
   const label = repoDisplayNames[repo.nameWithOwner] ?? repo.name;
 
-  const title = repo.isPrivate ? (
-    <span className="text-[15px] leading-tight text-copy">{label}</span>
-  ) : (
+  /*
+   * The product's own site wins over the repo.
+   *
+   * DevEval's repo is private, so this row was plain text with a Private tag —
+   * even though deveval.com exists and is what a reader actually wants. GitHub
+   * already holds that URL in the repo's Website field, so it's fetched rather
+   * than kept in a second list here.
+   *
+   * A public repo with no site still links to the repo, as before.
+   */
+  const href = repo.homepage ?? (repo.isPrivate ? undefined : repo.url);
+
+  const title = href ? (
     <a
-      href={repo.url}
+      href={href}
       target="_blank"
       rel="noreferrer"
       className="steam-link text-[15px] leading-tight"
     >
       {label}
     </a>
+  ) : (
+    <span className="text-[15px] leading-tight text-copy">{label}</span>
   );
 
   return (
     <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 border-t border-line/40 py-2 first:border-t-0">
       <span className="flex flex-wrap items-baseline gap-2">
         {title}
-        {repo.isPrivate && (
+        {/*
+          Marks a row with nothing to open, which is not the same as a private
+          repo — DevEval's repo is private but its site isn't, so that row is a
+          link and carries no tag.
+        */}
+        {!href && (
           <span className="border border-line px-1.5 py-px text-[10px] uppercase tracking-wider text-muted">
             Private
           </span>
