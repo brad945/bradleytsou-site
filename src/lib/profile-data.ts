@@ -272,7 +272,7 @@ export const profile = {
    */
   currentFocus: [
     {
-      text: "AI and Software Engineer Intern @ MedImpact",
+      text: "Prev AI and SWE @ MedImpact",
       className: "text-medimpact",
       linkText: "MedImpact",
       href: "https://www.medimpact.com",
