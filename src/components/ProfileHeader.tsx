@@ -376,17 +376,22 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
               <p
                 key={line.text}
                 /*
-                  16px/500. The weight is the point — Open Sans has no 200 and
+                  20px/500. The weight is the point — Open Sans has no 200 and
                   its 400 read light beside the headings, so 500 is the next
                   step the family actually ships.
 
-                  The size is set by the longest line, "AI and Software
-                  Engineer Intern @ MedImpact". It ran at 17px until the avatar
-                  went 150 -> 169: the frame grew 23px and took that straight
-                  out of this column, which dropped it from ~410 to ~387 and
-                  wrapped the line. At 16px the string is ~350 and fits with
-                  room to spare. **Resizing the avatar resizes this column** —
-                  check the longest line again rather than assuming.
+                  **The size is capped by the longest line, and `nowrap` means
+                  overflowing breaks the layout rather than wrapping.** The
+                  cap moved: while the second line read "AI and Software
+                  Engineer Intern @ MedImpact" it measured ~418px at this size
+                  against a ~387px column, so 16px was the ceiling. Shortening
+                  it to "Prev AI and SWE @ MedImpact" made "Applied Math + CS @
+                  UC Berkeley" the longest at ~310px, which is what bought the
+                  four extra pixels.
+
+                  **Resizing the avatar resizes this column** — it took ~23px
+                  out of it going 150 -> 169. Re-measure the longest line
+                  rather than assuming.
 
                   `whitespace-nowrap` holds it to one line outright, and
                   `text-wrap: balance` went with it: balance only does anything
@@ -400,7 +405,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                   Restoring it means putting `className` back on the entries in
                   profile-data and reading it here again.
                 */
-                className={`max-w-[46ch] whitespace-nowrap text-[16px] font-medium leading-tight text-bright ${
+                className={`max-w-[46ch] whitespace-nowrap text-[20px] font-medium leading-tight text-bright ${
                   i === 0 ? "mt-2.5" : "mt-1"
                 }`}
               >
