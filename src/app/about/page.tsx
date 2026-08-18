@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Achievements from "@/components/Achievements";
+import Books from "@/components/Books";
 import Inventory from "@/components/Inventory";
 import Reviews from "@/components/Reviews";
 import SiteNav from "@/components/SiteNav";
@@ -86,6 +87,7 @@ export default async function About() {
           <Reviews playtime={playtime} />
           <Inventory />
           <Achievements />
+          <Books />
         </div>
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted/70">
