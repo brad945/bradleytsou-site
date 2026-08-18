@@ -41,13 +41,8 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    * place anyway; only one of them arrives without a jolt.
    */
   { label: "Profile", href: "/#top" },
-  /*
-   * No href on purpose. The obvious one is `#profile`, but Profile already
-   * points there — two items scrolling to the same place is worse than one
-   * that visibly isn't built. Point it at an About section's heading id when
-   * there is one.
-   */
-  { label: "About" },
+  /* The personal half — Reviews, Inventory, Achievements. */
+  { label: "About", href: "/about" },
   /*
    * Chat is the comments panel. Not a separate feature — the page has one
    * place a visitor can say something, and giving the nav item its own

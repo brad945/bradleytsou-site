@@ -27,6 +27,18 @@ const tokens = {
   muted: "#8f98a0",
   accent: "#de9b35",
   live: "#5cc98f",
+  /*
+   * Back after the Item Showcase took it out: `/about`'s inventory tiles
+   * use it for the middle rarity tier. Kept as a token rather than a hex at
+   * the call site so the two rarity scales on this site can't drift.
+   */
+  nebula: "#417a9b",
+  /*
+   * The one red on the site, for a "not recommended" review. GitHub's own
+   * danger red rather than a new hue — it sits next to `live` green in that
+   * panel, and those two as a pair are already universally legible.
+   */
+  danger: "#f85149",
 
   // Added for the Steam-profile layout.
   /** Link / heading blue. */

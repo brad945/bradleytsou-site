@@ -653,6 +653,33 @@ can't see a name assembled at runtime. It also reads *comments*: writing
 an arbitrary-value class inside one emits it as a real, dead rule. That
 has happened twice.
 
+- `src/app/about/page.tsx` + `src/lib/about-data.ts` + `Reviews.tsx` /
+  `Inventory.tsx` / `Achievements.tsx` — **`/about`, the personal half.**
+  `/` is the formal one; this is what he does, likes and plays.
+  The idea, and the reason it isn't prose: it's built out of **the Steam
+  surfaces the profile page didn't claim** — Reviews, Inventory,
+  Achievements. The profile earns its credibility by being all data, and a
+  wall of "I'm passionate about…" on the same site would break that spell,
+  so everything personal goes in a Steam-shaped container.
+  **Reviews and Inventory are placeholder** and marked `TODO(bradley)`;
+  the achievements are real, each drawn from something already in
+  `profile-data`. Review hours are free text on purpose, so an estimate can
+  carry its own tilde — a number would launder a guess into a measurement.
+  No rarity percentages on achievements: Steam's are measured, ours could
+  only be invented, and an invented percentage beside real dates poisons
+  both.
+  `rarity` renders again here, answering a different question than it did
+  on the showcase — how much of his life a thing takes up, not how central
+  it is to his work.
+  One column, not the profile's 2fr/1fr: these panels are dense and there's
+  no live sidebar data that belongs beside them.
+
+  **Parked ideas for this page, not yet built:** his Steam profile is
+  already funny (location "Luxemburg, Luxembourg, Luxembourg", real name
+  "Bradley Butt", persona `BigBunzBrad700`) and pulling that live would be
+  both real data and a joke; and `algebradley` in `aliases` deserves a
+  panel explaining where each name came from.
+
 ## Explicitly NOT built yet — do these next, in this order
 
 **Exy is done** and is no longer on this list.

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteOrigin } from "@/lib/profile-data";
 
 /**
- * The profile page and `/play`.
+ * The profile page, `/about` and `/play`.
  *
  * `/play` is listed at a low priority because it's deliberately near-empty
  * right now — it should be findable, not competing with the profile for
@@ -16,6 +16,7 @@ import { siteOrigin } from "@/lib/profile-data";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: siteOrigin, changeFrequency: "daily", priority: 1 },
+    { url: `${siteOrigin}/about`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${siteOrigin}/play`, changeFrequency: "monthly", priority: 0.3 },
   ];
 }
