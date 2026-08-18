@@ -33,16 +33,29 @@ export interface Review {
   subject: string;
   recommended: boolean;
   /**
-   * Free text, so it can be honest about its own precision: "1,284 hrs on
-   * record" where the number is real, "~4,000 hrs" where it's a guess. Steam
-   * only ever shows a real figure; this page has to say which is which, so
-   * the tilde is load-bearing rather than decorative.
+   * Free text, so it can be honest about its own precision: a bare figure
+   * where it's measured, a `~` where it's a guess. Steam only ever shows real
+   * numbers; this page mixes both, so the tilde is load-bearing rather than
+   * decorative.
    *
-   * Kept as a string rather than a number for that reason — a number would
-   * have to render one way and would quietly launder an estimate into a
+   * A string rather than a number for exactly that reason — a number field
+   * would have to render one way and would quietly launder an estimate into a
    * measurement.
+   *
+   * **Ignored when `appId` is set and the lookup succeeds**, in which case it
+   * is only the fallback for a missing key.
    */
   hours: string;
+  /**
+   * Steam app id, for a review of an actual game.
+   *
+   * Set it and the hours come from Steam instead of from `hours` above. This
+   * exists because the placeholder here read "1,284 hrs on record" while the
+   * Favorite Game panel two clicks away read the real 1,073.4 — an invented
+   * number contradicting a fetched one on the same site is precisely what
+   * everything else here is built to avoid.
+   */
+  appId?: number;
   /** One or two sentences. Deadpan travels further than enthusiastic. */
   body: string;
 }
@@ -63,7 +76,8 @@ export const reviews: Review[] = [
   {
     subject: "Counter-Strike 2",
     recommended: true,
-    hours: "1,284 hrs on record", // TODO(bradley): wired to the Steam API in phase 2
+    appId: 730,
+    hours: "hours unavailable", // only shown if STEAM_API_KEY is missing
     body: "Ruined my wrists and my sleep schedule. Still the best movement in any game, which is the entire reason there's a bhop page on this site.",
   },
   {

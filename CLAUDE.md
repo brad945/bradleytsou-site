@@ -661,7 +661,11 @@ has happened twice.
   Achievements. The profile earns its credibility by being all data, and a
   wall of "I'm passionate about…" on the same site would break that spell,
   so everything personal goes in a Steam-shaped container.
-  **Reviews and Inventory are placeholder** and marked `TODO(bradley)`;
+  The CS2 review's hours are **fetched, not written** — a review carrying
+  an invented figure while the Favorite Game panel two clicks away carried
+  a fetched one is the exact failure everything else here guards against.
+  Any review with an `appId` gets live hours; the rest keep their strings.
+  **Reviews and Inventory are otherwise placeholder** and marked `TODO(bradley)`;
   the achievements are real, each drawn from something already in
   `profile-data`. Review hours are free text on purpose, so an estimate can
   carry its own tilde — a number would launder a guess into a measurement.

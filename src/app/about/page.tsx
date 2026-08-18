@@ -4,7 +4,9 @@ import Inventory from "@/components/Inventory";
 import Reviews from "@/components/Reviews";
 import SiteNav from "@/components/SiteNav";
 import { getGitHubSnapshot } from "@/lib/github";
-import { githubUsername, profile } from "@/lib/profile-data";
+import { getSteamPlaytime } from "@/lib/steam";
+import { reviews } from "@/lib/about-data";
+import { githubUsername, profile, steamId64 } from "@/lib/profile-data";
 
 /**
  * `/about` — the other half of the profile.
@@ -37,7 +39,26 @@ export const metadata: Metadata = {
 };
 
 export default async function About() {
-  const snapshot = await getGitHubSnapshot(githubUsername);
+  /*
+   * Live hours for any review that names a Steam game, so a review can't sit
+   * on a written number while the Favorite Game panel shows a fetched one.
+   * Deduped, because two reviews of the same game would otherwise be two
+   * identical calls.
+   */
+  const appIds = Array.from(
+    new Set(reviews.map((r) => r.appId).filter((id): id is number => !!id)),
+  );
+
+  const [snapshot, ...times] = await Promise.all([
+    getGitHubSnapshot(githubUsername),
+    ...appIds.map((id) => getSteamPlaytime(steamId64, id)),
+  ]);
+
+  const playtime = Object.fromEntries(
+    appIds
+      .map((id, i) => [id, times[i]] as const)
+      .filter((entry): entry is readonly [number, NonNullable<(typeof times)[number]>] => !!entry[1]),
+  );
 
   return (
     <>
@@ -62,7 +83,7 @@ export default async function About() {
             inch, and it sets the tone for reading the other two as jokes with
             real data in them rather than as literal game UI.
           */}
-          <Reviews />
+          <Reviews playtime={playtime} />
           <Inventory />
           <Achievements />
         </div>

@@ -1,4 +1,5 @@
 import { reviews } from "@/lib/about-data";
+import type { SteamPlaytime } from "@/lib/steam";
 
 /**
  * Steam's review format, applied to things that aren't games.
@@ -12,7 +13,15 @@ import { reviews } from "@/lib/about-data";
  * site's `live` / `danger`: green means recommended everywhere else on the
  * internet, so it doesn't need a legend.
  */
-export default function Reviews() {
+export default function Reviews({
+  playtime = {},
+}: {
+  /**
+   * Live hours by Steam app id, for reviews that name one. Empty when there's
+   * no key, in which case each review falls back to its own `hours` string.
+   */
+  playtime?: Record<number, SteamPlaytime>;
+}) {
   const recommended = reviews.filter((r) => r.recommended).length;
 
   return (
@@ -28,7 +37,13 @@ export default function Reviews() {
       </div>
 
       <ul className="flex flex-col px-5">
-        {reviews.map((review) => (
+        {reviews.map((review) => {
+          // Live where the review names a game and the lookup worked.
+          const live = review.appId ? playtime[review.appId] : undefined;
+          const hours = live
+            ? `${live.total.toLocaleString()} hrs on record`
+            : review.hours;
+          return (
           <li
             key={review.subject}
             className="flex gap-4 border-t border-line/50 py-4 first:border-t-0"
@@ -59,7 +74,7 @@ export default function Reviews() {
                   note on `Review.hours` — this page has to say which figures
                   are measured and which are guessed.
                 */}
-                <span className="t-meta">{review.hours}</span>
+                <span className="t-meta">{hours}</span>
               </div>
 
               <h3 className="mt-1 text-[16px] leading-tight text-bright">
@@ -68,7 +83,8 @@ export default function Reviews() {
               <p className="t-body mt-1.5">{review.body}</p>
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );
