@@ -114,27 +114,6 @@ function TrackRow({ track, now }: { track: Track; now: number }) {
 }
 
 /**
- * The sources that aren't built yet, named rather than implied.
- *
- * A draft on purpose — Bradley wants the shape of a multi-source feed before
- * any of it is wired. It says which are API-backed and which he'd keep by
- * hand, because that's the part that decides whether a source is worth
- * building: books and games have no usable public API, so those rows would be
- * written, not fetched, and this page's whole premise is knowing which is
- * which.
- */
-function PlannedSources() {
-  return (
-    <div className="mt-5 border border-dashed border-line/70 px-4 py-4">
-      <p className="t-label text-muted">More sources</p>
-      <p className="t-meta mt-1.5 leading-relaxed">
-        YouTube and videogames next.
-      </p>
-    </div>
-  );
-}
-
-/**
  * How many repos the GitHub block lists.
  *
  * Sliced here rather than trimmed out of `featuredRepos`, because that list
@@ -321,8 +300,6 @@ export default function ActivityFeed({
         >
           <Bookshelf />
         </SourceBlock>
-
-        <PlannedSources />
 
         {stats && (
           <div className="flex flex-wrap items-center justify-end gap-2 pt-4 text-[14px] text-muted">
