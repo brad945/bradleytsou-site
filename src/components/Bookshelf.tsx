@@ -238,7 +238,7 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center gap-[20px] px-4 pt-8"
+            className="flex items-end justify-center gap-[16px] px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
@@ -598,8 +598,9 @@ export default function Bookshelf() {
             <span
               key={key}
               aria-hidden
-              className={`absolute bottom-full ${pos}`}
+              className={`absolute ${pos}`}
               style={{
+                bottom: "calc(100% + 6px)",
                 width: WIRE_W,
                 height: WIRE_LEN,
                 transformStyle: "preserve-3d",
@@ -628,15 +629,13 @@ export default function Bookshelf() {
               />
 
               {/*
-                Both ends, and both carry the rod's rotation in reverse so
-                they face the viewer instead of lying along it.
+                The wall end: a bolt head, carrying the rod's rotation in
+                reverse so it faces the viewer instead of lying along the rod.
+                Without it the rod ends in mid-air.
 
-                The wall end is a bolt head — without it the rod ends in
-                mid-air. The shelf end is a hook over the top edge of the
-                carcass, and it replaced a bolted mounting plate that was
-                doing far too much: at 16px a plate with fasteners on it reads
-                as a component someone specified, where all this join has to
-                say is "it hangs here". A hook says that in three strokes.
+                The shelf end is an eye bolt standing on the top plank — see
+                below. It's a sibling of the rod rather than a child, because
+                it belongs to the shelf.
               */}
               <span
                 className="absolute left-1/2 top-0 h-[10px] w-[10px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/60"
@@ -644,22 +643,77 @@ export default function Bookshelf() {
                   transform: `translate(-50%, -50%) rotateX(${-WIRE_TILT}deg)`,
                 }}
               />
-              <svg
-                viewBox="0 0 12 18"
-                className="absolute bottom-0 left-1/2 h-[18px] w-[12px] overflow-visible"
+            </span>
+          ))}
+
+          {/*
+            The eye bolt each rod ends in, screwed into the TOP PLANK.
+
+            Two things were wrong with the hook this replaces, and they were
+            the same thing twice. It hung on the front face, in the z = 0
+            plane, which is the one plane in this whole scene that faces the
+            viewer square-on — so it was the only part of the shelf with no
+            foreshortening on it, and it read flat next to everything else.
+            And it was drawn as a single stroke, so its two arms were whatever
+            length the path made them rather than being a shape with a front
+            and a back.
+
+            This sits on the plank instead. The base plate is folded into the
+            horizontal plane exactly like the ceiling — `bottom-full` and
+            `rotateX(90deg)` about its own bottom edge — so the same
+            perspective that squashes the plank squashes it, which is what
+            makes it look like it's lying on a surface rather than stuck to a
+            wall. The eye then stands back up out of it, symmetric about the
+            rod, and the rod drops 6px so it ends inside the ring rather than
+            beside it.
+          */}
+          {["left-[3px]", "right-[3px]"].map((pos) => (
+            <span
+              key={pos}
+              aria-hidden
+              className={`absolute bottom-full ${pos}`}
+              style={{
+                width: 11,
+                height: 13,
+                transformStyle: "preserve-3d",
+                transformOrigin: "center bottom",
+                transform: "rotateX(90deg)",
+              }}
+            >
+              {/*
+                Where it meets the plank. The plate itself is foreshortened to
+                about two pixels — the plank is 110px deep and roughly 10px
+                tall on screen — so what actually does the work is the shadow
+                pooled under it. Without that the eye floats a hair above the
+                surface it's supposed to be screwed into.
+              */}
+              <span className="absolute inset-x-[-1px] bottom-0 top-[2px] rounded-[5px] bg-shelf-edge/55 blur-[2px]" />
+              <span className="absolute inset-x-[2px] bottom-[2px] top-[4px] rounded-[2px] bg-shelf-fitting" />
+              {/*
+                The eye. Stands back up out of the plate — `rotateX(-90deg)`
+                cancels the plate's fold — and is a ring rather than a hook, so
+                it's the same on both sides of the rod. That symmetry is the
+                point: a hook drawn as one stroke has a long arm and a short
+                one, and at this size that reads as a mistake rather than as a
+                hook.
+
+                Two rings stacked make it a torus rather than a circle. The
+                lower one is the dark body; the upper one paints only its top
+                and left arcs in the lightest steel, so the highlight sits
+                where the light is — the same top-left source as every other
+                surface here. A flat stroke can't do that, and a flat stroke is
+                what made the last one read as a sticker.
+              */}
+              <span
+                className="absolute bottom-[3px] left-1/2 h-[11px] w-[11px]"
                 style={{
-                  transform: `translate(-50%, 58%) rotateX(${-WIRE_TILT}deg)`,
+                  transformOrigin: "center bottom",
+                  transform: "translateX(-50%) rotateX(-90deg)",
                 }}
               >
-                <path
-                  d="M4 16 V6 A2.1 2.1 0 0 1 8.2 6 V10"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.6"
-                  strokeLinecap="round"
-                  className="text-steel"
-                />
-              </svg>
+                <span className="absolute inset-0 rounded-full border-[2.5px] border-steelMid shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
+                <span className="absolute inset-0 rounded-full border-[2.5px] border-b-transparent border-l-steelLight border-r-transparent border-t-steelLight" />
+              </span>
             </span>
           ))}
         </div>
