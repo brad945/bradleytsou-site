@@ -46,7 +46,18 @@ function hash(text: string) {
 }
 
 /** How far the shelf runs back. Books are drawn shallower, so they sit in it. */
-const SHELF_DEPTH = 130;
+const SHELF_DEPTH = 118;
+
+/**
+ * Smallest spine type before a title stops reading as a title.
+ *
+ * Used twice and in opposite directions: as the floor a book's height is
+ * sized to carry, and (as 7) as the hard floor `fontSize` clamps to if a
+ * title still doesn't fit. They can disagree by 2pt without anything
+ * breaking, because the height rule is a minimum and the clamp is a
+ * last resort.
+ */
+const MIN_SPINE_FS = 9;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
   reading: "Reading",
@@ -85,7 +96,7 @@ export default function Bookshelf() {
         that contains the whole scene. Per-face they'd each get their own
         vanishing point and the box wouldn't close up.
       */}
-      <div style={{ perspective: "900px", perspectiveOrigin: "50% -70px" }}>
+      <div style={{ perspective: "900px", perspectiveOrigin: "50% -85px" }}>
         <div
           className="relative w-full"
           style={{ transformStyle: "preserve-3d" }}
@@ -138,20 +149,44 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center gap-[14px] px-8 pt-7"
+            className="flex items-end justify-center gap-[14px] px-8 pt-5"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
               const h = hash(book.title);
-              const height = 158 + (h % 54);
               const width = 26 + ((h >>> 5) % 13);
               const isOpen = open === i;
 
               const label = book.spineLabel ?? book.title;
-              const room = height - 50;
+              /*
+               * Hashed, then floored at whatever the title needs to stay
+               * legible.
+               *
+               * The hash alone gave the shortest book the longest label and
+               * the font clamped down to 7px — one visibly tiny spine in a
+               * row of normal ones, which reads as a bug rather than as
+               * variety. `MIN_SPINE_FS` is the size below which that starts,
+               * so a book is at least tall enough to carry its own title at
+               * it. Only one of the eight is raised today; the rest keep
+               * their hashed height and the silhouette stays uneven, which
+               * is the whole point of hashing it.
+               */
+              const height = Math.max(
+                118 + (h % 56),
+                Math.round(label.length * MIN_SPINE_FS * 0.56) + 34,
+              );
+              const room = height - 34;
+              /*
+               * 0.56em per character is a deliberate over-estimate of Open
+               * Sans semibold's advance (~0.52), so the computed size errs
+               * small. The floor is 7 rather than 8 because the shortest
+               * book is now 127px: at 8 the longest title overran its own
+               * spine, and a clamped size that doesn't fit is worse than a
+               * small one that does.
+               */
               const fontSize = Math.max(
-                8,
-                Math.min(11, Math.floor(room / (label.length * 0.5))),
+                7,
+                Math.min(11, Math.floor(room / (label.length * 0.56))),
               );
               /*
                * Two thirds as deep as tall, like a real book — but capped
@@ -196,7 +231,7 @@ export default function Bookshelf() {
                   <span
                     aria-hidden
                     style={{
-                      height: depth + 16,
+                      height: depth + 13,
                       transformOrigin: "center bottom",
                       transform: "rotateX(90deg) scaleY(var(--sh))",
                       background:
@@ -334,21 +369,21 @@ export default function Bookshelf() {
                       }`}
                     >
                       <span
-                        className="absolute inset-x-0 top-[9px] h-[2px]"
+                        className="absolute inset-x-0 top-[7px] h-[2px]"
                         style={{
                           background:
                             "color-mix(in srgb, var(--spine) 72%, var(--ink))",
                         }}
                       />
                       <span
-                        className="absolute inset-x-0 bottom-[26px] h-[2px]"
+                        className="absolute inset-x-0 bottom-[20px] h-[2px]"
                         style={{
                           background:
                             "color-mix(in srgb, var(--spine) 72%, var(--ink))",
                         }}
                       />
                       <span
-                        className="absolute bottom-[10px] left-1/2 h-[11px] w-[11px] -translate-x-1/2 rounded-[1px] border"
+                        className="absolute bottom-[8px] left-1/2 h-[9px] w-[9px] -translate-x-1/2 rounded-[1px] border"
                         style={{
                           borderColor:
                             "color-mix(in srgb, var(--spine) 60%, var(--ink))",
@@ -365,7 +400,7 @@ export default function Bookshelf() {
 
                     <span
                       style={{ color: book.ink, fontSize }}
-                      className="absolute inset-x-0 bottom-[34px] top-[16px] z-10 flex items-center justify-center [writing-mode:vertical-rl] font-semibold tracking-tight"
+                      className="absolute inset-x-0 bottom-[24px] top-[10px] z-10 flex items-center justify-center [writing-mode:vertical-rl] font-semibold tracking-tight"
                     >
                       {label}
                     </span>
@@ -381,7 +416,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 top-full h-[11px] rounded-b-[2px] bg-shelf-lip"
+            className="absolute inset-x-0 top-full h-[9px] rounded-b-[2px] bg-shelf-lip"
           />
         </div>
       </div>
