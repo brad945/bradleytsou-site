@@ -46,7 +46,7 @@ function hash(text: string) {
 }
 
 /** How far the shelf runs back. Books are drawn shallower, so they sit in it. */
-const SHELF_DEPTH = 118;
+const SHELF_DEPTH = 110;
 
 /**
  * Smallest spine type before a title stops reading as a title.
@@ -118,6 +118,28 @@ export default function Bookshelf() {
             aria-hidden
             className="absolute inset-0 bg-shelf-back"
             style={{ transform: `translateZ(-${SHELF_DEPTH}px)` }}
+          />
+          {/*
+            The ceiling, and the box does not close without it. The eye sits
+            above the container's top edge, so the inner walls and the back
+            panel project *above* that edge — you could see a wedge of shelf
+            interior carrying on over the top board, which is what made the
+            board look like it was floating in front of a hole rather than
+            capping a box.
+
+            Hinged at its own bottom edge like the floor, so it folds backward
+            with its lit face up. That face is the top of the carcass, seen
+            from slightly above, which is why it's the brightest surface here
+            — it's the one pointing at the light.
+          */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 bottom-full bg-shelf-ceiling"
+            style={{
+              height: SHELF_DEPTH,
+              transformOrigin: "center bottom",
+              transform: "rotateX(90deg)",
+            }}
           />
           {/*
             Side walls. `rotateY(90deg)` about the LEFT edge folds a div

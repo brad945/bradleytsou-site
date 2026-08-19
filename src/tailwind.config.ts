@@ -310,9 +310,13 @@ const config: Config = {
           `repeating-linear-gradient(to bottom, ${shelf.edge}1a 0 2px, transparent 2px 19px)`,
           `linear-gradient(to bottom, ${shelf.light}, ${shelf.mid} 55%, ${shelf.base})`,
         ].join(", "),
+        "shelf-ceiling": [
+          `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 7px)`,
+          `linear-gradient(to bottom, ${shelf.mid}, ${shelf.light} 45%, ${shelf.face})`,
+        ].join(", "),
         "shelf-back": [
           `repeating-linear-gradient(to right, ${shelf.edge}24 0 1px, transparent 1px 9px)`,
-          `linear-gradient(to bottom, ${shelf.dark}, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.base}, ${shelf.dark} 70%, ${shelf.edge})`,
         ].join(", "),
         "shelf-side": [
           `repeating-linear-gradient(to bottom, ${shelf.edge}20 0 1px, transparent 1px 7px)`,
@@ -333,19 +337,19 @@ const config: Config = {
          */
         "shelf-board-top": [
           `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 16%, ${shelf.base} 84%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 78%, ${shelf.edge})`,
         ].join(", "),
         "shelf-board-left": [
           `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to right, ${shelf.hi} 0 2px, ${shelf.face} 16%, ${shelf.base} 84%, ${shelf.edge})`,
+          `linear-gradient(to right, ${shelf.hi} 0 2px, ${shelf.face} 18% 78%, ${shelf.edge})`,
         ].join(", "),
         "shelf-board-right": [
           `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to left, ${shelf.base} 0 2px, ${shelf.light} 22%, ${shelf.face})`,
+          `linear-gradient(to left, ${shelf.dark} 0 2px, ${shelf.face} 22% 80%, ${shelf.hi})`,
         ].join(", "),
         "shelf-lip": [
           `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
-          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 20%, ${shelf.base} 68%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 70%, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },
