@@ -18,9 +18,16 @@ is real, not decorative:
   it joins `codingSince` and the badge dates on the list of values that
   can't self-correct. Bradley asked for it directly
 - Favorite Game = Steam's own slot, holding an actual game (CS2), with
-  live hours from Steam's Web API. **It replaced Favorite Project**, which
-  held DevEval — already the first row of Experience & Projects, so the
-  panel restated what the page had just said
+  live hours from Steam's Web API and Valve's own logo for the tile.
+  **It replaced Favorite Project**, which held DevEval — already the first
+  row of Experience & Projects, so the panel restated what the page had
+  just said. It carried two more lines and both were cut at Bradley's
+  request: a "live from Steam" tag in the panel bar, which captioned the
+  numbers with the fact that they're fetched — the claim the whole site is
+  built to make without saying, so labelling it in one panel implied the
+  others weren't — and a "Valve · 2023" line under the name, which stated
+  who made the game rather than anything about him. `studio` and
+  `released` went with it
 - **Item Showcase is gone.** It was projects as an inventory grid with
   rarity-tiered tiles. Removed at Bradley's request, and with it the
   `#showcase-heading` anchor, `rarityStyles`/`rarityLabels`/`monogram`
@@ -113,8 +120,8 @@ class would stop emitting.
   `codingSince` is Bradley's real 2021-01-01, so nothing on the page is
   made up. Three figures are still hand-set and *cannot* self-correct,
   each deliberately: `profileLevel` (26, his real Steam level),
-  `hackathonWins` (3 — Devpost has no public API) and `accountBalance`
-  ($0.01, Steam chrome reproduced as a prop, not data).
+  `hackathonWins` (2 — Devpost has no public API) and `accountBalance`
+  ($0.21, Steam chrome reproduced as a prop, not data).
   Also here now: `privacyScreen` (the "Coming soon" cover),
   `steamProfileUrl`, `linkedinUrl`, `repoDisplayNames` and `techStack`,
   which is derived from the `tags` on roles and projects rather than
@@ -302,13 +309,19 @@ class would stop emitting.
   top with no element to point at. On hover each glyph hops in turn, 110ms
   apart, once per hover — see `glyph-hop` in the Tailwind config, and note
   the transform units there are viewBox units, not pixels.
-  Nav items are **Profile / About / Chat / Play / Resume**. Only Profile
-  (`/#profile`) and Play (`/play`) are links; the rest render as dim,
-  non-clickable text, because an `href="#"` that silently does nothing is
-  worse than something visibly unfinished. Giving an entry an href is the
-  whole change when its section lands. Targets are written root-relative
+  Nav items are **Profile / About / Chat / Play / Resume**. An entry
+  without an `href` renders as dim, non-clickable text, because an
+  `href="#"` that silently does nothing is worse than something visibly
+  unfinished. Giving an entry an href is the whole change when its section
+  lands — and taking it away is the whole change when one isn't ready.
+  **About is greyed out right now**, at Bradley's request: `/about` is
+  built and still routable, but its reviews and inventory are placeholder
+  in the wrong voice, so a live nav item would send visitors to words he
+  didn't write. It's also pulled from `sitemap.ts` for the same reason —
+  a crawler can't see the grey and would have indexed the placeholder
+  text. Both go back in the same commit that gives the page real copy. Targets are written root-relative
   so they also work from `/play`.
-  Right side: the GitHub login, the `$0.01` balance under it, and the
+  Right side: the GitHub login, the `$0.21` balance under it, and the
   avatar, all inside one `HoverNote` reading "pulled live from cashapp
   api" — **a joke, not a description**; there is no Cash App call in this
   repo.
@@ -395,13 +408,37 @@ class would stop emitting.
   The motion is the same carve-out as Exy: nothing moves unless you point
   at it or click it, so it's an affordance rather than ambient decoration,
   and it's all `motion-safe`.
-  **The shelf is real 3D, viewed head-on.** Each book is a box: a spine
-  face you see straight on, and a top face — the pages — hinged at its top
-  edge and folded back into the shelf. At rest everything tips 8° toward
-  you, enough to show those tops without the row stopping looking like a
-  line of spines; hover tips one to 28° so it swings out and its pages come
-  round. The plank is built the same way, sharing the container's
-  perspective so its depth converges with theirs.
+  **The shelf is real 3D, viewed head-on.** Each book is a five-faced box:
+  the spine you see straight on, both covers, and a top face — the page
+  block. The covers were **missing for two rounds**, which is what made
+  the books read flat however the camera moved: the depth was declared and
+  never drawn. `backface-visibility: hidden` on the two covers is what
+  lets them need no per-book logic — each draws only while it genuinely
+  faces the camera, so books left of the vanishing point show their right
+  cover and books right of it show their left, and the switch lands
+  exactly where it should.
+  **The books stand upright at rest.** They leaned 12° forward first and
+  it looked wrong for a reason worth keeping: a leaning book inside a
+  square box has nothing holding it up, so the two read as separate
+  objects at odds. All the depth comes from the camera instead, and a
+  hovered book at -30° is then the only tilted thing in the frame — which
+  is what makes it read as pulled out rather than as one leaning book
+  among nine.
+  **The top face is paper, not a tint of the cover.** The top of a book
+  standing spine-out is its page block, and paper against a coloured spine
+  is most of what reads as a solid object. The stripes run across the
+  *width* because that is how pages stack — the spine's width IS the
+  thickness of the stack.
+  **One light, top-left**, the same source `avatar-frame` and the shelf's
+  own gradients use: left-facing covers catch it, right-facing ones are
+  turned away, and every shadow falls back and to the right. The shaded
+  cover has to be much darker than the spine or the crease between them
+  disappears and the book reads as a taper rather than a box.
+  **Shadows need the wrapper element.** They lie in the floor plane, so
+  they cannot live inside the button — they'd tip up off the floor with
+  the book, the one thing a shadow can never do. The button rotates, the
+  wrapper holds the ground. `--sh` stretches each along the depth axis as
+  its book tips out.
   **The pivot is `center bottom`** — the bottom front edge, where the book
   meets the plank — so it tips out the way you'd hook a book off a shelf.
   Two sign conventions decide whether any of it works, and an earlier pass
@@ -409,16 +446,24 @@ class would stop emitting.
   - CSS `rotateX` is positive toward the viewer at an element's BOTTOM, so
     tipping a book's *top* toward you is a NEGATIVE angle. Positive reads
     as the book shrinking into the shelf.
-  - The top face needs `rotateX(-90deg)` about its own top edge to fold
-    backward; `+90` folds it forward, out through the spine.
+  - The top face needs `rotateX(90deg)` about its own BOTTOM edge — put it
+    above the spine with `bottom-full` and hinge it there. Hinging at the
+    top edge with `-90` lands it in the same place with its face pointing
+    *down*, so what you see is its underside and it drops out of view the
+    moment a book tips. That was the disappearing top, and it is a
+    different bug from the `filter` one below with the same symptom.
   It was built on `rotateY` first, which swings books sideways rather than
   tipping them out — the geometry was checked by simulating the projection
   offscreen before the second attempt, which is the way to do this.
   `perspective` and `perspective-origin` go on the container, not per book:
   per element every book gets its own vanishing point and they look right
-  alone but wrong together. The origin sits high at 14%, because you look
-  at a shelf from above — that's what makes the plank's surface and the
-  pages visible at all.
+  alone but wrong together. The origin is **-70px, in pixels and
+  negative on purpose**: the eye has to sit clear of every book top or
+  their top faces collapse. A percentage put it at book-top height, where
+  tops below the eye rendered as 2-4px slivers and the taller ones —
+  poking *above* it — showed their underside instead. Pixels also make it
+  independent of how tall the content is. Throw is 900px. Together that's
+  about the 10° Bradley asked for.
   `overflow-hidden` belongs on the spine face, never the button.
   **Never put `filter` on an element carrying `preserve-3d`.** `filter`
   forces `transform-style: flat`, so it silently overrides it — a
@@ -427,11 +472,14 @@ class would stop emitting.
   a paint bug and the cause is a one-word class; the brightening lives on
   the faces now, where flattening their own 2D children costs nothing.
   The same applies to `opacity`, `mask` and `clip-path`.
-  The shelf's timber is the `wood` token family plus the `wood-*`
-  backgroundImage entries — material shading like `avatar-frame`, not the
-  decorative gradients this site stripped out. Five steps because the box
-  has five faces at different angles and the whole illusion is that they
-  catch different light.
+  The shelf is the `shelf` token family plus the `shelf-*` backgroundImage
+  entries — material shading like `avatar-frame`, not the decorative
+  gradients this site stripped out. Five steps because the box has five
+  faces at different angles and the whole illusion is that they catch
+  different light. It was **beige timber first and is blue now**, at
+  Bradley's request: built off `hero`, the colour of the column it sits
+  in, so it reads as the surround made solid rather than as a piece of
+  furniture dropped onto the page.
   **Spine colours are sampled from the real covers**, cached into
   `public/books/` from Open Library's cover API — the only hex values
   outside the Tailwind config, and deliberately so: they're data about a
@@ -446,8 +494,14 @@ class would stop emitting.
   **Sizes are hashed from the title**, not random, so they're stable across
   renders and hydration — with `>>>` rather than `>>`, since a signed shift
   on a hash above 2^31 goes negative and produced 14px spines.
-- `src/components/Sidebar.tsx` — the right column, in order: a status
-  heading derived from the last push (Currently Online / Recently Active /
+- `src/components/Sidebar.tsx` — the right column. **Contributions is
+  labelled "this year", and the query was changed to match** — see
+  `getContributions()`: the API defaults to the trailing twelve months, so
+  the label alone would have described a window the number wasn't measured
+  over. Hackathon Wins is hand-set at 2 (Devpost has no public API, so
+  nothing on the page can check it).
+  In order: a status heading derived from the last push (Currently Online
+  / Recently Active /
   Currently Offline, thresholded on hours, linked to the GitHub profile
   because that's the thing being measured), then stat rows — Repos,
   Hackathon Wins, Following, Gists, Contributions, Comments, Artwork /
@@ -562,8 +616,9 @@ class would stop emitting.
 - `src/app/icon.tsx`, `opengraph-image.tsx` — the favicon and the 1200x630
   share card, both generated at build time from `profile-data` rather than
   checked in as binaries.
-- `src/app/robots.ts`, `sitemap.ts` — allow-all plus the sitemap, and two
-  URLs. `lastModified` is deliberately omitted: content changes when
+- `src/app/robots.ts`, `sitemap.ts` — allow-all plus the sitemap. Two
+  URLs, `/` and `/play`; `/about` is deliberately absent while its nav
+  item is greyed out. `lastModified` is deliberately omitted: content changes when
   Bradley commits, not when Vercel rebuilds.
 - `src/app/page.tsx` — SiteNav, full-width ProfileHeader, then a
   `lg:grid-cols-[2fr_1fr]` split that stacks below `lg`. `max-w-profile`
@@ -578,7 +633,7 @@ class would stop emitting.
   grey surround — not the main/sidebar split inside it. Don't collapse it
   again.
 
-  Main column order: **Recent Activity, Experience, Favorite Project**.
+  Main column order: **Recent Activity, Experience, Favorite Game**.
   Contributions moved to the sidebar. Comments import is commented out on
   purpose; `<Exy />` sits outside the column, since he walks the whole
   viewport rather than the centred block.
@@ -833,13 +888,21 @@ to 7" is a real fraction of a real year. Apply that test to any new meter.
   that still holds: no Valve logo or wordmark, no game capsule art, and
   every capsule and frame on this site is generated from the palette.
   Keep the footer's "not affiliated" line.
-  **One deliberate exception, added at Bradley's explicit request after
-  the tradeoff was put to him:** `public/steam-years-*.png` are Valve's
-  real Years of Service badges, served for the card in `ProfileHeader`.
-  They are the only Steam-owned assets here. Keyed off `level` rather
-  than hardcoded, so the art tracks the number beside it; years past
-  `STEAM_BADGE_YEARS` fall back to the generated tile. Don't generalise
-  this into permission for other Steam artwork.
+  **Two deliberate exceptions, both at Bradley's explicit request after
+  the tradeoff was put to him, and they are the only Valve-owned assets
+  here:**
+  1. `public/steam-years-*.png` — Valve's real Years of Service badges,
+     served for the card in `ProfileHeader`. Keyed off `level` rather than
+     hardcoded, so the art tracks the number beside it; years past
+     `STEAM_BADGE_YEARS` fall back to the generated tile.
+  2. `public/cs2-logo.png` — Valve's CS2 mark, in the Favorite Game slot.
+     Bradley supplied the file himself. It replaced a generated "CS2" text
+     tile. The narrower half of the rule above still holds: this is the
+     game's logo, **not** a store capsule, so "no capsule art" is intact.
+     No border on it — its gold lands within a few points of `accent`, so
+     a frame only fought the artwork.
+  Neither is licence for more. The pattern is that each one was asked for
+  by name; nothing here generalises into permission for other Valve art.
 - Don't hardcode colors outside the token system in `src/tailwind.config.ts`.
 
 ## Environment
