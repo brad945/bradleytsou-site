@@ -273,13 +273,32 @@ export default function Bookshelf() {
                   <span
                     aria-hidden
                     style={{
-                      height: depth + 13,
+                      height: depth + 16,
                       transformOrigin: "center bottom",
                       transform: "rotateX(90deg) scaleY(var(--sh))",
                       background:
-                        "linear-gradient(to top right, rgba(0,0,0,0.55), rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 82%)",
+                        "linear-gradient(to top right, rgba(0,0,0,0.68), rgba(0,0,0,0.26) 48%, rgba(0,0,0,0) 84%)",
                     }}
-                    className="absolute bottom-0 left-[3px] right-[-18px] rounded-b-[2px] blur-[3px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.3]"
+                    className="absolute bottom-0 left-[3px] right-[-20px] rounded-b-[2px] blur-[4px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.5]"
+                  />
+                  {/*
+                    Contact shadow. The long one above falls away too gradually
+                    to darken the inch of floor a book actually touches, and
+                    without that the whole row hovered a fraction above the
+                    plank. Short, much darker, barely blurred — that's what
+                    reads as weight. It scales on the same `--sh`, so it
+                    stretches out from under the book as it tips.
+                  */}
+                  <span
+                    aria-hidden
+                    style={{
+                      height: Math.round(depth * 0.34),
+                      transformOrigin: "center bottom",
+                      transform: "rotateX(90deg) scaleY(var(--sh))",
+                      background:
+                        "linear-gradient(to top right, rgba(0,0,0,0.72), rgba(0,0,0,0) 76%)",
+                    }}
+                    className="absolute bottom-0 left-[1px] right-[-7px] blur-[1.5px] transition-transform duration-300 ease-out"
                   />
 
                   <button
