@@ -77,7 +77,7 @@ export default function Bookshelf() {
       the carcass rather than above it. Local to this block on purpose —
       GitHub and Spotify still want the tighter default.
     */
-    <div className="mt-4">
+    <div className="mt-6">
       {/*
         A shelf, built as an actual box: back panel, two side walls, a floor,
         and in front of all of it a carcass — two uprights, a board across the
