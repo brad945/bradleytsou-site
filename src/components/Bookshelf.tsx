@@ -117,6 +117,32 @@ const WIRE_RUN = SHELF_DEPTH - WIRE_FOOT_Z;
 const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, WIRE_RUN));
 const WIRE_TILT = Math.round((Math.atan2(WIRE_RUN, WIRE_RISE) * 180) / Math.PI);
 const WIRE_W = 5;
+
+/**
+ * How far back off the front edge the books stand.
+ *
+ * They used to sit at z = 0, flush with the carcass, which is where nothing
+ * on a real shelf sits — you push a book in until it stops. Everything
+ * measured against the back wall has to subtract this: the depth cap, and both
+ * offsets of the shadow a book throws on that wall.
+ */
+const BOOK_INSET = 11;
+
+/**
+ * Stable pseudo-random from a string.
+ *
+ * Back after being deleted with the hashed sizes, and for the one thing a hash
+ * is actually right for here. The gaps between books have to look unplanned
+ * but be the SAME on the server and on the client — `Math.random()` would
+ * differ between the two and React would replace the markup on hydration.
+ * Sizes are measurements and should never have come from this; spacing is a
+ * choice about arrangement, and nothing about it is checkable.
+ */
+function hash(text: string) {
+  let h = 0;
+  for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) >>> 0;
+  return h;
+}
 const THICK_PER_IN = 52;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
@@ -248,7 +274,7 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center gap-[16px] px-4 pt-8"
+            className="flex items-end justify-center px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
@@ -300,8 +326,15 @@ export default function Bookshelf() {
                */
               const depth = Math.min(
                 Math.round(height * 0.62),
-                SHELF_DEPTH - 14,
+                SHELF_DEPTH - BOOK_INSET - 12,
               );
+              /*
+               * Gap to the book on its left, 15-30px, hashed off this book's
+               * own title so it never changes between renders. `justify-center`
+               * still centres the row; the first book takes no margin, so the
+               * gaps sit only between books and never against the uprights.
+               */
+              const gap = i === 0 ? 0 : 15 + (hash(book.title) % 16);
 
               /*
                * Wrapper, and it does not rotate. The shadow below lies in the
@@ -313,7 +346,14 @@ export default function Bookshelf() {
               return (
                 <div
                   key={book.title}
-                  style={{ height, width, transformStyle: "preserve-3d" }}
+                  style={{
+                    height,
+                    width,
+                    marginLeft: gap,
+                    transformStyle: "preserve-3d",
+                    // Pushed in off the front edge, the way a book on a shelf sits.
+                    transform: `translateZ(-${BOOK_INSET}px)`,
+                  }}
                   className="group/book relative shrink-0"
                 >
                   {/*
@@ -374,7 +414,8 @@ export default function Bookshelf() {
 
                     Where it lands follows from the light being above, in front
                     and to the left: the edge doing the casting is the book's
-                    back edge, `SHELF_DEPTH - depth` short of the wall, so the
+                    back edge, `SHELF_DEPTH - BOOK_INSET - depth` short of the
+                    wall, so the
                     shadow sits just right of and below the book rather than
                     far from it. Both offsets are computed from that gap, which
                     is why a shallow book throws its shadow further than a deep
@@ -388,7 +429,7 @@ export default function Bookshelf() {
                   <span
                     aria-hidden
                     style={{
-                      transform: `translateZ(-${SHELF_DEPTH - 1}px) translate(${Math.round((SHELF_DEPTH - depth) * 0.42) + 2}px, ${Math.round((SHELF_DEPTH - depth) * 0.44) + 3}px)`,
+                      transform: `translateZ(-${SHELF_DEPTH - BOOK_INSET - 1}px) translate(${Math.round((SHELF_DEPTH - BOOK_INSET - depth) * 0.42) + 2}px, ${Math.round((SHELF_DEPTH - BOOK_INSET - depth) * 0.44) + 3}px)`,
                       background:
                         "linear-gradient(to right, rgba(0,0,0,0.58), rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.14))",
                     }}
