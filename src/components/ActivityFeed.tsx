@@ -295,7 +295,6 @@ export default function ActivityFeed({
         <SourceBlock
           name="Books"
           icon={<BookIcon className="h-4 w-4 text-muted" />}
-          note="kept by hand"
           className="py-5"
         >
           <Bookshelf />
