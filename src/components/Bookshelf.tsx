@@ -39,11 +39,6 @@ import { books, type Book } from "@/lib/profile-data";
  */
 
 /** Stable per-title, so nothing moves between renders or across hydration. */
-function hash(text: string) {
-  let h = 0;
-  for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) >>> 0;
-  return h;
-}
 
 /** How far the shelf runs back. Books are drawn shallower, so they sit in it. */
 const SHELF_DEPTH = 110;
@@ -57,7 +52,29 @@ const SHELF_DEPTH = 110;
  * breaking, because the height rule is a minimum and the clamp is a
  * last resort.
  */
-const MIN_SPINE_FS = 9;
+const MIN_SPINE_FS = 8;
+
+/**
+ * Pixels per inch, and there are two of them on purpose.
+ *
+ * **Height is to scale.** An 11in Calvin and Hobbes treasury renders 1.4x the
+ * height of an 8in Sula, because that is the ratio between them. This
+ * replaced sizes hashed out of the title, under which a 656-page hardcover and
+ * a 144-page play stood the same height and the shelf described nothing.
+ *
+ * **Thickness is exaggerated, by about 3x, and it has to be.** Sula is
+ * 8in x 0.5in; at the height scale its spine would be 8px wide and a vertical
+ * title does not fit in 8px. The exaggeration is one uniform factor, so every
+ * book stays right *relative to* every other — which is the part a reader can
+ * see — and only the absolute ratio of thickness to height is off.
+ *
+ * `THICK_PER_IN` is also what decides how much of the shelf the row fills: at
+ * 52 the eight books plus their 20px gaps come to about 500px of the ~567px
+ * opening. Raise it and they crowd the uprights; lower it and the shelf starts
+ * to look empty.
+ */
+const HEIGHT_PER_IN = 15.2;
+const THICK_PER_IN = 52;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
   reading: "Reading",
@@ -183,38 +200,36 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center gap-[22px] px-4 pt-8"
+            className="flex items-end justify-center gap-[20px] px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
-              const h = hash(book.title);
               /*
-               * Sized to fill the shelf, not chosen for looks: the eight
-               * books plus their gaps come to a little under the block's own
-               * width, and `justify-between` spreads the remainder into the
-               * gaps so the outer two sit flush against the uprights. Widen
-               * these and they overflow the panel — the wrappers are
-               * `shrink-0`, so there is nothing to absorb it.
+               * Straight off the edition's real spine thickness. The floor of
+               * 18px is there because a thinner spine can't carry its own
+               * title; nothing on the shelf is near it today.
                */
-              const width = 34 + ((h >>> 5) % 17);
+              const width = Math.max(
+                18,
+                Math.round(book.thickIn * THICK_PER_IN),
+              );
               const isOpen = open === i;
 
               const label = book.spineLabel ?? book.title;
               /*
-               * Hashed, then floored at whatever the title needs to stay
-               * legible.
+               * True trim height, with the label floor kept as a backstop.
                *
-               * The hash alone gave the shortest book the longest label and
-               * the font clamped down to 7px — one visibly tiny spine in a
-               * row of normal ones, which reads as a bug rather than as
-               * variety. `MIN_SPINE_FS` is the size below which that starts,
-               * so a book is at least tall enough to carry its own title at
-               * it. Only one of the eight is raised today; the rest keep
-               * their hashed height and the silhouette stays uneven, which
-               * is the whole point of hashing it.
+               * It doesn't fire for any of the eight today. The two that
+               * would have — Common Sense Investing and The Complete Peanuts,
+               * both short books with long titles — carry shortened
+               * `spineLabel`s instead, which is what a real spine does at that
+               * size anyway. The floor stays because a long-titled short book
+               * added later would otherwise ship unreadable, and it is better
+               * for one book to stand slightly too tall than for its title to
+               * be a smudge.
                */
               const height = Math.max(
-                110 + (h % 46),
+                Math.round(book.heightIn * HEIGHT_PER_IN),
                 Math.round(label.length * MIN_SPINE_FS * 0.56) + 34,
               );
               const room = height - 34;

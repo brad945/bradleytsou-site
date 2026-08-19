@@ -254,6 +254,25 @@ export interface Book {
    */
   spine: string;
   ink: string;
+  /**
+   * The real edition's trim height and spine thickness, in inches.
+   *
+   * **Measurements of an actual object, like `spine` and `cover` above** —
+   * which is why they're here rather than being invented in the component.
+   * The shelf used to hash both out of the title, so a 656-page hardcover and
+   * a 144-page play stood the same height and the shelf described nothing.
+   * These are the editions Bradley owns: `pages` is carried alongside because
+   * it's what makes a thickness checkable.
+   *
+   * Height renders to scale. **Thickness does not** — see `THICK_PER_IN` in
+   * `Bookshelf.tsx`, which exaggerates it about 3x. True thickness on a
+   * 122px-tall Sula is 8px, and a vertical title doesn't fit in 8px. The
+   * exaggeration is uniform, so the books stay right relative to each other,
+   * which is the part that reads.
+   */
+  heightIn: number;
+  thickIn: number;
+  pages: number;
 }
 
 /**
@@ -271,6 +290,9 @@ export interface Book {
 export const books: Book[] = [
   {
     title: "Steve Jobs",
+    heightIn: 9.5,
+    thickIn: 1.6,
+    pages: 656,
     author: "Walter Isaacson",
     status: "read",
     note: "Read it before I knew what half of it meant.",
@@ -280,6 +302,9 @@ export const books: Book[] = [
   },
   {
     title: "Stay True",
+    heightIn: 8.3,
+    thickIn: 0.8,
+    pages: 208,
     author: "Hua Hsu",
     status: "read",
     note: "The one I hand to people.",
@@ -289,6 +314,9 @@ export const books: Book[] = [
   },
   {
     title: "Sula",
+    heightIn: 8.0,
+    thickIn: 0.5,
+    pages: 174,
     author: "Toni Morrison",
     status: "read",
     cover: "/books/sula.jpg",
@@ -297,6 +325,9 @@ export const books: Book[] = [
   },
   {
     title: "Tuesdays with Morrie",
+    heightIn: 8.2,
+    thickIn: 0.55,
+    pages: 192,
     author: "Mitch Albom",
     status: "read",
     cover: "/books/tuesdays-with-morrie.jpg",
@@ -305,6 +336,9 @@ export const books: Book[] = [
   },
   {
     title: "Death of a Salesman",
+    heightIn: 7.8,
+    thickIn: 0.4,
+    pages: 144,
     author: "Arthur Miller",
     status: "read",
     note: "Assigned. Stayed anyway.",
@@ -314,7 +348,10 @@ export const books: Book[] = [
   },
   {
     title: "The Little Book of Common Sense Investing",
-    spineLabel: "Common Sense Investing",
+    heightIn: 7.2,
+    thickIn: 0.9,
+    pages: 300,
+    spineLabel: "Common Sense",
     author: "John C. Bogle",
     status: "reading",
     note: "Bogle founded Vanguard, then spent a book arguing you should mostly do nothing.",
@@ -324,6 +361,9 @@ export const books: Book[] = [
   },
   {
     title: "The Authoritative Calvin and Hobbes",
+    heightIn: 11.0,
+    thickIn: 1.0,
+    pages: 256,
     spineLabel: "Calvin and Hobbes",
     author: "Bill Watterson",
     status: "shelved",
@@ -334,7 +374,10 @@ export const books: Book[] = [
   },
   {
     title: "The Complete Peanuts, 1953–1954",
-    spineLabel: "The Complete Peanuts",
+    heightIn: 6.5,
+    thickIn: 1.15,
+    pages: 352,
+    spineLabel: "Peanuts",
     author: "Charles M. Schulz",
     status: "shelved",
     note: "The early Schulz, before the specials.",
