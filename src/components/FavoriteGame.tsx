@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { SteamPlaytime } from "@/lib/steam";
 import { favoriteGame } from "@/lib/profile-data";
 
@@ -46,17 +48,25 @@ export default function FavoriteGame({
 
       <div className="flex gap-4 p-5">
         {/*
-          A generated capsule, not Steam's cover art. The site's carve-out on
-          resembling Steam is explicit about this: no game capsule art, every
-          tile built from the palette. `shrink-0` so it can't be squeezed when
-          the name wraps.
+          Valve's CS2 mark, supplied by Bradley — the second Steam-owned asset
+          on the site after the Years of Service badges, and the same call: he
+          asked for it directly, against the carve-out that otherwise generates
+          every tile from the palette. It's the game's logo, not a store
+          capsule, so the "no capsule art" half of that rule still holds.
+
+          Sourced at 256px for a 84px slot, past 2x on any display. Its gold
+          (240,176,66) lands within a few points of `accent` (#de9b35), so no
+          frame is needed to tie it to the page — a border here just fought
+          the artwork. `shrink-0` so it can't be squeezed when the name wraps.
         */}
-        <div
+        <Image
+          src="/cs2-logo.png"
+          alt=""
           aria-hidden
-          className="flex h-[84px] w-[84px] shrink-0 items-center justify-center border border-accent/50 bg-panel2/70 text-[22px] font-light text-accent"
-        >
-          CS2
-        </div>
+          width={84}
+          height={84}
+          className="h-[84px] w-[84px] shrink-0 rounded-[2px]"
+        />
 
         <div className="min-w-0 flex-1">
           <h3 className="text-[19px] font-light leading-tight text-bright">
