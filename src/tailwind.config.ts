@@ -305,10 +305,31 @@ const config: Config = {
          * which is why those stops are `to bottom`: the face is folded flat,
          * so its vertical axis becomes the shelf's depth.
          */
+        /*
+         * Every interior surface below is shaded by one rule: how much of the
+         * opening it can see. That is what a shelf's inside actually looks
+         * like — the light comes in through the front, so a surface is bright
+         * near the opening and falls away toward the back and into the
+         * corners. Getting this backwards is what made the box read as evenly
+         * lit, which no real box is.
+         *
+         * The axis each gradient runs along is NOT the axis it looks like in
+         * the source. Each of these panels is folded into place, so work out
+         * which edge is the hinge before changing a direction:
+         *   floor    hinges at its bottom edge -> its TOP is the back
+         *   ceiling  hinges at its bottom edge -> its TOP is the back
+         *   left wall  hinges at its left edge  -> its RIGHT is the back
+         *   right wall hinges at its right edge -> its LEFT is the back
+         * The two walls are mirror images, which is why they can't share one
+         * token — they did, and their shading ran in opposite directions.
+         */
         "shelf-floor": [
           `repeating-linear-gradient(to bottom, ${shelf.edge}26 0 1px, transparent 1px 6px)`,
           `repeating-linear-gradient(to bottom, ${shelf.edge}1a 0 2px, transparent 2px 19px)`,
-          `linear-gradient(to bottom, ${shelf.light}, ${shelf.mid} 55%, ${shelf.base})`,
+          // Corners, where the floor meets each wall.
+          `linear-gradient(to right, ${shelf.edge}55, transparent 9%, transparent 91%, ${shelf.edge}55)`,
+          // Back (top) is the most occluded; the front lip end catches most light.
+          `linear-gradient(to bottom, ${shelf.dark}, ${shelf.base} 34%, ${shelf.light})`,
         ].join(", "),
         "shelf-ceiling": [
           `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 7px)`,
@@ -316,11 +337,42 @@ const config: Config = {
         ].join(", "),
         "shelf-back": [
           `repeating-linear-gradient(to right, ${shelf.edge}24 0 1px, transparent 1px 9px)`,
-          `linear-gradient(to bottom, ${shelf.base}, ${shelf.dark} 70%, ${shelf.edge})`,
+          // Corners, where the back meets each wall.
+          `linear-gradient(to right, ${shelf.edge}66, transparent 11%, transparent 89%, ${shelf.edge}66)`,
+          /*
+           * The band under the top board. A shelf's back wall is darkest at
+           * the top because the board across the front is what stops the
+           * light reaching it — the single most recognisable thing about the
+           * inside of a bookcase, and it was inverted here: this ran lightest
+           * at the top.
+           */
+          /*
+           * And it has to be genuinely lit down here, not near-black, or
+           * nothing can cast onto it. That was the whole reason the books
+           * appeared to have no shadows: between two books what you see is
+           * back panel, and a black shadow on a near-black surface is
+           * invisible however dark you make it. Brightest low down, where
+           * light bouncing off the floor reaches — which is also where the
+           * books' shadows land.
+           */
+          `linear-gradient(to bottom, ${shelf.edge}, ${shelf.dark} 17%, ${shelf.base} 42%, ${shelf.light} 88%, ${shelf.base})`,
         ].join(", "),
-        "shelf-side": [
+        /*
+         * Left wall. Its inner face points right, into the light, so it is the
+         * brighter of the two. Back is at its right edge.
+         */
+        "shelf-side-left": [
           `repeating-linear-gradient(to bottom, ${shelf.edge}20 0 1px, transparent 1px 7px)`,
-          `linear-gradient(to right, ${shelf.base}, ${shelf.dark})`,
+          `linear-gradient(to right, ${shelf.light}, ${shelf.base} 55%, ${shelf.edge})`,
+        ].join(", "),
+        /*
+         * Right wall. Its inner face points left, away from the light, so it
+         * is the darker one — and its back is at its LEFT edge, the mirror of
+         * the left wall.
+         */
+        "shelf-side-right": [
+          `repeating-linear-gradient(to bottom, ${shelf.edge}20 0 1px, transparent 1px 7px)`,
+          `linear-gradient(to left, ${shelf.edge}, ${shelf.dark} 55%, ${shelf.base})`,
         ].join(", "),
         /*
          * The carcass, seen face-on at z = 0 — two uprights, a board across

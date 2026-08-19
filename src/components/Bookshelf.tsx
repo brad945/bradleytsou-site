@@ -148,7 +148,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 bg-shelf-side"
+            className="absolute inset-y-0 left-0 bg-shelf-side-left"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "left center",
@@ -157,7 +157,7 @@ export default function Bookshelf() {
           />
           <span
             aria-hidden
-            className="absolute inset-y-0 right-0 bg-shelf-side"
+            className="absolute inset-y-0 right-0 bg-shelf-side-right"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "right center",
