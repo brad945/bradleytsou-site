@@ -84,7 +84,7 @@ export default function Bookshelf() {
           {/* Back panel: straight back by the shelf's depth. */}
           <span
             aria-hidden
-            className="absolute inset-0 bg-wood-back"
+            className="absolute inset-0 bg-shelf-back"
             style={{ transform: `translateZ(-${SHELF_DEPTH}px)` }}
           />
           {/*
@@ -94,7 +94,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 bg-wood-side"
+            className="absolute inset-y-0 left-0 bg-shelf-side"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "left center",
@@ -103,7 +103,7 @@ export default function Bookshelf() {
           />
           <span
             aria-hidden
-            className="absolute inset-y-0 right-0 bg-wood-side"
+            className="absolute inset-y-0 right-0 bg-shelf-side"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "right center",
@@ -119,7 +119,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 bottom-0 bg-wood-floor"
+            className="absolute inset-x-0 bottom-0 bg-shelf-floor"
             style={{
               height: SHELF_DEPTH,
               transformOrigin: "center bottom",
@@ -265,7 +265,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 top-full h-[11px] rounded-b-[2px] bg-wood-lip"
+            className="absolute inset-x-0 top-full h-[11px] rounded-b-[2px] bg-shelf-lip"
           />
         </div>
       </div>

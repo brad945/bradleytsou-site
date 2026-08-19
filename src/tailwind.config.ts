@@ -104,24 +104,24 @@ const tokens = {
 };
 
 /**
- * The bookshelf's timber.
+ * The bookshelf's carcass.
  *
- * The one warm family on an otherwise cool blue-grey site, and it earns that
- * the same way `steelLight`/`steel`/`steelDark` do for the avatar frame: it's
- * describing a material, not decorating a surface. A shelf rendered in
- * `panel` and `line` read as a wireframe of a shelf rather than a shelf.
+ * Blue-grey, in the page's own family rather than a warm timber — it was
+ * brown first and read as a different site's furniture parked on this one.
  *
  * Five steps because the box has five faces at different angles, and the whole
  * illusion is that they catch different amounts of light: the floor is lit
  * from above, the back sits in shadow, the sides fall between, and the front
- * lip is the darkest because you see its underside.
+ * lip is darkest because you're seeing its underside. Same reasoning as
+ * `steelLight`/`steel`/`steelDark` on the avatar frame — describing a
+ * material, not decorating a surface.
  */
-const wood = {
-  light: "#dcc199",
-  mid: "#c4a377",
-  base: "#ac8c60",
-  dark: "#886a45",
-  edge: "#6d5537",
+const shelf = {
+  light: "#4a5e78",
+  mid: "#3a4b61",
+  base: "#2e3d50",
+  dark: "#1f2a38",
+  edge: "#151d28",
 };
 
 /**
@@ -228,7 +228,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        wood,
+        shelf,
         ...tokens,
         dvd,
       },
@@ -282,35 +282,34 @@ const config: Config = {
          * sheen, xp fill) was removed.
          */
         /*
-         * Shelf timber. Two repeating gradients of grain over a base sweep —
-         * the fine lines are the grain itself, the wider ones the darker
-         * bands between growth rings, and the sweep is the light falling
-         * across the face.
+         * The shelf's faces. Two repeating gradients of grain over a base
+         * sweep: fine lines for the grain itself, wider ones for the bands
+         * between, and the sweep for light falling across the face.
          *
-         * These are material shading, like `avatar-frame`, not the decorative
-         * gradients that were stripped out of this site. Flatten them and the
-         * shelf stops reading as wood at all.
+         * Material shading, like `avatar-frame` — not the decorative
+         * gradients this site stripped out. Flatten these and the box stops
+         * reading as an object and becomes four coloured rectangles.
          *
          * Grain runs left to right on the floor, along the length of a plank,
-         * which is why those stops are `to bottom` — the face is folded flat,
+         * which is why those stops are `to bottom`: the face is folded flat,
          * so its vertical axis becomes the shelf's depth.
          */
-        "wood-floor": [
-          `repeating-linear-gradient(to bottom, ${wood.edge}22 0 1px, transparent 1px 6px)`,
-          `repeating-linear-gradient(to bottom, ${wood.edge}18 0 2px, transparent 2px 19px)`,
-          `linear-gradient(to bottom, ${wood.light}, ${wood.mid} 55%, ${wood.base})`,
+        "shelf-floor": [
+          `repeating-linear-gradient(to bottom, ${shelf.edge}26 0 1px, transparent 1px 6px)`,
+          `repeating-linear-gradient(to bottom, ${shelf.edge}1a 0 2px, transparent 2px 19px)`,
+          `linear-gradient(to bottom, ${shelf.light}, ${shelf.mid} 55%, ${shelf.base})`,
         ].join(", "),
-        "wood-back": [
-          `repeating-linear-gradient(to right, ${wood.edge}1f 0 1px, transparent 1px 9px)`,
-          `linear-gradient(to bottom, ${wood.dark}, ${wood.edge})`,
+        "shelf-back": [
+          `repeating-linear-gradient(to right, ${shelf.edge}24 0 1px, transparent 1px 9px)`,
+          `linear-gradient(to bottom, ${shelf.dark}, ${shelf.edge})`,
         ].join(", "),
-        "wood-side": [
-          `repeating-linear-gradient(to bottom, ${wood.edge}1c 0 1px, transparent 1px 7px)`,
-          `linear-gradient(to right, ${wood.base}, ${wood.dark})`,
+        "shelf-side": [
+          `repeating-linear-gradient(to bottom, ${shelf.edge}20 0 1px, transparent 1px 7px)`,
+          `linear-gradient(to right, ${shelf.base}, ${shelf.dark})`,
         ].join(", "),
-        "wood-lip": [
-          `repeating-linear-gradient(to right, ${wood.edge}22 0 1px, transparent 1px 11px)`,
-          `linear-gradient(to bottom, ${wood.mid}, ${wood.dark})`,
+        "shelf-lip": [
+          `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
+          `linear-gradient(to bottom, ${shelf.mid}, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },
