@@ -407,9 +407,29 @@ const config: Config = {
          * it leaves the wall, which is also the end furthest from the eye, so
          * it keeps the run from looking flat.
          */
+        /*
+         * A rod, not a tape. The gradient runs ACROSS the wire, not along it:
+         * dark edge, highlight a third of the way in, falling to a darker edge
+         * on the other side. That's the shading a cylinder has, and it's what
+         * makes a flat div read as round — a gradient along the length can't,
+         * however many stops it has.
+         *
+         * The highlight sits left of centre because the light is top-left, the
+         * same source every other surface here is lit from.
+         *
+         * A second layer darkens the end that meets the wall, which is both
+         * further from the eye and further inside the shelf's own shade.
+         */
         "shelf-wire": [
-          `linear-gradient(to bottom, ${tokens.steelLight}, ${tokens.steel} 34%, ${tokens.steelMid} 74%, ${tokens.steelDark})`,
+          `linear-gradient(to top, transparent 45%, ${shelf.edge}55)`,
+          `linear-gradient(to right, ${tokens.steelDark}, ${tokens.steel} 18%, ${tokens.steelLight} 38%, ${tokens.steel} 62%, ${tokens.steelMid} 84%, ${tokens.steelDark})`,
         ].join(", "),
+        /*
+         * The fittings at each end of a wire. A dome rather than a disc — the
+         * off-centre radial highlight is the only thing at this size that says
+         * the head is raised rather than painted on.
+         */
+        "shelf-fitting": `radial-gradient(circle at 34% 28%, ${tokens.steelLight}, ${tokens.steel} 42%, ${tokens.steelMid} 70%, ${tokens.steelDark})`,
         "shelf-lip": [
           `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
           `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 70%, ${shelf.edge})`,

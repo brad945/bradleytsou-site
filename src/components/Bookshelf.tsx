@@ -106,6 +106,7 @@ const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, SHELF_DEPTH));
 const WIRE_TILT = Math.round(
   (Math.atan2(SHELF_DEPTH, WIRE_RISE) * 180) / Math.PI,
 );
+const WIRE_W = 6;
 const THICK_PER_IN = 52;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
@@ -591,14 +592,15 @@ export default function Bookshelf() {
             forward.
           */}
           {[
-            { key: "left", pos: "left-[7px]" },
-            { key: "right", pos: "right-[7px]" },
+            { key: "left", pos: "left-[6px]" },
+            { key: "right", pos: "right-[6px]" },
           ].map(({ key, pos }) => (
             <span
               key={key}
               aria-hidden
-              className={`absolute bottom-full w-[3px] bg-shelf-wire ${pos}`}
+              className={`absolute bottom-full ${pos}`}
               style={{
+                width: WIRE_W,
                 height: WIRE_LEN,
                 transformStyle: "preserve-3d",
                 transformOrigin: "center bottom",
@@ -606,14 +608,43 @@ export default function Bookshelf() {
               }}
             >
               {/*
-                Where it's bolted to the wall. Small on purpose — at this size
-                it reads as a fixing rather than as an object, and a fixing is
-                all that's needed to stop the cable ending in mid-air.
+                **Two crossed blades, not one.** A single div is a flat tape:
+                shade it however you like and it stays a tape, because rotating
+                the scene by a degree changes nothing about its width. A second
+                copy turned 90° about the rod's own long axis gives it a
+                cross-section, so it occupies volume the way every other part
+                of this shelf does — which is the whole reason the shelf reads
+                as an object and the wire didn't.
+
+                `rotateY` is the right axis because inside this wrapper the
+                rod's length runs along the local Y. Both blades carry the same
+                cylindrical shading, so whichever one you're closer to
+                edge-on with, the other is showing you a lit round surface.
+              */}
+              <span className="absolute inset-0 bg-shelf-wire" />
+              <span
+                className="absolute inset-0 bg-shelf-wire"
+                style={{ transform: "rotateY(90deg)" }}
+              />
+
+              {/*
+                Fittings, one at each end: bolted to the wall at the top, and
+                an eye at the shelf corner where the rod picks the load up.
+                Both carry the rod's rotation in reverse, which cancels it and
+                leaves them facing the viewer instead of lying along the rod.
+                Without the top one the rod ends in mid-air; without the bottom
+                one it looks glued to the board rather than fixed to it.
               */}
               <span
-                className="absolute left-1/2 top-0 h-[7px] w-[7px] rounded-full bg-shelf-board-left ring-1 ring-shelf-edge/70"
+                className="absolute left-1/2 top-0 h-[10px] w-[10px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/60"
                 style={{
                   transform: `translate(-50%, -50%) rotateX(${-WIRE_TILT}deg)`,
+                }}
+              />
+              <span
+                className="absolute bottom-0 left-1/2 h-[8px] w-[8px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/50"
+                style={{
+                  transform: `translate(-50%, 50%) rotateX(${-WIRE_TILT}deg)`,
                 }}
               />
             </span>
