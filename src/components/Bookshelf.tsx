@@ -85,7 +85,19 @@ export default function Bookshelf() {
               onClick={() => setOpen(isOpen ? null : i)}
               aria-expanded={isOpen}
               aria-label={`${book.title} by ${book.author}`}
-              style={{ height, width, background: book.spine }}
+              style={
+                {
+                  height,
+                  width,
+                  background: book.spine,
+                  // Exposed as custom properties so the bands, colophon and
+                  // edge shading can be mixed from them in CSS — otherwise
+                  // every book would need three more sampled values in the
+                  // data just to shade its own detailing.
+                  "--spine": book.spine,
+                  "--ink": book.ink,
+                } as React.CSSProperties
+              }
               className={`group/spine relative flex shrink-0 items-center justify-center overflow-hidden rounded-t-[3px] transition-[transform,box-shadow,filter] duration-200 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                 isOpen
                   ? "-translate-y-3 shadow-[0_10px_20px_rgba(0,0,0,0.5)] brightness-110"
@@ -100,16 +112,53 @@ export default function Bookshelf() {
                 */}
               <span
                 style={{ color: book.ink }}
-                className="[writing-mode:vertical-rl] whitespace-nowrap px-1 text-[11px] font-semibold tracking-tight"
+                className="relative z-10 -mt-2 [writing-mode:vertical-rl] whitespace-nowrap px-1 text-[11px] font-semibold tracking-tight"
               >
                 {book.title}
               </span>
 
-              {/* A darker strip down the hinge edge, so a flat rectangle
-                    reads as a spine with a cover behind it. */}
+              {/*
+                What turns a coloured rectangle into a spine. All of it is
+                mixed from the book's own two colours, so it works on a
+                near-white cover and a deep red one without per-book tuning.
+              */}
+              {/* Head and tail bands, where most spines carry a rule. */}
               <span
                 aria-hidden
-                className="absolute inset-y-0 right-0 w-[3px] bg-base/25"
+                className="absolute inset-x-0 top-[9px] h-[2px]"
+                style={{
+                  background:
+                    "color-mix(in srgb, var(--spine) 72%, var(--ink))",
+                }}
+              />
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-[26px] h-[2px]"
+                style={{
+                  background:
+                    "color-mix(in srgb, var(--spine) 72%, var(--ink))",
+                }}
+              />
+              {/* The publisher's colophon at the foot. Not any real mark — an
+                  empty block, which is what one reads as at this size. */}
+              <span
+                aria-hidden
+                className="absolute bottom-[10px] left-1/2 h-[11px] w-[11px] -translate-x-1/2 rounded-[1px] border"
+                style={{
+                  borderColor:
+                    "color-mix(in srgb, var(--spine) 60%, var(--ink))",
+                }}
+              />
+              {/* Shading either edge, so it reads as a curve rather than a
+                  flat card: light where it catches the room, dark at the
+                  hinge. */}
+              <span
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to right, rgba(255,255,255,0.16), rgba(255,255,255,0) 18%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.28))",
+                }}
               />
             </button>
           );
