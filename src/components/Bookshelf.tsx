@@ -183,7 +183,7 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-between gap-[6px] px-4 pt-8"
+            className="flex items-end justify-center gap-[22px] px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
@@ -196,7 +196,7 @@ export default function Bookshelf() {
                * these and they overflow the panel — the wrappers are
                * `shrink-0`, so there is nothing to absorb it.
                */
-              const width = 30 + ((h >>> 5) % 16);
+              const width = 34 + ((h >>> 5) % 17);
               const isOpen = open === i;
 
               const label = book.spineLabel ?? book.title;
