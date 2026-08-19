@@ -41,8 +41,14 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    * place anyway; only one of them arrives without a jolt.
    */
   { label: "Profile", href: "/#top" },
-  /* The personal half — Reviews, Inventory, Achievements. */
-  { label: "About", href: "/about" },
+  /*
+   * The personal half — Reviews, Inventory, Achievements. **Greyed out for
+   * now**, at Bradley's request: the page is built and routable, but its
+   * reviews and inventory are still placeholder written in my voice rather
+   * than his, and a live nav item would send visitors to words he didn't
+   * write. Dropping the href is the whole change; putting it back is too.
+   */
+  { label: "About" },
   /*
    * Chat is the comments panel. Not a separate feature — the page has one
    * place a visitor can say something, and giving the nav item its own
