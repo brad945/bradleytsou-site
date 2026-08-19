@@ -201,7 +201,7 @@ export default function Bookshelf() {
       */}
       <div style={{ perspective: "900px", perspectiveOrigin: "50% -85px" }}>
         <div
-          className="relative w-full"
+          className="pointer-events-none relative w-full"
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Back panel: straight back by the shelf's depth. */}
@@ -274,7 +274,7 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center px-4 pt-8"
+            className="pointer-events-none flex items-end justify-center px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
@@ -343,6 +343,25 @@ export default function Bookshelf() {
                * never do. So the button carries the rotation and the wrapper
                * carries the ground.
                */
+              /*
+               * `pointer-events-none` on the row and `-auto` back on each book
+               * is load-bearing, not tidying. `BOOK_INSET` puts the books 11px
+               * BEHIND their own parent's plane, and in a `preserve-3d` scene
+               * hit-testing is done in 3D: the row's own box sits at z = 0, in
+               * front of every book in it, so it swallowed every hover and
+               * click. Confirmed with `elementFromPoint` — the element under a
+               * book's centre was the row div, not the button.
+               *
+               * It only started when the books moved back. While they were
+               * flush at z = 0 they were coplanar with the row and ordinary
+               * DOM order put them on top.
+               *
+               * Both ancestors need it — the row AND the box — because both
+               * sit at z = 0. Nothing else in the shelf is interactive, so
+               * turning the pointer off for the whole carcass and back on for
+               * the books costs nothing and can't be re-broken by adding
+               * another decorative layer at z = 0 later.
+               */
               return (
                 <div
                   key={book.title}
@@ -354,7 +373,7 @@ export default function Bookshelf() {
                     // Pushed in off the front edge, the way a book on a shelf sits.
                     transform: `translateZ(-${BOOK_INSET}px)`,
                   }}
-                  className="group/book relative shrink-0"
+                  className="group/book pointer-events-auto relative shrink-0"
                 >
                   {/*
                     Cast shadow, in the floor plane — hinged at its own bottom
