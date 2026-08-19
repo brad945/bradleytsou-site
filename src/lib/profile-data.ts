@@ -386,8 +386,8 @@ export const books: Book[] = [
     title: "The Complete Peanuts, 1953–1954",
     // 7.6 rather than the 6.5 of the landscape trim, at Bradley's request.
     heightIn: 7.6,
-    // Matched to Calvin and Hobbes at his request; the volume is nearer 1.15.
-    thickIn: 1.0,
+    // 25% under Calvin and Hobbes at his request; the volume is nearer 1.15.
+    thickIn: 0.75,
     pages: 352,
     spineLabel: "Peanuts",
     author: "Charles M. Schulz",
