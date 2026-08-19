@@ -479,7 +479,13 @@ export default function Bookshelf() {
           />
         </div>
       </div>
-      <div className="mt-3 min-h-[100px]">
+      {/*
+        No `min-h` here. It reserved 100px so the block wouldn't resize when a
+        book is picked, and what that bought at rest was a paragraph of dead
+        space under the caption. The resize now happens on a click, which is
+        the reader's own action rather than a permanent cost paid to avoid it.
+      */}
+      <div className="mt-3">
         {selected ? (
           <div className="flex gap-4">
             {/*
@@ -516,7 +522,7 @@ export default function Bookshelf() {
             </div>
           </div>
         ) : (
-          <p className="t-meta text-center">Pick one off the shelf.</p>
+          <p className="t-meta text-center">Recent reads</p>
         )}
       </div>
     </div>
