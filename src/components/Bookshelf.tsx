@@ -301,6 +301,37 @@ export default function Bookshelf() {
                     className="absolute bottom-0 left-[1px] right-[-7px] blur-[1.5px] transition-transform duration-300 ease-out"
                   />
 
+                  {/*
+                    The book's shadow on the back wall.
+                    
+                    The floor shadow below was the only cast shadow here, and
+                    between books you mostly see the BACK of the shelf, not its
+                    floor — so the one surface a reader actually looks at had
+                    nothing on it. This is the missing half.
+
+                    Where it lands follows from the light being above, in front
+                    and to the left: the edge doing the casting is the book's
+                    back edge, `SHELF_DEPTH - depth` short of the wall, so the
+                    shadow sits just right of and below the book rather than
+                    far from it. Both offsets are computed from that gap, which
+                    is why a shallow book throws its shadow further than a deep
+                    one — it has more room between itself and the wall.
+
+                    It sits a pixel proud of the back panel so it can't
+                    z-fight with it, and it fades as the book tips out, which
+                    is what happens: a book leaning toward you stops blocking
+                    the wall behind it.
+                  */}
+                  <span
+                    aria-hidden
+                    style={{
+                      transform: `translateZ(-${SHELF_DEPTH - 1}px) translate(${Math.round((SHELF_DEPTH - depth) * 0.42) + 2}px, ${Math.round((SHELF_DEPTH - depth) * 0.44) + 3}px)`,
+                      background:
+                        "linear-gradient(to right, rgba(0,0,0,0.58), rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.14))",
+                    }}
+                    className="absolute inset-0 blur-[5px] transition-opacity duration-300 motion-safe:group-hover/book:opacity-35"
+                  />
+
                   <button
                     type="button"
                     onClick={() => setOpen(isOpen ? null : i)}
