@@ -368,18 +368,18 @@ export const favoriteGame = {
  *
  * Hand-set, from Bradley directly.
  *
- * It replaced `projects.length` when the row was relabelled from "Projects".
- * That count is also 3, which makes this look like a no-op — it isn't. The old
- * number counted entries in the `projects` array and would move the moment a
- * fourth project was added, silently claiming a win that never happened. The
- * two figures agreeing today is a coincidence, not a link.
+ * It replaced `projects.length` when the row was relabelled from "Projects" —
+ * a count that would have moved the moment a fourth project was added,
+ * silently claiming a win that never happened. The two read the same for a
+ * while, which made the swap look like a no-op; this correction to 2 is what
+ * it was for.
  *
  * Devpost is the source of truth, and it has no public API, so nothing here
  * can check this. It joins `profileLevel` and `accountBalance` on the short
- * list of values that can't self-correct — win a fourth and this stays 3 until
+ * list of values that can't self-correct — win a third and this stays 2 until
  * someone edits it.
  */
-export const hackathonWins: number | null = 3;
+export const hackathonWins: number | null = 2;
 
 export const profile = {
   name: "Bradley Tsou",
