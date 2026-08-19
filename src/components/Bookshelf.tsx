@@ -74,6 +74,38 @@ const MIN_SPINE_FS = 8;
  * to look empty.
  */
 const HEIGHT_PER_IN = 15.2;
+
+/**
+ * The suspension wires, and the geometry behind them.
+ *
+ * Bradley wanted the shelf to read as jutting out of the page toward you, and
+ * the way a real floating shelf says that is a cable from each front corner
+ * running back and up to the wall. Nothing about the shelf itself changes; the
+ * wires just give the eye two lines whose convergence is only explicable by
+ * depth.
+ *
+ * Each wire is one thin div standing on a front-top corner and folded back
+ * about its own bottom edge, exactly like the floor and the ceiling. Solve for
+ * the two numbers rather than eyeballing them: the far end has to land on the
+ * wall, at (-RISE, -SHELF_DEPTH) in the corner's own frame, so
+ *
+ *   length = hypot(RISE, SHELF_DEPTH)      angle = atan2(SHELF_DEPTH, RISE)
+ *
+ * and the browser does the rest. **The convergence is not drawn.** Both wires
+ * stay at their own corner's x in world space; they lean toward each other on
+ * screen only because their far ends are 110px deeper, which is the whole
+ * point — it's real perspective rather than two lines angled by hand, so it
+ * stays correct at any width the column takes.
+ *
+ * `RISE` is capped by what's above the shelf: the wires overshoot the block by
+ * about 38px on screen, so the container's top margin has to clear that or
+ * they cross the Books heading.
+ */
+const WIRE_RISE = 32;
+const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, SHELF_DEPTH));
+const WIRE_TILT = Math.round(
+  (Math.atan2(SHELF_DEPTH, WIRE_RISE) * 180) / Math.PI,
+);
 const THICK_PER_IN = 52;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
@@ -94,7 +126,12 @@ export default function Bookshelf() {
       the carcass rather than above it. Local to this block on purpose —
       GitHub and Spotify still want the tighter default.
     */
-    <div className="mt-6">
+    /*
+      `mt-12` rather than `mt-6`: the suspension wires overshoot the top of the
+      block by about 38px, and at the smaller margin they crossed the Books
+      heading. Raise WIRE_RISE and this has to go up with it.
+    */
+    <div className="mt-12">
       {/*
         A shelf, built as an actual box: back panel, two side walls, a floor,
         and in front of all of it a carcass — two uprights, a board across the
@@ -542,6 +579,45 @@ export default function Bookshelf() {
             aria-hidden
             className="absolute inset-x-0 top-full h-[14px] rounded-b-[2px] bg-shelf-lip"
           />
+
+          {/*
+            The wires. Last in the DOM so they paint over the corner they land
+            on, and `bottom-full` so each one stands on the top edge of an
+            upright — 7px in, which is the middle of the 16px board.
+
+            `preserve-3d` on the wire is what lets its anchor plate sit in the
+            wall plane instead of lying along the cable: the plate carries the
+            opposite rotation, which cancels the wire's and leaves it facing
+            forward.
+          */}
+          {[
+            { key: "left", pos: "left-[7px]" },
+            { key: "right", pos: "right-[7px]" },
+          ].map(({ key, pos }) => (
+            <span
+              key={key}
+              aria-hidden
+              className={`absolute bottom-full w-[2px] bg-shelf-wire ${pos}`}
+              style={{
+                height: WIRE_LEN,
+                transformStyle: "preserve-3d",
+                transformOrigin: "center bottom",
+                transform: `rotateX(${WIRE_TILT}deg)`,
+              }}
+            >
+              {/*
+                Where it's bolted to the wall. Small on purpose — at this size
+                it reads as a fixing rather than as an object, and a fixing is
+                all that's needed to stop the cable ending in mid-air.
+              */}
+              <span
+                className="absolute left-1/2 top-0 h-[7px] w-[7px] rounded-full bg-shelf-board-left ring-1 ring-shelf-edge/70"
+                style={{
+                  transform: `translate(-50%, -50%) rotateX(${-WIRE_TILT}deg)`,
+                }}
+              />
+            </span>
+          ))}
         </div>
       </div>
       {/*

@@ -399,6 +399,17 @@ const config: Config = {
           `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
           `linear-gradient(to left, ${shelf.dark} 0 2px, ${shelf.face} 22% 80%, ${shelf.hi})`,
         ].join(", "),
+        /*
+         * The suspension wire. Steel rather than a shade of the shelf, because
+         * it isn't part of the carcass — `steel` is the same grey the avatar
+         * frame is made of, and against this much blue that's what reads as
+         * metal. The bright stop near the top is the light catching it where
+         * it leaves the wall, which is also the end furthest from the eye, so
+         * it keeps the run from looking flat.
+         */
+        "shelf-wire": [
+          `linear-gradient(to bottom, ${tokens.steelLight}, ${tokens.steel} 34%, ${tokens.steelMid} 74%, ${tokens.steelDark})`,
+        ].join(", "),
         "shelf-lip": [
           `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
           `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 70%, ${shelf.edge})`,
