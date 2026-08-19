@@ -173,7 +173,7 @@ export const privacyScreen = false;
  * Kept here rather than inline in `SiteNav` so it can't be mistaken for
  * something that was meant to be wired up and never was.
  */
-export const accountBalance = "$0.01";
+export const accountBalance = "$0.21";
 
 /**
  * Steam profile, or a friend-invite link.
