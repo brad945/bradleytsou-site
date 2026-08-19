@@ -79,16 +79,23 @@ export default function Bookshelf() {
     */
     <div className="mt-4">
       {/*
-        A shelf, built as an actual box: back panel, two side walls, a floor
-        and a front lip, with the books standing inside it.
+        A shelf, built as an actual box: back panel, two side walls, a floor,
+        and in front of all of it a carcass — two uprights, a board across the
+        top, the lip below — with the books standing inside.
+
+        **The carcass is what gives the shelf an edge.** Without it the
+        opening was a hole in nothing: the walls met the page with no
+        material between them, so the whole thing read as one flat plane
+        however much depth was behind it. Each board is lit across its own
+        width, so it has a visible thickness the opening sits behind.
 
         **The books stand upright in it.** They leaned 12° forward first and
         it looked wrong for a reason worth keeping: a leaning book inside a
         square box has nothing holding it up, so the two read as separate
         objects at odds with each other. All the depth comes from the camera
-        instead — `perspective-origin` sits at 16%, so you look down into the
-        shelf and see its floor and the tops of the books, with everything
-        square to everything else. A hovered book is then the only thing in
+        instead — `perspective-origin` sits above the box, so you look down
+        into the shelf and see its floor and the tops of the books, with
+        everything square to everything else. A hovered book is then the only thing in
         the scene that isn't, which is what makes it read as pulled out.
 
         Every face is a plain div folded into place, and each fold has one
@@ -154,12 +161,20 @@ export default function Bookshelf() {
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end justify-center gap-[14px] px-8 pt-5"
+            className="flex items-end justify-between gap-[6px] px-4 pt-8"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
               const h = hash(book.title);
-              const width = 26 + ((h >>> 5) % 13);
+              /*
+               * Sized to fill the shelf, not chosen for looks: the eight
+               * books plus their gaps come to a little under the block's own
+               * width, and `justify-between` spreads the remainder into the
+               * gaps so the outer two sit flush against the uprights. Widen
+               * these and they overflow the panel — the wrappers are
+               * `shrink-0`, so there is nothing to absorb it.
+               */
+              const width = 44 + ((h >>> 5) % 32);
               const isOpen = open === i;
 
               const label = book.spineLabel ?? book.title;
@@ -191,7 +206,7 @@ export default function Bookshelf() {
                */
               const fontSize = Math.max(
                 7,
-                Math.min(11, Math.floor(room / (label.length * 0.56))),
+                Math.min(13, Math.floor(room / (label.length * 0.56))),
               );
               /*
                * Two thirds as deep as tall, like a real book — but capped
@@ -421,7 +436,24 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 top-full h-[9px] rounded-b-[2px] bg-shelf-lip"
+            className="absolute inset-y-0 left-0 w-[16px] bg-shelf-board-left"
+          />
+          <span
+            aria-hidden
+            className="absolute inset-y-0 right-0 w-[16px] bg-shelf-board-right"
+          />
+          {/*
+            Inset between the uprights, the way a real carcass is built: the
+            sides run the full height and the boards sit between them. Butting
+            it over them instead reads as a picture frame rather than a shelf.
+          */}
+          <span
+            aria-hidden
+            className="absolute left-[16px] right-[16px] top-0 h-[14px] bg-shelf-board-top"
+          />
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-full h-[14px] rounded-b-[2px] bg-shelf-lip"
           />
         </div>
       </div>

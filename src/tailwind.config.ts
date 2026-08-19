@@ -117,6 +117,17 @@ const tokens = {
  * material, not decorating a surface.
  */
 const shelf = {
+  /*
+   * `hi` and `face` exist for the carcass only, and they are deliberately
+   * lighter than anything inside the box. The frame was first built out of
+   * `light`/`mid` like the interior faces, and it disappeared: a board the
+   * same value as the wall behind it has no edge, which is exactly what
+   * "there's no height, width and depth, it just looks like one plain"
+   * describes. The boards have to out-value the opening or the shelf reads
+   * as a hole rather than as an object with material around it.
+   */
+  hi: "#7c90b0",
+  face: "#55698a",
   light: "#4a5e78",
   mid: "#3a4b61",
   base: "#2e3d50",
@@ -307,9 +318,34 @@ const config: Config = {
           `repeating-linear-gradient(to bottom, ${shelf.edge}20 0 1px, transparent 1px 7px)`,
           `linear-gradient(to right, ${shelf.base}, ${shelf.dark})`,
         ].join(", "),
+        /*
+         * The carcass, seen face-on at z = 0 — two uprights, a board across
+         * the top and the lip below. This is what gives the shelf an edge
+         * with thickness rather than an opening cut out of nothing: each
+         * board is lit across its own width, brightest at the outer edge and
+         * falling to `edge` at the inner one, so the opening reads as
+         * recessed behind them. Top and left are the lit pair and bottom and
+         * right the shaded one, which is the same top-left source everything
+         * else here uses.
+         *
+         * Grain runs along each board's length: horizontal bands on the
+         * horizontal boards, vertical on the uprights.
+         */
+        "shelf-board-top": [
+          `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
+          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 16%, ${shelf.base} 84%, ${shelf.edge})`,
+        ].join(", "),
+        "shelf-board-left": [
+          `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
+          `linear-gradient(to right, ${shelf.hi} 0 2px, ${shelf.face} 16%, ${shelf.base} 84%, ${shelf.edge})`,
+        ].join(", "),
+        "shelf-board-right": [
+          `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
+          `linear-gradient(to left, ${shelf.base} 0 2px, ${shelf.light} 22%, ${shelf.face})`,
+        ].join(", "),
         "shelf-lip": [
           `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
-          `linear-gradient(to bottom, ${shelf.mid}, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 20%, ${shelf.base} 68%, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },
@@ -474,8 +510,14 @@ const config: Config = {
          * and dropping at the end reads as flying off the top.
          */
         "emoji-rise": {
-          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
-          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "0%": {
+            transform: "translate(0, 0) scale(0.5) rotate(0deg)",
+            opacity: "0",
+          },
+          "12%": {
+            transform: "translate(0, -8px) scale(1.15) rotate(0deg)",
+            opacity: "1",
+          },
           "70%": { opacity: "1" },
           "100%": {
             transform:
@@ -484,8 +526,14 @@ const config: Config = {
           },
         },
         "emoji-arc-l": {
-          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
-          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "0%": {
+            transform: "translate(0, 0) scale(0.5) rotate(0deg)",
+            opacity: "0",
+          },
+          "12%": {
+            transform: "translate(0, -8px) scale(1.15) rotate(0deg)",
+            opacity: "1",
+          },
           "45%": {
             transform:
               "translate(calc(var(--dx) - 26px), calc(var(--dy) * 0.45)) scale(1) rotate(calc(var(--spin) * 0.4))",
@@ -498,8 +546,14 @@ const config: Config = {
           },
         },
         "emoji-arc-r": {
-          "0%": { transform: "translate(0, 0) scale(0.5) rotate(0deg)", opacity: "0" },
-          "12%": { transform: "translate(0, -8px) scale(1.15) rotate(0deg)", opacity: "1" },
+          "0%": {
+            transform: "translate(0, 0) scale(0.5) rotate(0deg)",
+            opacity: "0",
+          },
+          "12%": {
+            transform: "translate(0, -8px) scale(1.15) rotate(0deg)",
+            opacity: "1",
+          },
           "45%": {
             transform:
               "translate(calc(var(--dx) + 26px), calc(var(--dy) * 0.45)) scale(1) rotate(calc(var(--spin) * 0.4))",
