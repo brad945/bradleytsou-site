@@ -71,8 +71,13 @@ export default function Bookshelf() {
   const selected = open === null ? null : books[open];
 
   return (
-    <div>
-      {" "}
+    /*
+      `mt-4` because the shelf is a solid object and the two other source
+      blocks are rows of text: at `SourceBlock`'s own 8px the heading sat on
+      the carcass rather than above it. Local to this block on purpose —
+      GitHub and Spotify still want the tighter default.
+    */
+    <div className="mt-4">
       {/*
         A shelf, built as an actual box: back panel, two side walls, a floor
         and a front lip, with the books standing inside it.
