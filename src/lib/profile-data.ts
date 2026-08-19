@@ -528,7 +528,7 @@ export const roles: Role[] = [
     end: "Dec 2024",
     blurb:
       "Prototyped and shipped website UI/UX for local startups and online services. Tutored mathematics (pre-algebra through Calculus II), violin and piano — 3x Tutor of the Month, 175+ hours logged, with recitals at senior homes and public libraries.",
-  url: "https://briyouth.wixsite.com/briyouth",
+    url: "https://briyouth.wixsite.com/briyouth",
   },
 ];
 
@@ -623,7 +623,11 @@ export const socials: SocialLink[] = [
    * where *he* clicked from, and would follow every visitor who used this link.
    */
   { label: "LinkedIn", icon: "linkedin", href: linkedinUrl ?? undefined },
-  { label: "Devpost", icon: "devpost", href: "https://devpost.com/bradley_tsou" },
+  {
+    label: "Devpost",
+    icon: "devpost",
+    href: "https://devpost.com/bradley_tsou",
+  },
   { label: "Email", icon: "mail", href: `mailto:${profile.email}` },
   /*
    * Placeholders, at Bradley's request — icons only until he supplies the
@@ -635,7 +639,11 @@ export const socials: SocialLink[] = [
    * of marks, where its absence would read as an omission — it was previously
    * left out as redundant when this was a list of words.
    */
-  { label: "GitHub", icon: "github", href: `https://github.com/${githubUsername}` },
+  {
+    label: "GitHub",
+    icon: "github",
+    href: `https://github.com/${githubUsername}`,
+  },
   { label: "Steam", icon: "steam", href: steamProfileUrl ?? undefined },
   { label: "Discord", icon: "discord" },
 ];
@@ -867,7 +875,6 @@ export const techStack: string[] = Array.from(
         (STACK_RANK.get(b.tag) ?? Number.MAX_SAFE_INTEGER) || a.i - b.i,
   )
   .map((x) => x.tag);
-
 
 /**
  * The number in the Level circle. Set by hand.
