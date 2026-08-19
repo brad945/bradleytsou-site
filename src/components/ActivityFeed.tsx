@@ -217,7 +217,7 @@ export default function ActivityFeed({
   featured,
   tracks,
 }: ActivityFeedProps) {
-  const { stats, repos, fetchedAt } = snapshot;
+  const { repos, fetchedAt } = snapshot;
   const now = Date.parse(fetchedAt);
   const useFeatured = featured.length > 0;
 
@@ -300,37 +300,19 @@ export default function ActivityFeed({
           <Bookshelf />
         </SourceBlock>
 
-        {stats && (
-          <div className="flex flex-wrap items-center justify-end gap-2 pt-4 text-[14px] text-muted">
-            <span>View</span>
-            <a
-              href={stats.profileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="steam-link"
-            >
-              All Activity
-            </a>
-            <span className="text-muted/50">|</span>
-            <a
-              href={`${stats.profileUrl}?tab=repositories`}
-              target="_blank"
-              rel="noreferrer"
-              className="steam-link"
-            >
-              Repositories
-            </a>
-            <span className="text-muted/50">|</span>
-            <a
-              href={`${stats.profileUrl}?tab=stars`}
-              target="_blank"
-              rel="noreferrer"
-              className="steam-link"
-            >
-              Stars
-            </a>
-          </div>
-        )}
+        {/*
+          Steam's "View All Activity | Repositories | Stars" footer was here
+          and is gone, at Bradley's request — see the open item in CLAUDE.md.
+
+          It's coming back as **All Activity pointing at this site**, not at
+          GitHub: one page listing everything in chronological order, with the
+          sources interleaved rather than grouped by which app they came from.
+          The panel above groups by source because each block is a different
+          shape; that page is the opposite view of the same data and is the
+          reason to remove this rather than repoint it now. Not built yet, so
+          there is nothing to link to, and a footer of links to someone else's
+          site is the wrong placeholder for it.
+        */}
       </div>
     </section>
   );

@@ -808,14 +808,35 @@ has happened twice.
 
 **Exy is done** and is no longer on this list.
 
-1. **Wire up Comments.tsx.** The code is finished; the blocker is that
-   giscus needs a public repo and this one is private with Discussions
-   off. That's Bradley's call, not a code task.
-2. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
+1. **A unified activity page, and re-point "All Activity" at it.**
+   Bradley's, and the reason Recent Activity's footer was removed rather
+   than left pointing at GitHub.
+
+   One page listing **everything in chronological order**, sources
+   interleaved — a GitHub push, a Spotify track and a book finished all on
+   the same line, ordered by time and not grouped by which app they came
+   from. That's the opposite view of the panel on `/`, which groups by
+   source because each block is a different shape; this one drops the
+   grouping entirely and keeps only the order.
+
+   Opens as a pop-up / separate page rather than navigating away. Until it
+   exists there is nothing to link to, which is why the footer is gone
+   instead of repointed — a row of links to someone else's site is the
+   wrong placeholder for a page about this one. The removed markup and its
+   reasoning are in `ActivityFeed.tsx` where the footer used to be.
+
+2. **Wire up Comments.tsx.** *(Historical note: this used to say the
+   blocker was that giscus needs a public repo. The repo is public now,
+   Discussions are on, the app is installed and it's pinned to discussion
+   1 — the code is finished and configured.)* It's **parked**, because
+   commenting needs a GitHub sign-in and Reactions is the sign-in-free
+   version of the same idea. Uncomment two lines in `page.tsx` to bring it
+   back; nothing else needs changing.
+3. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
    Real skill-based mechanic (WASD + jump timing / simple physics), not a
    decorative loading animation. Should have a skip option — don't hard-gate
    the site behind it. `/play` exists and is empty, so it has a home now.
-3. **Radar-style "about me" map** — a custom map-like layout (doesn't need
+4. **Radar-style "about me" map** — a custom map-like layout (doesn't need
    to be a literal CS2 map, can be styled abstractly) where pins are skill
    categories. Clicking a pin opens a loadout-card style panel. Note it was
    going to reuse the Item Showcase's rarity visual language, and that is
