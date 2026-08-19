@@ -66,6 +66,15 @@ export default function Bookshelf() {
         A shelf, built as an actual box: back panel, two side walls, a floor
         and a front lip, with the books standing inside it.
 
+        **The books stand upright in it.** They leaned 12° forward first and
+        it looked wrong for a reason worth keeping: a leaning book inside a
+        square box has nothing holding it up, so the two read as separate
+        objects at odds with each other. All the depth comes from the camera
+        instead — `perspective-origin` sits at 16%, so you look down into the
+        shelf and see its floor and the tops of the books, with everything
+        square to everything else. A hovered book is then the only thing in
+        the scene that isn't, which is what makes it read as pulled out.
+
         Every face is a plain div folded into place, and each fold has one
         correct sign that is easy to get backwards — all four are spelled out
         below because getting one wrong puts a wall in front of the books
@@ -76,7 +85,7 @@ export default function Bookshelf() {
         that contains the whole scene. Per-face they'd each get their own
         vanishing point and the box wouldn't close up.
       */}
-      <div style={{ perspective: "1200px", perspectiveOrigin: "50% 8%" }}>
+      <div style={{ perspective: "1200px", perspectiveOrigin: "50% 16%" }}>
         <div
           className="relative w-full"
           style={{ transformStyle: "preserve-3d" }}
@@ -144,8 +153,15 @@ export default function Bookshelf() {
                 8,
                 Math.min(11, Math.floor(room / (label.length * 0.5))),
               );
-              // Real books run about two thirds as deep as they are tall.
-              const depth = Math.round(height * 0.62);
+              /*
+               * Two thirds as deep as tall, like a real book — but capped
+               * short of the shelf's own depth, or the tallest one runs
+               * straight through the back panel.
+               */
+              const depth = Math.min(
+                Math.round(height * 0.62),
+                SHELF_DEPTH - 14,
+              );
 
               return (
                 <button
@@ -161,7 +177,7 @@ export default function Bookshelf() {
                       transformStyle: "preserve-3d",
                       // The bottom front edge, where the book meets the floor.
                       transformOrigin: "center bottom",
-                      ...(isOpen ? { "--deg": "-34deg" } : {}),
+                      ...(isOpen ? { "--deg": "-30deg" } : {}),
                     } as React.CSSProperties
                   }
                   /*
@@ -172,7 +188,7 @@ export default function Bookshelf() {
                    * it. The brightening lives on the faces instead, where
                    * flattening their own 2D children costs nothing.
                    */
-                  className={`group/spine relative shrink-0 [--deg:-12deg] [transform:rotateX(var(--deg))] transition-transform duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-34deg] ${
+                  className={`group/spine relative shrink-0 [--deg:0deg] [transform:rotateX(var(--deg))] transition-transform duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-30deg] ${
                     isOpen ? "z-20" : "z-0"
                   }`}
                 >
