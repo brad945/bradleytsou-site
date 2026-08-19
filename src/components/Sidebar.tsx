@@ -2,10 +2,7 @@ import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
 import { hackathonWins, socials, techStack } from "@/lib/profile-data";
-import {
-  SOCIAL_ICONS,
-  type SocialIconName,
-} from "@/components/SocialIcons";
+import { SOCIAL_ICONS, type SocialIconName } from "@/components/SocialIcons";
 
 interface SidebarProps {
   snapshot: GitHubSnapshot;
@@ -44,7 +41,9 @@ function Stat({
 }) {
   const body = (
     <>
-      <span className={`stat-label ${href ? "group-hover/stat:text-link" : ""}`}>
+      <span
+        className={`stat-label ${href ? "group-hover/stat:text-link" : ""}`}
+      >
         {label}
       </span>
       {value !== null && value !== undefined && (
@@ -179,9 +178,10 @@ export default function Sidebar({
           a single figure rather than a group — but `getContributions()` still
           returns the rest, ready if any of it comes back.
 
-          No "Past year" subtext either: a year is the only window GitHub's
-          contributions API reports, so it never distinguished this number
-          from an alternative.
+          Labelled "this year", and the query was changed to match: the
+          contributions API defaults to the trailing twelve months, so the
+          label would otherwise have described a window the number wasn't
+          measured over. `getContributions()` now passes 1 January.
         */}
         {/*
           No top margin: the 28px that used to sit here was a leftover from
@@ -191,7 +191,7 @@ export default function Sidebar({
         */}
         {contributions && (
           <div className="stat-row">
-            <span className="stat-label">Contributions</span>
+            <span className="stat-label">Contributions this year</span>
             <span className="stat-value">
               {contributions.total.toLocaleString()}
             </span>

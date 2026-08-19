@@ -430,7 +430,7 @@ export async function getGitHubSnapshot(
  * ------------------------------------------------------------------ */
 
 export interface Contributions {
-  /** Total contributions in the trailing year. */
+  /** Total contributions since 1 January of the current year. */
   total: number;
   /** How many of those landed in private repos. */
   private: number;
@@ -445,6 +445,14 @@ export interface Contributions {
  * One document for the year's total plus what those contributions actually
  * were.
  *
+ * `contributionsCollection` takes `from`, and it matters which one is passed.
+ * With no argument it reports the **trailing twelve months**; the sidebar
+ * labels this "Contributions this year", so it passes 1 January instead and
+ * the label is then literally true. Omitting `from` and keeping that label
+ * would have put an invented framing on a fetched number, which is the exact
+ * failure the rest of this file exists to avoid. GitHub caps the window at a
+ * year, and 1 January to now is always inside that.
+ *
  * The `total*Contributions` fields can't supply the breakdown: they count
  * PUBLIC contributions only, and for a mostly-private account that reads
  * "0 pull requests" while the person has opened plenty. The author-scoped
@@ -452,9 +460,9 @@ export interface Contributions {
  * comes from there instead.
  */
 const CONTRIBUTIONS_QUERY = `
-  query($login: String!, $prs: String!, $merged: String!, $issues: String!, $reviews: String!) {
+  query($login: String!, $from: DateTime!, $prs: String!, $merged: String!, $issues: String!, $reviews: String!) {
     user(login: $login) {
-      contributionsCollection {
+      contributionsCollection(from: $from) {
         contributionCalendar { totalContributions }
         restrictedContributionsCount
         totalRepositoryContributions
@@ -515,6 +523,15 @@ export async function getContributions(
         query: CONTRIBUTIONS_QUERY,
         variables: {
           login: username,
+          /*
+           * Built from the server's clock rather than a constant, so it rolls
+           * over on its own each January. `Date.UTC` because GitHub reads the
+           * window in UTC — a local-midnight string would shift the boundary
+           * by the host's offset.
+           */
+          from: new Date(
+            Date.UTC(new Date().getUTCFullYear(), 0, 1),
+          ).toISOString(),
           prs: `author:${username} is:pr`,
           merged: `author:${username} is:pr is:merged`,
           issues: `author:${username} is:issue`,
