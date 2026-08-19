@@ -34,8 +34,14 @@ export default function HoverNote({
   align = "right",
   className = "",
 }: {
-  /** The text that appears on hover. Kept to one short sentence. */
-  note: string;
+  /**
+   * What appears on hover. Kept to one short sentence.
+   *
+   * A node rather than a string, so a note can carry emphasis — one of them
+   * is a single italicised phrase. Nothing here renders it as markup from
+   * user input; it's authored at the call site.
+   */
+  note: React.ReactNode;
   children: React.ReactNode;
   /** Which edge the note lines up with — pick the one away from the viewport edge. */
   align?: "left" | "right";

@@ -20,29 +20,6 @@ import {
  */
 const STEAM_BADGE_YEARS = 10;
 
-/**
- * Spelled-out years, for the Years of Experience hover note.
- *
- * The note reads as a sentence ("about five solid, genuine years"), where a
- * numeral would read as a stat. It's still keyed off the derived `years`
- * rather than written out, so it rolls over with the card every January
- * instead of quietly contradicting the number beside it.
- *
- * Falls back to the numeral past the end of the table.
- */
-const YEARS_IN_WORDS: Record<number, string> = {
-  1: "one",
-  2: "two",
-  3: "three",
-  4: "four",
-  5: "five",
-  6: "six",
-  7: "seven",
-  8: "eight",
-  9: "nine",
-  10: "ten",
-};
-
 interface ProfileHeaderProps {
   stats: GitHubStats | null;
 }
@@ -442,7 +419,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           <HoverNote
             align="left"
             className="inline-flex"
-            note="This is my actual Steam account level"
+            note="this is my actual Steam account level"
           >
             <span className="flex items-center gap-[7px]">
               <span className="text-[34px] font-light leading-none text-ink">
@@ -455,15 +432,17 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           </HoverNote>
 
           {/*
-            `{years}` is interpolated into the note rather than written as "5".
-            The card beside it counts from `profile.codingSince` and rolls over
-            on its own every January, so a hardcoded number would quietly start
-            contradicting the figure it's explaining.
+            Two words, italicised — the note is a qualifier on the number
+            beside it, not a second sentence about it. It said far more before
+            and read as an apology for the figure.
+
+            The `years` value it used to interpolate is gone with it, along
+            with the spelled-out lookup table that existed only to render it.
           */}
           <HoverNote
             align="left"
             className="mt-4 block"
-            note={`Out of all the experience Ive had in my life I would say it averages out to about ${YEARS_IN_WORDS[years] ?? years} solid genuine years`}
+            note={<em>an average</em>}
           >
             <div className="flex items-center gap-3 bg-panel2/70 p-3">
               {badge ? (
