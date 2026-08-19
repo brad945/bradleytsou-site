@@ -310,7 +310,8 @@ export const books: Book[] = [
   {
     title: "Stay True",
     heightIn: 8.3,
-    thickIn: 0.8,
+    // 0.55 rather than the hardcover's 0.8, at Bradley's request.
+    thickIn: 0.55,
     pages: 208,
     author: "Hua Hsu",
     status: "read",
@@ -385,7 +386,8 @@ export const books: Book[] = [
     title: "The Complete Peanuts, 1953–1954",
     // 7.6 rather than the 6.5 of the landscape trim, at Bradley's request.
     heightIn: 7.6,
-    thickIn: 1.15,
+    // Matched to Calvin and Hobbes at his request; the volume is nearer 1.15.
+    thickIn: 1.0,
     pages: 352,
     spineLabel: "Peanuts",
     author: "Charles M. Schulz",
