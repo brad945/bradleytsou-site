@@ -1,5 +1,5 @@
 import type { SteamPlaytime } from "@/lib/steam";
-import { favoriteGame, steamProfileUrl } from "@/lib/profile-data";
+import { favoriteGame } from "@/lib/profile-data";
 
 /**
  * Steam's "Favorite Game" slot, holding an actual game.
@@ -86,18 +86,6 @@ export default function FavoriteGame({
             </div>
           )}
 
-          {steamProfileUrl && (
-            <div className="mt-3 flex justify-end">
-              <a
-                href={steamProfileUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="steam-link text-[14px]"
-              >
-                View on Steam
-              </a>
-            </div>
-          )}
         </div>
       </div>
     </section>
