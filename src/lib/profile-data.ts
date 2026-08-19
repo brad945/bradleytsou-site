@@ -16,8 +16,17 @@ export interface Project {
    * (research, design work) are first-class here.
    */
   kind: "Software" | "Research" | "Design";
-  /** One line. What it is, not how impressive it is. */
-  blurb: string;
+  /**
+   * One line. What it is, not how impressive it is.
+   *
+   * **Optional, and that matters here.** Every blurb on this page is the
+   * repo's own GitHub description copied verbatim, so a reader can check it.
+   * Two entries have nothing to copy — `frankenstein-queue` has no
+   * description on GitHub and `t-ether` has no repo this account can see — and
+   * the row renders without one rather than carrying a sentence someone
+   * invented to fill the slot. Give the repo a description and paste it here.
+   */
+  blurb?: string;
   /**
    * How central this is to Bradley's work.
    *
@@ -41,8 +50,8 @@ export interface Project {
    * lives in `codearenamvp`.
    */
   ghRepo?: string;
-  /** e.g. "2026 — present". Free text. */
-  period: string;
+  /** e.g. "2026 — present". Free text. Omitted when it isn't known. */
+  period?: string;
 }
 
 /** One role in the Experience panel. */
@@ -679,6 +688,43 @@ export const projects: Project[] = [
     href: undefined,
     repo: "https://github.com/brad945/visionotes",
     period: "2026",
+  },
+  {
+    id: "frankenstein-queue",
+    ghRepo: "brad945/frankenstein-queue",
+    name: "frankenstein-queue",
+    kind: "Software",
+    /*
+     * No blurb and no tags, on purpose. The repo has no description on GitHub
+     * to copy, and every other blurb here is copied verbatim so it can be
+     * checked — so this row shows its name, its link, and the language and
+     * push date the API reports, and nothing anyone made up. TODO(bradley):
+     * describe the repo on GitHub and paste that line here.
+     *
+     * Tags are hand-curated and feed the sidebar's Tech Stack, which is built
+     * only from work visible elsewhere on the page. Guessing them would put
+     * unearned entries in that panel.
+     */
+    rarity: "side",
+    tags: [],
+    href: undefined,
+    repo: "https://github.com/brad945/frankenstein-queue",
+  },
+  {
+    /*
+     * TODO(bradley): needs a repo and a line. Searched this account's owned,
+     * collaborator and org repos plus GitHub's global index and found nothing
+     * called t-ether — so `ghRepo` is unset and the row is unlinked rather
+     * than pointing at a guess. Set `ghRepo` and it picks up live language and
+     * commits like the others.
+     */
+    id: "t-ether",
+    name: "t-ether",
+    kind: "Software",
+    rarity: "side",
+    tags: [],
+    href: undefined,
+    repo: undefined,
   },
   {
     id: "guardian",
