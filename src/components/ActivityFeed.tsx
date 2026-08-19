@@ -295,7 +295,14 @@ export default function ActivityFeed({
         <SourceBlock
           name="Books"
           icon={<BookIcon className="h-4 w-4 text-muted" />}
-          className="py-5"
+          /*
+            Less bottom padding than the other two blocks. They end on a row of
+            text, which needs its own breathing room; this one ends on the
+            "Recent reads" caption, which already sits `mt-6` clear of the
+            shelf — so the block's own padding was stacking on top of a gap
+            that was already there.
+          */
+          className="pb-2 pt-5"
         >
           <Bookshelf />
         </SourceBlock>
