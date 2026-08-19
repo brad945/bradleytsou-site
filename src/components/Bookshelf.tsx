@@ -60,44 +60,55 @@ export default function Bookshelf() {
     <div>
       {" "}
       {/*
-          The shelf, in perspective.
+          The shelf, in real perspective.
 
-          `perspective` lives on the container, not on each book: set
-          per-element every spine gets its own vanishing point, so they each
-          look right alone and wrong together. One shared value is what makes
-          them read as objects sharing a space.
+          Each book is a box: a spine face you see head-on, and a top face —
+          the pages — hinged at its top edge and folded back into the shelf.
+          At rest everything tips 8° toward you, which is enough to show those
+          top faces and read as solid without the row stopping looking like a
+          neat line of spines. Hovering tips one to 28°, so it swings out of
+          the shelf and its pages come round into view.
 
-          `perspective-origin` sits low at 62%, because you look at a shelf
-          from slightly above. From dead centre the books splay symmetrically
-          and it reads as a fan rather than a shelf.
+          **The pivot is `center bottom`** — the bottom front edge, where the
+          book meets the plank — so it tips out the way you'd actually hook a
+          book off a shelf, rather than rotating about its middle.
+
+          Two sign conventions decide whether any of this works, and both are
+          easy to get backwards:
+
+          - CSS `rotateX` is positive toward the viewer at the BOTTOM of an
+            element. So tipping a book's *top* toward you is a NEGATIVE angle.
+            Positive tips it away, which reads as the book shrinking into the
+            shelf — that was the first attempt.
+          - The top face therefore needs `rotateX(-90deg)` about its own top
+            edge to fold backward into the shelf. `+90` folds it forward, out
+            through the spine.
+
+          `perspective` and `perspective-origin` live on this container, not on
+          each book: per element every book gets its own vanishing point, so
+          they look right alone and wrong together. The origin sits high, at
+          14%, because you look at a shelf from above — that's what makes the
+          plank's top surface and the books' pages visible at all.
         */}
       <div
-        className="flex items-end justify-center gap-[6px]"
-        style={{ perspective: "1100px", perspectiveOrigin: "50% 62%" }}
+        className="flex items-end justify-center gap-[5px]"
+        style={{ perspective: "1100px", perspectiveOrigin: "50% 14%" }}
       >
         {books.map((book, i) => {
           const h = hash(book.title);
-          // 158–211px. An earlier pass ran 88–124 and five of eight titles
-          // overflowed their spine, the worst by 156px.
           const height = 158 + (h % 54);
-          // `>>>`, not `>>`. A signed shift coerces to int32 first, so a hash
-          // above 2^31 goes negative and the modulo with it — which produced
-          // 14px spines under a 26px floor.
           const width = 26 + ((h >>> 5) % 13);
           const isOpen = open === i;
 
-          // Fit the type to the room between the bands rather than trusting
-          // it to fit. The backstop, not the fix — `spineLabel` keeps titles
-          // short; this only stops a long one added later from spilling.
           const label = book.spineLabel ?? book.title;
           const room = height - 50;
           const fontSize = Math.max(
             8,
             Math.min(11, Math.floor(room / (label.length * 0.5))),
           );
-          // Covers run about 2:3. The cover is hinged to the spine's front
-          // edge and folds back into the shelf, so this is depth, not width.
-          const depth = Math.round(height * 0.66);
+          // How far the book runs back into the shelf. Real books are about
+          // two thirds as deep as they are tall.
+          const depth = Math.round(height * 0.62);
 
           return (
             <button
@@ -111,40 +122,31 @@ export default function Bookshelf() {
                   height,
                   width,
                   transformStyle: "preserve-3d",
-                  // **The pivot.** Bottom-front corner, where the book meets
-                  // the shelf — so it swings out like a real one instead of
-                  // turning about its middle in mid-air.
-                  transformOrigin: "left bottom",
-                  ...(isOpen ? { "--deg": "-62deg" } : {}),
+                  transformOrigin: "center bottom",
+                  ...(isOpen ? { "--deg": "-28deg" } : {}),
                 } as React.CSSProperties
               }
-              className={`group/spine relative shrink-0 rounded-t-[2px] [--deg:-15deg] [transform:rotateY(var(--deg))] transition-[transform,filter] duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-48deg] ${
+              className={`group/spine relative shrink-0 [--deg:-8deg] [transform:rotateX(var(--deg))] transition-[transform,filter] duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-28deg] ${
                 isOpen ? "z-20 brightness-110" : "z-0 hover:brightness-110"
               }`}
             >
               {/*
-                  The cover, hinged along the spine's front edge and folded 90°
-                  back into the shelf — where a real book's pages are. Rotating
-                  the whole book about the pivot is what swings it into view.
-
-                  First in the DOM so the spine paints over the hinge seam.
+                  The pages: the book's top face, hinged at its top edge and
+                  folded back into the shelf. Tinted down because a horizontal
+                  surface catches less light than the one facing you.
                 */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={book.cover}
-                alt=""
+              <span
                 aria-hidden
                 style={{
-                  height,
-                  width: depth,
-                  transformOrigin: "left center",
-                  transform: "rotateY(90deg)",
+                  height: depth,
+                  background: `color-mix(in srgb, ${book.spine} 62%, #000)`,
+                  transformOrigin: "center top",
+                  transform: "rotateX(-90deg)",
                 }}
-                className="absolute left-0 top-0 rounded-r-[2px] object-cover brightness-[0.86]"
+                className="absolute inset-x-0 top-0 rounded-t-[1px]"
               />
 
-              {/* The spine face. `overflow-hidden` belongs here rather than
-                    on the button, where it would clip the cover away. */}
+              {/* The spine, facing you. */}
               <span
                 aria-hidden
                 style={
@@ -154,7 +156,7 @@ export default function Bookshelf() {
                     "--ink": book.ink,
                   } as React.CSSProperties
                 }
-                className="absolute inset-0 overflow-hidden rounded-t-[2px]"
+                className="absolute inset-0 overflow-hidden rounded-t-[1px]"
               >
                 <span
                   className="absolute inset-x-0 top-[9px] h-[2px]"
@@ -177,11 +179,13 @@ export default function Bookshelf() {
                       "color-mix(in srgb, var(--spine) 60%, var(--ink))",
                   }}
                 />
+                {/* Rounded off at both vertical edges, so it reads as a
+                      spine's curve rather than a flat card. */}
                 <span
                   className="absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(to right, rgba(255,255,255,0.16), rgba(255,255,255,0) 18%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.28))",
+                      "linear-gradient(to right, rgba(255,255,255,0.14), rgba(255,255,255,0) 20%, rgba(0,0,0,0) 74%, rgba(0,0,0,0.26))",
                   }}
                 />
               </span>
@@ -196,17 +200,28 @@ export default function Bookshelf() {
           );
         })}
       </div>
-      {/* The plank. A line plus a shadow under it, rather than a wood
-            texture — every surface on this site is flat. */}
-      <div className="h-[6px] rounded-[2px] bg-line shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
       {/*
-          The detail, under the shelf rather than in a modal — a modal for one
-          line of text is a lot of ceremony, and this keeps the shelf visible
-          so you can move along it.
-
-          `min-h` reserves the space, so opening a book doesn't shove the panel
-          below it down the page.
+          The plank, also 3D: a top surface folded back into the shelf and a
+          front edge below it. Same `rotateX(-90deg)` trick as the book tops,
+          and it shares the container's perspective — which is why its depth
+          converges with theirs instead of looking like a separate object.
         */}
+      <div
+        className="relative"
+        style={{ perspective: "1100px", perspectiveOrigin: "50% 14%" }}
+      >
+        <div
+          aria-hidden
+          className="h-[92px] bg-line"
+          style={{
+            transformOrigin: "center top",
+            transform: "rotateX(-90deg)",
+            background:
+              "linear-gradient(to bottom, rgba(80,96,116,1), rgba(42,52,66,1))",
+          }}
+        />
+        <div aria-hidden className="h-[7px] rounded-b-[2px] bg-line" />
+      </div>
       <div className="mt-3 min-h-[100px]">
         {selected ? (
           <div className="flex gap-4">

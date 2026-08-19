@@ -395,18 +395,31 @@ class would stop emitting.
   The motion is the same carve-out as Exy: nothing moves unless you point
   at it or click it, so it's an affordance rather than ambient decoration,
   and it's all `motion-safe`.
-  **The shelf is in real 3D**, not a flat row. Each book is two faces —
-  the spine, and its cover hinged along the front edge and folded 90° back
-  into the shelf, where the pages would be. Rotating the book about
-  `transform-origin: left bottom` — the corner where it meets the shelf —
-  swings the cover into view, which is why the pivot is there rather than
-  at the centre.
-  `perspective` is on the container, not per book: set per element every
-  spine gets its own vanishing point and they look right alone but wrong
-  together. `perspective-origin` sits at 62% because you look at a shelf
-  from slightly above; dead centre reads as a fan.
-  `overflow-hidden` belongs on the spine face, never the button — on the
-  button it clips the cover away entirely.
+  **The shelf is real 3D, viewed head-on.** Each book is a box: a spine
+  face you see straight on, and a top face — the pages — hinged at its top
+  edge and folded back into the shelf. At rest everything tips 8° toward
+  you, enough to show those tops without the row stopping looking like a
+  line of spines; hover tips one to 28° so it swings out and its pages come
+  round. The plank is built the same way, sharing the container's
+  perspective so its depth converges with theirs.
+  **The pivot is `center bottom`** — the bottom front edge, where the book
+  meets the plank — so it tips out the way you'd hook a book off a shelf.
+  Two sign conventions decide whether any of it works, and an earlier pass
+  got both wrong:
+  - CSS `rotateX` is positive toward the viewer at an element's BOTTOM, so
+    tipping a book's *top* toward you is a NEGATIVE angle. Positive reads
+    as the book shrinking into the shelf.
+  - The top face needs `rotateX(-90deg)` about its own top edge to fold
+    backward; `+90` folds it forward, out through the spine.
+  It was built on `rotateY` first, which swings books sideways rather than
+  tipping them out — the geometry was checked by simulating the projection
+  offscreen before the second attempt, which is the way to do this.
+  `perspective` and `perspective-origin` go on the container, not per book:
+  per element every book gets its own vanishing point and they look right
+  alone but wrong together. The origin sits high at 14%, because you look
+  at a shelf from above — that's what makes the plank's surface and the
+  pages visible at all.
+  `overflow-hidden` belongs on the spine face, never the button.
   **Spine colours are sampled from the real covers**, cached into
   `public/books/` from Open Library's cover API — the only hex values
   outside the Tailwind config, and deliberately so: they're data about a
