@@ -385,8 +385,13 @@ class would stop emitting.
   standing on a plank, hover lifts and lights one, click pulls it out and
   shows what it is underneath. **Not a list panel**, at Bradley's explicit
   request — a shelf is something you scan by eye and reach into.
-  It's on the profile page, not `/about`, and the data lives in
-  `profile-data` with it.
+  It's the **third source block inside Recent Activity**, beside GitHub and
+  Spotify, so it has no panel chrome of its own — `ActivityFeed` supplies
+  the heading and icon. Data lives in `profile-data`.
+  `SourceBlock` gained a `note` prop for it, carrying "kept by hand", and
+  that exists for one reason: **Books is the only source in that panel
+  that isn't fetched.** Unlabelled between two live ones it would inherit
+  their credibility without earning it.
   The motion is the same carve-out as Exy: nothing moves unless you point
   at it or click it, so it's an affordance rather than ambient decoration,
   and it's all `motion-safe`.

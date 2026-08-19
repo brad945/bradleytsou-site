@@ -1,6 +1,7 @@
 import type { FeaturedRepo, GitHubSnapshot, RepoCard } from "@/lib/github";
 import { repoDisplayNames } from "@/lib/profile-data";
-import { GitHubIcon, SpotifyIcon } from "@/components/SocialIcons";
+import Bookshelf from "@/components/Bookshelf";
+import { BookIcon, GitHubIcon, SpotifyIcon } from "@/components/SocialIcons";
 import type { Track } from "@/lib/spotify";
 
 interface ActivityFeedProps {
@@ -52,17 +53,31 @@ function shortDate(iso: string): string {
 function SourceBlock({
   name,
   icon,
+  note,
   children,
 }: {
   name: string;
   icon?: React.ReactNode;
+  /**
+   * A qualifier beside the source name.
+   *
+   * Exists for exactly one case: **Books is the only source here that isn't
+   * fetched.** GitHub and Spotify are live, and an unlabelled third block
+   * sitting between them would inherit their credibility without earning it.
+   * Goodreads closed their API in 2020 and nothing replaced it, so that list
+   * can only ever be written — and this is where it says so.
+   */
+  note?: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <div className="mb-2 flex items-center gap-2">
-        {icon}
-        <span className="t-label text-copy">{name}</span>
+      <div className="mb-2 flex items-baseline gap-2">
+        <span className="flex items-center gap-2">
+          {icon}
+          <span className="t-label text-copy">{name}</span>
+        </span>
+        {note && <span className="t-meta text-[12px]">{note}</span>}
       </div>
       {children}
     </div>
@@ -110,8 +125,7 @@ function PlannedSources() {
     <div className="border border-dashed border-line/70 px-4 py-4">
       <p className="t-label text-muted">More sources</p>
       <p className="t-meta mt-1.5 leading-relaxed">
-        YouTube and videogames next. Books are on /about and stay hand-kept —
-        there's no API worth using since Goodreads closed theirs.
+        YouTube and videogames next.
       </p>
     </div>
   );
@@ -284,6 +298,14 @@ export default function ActivityFeed({
             </ul>
           </SourceBlock>
         )}
+
+        <SourceBlock
+          name="Books"
+          icon={<BookIcon className="h-4 w-4 text-muted" />}
+          note="kept by hand"
+        >
+          <Bookshelf />
+        </SourceBlock>
 
         <PlannedSources />
 

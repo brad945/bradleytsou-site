@@ -102,3 +102,12 @@ export function SpotifyIcon({ className }: IconProps) {
     </Svg>
   );
 }
+
+/** Books, for the Recent Activity source block. */
+export function BookIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M4 3.5A1.5 1.5 0 0 1 5.5 2H19a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6.5a.5.5 0 0 0 0 1H19a1 1 0 1 1 0 2H5.5A1.5 1.5 0 0 1 4 19.5v-16zM7 5v9h9V5H7z" />
+    </Svg>
+  );
+}
