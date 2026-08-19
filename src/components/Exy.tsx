@@ -629,7 +629,12 @@ export default function Exy() {
         type="button"
         onClick={wake}
         aria-label="Wake up Exy"
-        title="Exy"
+        /*
+          "(click)" because the tail alone doesn't say it's a control. It wags
+          on its own, which reads as decoration, and the half of him that would
+          explain it is behind the photo.
+        */
+        title="Exy (click)"
         className="group/tail block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- see below. */}
@@ -665,7 +670,7 @@ export default function Exy() {
         type="button"
         onClick={wake}
         aria-label="Wake up Exy"
-        title="Exy"
+        title="Exy (click)"
         className="fixed bottom-6 left-6 z-30 transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- frames swap
