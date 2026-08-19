@@ -174,7 +174,7 @@ export default function Bookshelf() {
                * these and they overflow the panel — the wrappers are
                * `shrink-0`, so there is nothing to absorb it.
                */
-              const width = 44 + ((h >>> 5) % 32);
+              const width = 30 + ((h >>> 5) % 16);
               const isOpen = open === i;
 
               const label = book.spineLabel ?? book.title;
@@ -192,7 +192,7 @@ export default function Bookshelf() {
                * is the whole point of hashing it.
                */
               const height = Math.max(
-                118 + (h % 56),
+                110 + (h % 46),
                 Math.round(label.length * MIN_SPINE_FS * 0.56) + 34,
               );
               const room = height - 34;
