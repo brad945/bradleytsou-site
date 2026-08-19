@@ -102,10 +102,20 @@ const HEIGHT_PER_IN = 15.2;
  * they cross the Books heading.
  */
 const WIRE_RISE = 32;
-const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, SHELF_DEPTH));
-const WIRE_TILT = Math.round(
-  (Math.atan2(SHELF_DEPTH, WIRE_RISE) * 180) / Math.PI,
-);
+/**
+ * How far back on the top plank each rod is footed.
+ *
+ * It used to be 0 — the rod stood on the very front corner, in the z = 0
+ * plane, and that is where every attempt to make the join look attached kept
+ * failing. A rod ending on the front FACE has to be held there by something,
+ * so it needs a bracket or a hook or an eye, and any such part is drawn
+ * square-on while the rest of the shelf is foreshortened. A rod that goes into
+ * the top SURFACE needs nothing: it's screwed in, the way the real thing is.
+ */
+const WIRE_FOOT_Z = 14;
+const WIRE_RUN = SHELF_DEPTH - WIRE_FOOT_Z;
+const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, WIRE_RUN));
+const WIRE_TILT = Math.round((Math.atan2(WIRE_RUN, WIRE_RISE) * 180) / Math.PI);
 const WIRE_W = 5;
 const THICK_PER_IN = 52;
 
@@ -598,14 +608,13 @@ export default function Bookshelf() {
             <span
               key={key}
               aria-hidden
-              className={`absolute ${pos}`}
+              className={`absolute bottom-full ${pos}`}
               style={{
-                bottom: "calc(100% + 6px)",
                 width: WIRE_W,
                 height: WIRE_LEN,
                 transformStyle: "preserve-3d",
                 transformOrigin: "center bottom",
-                transform: `rotateX(${WIRE_TILT}deg)`,
+                transform: `translateZ(-${WIRE_FOOT_Z}px) rotateX(${WIRE_TILT}deg)`,
               }}
             >
               {/*
@@ -629,13 +638,36 @@ export default function Bookshelf() {
               />
 
               {/*
+                The ferrule where the rod enters the plank — same two crossed
+                blades, same steel, just wider and short. Built the same way as
+                the rod, so it is lit the same way and shares its axis.
+              */}
+              <span
+                className="absolute bottom-0 left-1/2 h-[13px] w-[10px]"
+                style={{
+                  transformStyle: "preserve-3d",
+                  transform: "translate(-50%, 30%)",
+                }}
+              >
+                <span className="absolute inset-0 rounded-[2px] bg-shelf-wire" />
+                <span
+                  className="absolute inset-0 rounded-[2px] bg-shelf-wire"
+                  style={{ transform: "rotateY(90deg)" }}
+                />
+              </span>
+
+              {/*
                 The wall end: a bolt head, carrying the rod's rotation in
                 reverse so it faces the viewer instead of lying along the rod.
                 Without it the rod ends in mid-air.
 
-                The shelf end is an eye bolt standing on the top plank — see
-                below. It's a sibling of the rod rather than a child, because
-                it belongs to the shelf.
+                The shelf end has no separate fitting, and that is the fix
+                rather than an omission. Three goes at one — a bolted plate, a
+                hook, a ring — failed the same way: a part living in its own
+                frame has to be lined up with the rod by hand, and at 11px
+                being a pixel out reads as "not connected". The ferrule below
+                is a CHILD of the rod, on the rod's own axis, so it cannot be
+                out of line. Everything past it goes into the plank.
               */}
               <span
                 className="absolute left-1/2 top-0 h-[10px] w-[10px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/60"
@@ -647,74 +679,24 @@ export default function Bookshelf() {
           ))}
 
           {/*
-            The eye bolt each rod ends in, screwed into the TOP PLANK.
-
-            Two things were wrong with the hook this replaces, and they were
-            the same thing twice. It hung on the front face, in the z = 0
-            plane, which is the one plane in this whole scene that faces the
-            viewer square-on — so it was the only part of the shelf with no
-            foreshortening on it, and it read flat next to everything else.
-            And it was drawn as a single stroke, so its two arms were whatever
-            length the path made them rather than being a shape with a front
-            and a back.
-
-            This sits on the plank instead. The base plate is folded into the
-            horizontal plane exactly like the ceiling — `bottom-full` and
-            `rotateX(90deg)` about its own bottom edge — so the same
-            perspective that squashes the plank squashes it, which is what
-            makes it look like it's lying on a surface rather than stuck to a
-            wall. The eye then stands back up out of it, symmetric about the
-            rod, and the rod drops 6px so it ends inside the ring rather than
-            beside it.
+            The shadow each rod casts where it enters the plank, lying in the
+            plank's own plane — `bottom-full` and `rotateX(90deg)` like the
+            ceiling, so it foreshortens with the surface it's painted on. It is
+            the only thing here saying the rod meets the wood rather than
+            hovering a pixel over it, which is what "not attached" was.
           */}
-          {["left-[3px]", "right-[3px]"].map((pos) => (
+          {["left-[1px]", "right-[1px]"].map((pos) => (
             <span
               key={pos}
               aria-hidden
-              className={`absolute bottom-full ${pos}`}
+              className={`absolute bottom-full rounded-full bg-shelf-edge/75 blur-[3px] ${pos}`}
               style={{
-                width: 11,
-                height: 13,
-                transformStyle: "preserve-3d",
+                width: 15,
+                height: WIRE_FOOT_Z + 10,
                 transformOrigin: "center bottom",
                 transform: "rotateX(90deg)",
               }}
-            >
-              {/*
-                Where it meets the plank. The plate itself is foreshortened to
-                about two pixels — the plank is 110px deep and roughly 10px
-                tall on screen — so what actually does the work is the shadow
-                pooled under it. Without that the eye floats a hair above the
-                surface it's supposed to be screwed into.
-              */}
-              <span className="absolute inset-x-[-1px] bottom-0 top-[2px] rounded-[5px] bg-shelf-edge/55 blur-[2px]" />
-              <span className="absolute inset-x-[2px] bottom-[2px] top-[4px] rounded-[2px] bg-shelf-fitting" />
-              {/*
-                The eye. Stands back up out of the plate — `rotateX(-90deg)`
-                cancels the plate's fold — and is a ring rather than a hook, so
-                it's the same on both sides of the rod. That symmetry is the
-                point: a hook drawn as one stroke has a long arm and a short
-                one, and at this size that reads as a mistake rather than as a
-                hook.
-
-                Two rings stacked make it a torus rather than a circle. The
-                lower one is the dark body; the upper one paints only its top
-                and left arcs in the lightest steel, so the highlight sits
-                where the light is — the same top-left source as every other
-                surface here. A flat stroke can't do that, and a flat stroke is
-                what made the last one read as a sticker.
-              */}
-              <span
-                className="absolute bottom-[3px] left-1/2 h-[11px] w-[11px]"
-                style={{
-                  transformOrigin: "center bottom",
-                  transform: "translateX(-50%) rotateX(-90deg)",
-                }}
-              >
-                <span className="absolute inset-0 rounded-full border-[2.5px] border-steelMid shadow-[0_1px_2px_rgba(0,0,0,0.6)]" />
-                <span className="absolute inset-0 rounded-full border-[2.5px] border-b-transparent border-l-steelLight border-r-transparent border-t-steelLight" />
-              </span>
-            </span>
+            />
           ))}
         </div>
       </div>
