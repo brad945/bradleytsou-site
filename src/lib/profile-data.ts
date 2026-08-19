@@ -214,6 +214,15 @@ export interface Book {
   /** One line. Why it's here, not what it's about — a summary is a blurb. */
   note?: string;
   /**
+   * A shorter title for the spine. Falls back to `title`.
+   *
+   * Real spines abbreviate — a paperback doesn't print "The Little Book of
+   * Common Sense Investing" down 20mm of card either. Without this the long
+   * ones either overflowed their spine or shrank to unreadable type, and the
+   * full title is still right there in the detail view when you click.
+   */
+  spineLabel?: string;
+  /**
    * Cover art, cached into `public/books/` from Open Library's cover API.
    *
    * **Cached rather than hotlinked.** Covers never change, and fetching them
@@ -296,6 +305,7 @@ export const books: Book[] = [
   },
   {
     title: "The Little Book of Common Sense Investing",
+    spineLabel: "Common Sense Investing",
     author: "John C. Bogle",
     status: "reading",
     note: "Bogle founded Vanguard, then spent a book arguing you should mostly do nothing.",
@@ -305,6 +315,7 @@ export const books: Book[] = [
   },
   {
     title: "The Authoritative Calvin and Hobbes",
+    spineLabel: "Calvin and Hobbes",
     author: "Bill Watterson",
     status: "shelved",
     note: "Re-read more than anything else here.",
@@ -314,6 +325,7 @@ export const books: Book[] = [
   },
   {
     title: "The Complete Peanuts, 1953–1954",
+    spineLabel: "The Complete Peanuts",
     author: "Charles M. Schulz",
     status: "shelved",
     note: "The early Schulz, before the specials.",

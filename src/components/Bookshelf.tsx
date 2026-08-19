@@ -71,12 +71,38 @@ export default function Bookshelf() {
           // heading, and a full-height shelf there dwarfed the two source
           // blocks above it. Ranges stay narrow — too much variation stops
           // reading as a shelf and starts reading as a bar chart.
-          const height = 88 + (h % 37);
+          /*
+           * 158–211px. The first pass ran 88–124 and five of eight titles
+           * overflowed their spine, the worst by 156px — vertical text needs
+           * far more height than a horizontal label, and short spines aren't
+           * what a shelf looks like anyway.
+           */
+          const height = 158 + (h % 54);
           // `>>>`, not `>>`. A signed shift coerces to int32 first, so any
           // hash above 2^31 comes out negative and the modulo does too —
           // which produced 14px spines, well under the intended floor.
           const width = 26 + ((h >>> 5) % 13);
           const isOpen = open === i;
+
+          /*
+           * Fit the type to the spine rather than trusting it to fit.
+           *
+           * The label sits between the head band and the colophon, so ~50px of
+           * the spine is unavailable; what's left has to hold roughly
+           * `chars x 0.5 x fontSize` of vertical text. Clamped to 8–11: under 8
+           * it stops being readable, over 11 the short titles look oversized
+           * beside the long ones.
+           *
+           * This is the backstop, not the fix — `spineLabel` does the real work
+           * of keeping titles short. This only guarantees a long one added
+           * later shrinks instead of spilling.
+           */
+          const label = book.spineLabel ?? book.title;
+          const room = height - 50;
+          const fontSize = Math.max(
+            8,
+            Math.min(11, Math.floor(room / (label.length * 0.5))),
+          );
 
           return (
             <button
@@ -111,10 +137,10 @@ export default function Bookshelf() {
                   on the same element.
                 */}
               <span
-                style={{ color: book.ink }}
-                className="relative z-10 -mt-2 [writing-mode:vertical-rl] whitespace-nowrap px-1 text-[11px] font-semibold tracking-tight"
+                style={{ color: book.ink, fontSize }}
+                className="absolute inset-x-0 bottom-[34px] top-[16px] z-10 flex items-center justify-center [writing-mode:vertical-rl] font-semibold tracking-tight"
               >
-                {book.title}
+                {label}
               </span>
 
               {/*
