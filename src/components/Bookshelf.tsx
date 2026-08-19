@@ -78,13 +78,13 @@ export default function Bookshelf() {
       */}
       <div style={{ perspective: "1200px", perspectiveOrigin: "50% 8%" }}>
         <div
-          className="relative mx-auto w-fit"
+          className="relative w-full"
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Back panel: straight back by the shelf's depth. */}
           <span
             aria-hidden
-            className="absolute inset-0 bg-panel2"
+            className="absolute inset-0 bg-wood-back"
             style={{ transform: `translateZ(-${SHELF_DEPTH}px)` }}
           />
           {/*
@@ -94,7 +94,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 bg-line/70"
+            className="absolute inset-y-0 left-0 bg-wood-side"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "left center",
@@ -103,7 +103,7 @@ export default function Bookshelf() {
           />
           <span
             aria-hidden
-            className="absolute inset-y-0 right-0 bg-line/70"
+            className="absolute inset-y-0 right-0 bg-wood-side"
             style={{
               width: SHELF_DEPTH,
               transformOrigin: "right center",
@@ -119,19 +119,17 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 bottom-0"
+            className="absolute inset-x-0 bottom-0 bg-wood-floor"
             style={{
               height: SHELF_DEPTH,
               transformOrigin: "center bottom",
               transform: "rotateX(90deg)",
-              background:
-                "linear-gradient(to bottom, rgb(74 90 110), rgb(38 48 62))",
             }}
           />
 
           {/* The books, standing on that floor. */}
           <div
-            className="flex items-end gap-[5px] px-5 pt-6"
+            className="flex items-end justify-center gap-[9px] px-8 pt-7"
             style={{ transformStyle: "preserve-3d" }}
           >
             {books.map((book, i) => {
@@ -166,8 +164,16 @@ export default function Bookshelf() {
                       ...(isOpen ? { "--deg": "-34deg" } : {}),
                     } as React.CSSProperties
                   }
-                  className={`group/spine relative shrink-0 [--deg:-12deg] [transform:rotateX(var(--deg))] transition-[transform,filter] duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-34deg] ${
-                    isOpen ? "z-20 brightness-110" : "z-0 hover:brightness-110"
+                  /*
+                   * **No `filter` on this element, ever.** `filter` forces
+                   * `transform-style: flat`, overriding `preserve-3d` — so a
+                   * `hover:brightness` here collapsed the book's faces into
+                   * one plane and its top vanished the moment you pointed at
+                   * it. The brightening lives on the faces instead, where
+                   * flattening their own 2D children costs nothing.
+                   */
+                  className={`group/spine relative shrink-0 [--deg:-12deg] [transform:rotateX(var(--deg))] transition-transform duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-34deg] ${
+                    isOpen ? "z-20" : "z-0"
                   }`}
                 >
                   {/*
@@ -189,7 +195,11 @@ export default function Bookshelf() {
                       transformOrigin: "center bottom",
                       transform: "rotateX(90deg)",
                     }}
-                    className="absolute inset-x-0 bottom-full"
+                    className={`absolute inset-x-0 bottom-full transition-[filter] duration-300 ${
+                      isOpen
+                        ? "brightness-110"
+                        : "group-hover/spine:brightness-110"
+                    }`}
                   />
 
                   {/* The spine, facing you. */}
@@ -202,7 +212,11 @@ export default function Bookshelf() {
                         "--ink": book.ink,
                       } as React.CSSProperties
                     }
-                    className="absolute inset-0 overflow-hidden rounded-t-[1px]"
+                    className={`absolute inset-0 overflow-hidden rounded-t-[1px] transition-[filter] duration-300 ${
+                      isOpen
+                        ? "brightness-110"
+                        : "group-hover/spine:brightness-110"
+                    }`}
                   >
                     <span
                       className="absolute inset-x-0 top-[9px] h-[2px]"
@@ -251,7 +265,7 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-x-0 top-full h-[9px] rounded-b-[2px] bg-line"
+            className="absolute inset-x-0 top-full h-[11px] rounded-b-[2px] bg-wood-lip"
           />
         </div>
       </div>

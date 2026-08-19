@@ -420,6 +420,18 @@ class would stop emitting.
   at a shelf from above — that's what makes the plank's surface and the
   pages visible at all.
   `overflow-hidden` belongs on the spine face, never the button.
+  **Never put `filter` on an element carrying `preserve-3d`.** `filter`
+  forces `transform-style: flat`, so it silently overrides it — a
+  `hover:brightness` on the book collapsed all its faces into one plane
+  and its top vanished the instant you pointed at it. The symptom reads as
+  a paint bug and the cause is a one-word class; the brightening lives on
+  the faces now, where flattening their own 2D children costs nothing.
+  The same applies to `opacity`, `mask` and `clip-path`.
+  The shelf's timber is the `wood` token family plus the `wood-*`
+  backgroundImage entries — material shading like `avatar-frame`, not the
+  decorative gradients this site stripped out. Five steps because the box
+  has five faces at different angles and the whole illusion is that they
+  catch different light.
   **Spine colours are sampled from the real covers**, cached into
   `public/books/` from Open Library's cover API — the only hex values
   outside the Tailwind config, and deliberately so: they're data about a

@@ -104,6 +104,27 @@ const tokens = {
 };
 
 /**
+ * The bookshelf's timber.
+ *
+ * The one warm family on an otherwise cool blue-grey site, and it earns that
+ * the same way `steelLight`/`steel`/`steelDark` do for the avatar frame: it's
+ * describing a material, not decorating a surface. A shelf rendered in
+ * `panel` and `line` read as a wireframe of a shelf rather than a shelf.
+ *
+ * Five steps because the box has five faces at different angles, and the whole
+ * illusion is that they catch different amounts of light: the floor is lit
+ * from above, the back sits in shadow, the sides fall between, and the front
+ * lip is the darkest because you see its underside.
+ */
+const wood = {
+  light: "#dcc199",
+  mid: "#c4a377",
+  base: "#ac8c60",
+  dark: "#886a45",
+  edge: "#6d5537",
+};
+
+/**
  * Screensaver colours for the bouncing logo. Deliberately vivid and fully
  * saturated — this is the one place the muted site palette doesn't apply,
  * because the reference logo is a flat bright fill. Flat colour only: no
@@ -207,6 +228,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        wood,
         ...tokens,
         dvd,
       },
@@ -259,6 +281,37 @@ const config: Config = {
          * decorative gradient (page glow, profile hero, panel bars, panel
          * sheen, xp fill) was removed.
          */
+        /*
+         * Shelf timber. Two repeating gradients of grain over a base sweep —
+         * the fine lines are the grain itself, the wider ones the darker
+         * bands between growth rings, and the sweep is the light falling
+         * across the face.
+         *
+         * These are material shading, like `avatar-frame`, not the decorative
+         * gradients that were stripped out of this site. Flatten them and the
+         * shelf stops reading as wood at all.
+         *
+         * Grain runs left to right on the floor, along the length of a plank,
+         * which is why those stops are `to bottom` — the face is folded flat,
+         * so its vertical axis becomes the shelf's depth.
+         */
+        "wood-floor": [
+          `repeating-linear-gradient(to bottom, ${wood.edge}22 0 1px, transparent 1px 6px)`,
+          `repeating-linear-gradient(to bottom, ${wood.edge}18 0 2px, transparent 2px 19px)`,
+          `linear-gradient(to bottom, ${wood.light}, ${wood.mid} 55%, ${wood.base})`,
+        ].join(", "),
+        "wood-back": [
+          `repeating-linear-gradient(to right, ${wood.edge}1f 0 1px, transparent 1px 9px)`,
+          `linear-gradient(to bottom, ${wood.dark}, ${wood.edge})`,
+        ].join(", "),
+        "wood-side": [
+          `repeating-linear-gradient(to bottom, ${wood.edge}1c 0 1px, transparent 1px 7px)`,
+          `linear-gradient(to right, ${wood.base}, ${wood.dark})`,
+        ].join(", "),
+        "wood-lip": [
+          `repeating-linear-gradient(to right, ${wood.edge}22 0 1px, transparent 1px 11px)`,
+          `linear-gradient(to bottom, ${wood.mid}, ${wood.dark})`,
+        ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },
       boxShadow: {
