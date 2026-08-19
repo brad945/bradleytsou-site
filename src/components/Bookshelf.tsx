@@ -106,7 +106,7 @@ const WIRE_LEN = Math.round(Math.hypot(WIRE_RISE, SHELF_DEPTH));
 const WIRE_TILT = Math.round(
   (Math.atan2(SHELF_DEPTH, WIRE_RISE) * 180) / Math.PI,
 );
-const WIRE_W = 6;
+const WIRE_W = 5;
 const THICK_PER_IN = 52;
 
 const STATUS_LABEL: Record<Book["status"], string> = {
@@ -628,12 +628,15 @@ export default function Bookshelf() {
               />
 
               {/*
-                Fittings, one at each end: bolted to the wall at the top, and
-                an eye at the shelf corner where the rod picks the load up.
-                Both carry the rod's rotation in reverse, which cancels it and
-                leaves them facing the viewer instead of lying along the rod.
-                Without the top one the rod ends in mid-air; without the bottom
-                one it looks glued to the board rather than fixed to it.
+                Both ends, and both carry the rod's rotation in reverse so
+                they face the viewer instead of lying along it.
+
+                The wall end is a bolt head — without it the rod ends in
+                mid-air. The shelf end is a hook over the top edge of the
+                carcass, and it replaced a bolted mounting plate that was
+                doing far too much: at 16px a plate with fasteners on it reads
+                as a component someone specified, where all this join has to
+                say is "it hangs here". A hook says that in three strokes.
               */}
               <span
                 className="absolute left-1/2 top-0 h-[10px] w-[10px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/60"
@@ -641,12 +644,22 @@ export default function Bookshelf() {
                   transform: `translate(-50%, -50%) rotateX(${-WIRE_TILT}deg)`,
                 }}
               />
-              <span
-                className="absolute bottom-0 left-1/2 h-[8px] w-[8px] rounded-full bg-shelf-fitting ring-1 ring-shelf-edge/50"
+              <svg
+                viewBox="0 0 12 18"
+                className="absolute bottom-0 left-1/2 h-[18px] w-[12px] overflow-visible"
                 style={{
-                  transform: `translate(-50%, 50%) rotateX(${-WIRE_TILT}deg)`,
+                  transform: `translate(-50%, 58%) rotateX(${-WIRE_TILT}deg)`,
                 }}
-              />
+              >
+                <path
+                  d="M4 16 V6 A2.1 2.1 0 0 1 8.2 6 V10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.6"
+                  strokeLinecap="round"
+                  className="text-steel"
+                />
+              </svg>
             </span>
           ))}
         </div>
