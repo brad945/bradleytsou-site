@@ -676,7 +676,7 @@ export const projects: Project[] = [
     // "Computer Vision" confirmed by Bradley — it was inferred before.
     tags: ["JavaScript", "Computer Vision", "Real-time"],
     href: undefined,
-    repo: undefined, // private
+    repo: "https://github.com/brad945/visionotes",
     period: "2026",
   },
   {
