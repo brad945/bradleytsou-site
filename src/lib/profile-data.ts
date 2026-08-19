@@ -355,8 +355,9 @@ export const books: Book[] = [
   },
   {
     title: "The Little Book of Common Sense Investing",
+    // 0.65 rather than the 0.9 of the Little Book hardcover, at his request.
     heightIn: 7.2,
-    thickIn: 0.9,
+    thickIn: 0.65,
     pages: 300,
     spineLabel: "Common Sense",
     author: "John C. Bogle",
@@ -368,8 +369,8 @@ export const books: Book[] = [
   },
   {
     title: "The Authoritative Calvin and Hobbes",
-    // 10.4 rather than the treasury's nominal 11, at Bradley's request.
-    heightIn: 10.4,
+    // 9.8 rather than the treasury's nominal 11, at Bradley's request.
+    heightIn: 9.8,
     thickIn: 1.0,
     pages: 256,
     spineLabel: "Calvin and Hobbes",
@@ -382,8 +383,8 @@ export const books: Book[] = [
   },
   {
     title: "The Complete Peanuts, 1953–1954",
-    // 7.0 rather than the 6.5 of the landscape trim, at Bradley's request.
-    heightIn: 7.0,
+    // 7.6 rather than the 6.5 of the landscape trim, at Bradley's request.
+    heightIn: 7.6,
     thickIn: 1.15,
     pages: 352,
     spineLabel: "Peanuts",
