@@ -381,6 +381,21 @@ class would stop emitting.
   at Bradley's request, including the panel-bar total; `myCommits` and
   `myCommitsPast2Weeks` are still fetched, so restoring any of it is a
   render change. `PublicRepoRow` is the no-token fallback.
+- `src/components/Bookshelf.tsx` — the books, as an actual shelf: spines
+  standing on a plank, hover lifts and lights one, click pulls it out and
+  shows what it is underneath. **Not a list panel**, at Bradley's explicit
+  request — a shelf is something you scan by eye and reach into.
+  It's on the profile page, not `/about`, and the data lives in
+  `profile-data` with it.
+  The motion is the same carve-out as Exy: nothing moves unless you point
+  at it or click it, so it's an affordance rather than ambient decoration,
+  and it's all `motion-safe`.
+  Two things that bite: **spine colours are full class strings in an
+  array**, because Tailwind's scanner can't see a name built at runtime and
+  every spine would render transparent; and **sizes are hashed from the
+  title**, not random, so they're stable across renders and hydration —
+  with `>>>` rather than `>>`, since a signed shift on a hash above 2^31
+  goes negative and produced 14px spines.
 - `src/components/Sidebar.tsx` — the right column, in order: a status
   heading derived from the last push (Currently Online / Recently Active /
   Currently Offline, thresholded on hours, linked to the GitHub profile

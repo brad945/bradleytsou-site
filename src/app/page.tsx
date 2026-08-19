@@ -2,6 +2,7 @@ import ActivityFeed from "@/components/ActivityFeed";
 import AutoRefresh from "@/components/AutoRefresh";
 import BoardedUp from "@/components/BoardedUp";
 import Experience from "@/components/Experience";
+import Bookshelf from "@/components/Bookshelf";
 import FavoriteGame from "@/components/FavoriteGame";
 import ProfileHeader from "@/components/ProfileHeader";
 import SiteNav from "@/components/SiteNav";
@@ -109,6 +110,7 @@ export default async function Home() {
               <ActivityFeed snapshot={snapshot} featured={featured} tracks={tracks} />
               <Experience featured={featured} />
               <FavoriteGame playtime={playtime} />
+              <Bookshelf />
               {/* The panel a visitor contributes to, last in the column so it
                   reads as the end of the page rather than an interruption in
                   it. Reactions is parked above; this is the swap. */}
