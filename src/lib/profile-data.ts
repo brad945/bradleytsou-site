@@ -341,9 +341,13 @@ export const books: Book[] = [
  * form, and the vanity URL is only an alias that can be changed.
  *
  * `appId` is Steam's own app id (730 is Counter-Strike 2), which is what the
- * playtime lookup keys on. `name`, `studio` and `released` are display text;
- * they could be fetched from the store API but that's a second call to say
- * something that never changes.
+ * playtime lookup keys on. `name` is display text; it could be fetched from
+ * the store API but that's a second call to say something that never changes.
+ *
+ * It carried `studio` ("Valve") and `released` ("2023") too, printed under the
+ * name. Both are gone at Bradley's request — the panel is about *his* hours in
+ * it, and a publisher and a release year are facts about the game that say
+ * nothing about him.
  *
  * **`blurb` is Bradley's, not a store description.** The point of the panel is
  * why *he* likes it, which no API knows.
@@ -356,8 +360,6 @@ export const steamId64 = "76561198438468192";
 export const favoriteGame = {
   appId: 730,
   name: "Counter-Strike 2",
-  studio: "Valve",
-  released: "2023",
   blurb: "Where the bhop mechanic planned for /play comes from.",
 } as const;
 

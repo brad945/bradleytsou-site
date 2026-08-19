@@ -21,6 +21,12 @@ import { favoriteGame } from "@/lib/profile-data";
  * "hours on record" and "past 2 weeks" are Steam's own labels, deliberately —
  * the second is a figure Steam puts in exactly this slot, and renaming it
  * would break the one thing a visitor already knows how to read.
+ *
+ * They're also the only text here besides the name and the blurb. A "live from
+ * Steam" tag in the panel bar and a "Valve · 2023" line under the name were
+ * both cut at Bradley's request: the first captioned the numbers with the fact
+ * that they're fetched, which the whole site already asserts everywhere, and
+ * the second stated who made the game rather than anything about him.
  */
 export default function FavoriteGame({
   playtime,
@@ -28,7 +34,7 @@ export default function FavoriteGame({
   /** Null when STEAM_API_KEY is unset or the lookup failed. */
   playtime: SteamPlaytime | null;
 }) {
-  const { name, studio, released, blurb } = favoriteGame;
+  const { name, blurb } = favoriteGame;
 
   return (
     <section aria-labelledby="favorite-game-heading" className="panel">
@@ -36,8 +42,6 @@ export default function FavoriteGame({
         <h2 id="favorite-game-heading" className="panel-bar-title">
           Favorite Game
         </h2>
-        {/* Says where the numbers come from, and only when there are any. */}
-        {playtime && <span className="panel-bar-meta">live from Steam</span>}
       </div>
 
       <div className="flex gap-4 p-5">
@@ -55,14 +59,9 @@ export default function FavoriteGame({
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h3 className="text-[19px] font-light leading-tight text-bright">
-              {name}
-            </h3>
-            <span className="t-meta">
-              {studio} · {released}
-            </span>
-          </div>
+          <h3 className="text-[19px] font-light leading-tight text-bright">
+            {name}
+          </h3>
 
           <p className="t-body mt-1.5">{blurb}</p>
 
@@ -85,7 +84,6 @@ export default function FavoriteGame({
               ))}
             </div>
           )}
-
         </div>
       </div>
     </section>
