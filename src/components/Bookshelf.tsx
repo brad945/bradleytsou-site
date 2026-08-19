@@ -597,7 +597,7 @@ export default function Bookshelf() {
             <span
               key={key}
               aria-hidden
-              className={`absolute bottom-full w-[2px] bg-shelf-wire ${pos}`}
+              className={`absolute bottom-full w-[3px] bg-shelf-wire ${pos}`}
               style={{
                 height: WIRE_LEN,
                 transformStyle: "preserve-3d",

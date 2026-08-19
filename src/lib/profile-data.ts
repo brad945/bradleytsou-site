@@ -291,7 +291,14 @@ export const books: Book[] = [
   {
     title: "Steve Jobs",
     heightIn: 9.5,
-    thickIn: 1.6,
+    /*
+     * 0.96, from Bradley — 60% of what was here. The 1.6 it replaced was the
+     * Simon & Schuster hardcover's spec, and he's the one holding the copy,
+     * which makes his number the measurement and mine the guess. `pages` is
+     * unchanged and the two no longer imply each other: 656 pages in 0.96in
+     * is thinner stock than a hardcover uses.
+     */
+    thickIn: 0.96,
     pages: 656,
     author: "Walter Isaacson",
     status: "read",
@@ -361,7 +368,8 @@ export const books: Book[] = [
   },
   {
     title: "The Authoritative Calvin and Hobbes",
-    heightIn: 11.0,
+    // 10.4 rather than the treasury's nominal 11, at Bradley's request.
+    heightIn: 10.4,
     thickIn: 1.0,
     pages: 256,
     spineLabel: "Calvin and Hobbes",
@@ -374,7 +382,8 @@ export const books: Book[] = [
   },
   {
     title: "The Complete Peanuts, 1953–1954",
-    heightIn: 6.5,
+    // 7.0 rather than the 6.5 of the landscape trim, at Bradley's request.
+    heightIn: 7.0,
     thickIn: 1.15,
     pages: 352,
     spineLabel: "Peanuts",
