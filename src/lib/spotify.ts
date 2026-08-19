@@ -37,7 +37,7 @@ export interface Track {
 
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const RECENT_URL =
-  "https://api.spotify.com/v1/me/player/recently-played?limit=10";
+  "https://api.spotify.com/v1/me/player/recently-played?limit=50";
 
 function config() {
   const id = process.env.SPOTIFY_CLIENT_ID;
@@ -81,7 +81,19 @@ async function accessToken(): Promise<string | null> {
   }
 }
 
-export async function getRecentTracks(limit = 3): Promise<Track[]> {
+/**
+ * The most recent DISTINCT tracks, newest first.
+ *
+ * `limit` counts tracks after deduping, not plays — which is why the request
+ * above asks Spotify for 50. One song on repeat fills its history with itself,
+ * and at the 10 this used to ask for, an evening of that returned a single row
+ * no matter what `limit` said. 50 is Spotify's maximum for this endpoint.
+ *
+ * That is not always enough, because it can't be: if the last 50 plays are all
+ * one track then one row is the honest answer, and the panel shows one. It did
+ * exactly that on 19 Aug 2026 — the endpoint returned a single entry in total.
+ */
+export async function getRecentTracks(limit = 2): Promise<Track[]> {
   const token = await accessToken();
   if (!token) return [];
 
