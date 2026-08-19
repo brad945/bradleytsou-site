@@ -208,53 +208,120 @@ export interface Book {
    * Where it is for him, not a rating.
    *
    * "reading" is the one that makes the shelf worth having — it's the only
-   * row that changes, and it's the only one that says anything about now.
+   * status that changes, and the only one that says anything about now.
    */
   status: "reading" | "read" | "shelved";
   /** One line. Why it's here, not what it's about — a summary is a blurb. */
   note?: string;
+  /**
+   * Cover art, cached into `public/books/` from Open Library's cover API.
+   *
+   * **Cached rather than hotlinked.** Covers never change, and fetching them
+   * per render would make the shelf depend on openlibrary.org being up to
+   * look right. 260px tall, which is more than the detail view uses.
+   */
+  cover: string;
+  /**
+   * Spine fill and the text colour that reads on it.
+   *
+   * **Sampled from the real cover, not chosen.** These are the only hex values
+   * outside the Tailwind config, and the exception is the point: they're data
+   * about a physical object, the same way `avatar.jpg` is, rather than a
+   * design decision. Picking them from the palette would have made the shelf
+   * look like the site instead of like the books.
+   *
+   * `ink` is derived from the fill's relative luminance — several of these
+   * covers are near-white, and a cycled text colour would have been invisible
+   * on them.
+   */
+  spine: string;
+  ink: string;
 }
 
 /**
  * The bookshelf.
  *
- * **Hand-kept, and it has to be.** This is the case the Recent Activity
- * placeholder already calls out: Spotify and YouTube have APIs, books don't —
- * Goodreads killed its API in 2020 and nothing replaced it. So this is a
- * written list, and the panel says so rather than implying it's fetched.
+ * **Hand-kept, and it has to be.** Books are the one source on this page with
+ * no API worth using — Goodreads killed theirs in 2020 and nothing replaced
+ * it — so this is a written list, and the Recent Activity block says "kept by
+ * hand" beside it for that reason. It sits between two live feeds and would
+ * otherwise borrow their credibility.
  *
- * That's allowed here for the same reason `roles` is: a hand-kept list is
- * honest as long as nothing pretends otherwise. What isn't allowed is a
- * progress bar or a page count that looks measured.
- *
- * **All placeholder.** TODO(bradley): your actual shelf.
+ * Titles, authors and covers were resolved through Open Library, so the
+ * metadata is right even where the title given was approximate.
  */
 export const books: Book[] = [
   {
-    title: "The Pragmatic Programmer",
-    author: "Hunt & Thomas",
+    title: "Steve Jobs",
+    author: "Walter Isaacson",
+    status: "read",
+    note: "Read it before I knew what half of it meant.",
+    cover: "/books/steve-jobs.jpg",
+    spine: "#cccccc",
+    ink: "#0e141c",
+  },
+  {
+    title: "Stay True",
+    author: "Hua Hsu",
+    status: "read",
+    note: "The one I hand to people.",
+    cover: "/books/stay-true.jpg",
+    spine: "#fc843c",
+    ink: "#0e141c",
+  },
+  {
+    title: "Sula",
+    author: "Toni Morrison",
+    status: "read",
+    cover: "/books/sula.jpg",
+    spine: "#6c543c",
+    ink: "#ffffff",
+  },
+  {
+    title: "Tuesdays with Morrie",
+    author: "Mitch Albom",
+    status: "read",
+    cover: "/books/tuesdays-with-morrie.jpg",
+    spine: "#ccb484",
+    ink: "#0e141c",
+  },
+  {
+    title: "Death of a Salesman",
+    author: "Arthur Miller",
+    status: "read",
+    note: "Assigned. Stayed anyway.",
+    cover: "/books/death-of-a-salesman.jpg",
+    spine: "#e4e4cc",
+    ink: "#0e141c",
+  },
+  {
+    title: "The Little Book of Common Sense Investing",
+    author: "John C. Bogle",
     status: "reading",
-    note: "Everyone cites it. Finding out why.",
+    note: "Bogle founded Vanguard, then spent a book arguing you should mostly do nothing.",
+    cover: "/books/common-sense-investing.jpg",
+    spine: "#840c0c",
+    ink: "#ffffff",
   },
   {
-    title: "Thinking, Fast and Slow",
-    author: "Daniel Kahneman",
-    status: "read",
-    note: "Half of the UCSB dining-hall study was arguing with this.",
-  },
-  {
-    title: "The Art of Doing Science and Engineering",
-    author: "Richard Hamming",
-    status: "read",
-  },
-  {
-    title: "Gödel, Escher, Bach",
-    author: "Douglas Hofstadter",
+    title: "The Authoritative Calvin and Hobbes",
+    author: "Bill Watterson",
     status: "shelved",
-    note: "Bought it twice. Opened it once.",
+    note: "Re-read more than anything else here.",
+    cover: "/books/calvin-and-hobbes.jpg",
+    spine: "#e4e4e4",
+    ink: "#0e141c",
+  },
+  {
+    title: "The Complete Peanuts, 1953–1954",
+    author: "Charles M. Schulz",
+    status: "shelved",
+    note: "The early Schulz, before the specials.",
+    cover: "/books/peanuts.jpg",
+    spine: "#0c549c",
+    ink: "#ffffff",
   },
 ];
-
 /**
  * Steam account id, and the game the "Favorite Game" panel features.
  *

@@ -395,12 +395,20 @@ class would stop emitting.
   The motion is the same carve-out as Exy: nothing moves unless you point
   at it or click it, so it's an affordance rather than ambient decoration,
   and it's all `motion-safe`.
-  Two things that bite: **spine colours are full class strings in an
-  array**, because Tailwind's scanner can't see a name built at runtime and
-  every spine would render transparent; and **sizes are hashed from the
-  title**, not random, so they're stable across renders and hydration —
-  with `>>>` rather than `>>`, since a signed shift on a hash above 2^31
-  goes negative and produced 14px spines.
+  **Spine colours are sampled from the real covers**, cached into
+  `public/books/` from Open Library's cover API — the only hex values
+  outside the Tailwind config, and deliberately so: they're data about a
+  physical object like `avatar.jpg` is, not a design choice. Picking from
+  the palette made the shelf look like the site rather than like the
+  books. `ink` is derived from each fill's relative luminance, because
+  several covers are near-white and a cycled text colour vanished on them.
+  Covers are **cached, not hotlinked** — they never change, and hotlinking
+  would make the shelf's appearance depend on openlibrary.org being up.
+  They show only in the detail view; covers on the shelf itself would mean
+  every book face-out, which is a display table rather than a shelf.
+  **Sizes are hashed from the title**, not random, so they're stable across
+  renders and hydration — with `>>>` rather than `>>`, since a signed shift
+  on a hash above 2^31 goes negative and produced 14px spines.
 - `src/components/Sidebar.tsx` — the right column, in order: a status
   heading derived from the last push (Currently Online / Recently Active /
   Currently Offline, thresholded on hours, linked to the GitHub profile

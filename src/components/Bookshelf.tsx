@@ -38,28 +38,6 @@ import { books, type Book } from "@/lib/profile-data";
  * naturally, and means adding a book never means choosing a size.
  */
 
-/** Spine fills, cycled. Every one is an existing token — see tailwind.config. */
-const SPINES = [
-  "bg-accent",
-  "bg-nebula",
-  "bg-deveval",
-  "bg-teal",
-  "bg-medimpact",
-  "bg-live",
-  "bg-berkeley",
-] as const;
-
-/** Text colour per spine, so a light fill doesn't get white text on it. */
-const SPINE_INK = [
-  "text-base",
-  "text-bright",
-  "text-base",
-  "text-bright",
-  "text-base",
-  "text-base",
-  "text-base",
-] as const;
-
 /** Stable per-title, so nothing moves between renders or across hydration. */
 function hash(text: string) {
   let h = 0;
@@ -107,10 +85,8 @@ export default function Bookshelf() {
               onClick={() => setOpen(isOpen ? null : i)}
               aria-expanded={isOpen}
               aria-label={`${book.title} by ${book.author}`}
-              style={{ height, width }}
+              style={{ height, width, background: book.spine }}
               className={`group/spine relative flex shrink-0 items-center justify-center overflow-hidden rounded-t-[3px] transition-[transform,box-shadow,filter] duration-200 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                SPINES[i % SPINES.length]
-              } ${
                 isOpen
                   ? "-translate-y-3 shadow-[0_10px_20px_rgba(0,0,0,0.5)] brightness-110"
                   : "motion-safe:hover:-translate-y-2 hover:brightness-125 hover:shadow-[0_8px_16px_rgba(0,0,0,0.45)]"
@@ -123,9 +99,8 @@ export default function Bookshelf() {
                   on the same element.
                 */}
               <span
-                className={`[writing-mode:vertical-rl] whitespace-nowrap px-1 text-[11px] font-semibold tracking-tight ${
-                  SPINE_INK[i % SPINE_INK.length]
-                }`}
+                style={{ color: book.ink }}
+                className="[writing-mode:vertical-rl] whitespace-nowrap px-1 text-[11px] font-semibold tracking-tight"
               >
                 {book.title}
               </span>
@@ -153,23 +128,41 @@ export default function Bookshelf() {
           `min-h` reserves the space, so opening a book doesn't shove the panel
           below it down the page.
         */}
-      <div className="mt-3 min-h-[46px]">
+      <div className="mt-3 min-h-[100px]">
         {selected ? (
-          <div>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <span className="text-[15px] leading-tight text-bright">
-                {selected.title}
-              </span>
-              <span
-                className={`label text-[10px] ${
-                  selected.status === "reading" ? "text-live" : "text-muted"
-                }`}
-              >
-                {STATUS_LABEL[selected.status]}
-              </span>
+          <div className="flex gap-4">
+            {/*
+              The cover, and what makes a spine worth clicking. It appears
+              only here — covers on the shelf itself would mean every book
+              face-out, which is a display table rather than a shelf.
+
+              Plain <img>: local, already sized to 260px tall, and routing
+              eight small JPEGs through the Image Optimizer buys nothing.
+            */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={selected.cover}
+              alt={`${selected.title} cover`}
+              className="h-[92px] w-auto shrink-0 rounded-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <span className="text-[15px] leading-tight text-bright">
+                  {selected.title}
+                </span>
+                <span
+                  className={`label text-[10px] ${
+                    selected.status === "reading" ? "text-live" : "text-muted"
+                  }`}
+                >
+                  {STATUS_LABEL[selected.status]}
+                </span>
+              </div>
+              <p className="t-meta mt-0.5">{selected.author}</p>
+              {selected.note && (
+                <p className="t-body mt-1.5">{selected.note}</p>
+              )}
             </div>
-            <p className="t-meta mt-0.5">{selected.author}</p>
-            {selected.note && <p className="t-body mt-1.5">{selected.note}</p>}
           </div>
         ) : (
           <p className="t-meta text-center">Pick one off the shelf.</p>
