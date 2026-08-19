@@ -549,14 +549,15 @@ export const featuredRepos: string[] = [
    * Order is manual and it is what Recent Activity shows — the panel takes the
    * first few in this order, it does not sort by push date.
    *
-   * That's why `artie-queue` was missing rather than stale: the GitHub data was
+   * That's why `frankenstein-queue` (then named `artie-queue`) was missing
+   * rather than stale: the GitHub data was
    * fetching correctly the whole time, but a repo that isn't on this list can't
    * appear. This list exists precisely so the panel isn't "most recently
    * pushed" — that ordering surfaced years-old intro repos while missing both
    * private work and repos Bradley only contributes to. The cost is that new
    * work has to be added here by hand.
    */
-  "brad945/artie-queue",
+  "brad945/frankenstein-queue",
   "sennaicodes/codearenamvp",
   "brad945/visionotes",
   "ronoktanvir/Orca",
