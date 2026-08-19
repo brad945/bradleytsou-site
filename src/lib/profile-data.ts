@@ -360,7 +360,7 @@ export const steamId64 = "76561198438468192";
 export const favoriteGame = {
   appId: 730,
   name: "Counter-Strike 2",
-  blurb: "Where the bhop mechanic planned for /play comes from.",
+  blurb: "I really like this game.",
 } as const;
 
 /**
