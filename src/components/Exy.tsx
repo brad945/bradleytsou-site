@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import HoverNote from "@/components/HoverNote";
 import { createPortal } from "react-dom";
 
 /**
@@ -287,7 +288,10 @@ export default function Exy() {
     // folds it back into [0, width).
     pos.current.x = ((pos.current.x % width) + width) % width;
 
-    pos.current.y = Math.min(Math.max(pos.current.y, 0), window.innerHeight - h);
+    pos.current.y = Math.min(
+      Math.max(pos.current.y, 0),
+      window.innerHeight - h,
+    );
   }, []);
 
   /**
@@ -624,42 +628,49 @@ export default function Exy() {
   if (!awake) {
     if (slots === undefined) return null; // not looked for the slots yet
 
+    /*
+      `HoverNote` rather than `title`, because the note is wanted after half a
+      second and the native tooltip's delay is fixed at about one — the same
+      reason this component exists at all, just in the other direction.
+      `align="left"` because the den is on the avatar's left edge, so a
+      right-aligned note would run back under the photo.
+
+      The label says "(click)" because the tail alone doesn't read as a
+      control: it wags on its own, which looks like decoration, and the half of
+      him that would explain it is behind the photo.
+    */
     const tail = (
-      <button
-        type="button"
-        onClick={wake}
-        aria-label="Wake up Exy"
-        /*
-          "(click)" because the tail alone doesn't say it's a control. It wags
-          on its own, which reads as decoration, and the half of him that would
-          explain it is behind the photo.
-        */
-        title="Exy (click)"
-        className="group/tail block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element -- see below. */}
-        <img
-          src={`${ASSETS}/tail.png`}
-          alt="Exy's tail, poking out from behind the photo"
-          height={TAIL_PX}
-          /*
-           * The art already points left, so there's no mirror here — moving
-           * the den to the avatar's other edge would need `-scale-x-100` and
-           * a mirrored `origin-*`.
-           *
-           * `origin-[92%_83%]` is the tail's base, measured off the asset.
-           * It is the whole trick: about the default centre the tail swings
-           * like a propeller and drags its cropped root out from behind the
-           * photo, showing the straight cut edge. About the base, the root
-           * stays hidden and only the tip moves.
-           *
-           * `motion-safe` on both, so it's still under
-           * prefers-reduced-motion — as `scroll-behavior` is on `html`.
-           */
-          className="origin-[92%_83%] motion-safe:animate-wag motion-safe:group-hover/tail:animate-wag-fast"
-          style={{ height: TAIL_PX, width: "auto" }}
-        />
-      </button>
+      <HoverNote note="Exy (click)" align="left" delay className="block">
+        <button
+          type="button"
+          onClick={wake}
+          aria-label="Wake up Exy"
+          className="group/tail block cursor-pointer focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- see below. */}
+          <img
+            src={`${ASSETS}/tail.png`}
+            alt="Exy's tail, poking out from behind the photo"
+            height={TAIL_PX}
+            /*
+             * The art already points left, so there's no mirror here — moving
+             * the den to the avatar's other edge would need `-scale-x-100` and
+             * a mirrored `origin-*`.
+             *
+             * `origin-[92%_83%]` is the tail's base, measured off the asset.
+             * It is the whole trick: about the default centre the tail swings
+             * like a propeller and drags its cropped root out from behind the
+             * photo, showing the straight cut edge. About the base, the root
+             * stays hidden and only the tip moves.
+             *
+             * `motion-safe` on both, so it's still under
+             * prefers-reduced-motion — as `scroll-behavior` is on `html`.
+             */
+            className="origin-[92%_83%] motion-safe:animate-wag motion-safe:group-hover/tail:animate-wag-fast"
+            style={{ height: TAIL_PX, width: "auto" }}
+          />
+        </button>
+      </HoverNote>
     );
 
     if (den) return createPortal(tail, den);
