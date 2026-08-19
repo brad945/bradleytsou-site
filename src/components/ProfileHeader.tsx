@@ -442,7 +442,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
           <HoverNote
             align="left"
             className="mt-4 block"
-            note={<em>an average</em>}
+            note={<em>an estimate</em>}
           >
             <div className="flex items-center gap-3 bg-panel2/70 p-3">
               {badge ? (
