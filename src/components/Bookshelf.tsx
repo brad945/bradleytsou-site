@@ -504,7 +504,7 @@ export default function Bookshelf() {
         space under the caption. The resize now happens on a click, which is
         the reader's own action rather than a permanent cost paid to avoid it.
       */}
-      <div className="mt-3">
+      <div className="mt-6">
         {selected ? (
           <div className="flex gap-4">
             {/*
