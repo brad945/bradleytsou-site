@@ -690,6 +690,14 @@ export const projects: Project[] = [
     period: "2026",
   },
   {
+    /*
+     * Formerly `artie-queue`, and the same project — recorded here because
+     * the old name is the one that appears in this file's history and in the
+     * `featuredRepos` note above, and because it's the name Bradley uses for
+     * it. The row shows the live repo name, since that's where its link
+     * lands; `repoDisplayNames` is the lever if that should read "Artie
+     * Queue" instead.
+     */
     id: "frankenstein-queue",
     ghRepo: "brad945/frankenstein-queue",
     name: "frankenstein-queue",
