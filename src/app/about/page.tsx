@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Achievements from "@/components/Achievements";
 import Inventory from "@/components/Inventory";
+import Portfolio from "@/components/Portfolio";
 import Reviews from "@/components/Reviews";
 import SiteNav from "@/components/SiteNav";
-import { getGitHubSnapshot } from "@/lib/github";
+import { getFeaturedRepos, getGitHubSnapshot } from "@/lib/github";
 import { getSteamPlaytime } from "@/lib/steam";
 import { reviews } from "@/lib/about-data";
-import { githubUsername, profile, steamId64 } from "@/lib/profile-data";
+import {
+  featuredRepos,
+  githubUsername,
+  profile,
+  steamId64,
+} from "@/lib/profile-data";
 
 /**
  * `/about` — the other half of the profile.
@@ -49,15 +55,26 @@ export default async function About() {
     new Set(reviews.map((r) => r.appId).filter((id): id is number => !!id)),
   );
 
-  const [snapshot, ...times] = await Promise.all([
+  /*
+   * `getFeaturedRepos` is here for Portfolio, which wants the same live
+   * language and privacy flags the rows on `/` get. Same call, same cache
+   * window — the two pages share the response rather than each fetching.
+   */
+  const [snapshot, featured, ...times] = await Promise.all([
     getGitHubSnapshot(githubUsername),
+    getFeaturedRepos(featuredRepos),
     ...appIds.map((id) => getSteamPlaytime(steamId64, id)),
   ]);
 
   const playtime = Object.fromEntries(
     appIds
       .map((id, i) => [id, times[i]] as const)
-      .filter((entry): entry is readonly [number, NonNullable<(typeof times)[number]>] => !!entry[1]),
+      .filter(
+        (
+          entry,
+        ): entry is readonly [number, NonNullable<(typeof times)[number]>] =>
+          !!entry[1],
+      ),
   );
 
   return (
@@ -84,6 +101,13 @@ export default async function About() {
             real data in them rather than as literal game UI.
           */}
           <Reviews playtime={playtime} />
+          {/*
+            Portfolio came over from `/`, where it was the second half of
+            "Experience & Projects". It sits under Reviews rather than above
+            them because it's the one panel here that is also on a CV — the
+            page opens with the parts of him that aren't.
+          */}
+          <Portfolio featured={featured} />
           <Inventory />
           <Achievements />
         </div>

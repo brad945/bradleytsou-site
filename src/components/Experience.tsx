@@ -1,8 +1,13 @@
 import type { FeaturedRepo } from "@/lib/github";
-import { projects, roles, type Project, type Role } from "@/lib/profile-data";
+import { roles, type Role } from "@/lib/profile-data";
 
 /**
- * Work history and projects in one panel.
+ * Work history.
+ *
+ * **The projects moved out**, to a Portfolio panel on `/about`, at Bradley's
+ * request. This was one merged panel for a while and the merge was right at
+ * the time — the split it replaced listed UCSB and BRI Youth in both halves.
+ * What's left is roles only, which is what the heading now says.
  *
  * They were two panels and split the same story in half — where he worked
  * versus what he built — with UCSB and BRI Youth appearing in both. Merged,
@@ -14,7 +19,7 @@ import { projects, roles, type Project, type Role } from "@/lib/profile-data";
  * Crossing Hurdles even though it started a month earlier, so sorting by date
  * would fight him.
  */
-function Row({
+export function Row({
   title,
   meta,
   subtitle,
@@ -96,34 +101,6 @@ function roleRow(role: Role, repo?: FeaturedRepo) {
   );
 }
 
-function projectRow(project: Project, repo?: FeaturedRepo) {
-  const href =
-    project.href ??
-    project.repo ??
-    (repo && !repo.isPrivate ? repo.url : undefined);
-
-  /*
-   * A project with a backing repo the API reports private, and no other link,
-   * has nothing a visitor can open — so it gets the tag instead. `repo` is only
-   * populated for repos in `featuredRepos`, so a private one outside that list
-   * shows neither, which is correct: nothing here knows it exists.
-   */
-  const isPrivate = !href && Boolean(repo?.isPrivate);
-
-  return (
-    <Row
-      key={`project-${project.id}`}
-      title={project.name}
-      href={href}
-      isPrivate={isPrivate}
-      subtitle={project.kind}
-      blurb={project.blurb}
-      tags={project.tags}
-      meta={[project.period, repo?.language].filter(Boolean).join(" · ")}
-    />
-  );
-}
-
 export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
   const byRepo = new Map(featured.map((r) => [r.nameWithOwner, r]));
 
@@ -137,7 +114,7 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
     <section aria-labelledby="experience-heading" className="panel">
       <div className="panel-bar">
         <h2 id="experience-heading" className="panel-bar-title">
-          Experience &amp; Projects
+          Experience
         </h2>
       </div>
 
@@ -148,17 +125,13 @@ export default function Experience({ featured }: { featured: FeaturedRepo[] }) {
             .map((role) =>
               roleRow(role, role.ghRepo ? byRepo.get(role.ghRepo) : undefined),
             )}
-          {projects.map((project) =>
-            projectRow(
-              project,
-              project.ghRepo ? byRepo.get(project.ghRepo) : undefined,
-            ),
-          )}
           {/*
-            Roles flagged `afterProjects` close the list. The panel is one
-            merged list but was built as roles-then-projects, which tied a
-            role's position to its category — BRI Youth could only ever be last
-            among the roles, never last overall.
+            `afterProjects` now just means "sorts last". It was named when
+            projects sat between these two groups and the flag decided which
+            side of them a role fell on; with the projects gone it still does
+            the one thing it was needed for, which is letting BRI Youth close
+            the list. The field keeps its name because renaming it would touch
+            `profile-data` for no behaviour.
           */}
           {roles
             .filter((role) => !role.hidden && role.afterProjects)
