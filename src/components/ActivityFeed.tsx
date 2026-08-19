@@ -54,6 +54,7 @@ function SourceBlock({
   name,
   icon,
   note,
+  className,
   children,
 }: {
   name: string;
@@ -68,10 +69,12 @@ function SourceBlock({
    * can only ever be written — and this is where it says so.
    */
   note?: string;
+  /** Vertical padding, so each block sits off its dividing rules. */
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className={className}>
       <div className="mb-2 flex items-baseline gap-2">
         <span className="flex items-center gap-2">
           {icon}
@@ -122,7 +125,7 @@ function TrackRow({ track, now }: { track: Track; now: number }) {
  */
 function PlannedSources() {
   return (
-    <div className="border border-dashed border-line/70 px-4 py-4">
+    <div className="mt-5 border border-dashed border-line/70 px-4 py-4">
       <p className="t-label text-muted">More sources</p>
       <p className="t-meta mt-1.5 leading-relaxed">
         YouTube and videogames next.
@@ -249,10 +252,20 @@ export default function ActivityFeed({
         </h2>
       </div>
 
-      <div className="flex flex-col gap-5 p-5 pt-3">
+      {/*
+        `divide-y` rather than a gap. The sources were stacked with nothing
+        between them, so three unrelated feeds read as one run-on list — Steam
+        rules its showcase sections off from each other and that line is doing
+        real work, not decoration.
+
+        The divider is `line` at full strength, not a tint: at 40% it was
+        there and still didn't separate anything.
+      */}
+      <div className="flex flex-col divide-y divide-line p-5 pt-3">
         <SourceBlock
           name="GitHub"
           icon={<GitHubIcon className="h-4 w-4 text-muted" />}
+          className="pb-5"
         >
           {hasRows ? (
             <ul className="flex flex-col">
@@ -290,6 +303,7 @@ export default function ActivityFeed({
           <SourceBlock
             name="Spotify"
             icon={<SpotifyIcon className="h-4 w-4 text-muted" />}
+            className="py-5"
           >
             <ul className="flex flex-col">
               {tracks.map((track) => (
@@ -303,6 +317,7 @@ export default function ActivityFeed({
           name="Books"
           icon={<BookIcon className="h-4 w-4 text-muted" />}
           note="kept by hand"
+          className="py-5"
         >
           <Bookshelf />
         </SourceBlock>
@@ -310,7 +325,7 @@ export default function ActivityFeed({
         <PlannedSources />
 
         {stats && (
-          <div className="flex flex-wrap items-center justify-end gap-2 pt-1 text-[14px] text-muted">
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-4 text-[14px] text-muted">
             <span>View</span>
             <a
               href={stats.profileUrl}
