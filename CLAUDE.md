@@ -395,6 +395,18 @@ class would stop emitting.
   The motion is the same carve-out as Exy: nothing moves unless you point
   at it or click it, so it's an affordance rather than ambient decoration,
   and it's all `motion-safe`.
+  **The shelf is in real 3D**, not a flat row. Each book is two faces —
+  the spine, and its cover hinged along the front edge and folded 90° back
+  into the shelf, where the pages would be. Rotating the book about
+  `transform-origin: left bottom` — the corner where it meets the shelf —
+  swings the cover into view, which is why the pivot is there rather than
+  at the centre.
+  `perspective` is on the container, not per book: set per element every
+  spine gets its own vanishing point and they look right alone but wrong
+  together. `perspective-origin` sits at 62% because you look at a shelf
+  from slightly above; dead centre reads as a fan.
+  `overflow-hidden` belongs on the spine face, never the button — on the
+  button it clips the cover away entirely.
   **Spine colours are sampled from the real covers**, cached into
   `public/books/` from Open Library's cover API — the only hex values
   outside the Tailwind config, and deliberately so: they're data about a

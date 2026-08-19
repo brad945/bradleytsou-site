@@ -58,51 +58,46 @@ export default function Bookshelf() {
 
   return (
     <div>
+      {" "}
       {/*
-          The shelf. Spines are bottom-aligned so they stand on the plank
-          rather than floating; `items-end` is what does that, and the varying
-          heights are the point of it.
+          The shelf, in perspective.
+
+          `perspective` lives on the container, not on each book: set
+          per-element every spine gets its own vanishing point, so they each
+          look right alone and wrong together. One shared value is what makes
+          them read as objects sharing a space.
+
+          `perspective-origin` sits low at 62%, because you look at a shelf
+          from slightly above. From dead centre the books splay symmetrically
+          and it reads as a fan rather than a shelf.
         */}
-      <div className="flex items-end justify-center gap-[3px]">
+      <div
+        className="flex items-end justify-center gap-[6px]"
+        style={{ perspective: "1100px", perspectiveOrigin: "50% 62%" }}
+      >
         {books.map((book, i) => {
           const h = hash(book.title);
-          // 88–124px tall, 26–38px wide. Shorter than the standalone
-          // version was: this sits inside Recent Activity now, under a
-          // heading, and a full-height shelf there dwarfed the two source
-          // blocks above it. Ranges stay narrow — too much variation stops
-          // reading as a shelf and starts reading as a bar chart.
-          /*
-           * 158–211px. The first pass ran 88–124 and five of eight titles
-           * overflowed their spine, the worst by 156px — vertical text needs
-           * far more height than a horizontal label, and short spines aren't
-           * what a shelf looks like anyway.
-           */
+          // 158–211px. An earlier pass ran 88–124 and five of eight titles
+          // overflowed their spine, the worst by 156px.
           const height = 158 + (h % 54);
-          // `>>>`, not `>>`. A signed shift coerces to int32 first, so any
-          // hash above 2^31 comes out negative and the modulo does too —
-          // which produced 14px spines, well under the intended floor.
+          // `>>>`, not `>>`. A signed shift coerces to int32 first, so a hash
+          // above 2^31 goes negative and the modulo with it — which produced
+          // 14px spines under a 26px floor.
           const width = 26 + ((h >>> 5) % 13);
           const isOpen = open === i;
 
-          /*
-           * Fit the type to the spine rather than trusting it to fit.
-           *
-           * The label sits between the head band and the colophon, so ~50px of
-           * the spine is unavailable; what's left has to hold roughly
-           * `chars x 0.5 x fontSize` of vertical text. Clamped to 8–11: under 8
-           * it stops being readable, over 11 the short titles look oversized
-           * beside the long ones.
-           *
-           * This is the backstop, not the fix — `spineLabel` does the real work
-           * of keeping titles short. This only guarantees a long one added
-           * later shrinks instead of spilling.
-           */
+          // Fit the type to the room between the bands rather than trusting
+          // it to fit. The backstop, not the fix — `spineLabel` keeps titles
+          // short; this only stops a long one added later from spilling.
           const label = book.spineLabel ?? book.title;
           const room = height - 50;
           const fontSize = Math.max(
             8,
             Math.min(11, Math.floor(room / (label.length * 0.5))),
           );
+          // Covers run about 2:3. The cover is hinged to the spine's front
+          // edge and folds back into the shelf, so this is depth, not width.
+          const depth = Math.round(height * 0.66);
 
           return (
             <button
@@ -115,86 +110,95 @@ export default function Bookshelf() {
                 {
                   height,
                   width,
-                  background: book.spine,
-                  // Exposed as custom properties so the bands, colophon and
-                  // edge shading can be mixed from them in CSS — otherwise
-                  // every book would need three more sampled values in the
-                  // data just to shade its own detailing.
-                  "--spine": book.spine,
-                  "--ink": book.ink,
+                  transformStyle: "preserve-3d",
+                  // **The pivot.** Bottom-front corner, where the book meets
+                  // the shelf — so it swings out like a real one instead of
+                  // turning about its middle in mid-air.
+                  transformOrigin: "left bottom",
+                  ...(isOpen ? { "--deg": "-62deg" } : {}),
                 } as React.CSSProperties
               }
-              className={`group/spine relative flex shrink-0 items-center justify-center overflow-hidden rounded-t-[3px] transition-[transform,box-shadow,filter] duration-200 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                isOpen
-                  ? "-translate-y-3 shadow-[0_10px_20px_rgba(0,0,0,0.5)] brightness-110"
-                  : "motion-safe:hover:-translate-y-2 hover:brightness-125 hover:shadow-[0_8px_16px_rgba(0,0,0,0.45)]"
+              className={`group/spine relative shrink-0 rounded-t-[2px] [--deg:-15deg] [transform:rotateY(var(--deg))] transition-[transform,filter] duration-300 ease-out focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-accent motion-safe:hover:[--deg:-48deg] ${
+                isOpen ? "z-20 brightness-110" : "z-0 hover:brightness-110"
               }`}
             >
               {/*
-                  `vertical-rl` runs the text top-to-bottom, which is how spines
-                  are set on this side of the Atlantic. No rotation needed —
-                  transforming the text instead would fight the lift animation
-                  on the same element.
+                  The cover, hinged along the spine's front edge and folded 90°
+                  back into the shelf — where a real book's pages are. Rotating
+                  the whole book about the pivot is what swings it into view.
+
+                  First in the DOM so the spine paints over the hinge seam.
                 */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={book.cover}
+                alt=""
+                aria-hidden
+                style={{
+                  height,
+                  width: depth,
+                  transformOrigin: "left center",
+                  transform: "rotateY(90deg)",
+                }}
+                className="absolute left-0 top-0 rounded-r-[2px] object-cover brightness-[0.86]"
+              />
+
+              {/* The spine face. `overflow-hidden` belongs here rather than
+                    on the button, where it would clip the cover away. */}
+              <span
+                aria-hidden
+                style={
+                  {
+                    background: book.spine,
+                    "--spine": book.spine,
+                    "--ink": book.ink,
+                  } as React.CSSProperties
+                }
+                className="absolute inset-0 overflow-hidden rounded-t-[2px]"
+              >
+                <span
+                  className="absolute inset-x-0 top-[9px] h-[2px]"
+                  style={{
+                    background:
+                      "color-mix(in srgb, var(--spine) 72%, var(--ink))",
+                  }}
+                />
+                <span
+                  className="absolute inset-x-0 bottom-[26px] h-[2px]"
+                  style={{
+                    background:
+                      "color-mix(in srgb, var(--spine) 72%, var(--ink))",
+                  }}
+                />
+                <span
+                  className="absolute bottom-[10px] left-1/2 h-[11px] w-[11px] -translate-x-1/2 rounded-[1px] border"
+                  style={{
+                    borderColor:
+                      "color-mix(in srgb, var(--spine) 60%, var(--ink))",
+                  }}
+                />
+                <span
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to right, rgba(255,255,255,0.16), rgba(255,255,255,0) 18%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.28))",
+                  }}
+                />
+              </span>
+
               <span
                 style={{ color: book.ink, fontSize }}
                 className="absolute inset-x-0 bottom-[34px] top-[16px] z-10 flex items-center justify-center [writing-mode:vertical-rl] font-semibold tracking-tight"
               >
                 {label}
               </span>
-
-              {/*
-                What turns a coloured rectangle into a spine. All of it is
-                mixed from the book's own two colours, so it works on a
-                near-white cover and a deep red one without per-book tuning.
-              */}
-              {/* Head and tail bands, where most spines carry a rule. */}
-              <span
-                aria-hidden
-                className="absolute inset-x-0 top-[9px] h-[2px]"
-                style={{
-                  background:
-                    "color-mix(in srgb, var(--spine) 72%, var(--ink))",
-                }}
-              />
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-[26px] h-[2px]"
-                style={{
-                  background:
-                    "color-mix(in srgb, var(--spine) 72%, var(--ink))",
-                }}
-              />
-              {/* The publisher's colophon at the foot. Not any real mark — an
-                  empty block, which is what one reads as at this size. */}
-              <span
-                aria-hidden
-                className="absolute bottom-[10px] left-1/2 h-[11px] w-[11px] -translate-x-1/2 rounded-[1px] border"
-                style={{
-                  borderColor:
-                    "color-mix(in srgb, var(--spine) 60%, var(--ink))",
-                }}
-              />
-              {/* Shading either edge, so it reads as a curve rather than a
-                  flat card: light where it catches the room, dark at the
-                  hinge. */}
-              <span
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(to right, rgba(255,255,255,0.16), rgba(255,255,255,0) 18%, rgba(0,0,0,0) 72%, rgba(0,0,0,0.28))",
-                }}
-              />
             </button>
           );
         })}
       </div>
-
       {/* The plank. A line plus a shadow under it, rather than a wood
             texture — every surface on this site is flat. */}
       <div className="h-[6px] rounded-[2px] bg-line shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
-
       {/*
           The detail, under the shelf rather than in a modal — a modal for one
           line of text is a lot of ceremony, and this keeps the shelf visible
