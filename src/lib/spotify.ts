@@ -93,7 +93,7 @@ async function accessToken(): Promise<string | null> {
  * one track then one row is the honest answer, and the panel shows one. It did
  * exactly that on 19 Aug 2026 — the endpoint returned a single entry in total.
  */
-export async function getRecentTracks(limit = 2): Promise<Track[]> {
+export async function getRecentTracks(limit = 3): Promise<Track[]> {
   const token = await accessToken();
   if (!token) return [];
 
