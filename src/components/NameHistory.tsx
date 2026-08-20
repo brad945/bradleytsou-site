@@ -21,7 +21,8 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
     if (!open) return;
 
     function onPointerDown(event: MouseEvent) {
-      if (root.current && !root.current.contains(event.target as Node)) setOpen(false);
+      if (root.current && !root.current.contains(event.target as Node))
+        setOpen(false);
     }
 
     function onKeyDown(event: KeyboardEvent) {
@@ -41,7 +42,19 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
 
   return (
     <div ref={root} className="relative inline-flex items-center gap-2">
-      <h1 className="t-display">{name}</h1>
+      {/*
+        Bold, at Bradley's request, and applied here rather than in
+        `.t-display` — that class is also the `/about` page's `<h1>`, so
+        changing it there would have bolted this decision onto a heading
+        nobody asked about.
+
+        It is the one large element on the page not at weight 300. Light
+        weights on anything big are the trait that carries most of the Steam
+        resemblance, so this is a deliberate exception, not a drift: the three
+        bio lines under it dropped to `font-normal` in the same change, which
+        leaves the header with exactly one thing shouting instead of two.
+      */}
+      <h1 className="t-display font-bold">{name}</h1>
 
       {/*
         The dropdown anchors to the caret, not to the name: in the reference
@@ -84,13 +97,18 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
             {aliases.length > 0 ? (
               <ul className="py-0.5 pb-2">
                 {aliases.map((alias) => (
-                  <li key={alias} className="px-3 py-[5px] text-[13px] text-copy">
+                  <li
+                    key={alias}
+                    className="px-3 py-[5px] text-[13px] text-copy"
+                  >
                     {alias}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="px-3 py-2.5 text-[13px] text-muted">No previous aliases</p>
+              <p className="px-3 py-2.5 text-[13px] text-muted">
+                No previous aliases
+              </p>
             )}
           </div>
         )}

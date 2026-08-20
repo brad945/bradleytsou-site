@@ -382,7 +382,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                   Restoring it means putting `className` back on the entries in
                   profile-data and reading it here again.
                 */
-                className={`max-w-[46ch] whitespace-nowrap text-[20px] font-medium leading-tight text-bright ${
+                className={`max-w-[46ch] whitespace-nowrap text-[20px] font-normal leading-tight text-bright ${
                   i === 0 ? "mt-2.5" : "mt-1"
                 }`}
               >
@@ -418,11 +418,12 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             **The translate on the word is doing two jobs.** `items-start`
             only lines up the two boxes, and a line box is not a letter: with
             `leading-none` the cap of the L sits 4.5px below the ring, so -4px
-            was what made their visible tops match. Bradley then asked for it
-            5px lower, which is +1px — so the word now sits deliberately just
-            below the ring's top rather than flush with it, and the number
-            carries both decisions at once. If the font size changes, the 4
-            changes and this becomes 5 minus whatever the new offset is.
+            was what made their visible tops match. Bradley then moved it by
+            eye — 5px down, then 2 back up — landing at -1px, so the word sits
+            fractionally above flush with the ring. The number carries both
+            decisions at once: the 4px that cancels the box-versus-letter gap,
+            and his 3px on top of it. If the font size changes, that 4 moves
+            and this has to be recomputed rather than nudged again.
           */}
           {/*
             The note wraps both the word and the circle, so hovering either
@@ -439,7 +440,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             note="this is my actual Steam account level"
           >
             <span className="flex items-start gap-[6px]">
-              <span className="translate-y-[1px] text-[27px] font-light leading-none text-ink">
+              <span className="-translate-y-[1px] text-[27px] font-light leading-none text-ink">
                 Level
               </span>
               <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
