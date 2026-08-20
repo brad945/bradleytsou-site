@@ -47,7 +47,7 @@ export const aboutText: string[] = [
    * either fetched or written to be checkable, and this is the one place he
    * gets to just talk. Don't sentence-case it.
    */
-  "hi im bradley. i love learning, struggling, failing, practicing, ideating, and also doing nothing. i love to make things, break things, eat and drink things, cook things, play things, lift things, watch/binge things, read things, draw things, write things, try new things, contemplate things, and listen to things.",
+  "hi im bradley. i love learning, struggling, failing, practicing, ideating, and also doing nothing. i love to make things, break things, eat things, model things, cook things, play things, lift things, watch/binge things, read things, draw things, write things, try new things, contemplate things, and listen to things.",
 ];
 
 /* -------------------------------------------------------------------------
