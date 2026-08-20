@@ -33,6 +33,16 @@ import {
  * of leaving a hole.
  */
 
+/*
+ * `kind` — Software / Design / Research — is no longer rendered, at Bradley's
+ * request. It sat under each name as a subtitle and said the least of anything
+ * on the row: the blurb already tells you what the thing is, and on a page
+ * where six of seven entries are "Software" it was a column of the same word.
+ *
+ * The field stays on `Project`. It's a real classification and it's cheap to
+ * keep, but note it now joins `rarity` as data nothing displays — so nothing
+ * on the page can check it.
+ */
 function projectRow(project: Project, repo?: FeaturedRepo) {
   const href =
     project.href ??
@@ -54,7 +64,6 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
       href={href}
       isPrivate={isPrivate}
       award={project.award}
-      subtitle={project.kind}
       blurb={project.blurb}
       tags={project.tags}
       /*
