@@ -415,13 +415,14 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             break from the reference here, so don't "restore" it by scaling the
             numeral with everything else.
 
-            **The word aligns to the circle's top, and needs the -4px to do
-            it.** `items-start` only lines up the two boxes, and a line box is
-            not a letter: with `leading-none` the cap of the L still sat 4.5px
-            below the ring. The translate makes the visible tops match, which
-            is what was asked for and what anyone actually sees. Measured after
-            — ring top 288, cap top 287. Change the font size and this number
-            changes with it.
+            **The translate on the word is doing two jobs.** `items-start`
+            only lines up the two boxes, and a line box is not a letter: with
+            `leading-none` the cap of the L sits 4.5px below the ring, so -4px
+            was what made their visible tops match. Bradley then asked for it
+            5px lower, which is +1px — so the word now sits deliberately just
+            below the ring's top rather than flush with it, and the number
+            carries both decisions at once. If the font size changes, the 4
+            changes and this becomes 5 minus whatever the new offset is.
           */}
           {/*
             The note wraps both the word and the circle, so hovering either
@@ -438,7 +439,7 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             note="this is my actual Steam account level"
           >
             <span className="flex items-start gap-[6px]">
-              <span className="-translate-y-[4px] text-[27px] font-light leading-none text-ink">
+              <span className="translate-y-[1px] text-[27px] font-light leading-none text-ink">
                 Level
               </span>
               <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
