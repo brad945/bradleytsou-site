@@ -53,6 +53,14 @@ export interface Project {
   /** e.g. "2026 — present". Free text. Omitted when it isn't known. */
   period?: string;
   /**
+   * A short award chip on the row, e.g. a hackathon win.
+   *
+   * Deliberately not a boolean: what it says should be whatever is true of
+   * that project, so a second kind of award later needs no new field. The
+   * detail stays in the blurb — the chip is there to be spotted, not read.
+   */
+  award?: string;
+  /**
    * Which Portfolio group it sits under. Defaults to `projects`.
    *
    * The groups are places the work was done, not kinds of work, which is why
@@ -794,7 +802,7 @@ export const projects: Project[] = [
      * something he uses.
      */
     id: "amazon-kiro",
-    name: "Amazon",
+    name: "Amazon AWS",
     kind: "Research",
     category: "dana",
     blurb:
@@ -867,7 +875,9 @@ export const projects: Project[] = [
      * commits like the others.
      */
     id: "t-ether",
-    name: "t-ether",
+    // Set as the team writes it on Devpost. The repo/id stays lowercase.
+    name: "T-ETHER",
+    award: "Hackathon winner",
     kind: "Software",
     /*
      * Condensed by me from Bradley's own Devpost write-up, and one of only two
@@ -890,6 +900,7 @@ export const projects: Project[] = [
     id: "guardian",
     ghRepo: "aryan-gupta123/Guardian",
     name: "Guardian",
+    award: "Hackathon winner",
     kind: "Software",
     blurb:
       "AI risk-defence agent that protects elderly users from financial scams — detects suspicious transactions and explains the risk in plain language. Built the entire frontend around accessibility for senior users: large type, guided voice, calm interface. 1st place at Cal Hacks 12.0 on the Bright Data track, out of 700 projects and 3,000+ participants.",
