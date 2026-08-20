@@ -94,8 +94,14 @@ export default function Portfolio({ featured }: { featured: FeaturedRepo[] }) {
                 labels for that reason. A group heading is page text, so it
                 takes the page's own 14px — the same class the source names in
                 Recent Activity use.
+
+                No colour override on it either, so it lands on `t-label`'s own
+                `muted` (#8f98a0). That's Bradley's "grey but obvious": a true
+                grey rather than the blue-grey `copy` it had, and still well
+                clear of the panel behind it. It reads as a label for the rows
+                under it instead of competing with their titles.
               */}
-              <h3 className="t-label text-copy">{cat.label}</h3>
+              <h3 className="t-label">{cat.label}</h3>
               {rows.length > 0 ? (
                 <ul className="mt-1 flex flex-col">
                   {rows.map((project) =>
