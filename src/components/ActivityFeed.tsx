@@ -85,30 +85,25 @@ function SourceBlock({
 }) {
   return (
     /*
-      Each block owns the rule ABOVE it, rather than the container drawing all
-      of them with `divide-y`. That's what lets a rule respond to its own
-      block: `divide-y` puts the border on the sibling, so there is no element
-      a hover could reach.
+      Each block owns the rule ABOVE it rather than the container drawing all
+      of them with `divide-y`, which puts the border on the sibling.
+
+      That started as a way to let a rule light up with its own block. The
+      hover is gone at Bradley's request — an obvious constant line, nothing
+      that reacts — but the arrangement stays, because it's also what lets each
+      rule fade out at its ends instead of running the full width of the panel.
     */
-    <div className={`group/src relative ${className ?? ""}`}>
+    <div className={`relative ${className ?? ""}`}>
       {rule && (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-muted/60 to-transparent transition-colors duration-300 group-hover/src:via-link"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-muted to-transparent"
         />
       )}
       <div className="mb-2 flex items-baseline gap-2">
         <span className="flex items-center gap-2">
           {icon}
-          {/*
-            The label brightens with its own block, so pointing anywhere in a
-            source lights that source's name and its rule together — which is
-            what makes the three read as three things rather than one list
-            with lines in it.
-          */}
-          <span className="t-label text-copy transition-colors duration-300 group-hover/src:text-bright">
-            {name}
-          </span>
+          <span className="t-label text-copy">{name}</span>
         </span>
         {note && <span className="t-meta text-[12px]">{note}</span>}
       </div>
