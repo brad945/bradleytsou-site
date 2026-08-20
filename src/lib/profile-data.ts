@@ -888,7 +888,7 @@ export const projects: Project[] = [
      * part nothing else here does.
      */
     blurb:
-      "Turns a 50-minute lecture into a playlist of 60-second, reel-style micro-lectures — one concept each, with hooks, word-synced captions, and cuts placed on sentence boundaries instead of mid-word. TwelveLabs Pegasus finds the key concepts and writes the search queries Marengo uses to locate them, so the clipping follows what the lecture is about rather than where its timestamps happen to fall.",
+      "Turns a 50-minute lecture into a playlist of 60-second, reel-style micro-lectures — one concept each, with hooks, word-synced captions, and cuts placed on sentence boundaries instead of mid-word. TwelveLabs Pegasus finds the key concepts and writes the search queries Marengo uses to locate them, so the clipping follows what the lecture is about rather than where its timestamps happen to fall. Invited to present at TwelveLabs' Multimodal AI series, out of 35 groups.",
     rarity: "side",
     // All named in the blurb, so none is inferred.
     tags: ["TwelveLabs", "Deepgram", "FFmpeg", "React"],
