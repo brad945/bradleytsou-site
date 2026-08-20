@@ -235,13 +235,18 @@ export const achievements: Achievement[] = [
   },
   {
     /*
-     * His figure, and the only one on this page that nothing can check —
-     * a brokerage has no public API and a Roth IRA certainly doesn't. It sits
-     * with `profileLevel`, `hackathonWins` and `accountBalance` on the list of
+     * His, and the only figure on this page nothing can check — a brokerage
+     * has no public API and a Roth IRA certainly doesn't. It sat with
+     * `profileLevel`, `hackathonWins` and `accountBalance` on the list of
      * numbers that are true because he says so.
+     *
+     * It's vaguer now by choice: "4 figure %" rather than the exact 1,421%,
+     * which is the honest way to state a number that moves. The detail is a
+     * joke — the advice is backwards — and it's the one line on either page
+     * that isn't meant literally.
      */
-    name: "1,421% returns",
-    detail: "Personal investment portfolio and Roth IRA",
+    name: "4 figure % returns",
+    detail: "Buy high, sell low",
     /*
      * No date, at Bradley's request. It's a running total rather than
      * something that happened in a year, so a single year would have said
