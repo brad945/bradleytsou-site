@@ -1,7 +1,12 @@
 import { DEVEVAL_ROWS, type DevEvalStats } from "@/lib/deveval";
 import type { Contributions, LanguageCount } from "@/lib/github";
 import type { GitHubSnapshot } from "@/lib/github";
-import { hackathonWins, socials, techStack } from "@/lib/profile-data";
+import {
+  hackathonWins,
+  projects,
+  socials,
+  techStack,
+} from "@/lib/profile-data";
 import { SOCIAL_ICONS, type SocialIconName } from "@/components/SocialIcons";
 
 interface SidebarProps {
@@ -236,13 +241,24 @@ export default function Sidebar({
           href="#comments-heading"
         />
         {/*
-          Links to Portfolio on /about, like Hackathon Wins above it. The value
-          stays an em-dash: the link is to the work, not to a count of it, and
-          nothing here counts artwork.
+          Links to Portfolio on /about, like Hackathon Wins above it, and the
+          number is now `projects.length` — so adding a row over there moves
+          this one, and neither can drift from the other.
+          
+          Note what it counts: **Portfolio entries, not artwork.** The label
+          names both because the row was built to hold both eventually, and
+          there is no artwork on this site yet. If any lands, this has to
+          become a sum rather than one array's length, or the number will go
+          on describing half of its own label.
+
+          This is the opposite call from Hackathon Wins two rows up, which is
+          hand-set precisely because `projects.length` is *not* what it means.
+          A derived count is right when the label is the thing being counted
+          and wrong when it only happens to match.
         */}
         <Stat
           label="Artwork / Portfolio"
-          value="—"
+          value={projects.length}
           href="/about#portfolio-heading"
         />
       </section>
