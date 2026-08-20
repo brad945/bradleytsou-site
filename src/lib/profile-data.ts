@@ -858,8 +858,18 @@ export const projects: Project[] = [
     id: "t-ether",
     name: "t-ether",
     kind: "Software",
+    /*
+     * Condensed by me from Bradley's own Devpost write-up, and one of only two
+     * blurbs on the site that isn't a repo description copied verbatim — the
+     * other is VisionNotes. Every claim in it is his; the editing is the
+     * choice of which two things to keep, and the two-model pipeline is the
+     * part nothing else here does.
+     */
+    blurb:
+      "Turns a 50-minute lecture into a playlist of 60-second, reel-style micro-lectures — one concept each, with hooks, word-synced captions, and cuts placed on sentence boundaries instead of mid-word. TwelveLabs Pegasus finds the key concepts and writes the search queries Marengo uses to locate them, so the clipping follows what the lecture is about rather than where its timestamps happen to fall.",
     rarity: "side",
-    tags: [],
+    // All named in the blurb, so none is inferred.
+    tags: ["TwelveLabs", "Deepgram", "FFmpeg", "React"],
     // Devpost, from Bradley — there's no repo this account can see, so this is
     // the only place the project can be looked at.
     href: "https://devpost.com/software/t-ether",
