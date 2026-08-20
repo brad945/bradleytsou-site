@@ -575,16 +575,22 @@ export const roles: Role[] = [
     url: "https://deveval.com",
   },
   {
-    org: "micro1",
-    // Hidden at Bradley's request. Nothing else was changed; unset this to
-    // bring it back, tags and all.
-    hidden: true,
+    /*
+     * Back on the page at Bradley's request, and named "Various companies"
+     * rather than micro1 — the work is contract, so the org line is now a
+     * description of the arrangement instead of one employer's name.
+     *
+     * The `url` went with the name. It pointed at micro1.ai, and a row that
+     * says "Various companies" cannot link to one of them without
+     * contradicting itself. The labs it names in the blurb are still there,
+     * which is where the specifics belong.
+     */
+    org: "Various companies",
     tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
     title: "Language and Audio Engineer",
     start: "Jun 2026",
     blurb:
       "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
-    url: "https://micro1.ai",
   },
   {
     org: "Web Development at Berkeley",
