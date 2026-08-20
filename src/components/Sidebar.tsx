@@ -151,14 +151,28 @@ export default function Sidebar({
             `publicRepos` — the REST user endpoint's public count, which can't
             see his private repos. The shorter label reads as a total it isn't.
           */}
-          <Stat label="Repos" value={stats?.publicRepos ?? "—"} />
+          <Stat
+            label="Repos"
+            value={stats?.publicRepos ?? "—"}
+            href={stats?.profileUrl}
+          />
           {/*
             Was "Projects", counted from the `projects` array. The relabel
             forced the value to change with it: 3 is how many entries that
             array has, not how many were won, and leaving it would have made
             the page state a figure it never measured. See `hackathonWins`.
           */}
-          <Stat label="Hackathon Wins" value={hackathonWins ?? "—"} />
+          {/*
+            Points at Portfolio on /about, which is where the two wins are —
+            Guardian and T-ETHER, both carrying a winner chip. It's the only
+            stat in this column that leaves the profile page, and it does so
+            because the thing it counts lives on the other one.
+          */}
+          <Stat
+            label="Hackathon Wins"
+            value={hackathonWins ?? "—"}
+            href="/about#portfolio-heading"
+          />
           {!!stats?.following && (
             <Stat label="Following" value={stats.following} />
           )}
@@ -190,12 +204,11 @@ export default function Sidebar({
           it, so it sits in the same rhythm.
         */}
         {contributions && (
-          <div className="stat-row">
-            <span className="stat-label">Contributions this year</span>
-            <span className="stat-value">
-              {contributions.total.toLocaleString()}
-            </span>
-          </div>
+          <Stat
+            label="Contributions this year"
+            value={contributions.total.toLocaleString()}
+            href={stats?.profileUrl}
+          />
         )}
 
         {/*
