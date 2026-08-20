@@ -41,7 +41,13 @@ import type { Rarity } from "@/lib/profile-data";
  * one earns it is that it says so plainly instead of dressing up as data.
  */
 export const aboutText: string[] = [
-  "hi", // TODO(bradley): the actual thing
+  /*
+   * His words, verbatim — lowercase "i" and all. That's the voice, not a typo,
+   * and it's the reason this panel exists: everything else on both pages is
+   * either fetched or written to be checkable, and this is the one place he
+   * gets to just talk. Don't sentence-case it.
+   */
+  "hi im bradley. i love learning, struggling, failing, practicing, ideating, and also doing nothing. i love to make things, break things, eat and drink things, cook things, play things, lift things, watch/binge things, read things, draw things, write things, and listen to things.",
 ];
 
 /* -------------------------------------------------------------------------
