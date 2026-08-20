@@ -28,19 +28,15 @@ export default function Achievements() {
         {achievements.map((a) => (
           <li
             key={a.name}
-            className="flex items-start gap-4 border-t border-line/50 py-3 first:border-t-0"
+            className="flex items-start gap-4 border-t border-line/50 py-2.5 first:border-t-0"
           >
-            <span
-              aria-hidden
-              className={`flex h-[36px] w-[36px] shrink-0 items-center justify-center border bg-panel2/70 text-[15px] ${
-                a.unlocked
-                  ? "border-accent/50 text-accent"
-                  : "border-line text-muted/60"
-              }`}
-            >
-              {a.unlocked ? "★" : "☆"}
-            </span>
-
+            {/*
+              No star tile, at Bradley's request. `unlocked` is still what the
+              panel bar counts and still greys a locked row's name, so the
+              distinction survives — it just no longer has an icon of its own.
+              With every row unlocked today there is nothing for one to mark
+              anyway, and a column of identical stars is decoration.
+            */}
             <div className="min-w-0 flex-1">
               <span
                 className={`block text-[15px] leading-tight ${
@@ -56,9 +52,7 @@ export default function Achievements() {
 
             {/* Nothing rather than a dash when it isn't unlocked — the row
                 already says so twice. */}
-            {a.date && (
-              <span className="t-meta shrink-0 pt-0.5">{a.date}</span>
-            )}
+            {a.date && <span className="t-meta shrink-0 pt-0.5">{a.date}</span>}
           </li>
         ))}
       </ul>
