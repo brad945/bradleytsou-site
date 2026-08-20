@@ -408,18 +408,27 @@ const config: Config = {
          *
          * Grain runs along each board's length: horizontal bands on the
          * horizontal boards, vertical on the uprights.
+         *
+         * **The `face` plateau is wide on purpose.** These four are coplanar
+         * faces of one piece of furniture, so they have to read as the same
+         * material — and they didn't. Measured across the top-left joint, the
+         * board sat around 104 and the upright beside it around 60, because
+         * the upright's gradient spent more than half its 16px falling to
+         * `dark`. Each board now holds `face` across roughly three quarters of
+         * its width and does its darkening in the last tenth, which is where
+         * the shadow of a real inner corner actually lives.
          */
         "shelf-board-top": [
           grain("to bottom", 5, 8, "0c"),
-          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 30% 66%, ${shelf.base} 84%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 11%, ${shelf.face} 26% 76%, ${shelf.base} 90%, ${shelf.edge})`,
         ].join(", "),
         "shelf-board-left": [
           grain("to right", 5, 8, "0c"),
-          `linear-gradient(to right, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 30% 54%, ${shelf.base} 78%, ${shelf.dark})`,
+          `linear-gradient(to right, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 11%, ${shelf.face} 26% 76%, ${shelf.base} 90%, ${shelf.dark})`,
         ].join(", "),
         "shelf-board-right": [
           grain("to right", 5, 8, "0c"),
-          `linear-gradient(to left, ${shelf.dark}, ${shelf.dark} 1px, ${shelf.base} 10%, ${shelf.face} 30% 56%, ${shelf.light} 84%, ${shelf.base})`,
+          `linear-gradient(to left, ${shelf.dark}, ${shelf.dark} 1px, ${shelf.base} 10%, ${shelf.face} 26% 78%, ${shelf.light} 92%, ${shelf.base})`,
         ].join(", "),
         /*
          * The suspension wire. Steel rather than a shade of the shelf, because
@@ -454,7 +463,7 @@ const config: Config = {
         "shelf-fitting": `radial-gradient(circle at 34% 28%, ${tokens.steelLight}, ${tokens.steel} 42%, ${tokens.steelMid} 70%, ${tokens.steelDark})`,
         "shelf-lip": [
           grain("to right", 13, 19, "0b"),
-          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 14%, ${shelf.face} 32% 62%, ${shelf.base} 82%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 26% 74%, ${shelf.base} 88%, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },

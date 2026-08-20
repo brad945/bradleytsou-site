@@ -647,10 +647,16 @@ export default function Bookshelf() {
             Inset between the uprights, the way a real carcass is built: the
             sides run the full height and the boards sit between them. Butting
             it over them instead reads as a picture frame rather than a shelf.
+
+            The inset shadows on its two ends draw the joint. Two boards
+            meeting at right angles have gradients running at right angles too,
+            so their values can't match all the way along the seam however
+            they're tuned — and an unexplained mismatch reads as a mistake. A
+            line reads as joinery.
           */}
           <span
             aria-hidden
-            className="absolute left-[16px] right-[16px] top-0 h-[14px] bg-shelf-board-top"
+            className="absolute left-[16px] right-[16px] top-0 h-[14px] bg-shelf-board-top shadow-[inset_1px_0_0_rgba(21,29,40,0.55),inset_-1px_0_0_rgba(21,29,40,0.55)]"
           />
           <span
             aria-hidden
