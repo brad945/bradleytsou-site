@@ -25,6 +25,26 @@ import type { Rarity } from "@/lib/profile-data";
  */
 
 /* -------------------------------------------------------------------------
+ * About
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The About panel: plain prose, in Bradley's words.
+ *
+ * One string per paragraph, so adding to it never means touching JSX. It's
+ * a placeholder right now — he asked for the section ahead of the copy, which
+ * is the same call the two empty Portfolio groups make.
+ *
+ * This is the only panel on either page that is *meant* to be prose. The rest
+ * of the site avoids it deliberately — a wall of "I'm passionate about…" next
+ * to panels of fetched numbers borrows their credibility — so the reason this
+ * one earns it is that it says so plainly instead of dressing up as data.
+ */
+export const aboutText: string[] = [
+  "hi", // TODO(bradley): the actual thing
+];
+
+/* -------------------------------------------------------------------------
  * Reviews
  * ---------------------------------------------------------------------- */
 

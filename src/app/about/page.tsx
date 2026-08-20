@@ -6,7 +6,7 @@ import Reviews from "@/components/Reviews";
 import SiteNav from "@/components/SiteNav";
 import { getFeaturedRepos, getGitHubSnapshot } from "@/lib/github";
 import { getSteamPlaytime } from "@/lib/steam";
-import { reviews } from "@/lib/about-data";
+import { aboutText, reviews } from "@/lib/about-data";
 import {
   featuredRepos,
   githubUsername,
@@ -108,6 +108,31 @@ export default async function About() {
             the parts of him that aren't — with those gone there's nothing for
             it to sit under.
           */}
+          {/*
+            About: the one panel on this site that is meant to be prose.
+            Everything else avoids it on purpose — paragraphs of self-
+            description sitting beside panels of fetched numbers borrow their
+            credibility — and this earns its place by being plainly labelled as
+            what it is rather than dressed up as data.
+
+            Rendered here rather than as its own component because it is a
+            heading and a list of paragraphs with no logic in it. Give it a
+            file the moment it needs one.
+          */}
+          <section aria-labelledby="about-panel-heading" className="panel">
+            <div className="panel-bar">
+              <h2 id="about-panel-heading" className="panel-bar-title">
+                About
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3 p-5">
+              {aboutText.map((para) => (
+                <p key={para} className="t-body max-w-[68ch]">
+                  {para}
+                </p>
+              ))}
+            </div>
+          </section>
           {/* <Reviews playtime={playtime} /> */}
           <Portfolio featured={featured} />
           {/* <Inventory /> */}
