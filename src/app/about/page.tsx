@@ -83,23 +83,20 @@ export default async function About() {
 
       <main className="mx-auto w-full max-w-profile bg-hero px-3 pb-6 pt-3 sm:px-4 sm:pb-8 sm:pt-4">
         {/*
-          A heading, because unlike `/` this page has no profile header to
-          introduce it — landing straight on a Reviews panel would give no
-          indication of whose reviews they are or why they're here.
-        */}
-        <header className="px-1 pb-1 pt-3">
-          {/*
-            Heading only. The tagline under it — "The profile is the formal
-            half. This is the rest of it." — is gone at Bradley's request. It
-            was written when this page was Reviews, Inventory and Achievements
-            and needed to explain why those belonged together; with an About me
-            panel directly beneath it, it was introducing something that now
-            introduces itself.
-          */}
-          <h1 className="t-display">About</h1>
-        </header>
+          **No page heading.** There was an `<h1>About</h1>` here with a
+          tagline under it, and both are gone at Bradley's request — the page
+          opens on the About me panel instead.
 
-        <div className="mt-3 flex flex-col gap-3">
+          It existed because this page has no profile header to introduce it,
+          the way `/` does, and landing straight on a panel of reviews gave no
+          indication of whose they were. That argument died with the content:
+          the first thing on the page now says "About me" in its own bar.
+
+          The `<h1>` moved down into that bar rather than being deleted, so the
+          page still has exactly one and it's the thing at the top of it. It
+          keeps `panel-bar-title`, so nothing about it looks different.
+        */}
+        <div className="flex flex-col gap-3">
           {/*
             **Reviews and Inventory are hidden, not deleted**, at Bradley's
             request — both are still written in my voice rather than his, and
@@ -126,9 +123,9 @@ export default async function About() {
           */}
           <section aria-labelledby="about-panel-heading" className="panel">
             <div className="panel-bar">
-              <h2 id="about-panel-heading" className="panel-bar-title">
+              <h1 id="about-panel-heading" className="panel-bar-title">
                 About me
-              </h2>
+              </h1>
             </div>
             <div className="flex flex-col gap-3 p-5">
               {aboutText.map((para) => (
