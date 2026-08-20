@@ -414,6 +414,14 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             0.53x the diameter rather than 0.44x. That's the one deliberate
             break from the reference here, so don't "restore" it by scaling the
             numeral with everything else.
+
+            **The word aligns to the circle's top, and needs the -4px to do
+            it.** `items-start` only lines up the two boxes, and a line box is
+            not a letter: with `leading-none` the cap of the L still sat 4.5px
+            below the ring. The translate makes the visible tops match, which
+            is what was asked for and what anyone actually sees. Measured after
+            — ring top 288, cap top 287. Change the font size and this number
+            changes with it.
           */}
           {/*
             The note wraps both the word and the circle, so hovering either
@@ -429,8 +437,8 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             className="inline-flex"
             note="this is my actual Steam account level"
           >
-            <span className="flex items-center gap-[6px]">
-              <span className="text-[28px] font-light leading-none text-ink">
+            <span className="flex items-start gap-[6px]">
+              <span className="-translate-y-[4px] text-[27px] font-light leading-none text-ink">
                 Level
               </span>
               <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
