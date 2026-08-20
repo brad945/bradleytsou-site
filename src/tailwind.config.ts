@@ -409,6 +409,15 @@ const config: Config = {
          * Grain runs along each board's length: horizontal bands on the
          * horizontal boards, vertical on the uprights.
          *
+         * **The highlight rises to a peak and falls away, and both halves
+         * need room.** These ran `hi, hi 1px, …`, which put the brightest
+         * value in the palette against the board's face inside one pixel — a
+         * measured 44-level step, which is a drawn line rather than a lit
+         * edge. Fixing only the rise moved the cliff to the other side: `hi
+         * 3px` next to `light 22%` on a 14px board is two stops 0.08px apart,
+         * and it measured 45. Every stop is a percentage now, so the specular
+         * scales with the board and neither slope can collapse.
+         *
          * **The `face` plateau is wide on purpose.** These four are coplanar
          * faces of one piece of furniture, so they have to read as the same
          * material — and they didn't. Measured across the top-left joint, the
@@ -420,15 +429,15 @@ const config: Config = {
          */
         "shelf-board-top": [
           grain("to bottom", 5, 8, "0c"),
-          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 11%, ${shelf.face} 26% 76%, ${shelf.base} 90%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.light}, ${shelf.hi} 22%, ${shelf.face} 46% 78%, ${shelf.base} 90%, ${shelf.edge})`,
         ].join(", "),
         "shelf-board-left": [
           grain("to right", 5, 8, "0c"),
-          `linear-gradient(to right, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 11%, ${shelf.face} 26% 76%, ${shelf.base} 90%, ${shelf.dark})`,
+          `linear-gradient(to right, ${shelf.light}, ${shelf.hi} 22%, ${shelf.face} 46% 78%, ${shelf.base} 90%, ${shelf.dark})`,
         ].join(", "),
         "shelf-board-right": [
           grain("to right", 5, 8, "0c"),
-          `linear-gradient(to left, ${shelf.dark}, ${shelf.dark} 1px, ${shelf.base} 10%, ${shelf.face} 26% 78%, ${shelf.light} 92%, ${shelf.base})`,
+          `linear-gradient(to left, ${shelf.base}, ${shelf.dark} 16%, ${shelf.base} 34%, ${shelf.face} 52% 80%, ${shelf.light} 94%, ${shelf.base})`,
         ].join(", "),
         /*
          * The suspension wire. Steel rather than a shade of the shelf, because
@@ -463,7 +472,7 @@ const config: Config = {
         "shelf-fitting": `radial-gradient(circle at 34% 28%, ${tokens.steelLight}, ${tokens.steel} 42%, ${tokens.steelMid} 70%, ${tokens.steelDark})`,
         "shelf-lip": [
           grain("to right", 13, 19, "0b"),
-          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 26% 74%, ${shelf.base} 88%, ${shelf.edge})`,
+          `linear-gradient(to bottom, ${shelf.light}, ${shelf.hi} 22%, ${shelf.face} 46% 76%, ${shelf.base} 88%, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },

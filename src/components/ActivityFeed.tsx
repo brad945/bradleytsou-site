@@ -55,6 +55,7 @@ function SourceBlock({
   icon,
   note,
   className,
+  rule = false,
   children,
 }: {
   name: string;
@@ -71,14 +72,36 @@ function SourceBlock({
   note?: string;
   /** Vertical padding, so each block sits off its dividing rules. */
   className?: string;
+  /** Draws the rule above this block. Omit on the first one. */
+  rule?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className={className}>
+    /*
+      Each block owns the rule ABOVE it, rather than the container drawing all
+      of them with `divide-y`. That's what lets a rule respond to its own
+      block: `divide-y` puts the border on the sibling, so there is no element
+      a hover could reach.
+    */
+    <div className={`group/src relative ${className ?? ""}`}>
+      {rule && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-muted/60 to-transparent transition-colors duration-300 group-hover/src:via-link"
+        />
+      )}
       <div className="mb-2 flex items-baseline gap-2">
         <span className="flex items-center gap-2">
           {icon}
-          <span className="t-label text-copy">{name}</span>
+          {/*
+            The label brightens with its own block, so pointing anywhere in a
+            source lights that source's name and its rule together — which is
+            what makes the three read as three things rather than one list
+            with lines in it.
+          */}
+          <span className="t-label text-copy transition-colors duration-300 group-hover/src:text-bright">
+            {name}
+          </span>
         </span>
         {note && <span className="t-meta text-[12px]">{note}</span>}
       </div>
@@ -240,7 +263,13 @@ export default function ActivityFeed({
         The divider is `line` at full strength, not a tint: at 40% it was
         there and still didn't separate anything.
       */}
-      <div className="flex flex-col divide-y divide-line p-5 pt-3">
+      {/*
+        No `divide-y` any more — each block draws its own rule, so a rule can
+        light up with the block it belongs to. The rules also fade out at both
+        ends now rather than running edge to edge, which stops three hard lines
+        cutting the panel into strips.
+      */}
+      <div className="flex flex-col p-5 pt-3">
         <SourceBlock
           name="GitHub"
           icon={<GitHubIcon className="h-4 w-4 text-muted" />}
@@ -283,6 +312,7 @@ export default function ActivityFeed({
             name="Spotify"
             icon={<SpotifyIcon className="h-4 w-4 text-muted" />}
             className="py-5"
+            rule
           >
             <ul className="flex flex-col">
               {tracks.map((track) => (
@@ -303,6 +333,7 @@ export default function ActivityFeed({
             that was already there.
           */
           className="pb-2 pt-5"
+          rule
         >
           <Bookshelf />
         </SourceBlock>

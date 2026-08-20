@@ -407,11 +407,11 @@ export default function Bookshelf() {
                        * floor, and contact edges genuinely are sharp.
                        */
                       maskImage:
-                        "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                        "linear-gradient(to right, transparent, #000 24%, #000 76%, transparent)",
                       WebkitMaskImage:
-                        "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                        "linear-gradient(to right, transparent, #000 24%, #000 76%, transparent)",
                     }}
-                    className="absolute bottom-0 left-[3px] right-[-20px] rounded-b-[2px] blur-[7px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.5]"
+                    className="absolute bottom-0 left-[3px] right-[-20px] rounded-b-[2px] blur-[11px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.5]"
                   />
                   {/*
                     Contact shadow. The long one above falls away too gradually
@@ -430,7 +430,7 @@ export default function Bookshelf() {
                       background:
                         "linear-gradient(to top right, rgba(0,0,0,0.66), rgba(0,0,0,0) 78%)",
                     }}
-                    className="absolute bottom-0 left-[1px] right-[-7px] blur-[2.5px] transition-transform duration-300 ease-out"
+                    className="absolute bottom-0 left-[1px] right-[-7px] blur-[3.5px] transition-transform duration-300 ease-out"
                   />
 
                   {/*
@@ -470,11 +470,11 @@ export default function Bookshelf() {
                        * `transform-style: flat` and it has no 3D children.
                        */
                       maskImage:
-                        "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent)",
+                        "linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent)",
                       WebkitMaskImage:
-                        "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent)",
+                        "linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent)",
                     }}
-                    className="absolute inset-0 blur-[9px] transition-opacity duration-300 motion-safe:group-hover/book:opacity-35"
+                    className="absolute inset-0 blur-[14px] transition-opacity duration-300 motion-safe:group-hover/book:opacity-35"
                   />
 
                   <button
