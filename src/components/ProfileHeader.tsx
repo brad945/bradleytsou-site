@@ -389,7 +389,6 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
                 {renderBioLine(line)}
               </p>
             ))}
-
           </div>
         </div>
 
@@ -403,9 +402,18 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             Measured off the reference rather than eyeballed. Against the
             "Level" font-size, the ring there is:
               diameter 1.08x   ring 6.4% of diameter   numeral 0.44x   gap 0.20x
-            At 34px that's 37 / 2 / 16 / 7. The circle is very nearly the same
-            size as the word — an earlier pass had it at 1.29x, which is what
-            made it read as oversized.
+            At 34px that was 37 / 2 / 16 / 7.
+
+            **The word and the circle are smaller than that now, at Bradley's
+            request, and the numeral is not.** 28px word, 30px circle, 6px gap
+            — the 1.08 and 0.20 ratios still hold, so the circle still reads as
+            very nearly the same size as the word, which is the part that
+            matters (an early pass at 1.29x looked obviously oversized).
+
+            What no longer holds is the numeral: it stays at 16px, which is
+            0.53x the diameter rather than 0.44x. That's the one deliberate
+            break from the reference here, so don't "restore" it by scaling the
+            numeral with everything else.
           */}
           {/*
             The note wraps both the word and the circle, so hovering either
@@ -421,11 +429,11 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
             className="inline-flex"
             note="this is my actual Steam account level"
           >
-            <span className="flex items-center gap-[7px]">
-              <span className="text-[34px] font-light leading-none text-ink">
+            <span className="flex items-center gap-[6px]">
+              <span className="text-[28px] font-light leading-none text-ink">
                 Level
               </span>
-              <span className="flex h-[37px] w-[37px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
+              <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-accent text-[16px] font-light text-bright">
                 {profileLevel}
               </span>
             </span>
