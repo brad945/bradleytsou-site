@@ -136,6 +136,29 @@ const shelf = {
 };
 
 /**
+ * Wood grain for the shelf surfaces.
+ *
+ * **Soft bands, not hard rules, and two pitches rather than one.** Every
+ * surface used to carry `edge 0 1px, transparent 1px Npx` — a crisp line every
+ * N pixels. At the front lip that read as brickwork and on the back panel as
+ * corduroy, because grain that is visibly periodic isn't grain.
+ *
+ * Each layer peaks in the middle of its own period and falls to nothing at
+ * both ends, so there is no edge anywhere in it. Two layers at pitches sharing
+ * no factor beat against one another, and the pattern doesn't repeat until
+ * their product — 77px for 7 and 11 — which is longer than most of these
+ * surfaces are wide.
+ *
+ * Alphas are deliberately low. This is meant to be felt, not read; at the
+ * values it replaced you could count the stripes.
+ */
+const grain = (dir: string, a: number, b: number, alpha: string) =>
+  [
+    `repeating-linear-gradient(${dir}, transparent 0, ${shelf.edge}${alpha} ${a / 2}px, transparent ${a}px)`,
+    `repeating-linear-gradient(${dir}, transparent 0, ${shelf.edge}${alpha} ${b / 2}px, transparent ${b}px)`,
+  ].join(", ");
+
+/**
  * Screensaver colours for the bouncing logo. Deliberately vivid and fully
  * saturated — this is the one place the muted site palette doesn't apply,
  * because the reference logo is a flat bright fill. Flat colour only: no
@@ -324,19 +347,18 @@ const config: Config = {
          * token — they did, and their shading ran in opposite directions.
          */
         "shelf-floor": [
-          `repeating-linear-gradient(to bottom, ${shelf.edge}26 0 1px, transparent 1px 6px)`,
-          `repeating-linear-gradient(to bottom, ${shelf.edge}1a 0 2px, transparent 2px 19px)`,
+          grain("to bottom", 9, 14, "12"),
           // Corners, where the floor meets each wall.
           `linear-gradient(to right, ${shelf.edge}66, ${shelf.edge}1e 12%, transparent 24%, transparent 76%, ${shelf.edge}1e 88%, ${shelf.edge}66)`,
           // Back (top) is the most occluded; the front lip end catches most light.
-          `linear-gradient(to bottom, ${shelf.dark}, ${shelf.base} 34%, ${shelf.light})`,
+          `linear-gradient(to bottom, ${shelf.dark}, ${shelf.edge}00 0%, ${shelf.dark} 8%, ${shelf.base} 34%, ${shelf.mid} 62%, ${shelf.light})`,
         ].join(", "),
         "shelf-ceiling": [
-          `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 7px)`,
-          `linear-gradient(to bottom, ${shelf.mid}, ${shelf.light} 45%, ${shelf.face})`,
+          grain("to bottom", 7, 11, "10"),
+          `linear-gradient(to bottom, ${shelf.mid}, ${shelf.base} 22%, ${shelf.light} 55%, ${shelf.face})`,
         ].join(", "),
         "shelf-back": [
-          `repeating-linear-gradient(to right, ${shelf.edge}24 0 1px, transparent 1px 9px)`,
+          grain("to right", 11, 17, "0e"),
           // Corners, where the back meets each wall.
           `linear-gradient(to right, ${shelf.edge}77, ${shelf.edge}22 13%, transparent 26%, transparent 74%, ${shelf.edge}22 87%, ${shelf.edge}77)`,
           /*
@@ -355,15 +377,15 @@ const config: Config = {
            * light bouncing off the floor reaches — which is also where the
            * books' shadows land.
            */
-          `linear-gradient(to bottom, ${shelf.edge}, ${shelf.dark} 17%, ${shelf.base} 42%, ${shelf.light} 88%, ${shelf.base})`,
+          `linear-gradient(to bottom, ${shelf.edge}, ${shelf.edge} 6%, ${shelf.dark} 20%, ${shelf.base} 44%, ${shelf.mid} 66%, ${shelf.light} 88%, ${shelf.base})`,
         ].join(", "),
         /*
          * Left wall. Its inner face points right, into the light, so it is the
          * brighter of the two. Back is at its right edge.
          */
         "shelf-side-left": [
-          `repeating-linear-gradient(to bottom, ${shelf.edge}14 0 1px, transparent 1px 9px)`,
-          `linear-gradient(to right, ${shelf.light}, ${shelf.base} 55%, ${shelf.edge})`,
+          grain("to bottom", 9, 13, "0c"),
+          `linear-gradient(to right, ${shelf.light}, ${shelf.mid} 28%, ${shelf.base} 55%, ${shelf.dark} 80%, ${shelf.edge})`,
         ].join(", "),
         /*
          * Right wall. Its inner face points left, away from the light, so it
@@ -371,8 +393,8 @@ const config: Config = {
          * the left wall.
          */
         "shelf-side-right": [
-          `repeating-linear-gradient(to bottom, ${shelf.edge}14 0 1px, transparent 1px 9px)`,
-          `linear-gradient(to left, ${shelf.base}, ${shelf.dark} 48%, ${shelf.edge})`,
+          grain("to bottom", 9, 13, "0c"),
+          `linear-gradient(to left, ${shelf.base}, ${shelf.mid} 20%, ${shelf.dark} 48%, ${shelf.edge} 84%, ${shelf.edge})`,
         ].join(", "),
         /*
          * The carcass, seen face-on at z = 0 — two uprights, a board across
@@ -388,16 +410,16 @@ const config: Config = {
          * horizontal boards, vertical on the uprights.
          */
         "shelf-board-top": [
-          `repeating-linear-gradient(to bottom, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 78%, ${shelf.edge})`,
+          grain("to bottom", 5, 8, "0c"),
+          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 30% 66%, ${shelf.base} 84%, ${shelf.edge})`,
         ].join(", "),
         "shelf-board-left": [
-          `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to right, ${shelf.hi} 0 2px, ${shelf.face} 18% 56%, ${shelf.base} 86%, ${shelf.dark})`,
+          grain("to right", 5, 8, "0c"),
+          `linear-gradient(to right, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 12%, ${shelf.face} 30% 54%, ${shelf.base} 78%, ${shelf.dark})`,
         ].join(", "),
         "shelf-board-right": [
-          `repeating-linear-gradient(to right, ${shelf.edge}22 0 1px, transparent 1px 5px)`,
-          `linear-gradient(to left, ${shelf.dark} 0 2px, ${shelf.face} 20% 58%, ${shelf.light} 88%, ${shelf.base})`,
+          grain("to right", 5, 8, "0c"),
+          `linear-gradient(to left, ${shelf.dark}, ${shelf.dark} 1px, ${shelf.base} 10%, ${shelf.face} 30% 56%, ${shelf.light} 84%, ${shelf.base})`,
         ].join(", "),
         /*
          * The suspension wire. Steel rather than a shade of the shelf, because
@@ -431,8 +453,8 @@ const config: Config = {
          */
         "shelf-fitting": `radial-gradient(circle at 34% 28%, ${tokens.steelLight}, ${tokens.steel} 42%, ${tokens.steelMid} 70%, ${tokens.steelDark})`,
         "shelf-lip": [
-          `repeating-linear-gradient(to right, ${shelf.edge}26 0 1px, transparent 1px 11px)`,
-          `linear-gradient(to bottom, ${shelf.hi} 0 2px, ${shelf.face} 18% 70%, ${shelf.edge})`,
+          grain("to right", 13, 19, "0b"),
+          `linear-gradient(to bottom, ${shelf.hi}, ${shelf.hi} 1px, ${shelf.light} 14%, ${shelf.face} 32% 62%, ${shelf.base} 82%, ${shelf.edge})`,
         ].join(", "),
         "avatar-frame": `radial-gradient(130% 130% at 8% 6%, ${tokens.steelLight} 0%, ${tokens.steel} 42%, ${tokens.steelMid} 72%, ${tokens.steelDark} 100%)`,
       },

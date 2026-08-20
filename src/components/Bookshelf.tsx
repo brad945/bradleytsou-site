@@ -549,6 +549,12 @@ export default function Bookshelf() {
                       object. The stripes run across the width because that is
                       how pages stack — the spine's width IS the thickness of
                       the stack — and each one is a single page's edge.
+
+                      Soft-peaked rather than hard-ruled, for the same reason
+                      the shelf's own grain is: a 1px line every 2.5px is below
+                      the size where a screen can draw it honestly, and it
+                      moirés instead. A band that fades in and out reads as
+                      paper at any zoom.
                     */}
                     <span
                       aria-hidden
@@ -557,7 +563,7 @@ export default function Bookshelf() {
                         transformOrigin: "center bottom",
                         transform: "rotateX(90deg)",
                         background: `
-                          repeating-linear-gradient(to right, rgba(0,0,0,0.07) 0 1px, rgba(0,0,0,0) 1px 2.5px),
+                          repeating-linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,0.085) 1.1px, rgba(0,0,0,0) 2.4px),
                           linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0) 55%),
                           color-mix(in srgb, #f1ebdd 88%, var(--spine))`,
                       }}
