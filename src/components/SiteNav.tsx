@@ -42,13 +42,13 @@ const NAV_ITEMS: { label: string; href?: string }[] = [
    */
   { label: "Profile", href: "/#top" },
   /*
-   * The personal half — Reviews, Inventory, Achievements. **Greyed out for
-   * now**, at Bradley's request: the page is built and routable, but its
-   * reviews and inventory are still placeholder written in my voice rather
-   * than his, and a live nav item would send visitors to words he didn't
-   * write. Dropping the href is the whole change; putting it back is too.
+   * The personal half. It was greyed out for a while because its reviews and
+   * inventory were placeholder written in my voice rather than Bradley's, and
+   * a live nav item would have sent visitors to words he didn't write. Those
+   * two panels are commented out now, so what's left — Portfolio and
+   * Achievements — is all his, and the link is live again.
    */
-  { label: "About" },
+  { label: "About", href: "/about" },
   /*
    * Chat is the comments panel. Not a separate feature — the page has one
    * place a visitor can say something, and giving the nav item its own

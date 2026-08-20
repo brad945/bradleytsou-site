@@ -113,12 +113,37 @@ export interface InventoryItem {
 
 /** **All placeholder** except Exy. TODO(bradley): make these your actual things. */
 export const inventory: InventoryItem[] = [
-  { code: "VLN", name: "Violin", rarity: "core", note: "Since before I could choose." },
+  {
+    code: "VLN",
+    name: "Violin",
+    rarity: "core",
+    note: "Since before I could choose.",
+  },
   { code: "KEY", name: "Piano", rarity: "core", note: "The one I'd keep." },
-  { code: "EXY", name: "Exy", rarity: "core", note: "Walks around this site. Try clicking his tail." },
-  { code: "PC", name: "Desktop", rarity: "major", note: "Built it, regret nothing, would do it worse next time." },
-  { code: "BOBA", name: "Boba", rarity: "major", note: "Half sugar, less ice." },
-  { code: "CS2", name: "Knife", rarity: "side", note: "Cost more than it should have." },
+  {
+    code: "EXY",
+    name: "Exy",
+    rarity: "core",
+    note: "Walks around this site. Try clicking his tail.",
+  },
+  {
+    code: "PC",
+    name: "Desktop",
+    rarity: "major",
+    note: "Built it, regret nothing, would do it worse next time.",
+  },
+  {
+    code: "BOBA",
+    name: "Boba",
+    rarity: "major",
+    note: "Half sugar, less ice.",
+  },
+  {
+    code: "CS2",
+    name: "Knife",
+    rarity: "side",
+    note: "Cost more than it should have.",
+  },
 ];
 
 /* -------------------------------------------------------------------------
@@ -147,7 +172,8 @@ export interface Achievement {
 export const achievements: Achievement[] = [
   {
     name: "Won a hackathon",
-    detail: "Cal Hacks 12.0 — 1st on the Bright Data track, out of 700 projects",
+    detail:
+      "Cal Hacks 12.0 — 1st on the Bright Data track, out of 700 projects",
     date: "2025",
     unlocked: true,
   },
@@ -167,6 +193,35 @@ export const achievements: Achievement[] = [
     name: "Shipped something people pay for",
     detail: "DevEval — founding engineer",
     date: "2026",
+    unlocked: true,
+  },
+  {
+    /*
+     * From Bradley. The AMC is scored out of 150 and the Certificate of
+     * Distinction goes to the top 1.5% nationally — a published threshold, so
+     * the claim is checkable even though nothing here fetches it.
+     */
+    name: "AMC 12 Certificate of Distinction",
+    detail: "Top 1.5% nationally",
+    date: null, // TODO(bradley): the year
+    unlocked: true,
+  },
+  {
+    name: "Invited to AIME",
+    detail: "The American Invitational Mathematics Examination",
+    date: null, // TODO(bradley): the year
+    unlocked: true,
+  },
+  {
+    /*
+     * His figure, and the only one on this page that nothing can check —
+     * a brokerage has no public API and a Roth IRA certainly doesn't. It sits
+     * with `profileLevel`, `hackathonWins` and `accountBalance` on the list of
+     * numbers that are true because he says so.
+     */
+    name: "1,400% returns",
+    detail: "Personal investment portfolio and Roth IRA",
+    date: null, // TODO(bradley): over what period
     unlocked: true,
   },
   {

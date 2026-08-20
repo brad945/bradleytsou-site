@@ -52,6 +52,13 @@ export interface Project {
   ghRepo?: string;
   /** e.g. "2026 — present". Free text. Omitted when it isn't known. */
   period?: string;
+  /**
+   * Which Portfolio group it sits under. Defaults to `projects`.
+   *
+   * The groups are places the work was done, not kinds of work, which is why
+   * two of them are named after an org and one is a catch-all.
+   */
+  category?: PortfolioCategory;
 }
 
 /** One role in the Experience panel. */
@@ -723,6 +730,36 @@ export const socials: SocialLink[] = [
  * `period` is the year Bradley actually worked on each one — confirmed by him,
  * not derived from repo activity. The inferred tags have been confirmed too.
  */
+/**
+ * The Portfolio groups, in the order they render.
+ *
+ * Two of these are empty right now, deliberately: Bradley asked for the
+ * headings so he can fill them, and an empty group renders a placeholder
+ * saying so rather than nothing. That's the same call `PlannedSources` makes
+ * in Recent Activity — a labelled gap is honest, a silent one just looks
+ * broken. Delete a group here and its rows fall back to `projects`.
+ */
+export type PortfolioCategory = "wdb" | "dana" | "projects";
+
+export const portfolioCategories: {
+  id: PortfolioCategory;
+  label: string;
+  /** Shown when the group has no entries yet. */
+  empty: string;
+}[] = [
+  {
+    id: "wdb",
+    label: "Web Dev @ Berkeley",
+    empty: "Client work — nothing listed yet.",
+  },
+  {
+    id: "dana",
+    label: "Dana Street Consulting",
+    empty: "Nothing listed yet.",
+  },
+  { id: "projects", label: "Projects", empty: "Nothing listed yet." },
+];
+
 export const projects: Project[] = [
   {
     id: "visionotes",

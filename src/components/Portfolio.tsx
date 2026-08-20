@@ -1,6 +1,10 @@
 import { Row } from "@/components/Experience";
 import type { FeaturedRepo } from "@/lib/github";
-import { projects, type Project } from "@/lib/profile-data";
+import {
+  portfolioCategories,
+  projects,
+  type Project,
+} from "@/lib/profile-data";
 
 /**
  * Portfolio — the built things, on `/about`.
@@ -16,10 +20,17 @@ import { projects, type Project } from "@/lib/profile-data";
  * genuinely have in common; two copies of it would drift the first time either
  * page was touched.
  *
- * Order is manual, as it is everywhere on this site — rendered in the order
- * they're authored in `profile-data`. A date sort was tried on the old merged
- * panel and reverted within the hour; the reasoning is recorded there and it
- * applies here too.
+ * Order is manual, as it is everywhere on this site — groups in the order
+ * `portfolioCategories` lists them, rows in the order they're authored in
+ * `projects`. A date sort was tried on the old merged panel and reverted
+ * within the hour; the reasoning is recorded there and it applies here too.
+ *
+ * **Groups render even when empty**, with a line saying so. Two of them are
+ * empty today because Bradley asked for the headings ahead of the work, and a
+ * heading over nothing is the thing this site removed from the profile page
+ * once already — so it gets the same treatment `PlannedSources` gives an
+ * unbuilt source in Recent Activity, which is to say what isn't there instead
+ * of leaving a hole.
  */
 
 function projectRow(project: Project, repo?: FeaturedRepo) {
@@ -67,15 +78,31 @@ export default function Portfolio({ featured }: { featured: FeaturedRepo[] }) {
         </h2>
       </div>
 
-      <div className="px-5 pb-5 pt-1">
-        <ul className="flex flex-col">
-          {projects.map((project) =>
-            projectRow(
-              project,
-              project.ghRepo ? byRepo.get(project.ghRepo) : undefined,
-            ),
-          )}
-        </ul>
+      <div className="flex flex-col gap-5 px-5 pb-5 pt-4">
+        {portfolioCategories.map((cat) => {
+          const rows = projects.filter(
+            (p) => (p.category ?? "projects") === cat.id,
+          );
+          return (
+            <div key={cat.id}>
+              <h3 className="label">{cat.label}</h3>
+              {rows.length > 0 ? (
+                <ul className="mt-1 flex flex-col">
+                  {rows.map((project) =>
+                    projectRow(
+                      project,
+                      project.ghRepo ? byRepo.get(project.ghRepo) : undefined,
+                    ),
+                  )}
+                </ul>
+              ) : (
+                <p className="mt-2 border border-dashed border-line px-3 py-2 text-[13px] text-muted">
+                  {cat.empty}
+                </p>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

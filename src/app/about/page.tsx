@@ -96,19 +96,21 @@ export default async function About() {
 
         <div className="mt-3 flex flex-col gap-3">
           {/*
-            Reviews first: it's the one that carries the most personality per
-            inch, and it sets the tone for reading the other two as jokes with
-            real data in them rather than as literal game UI.
+            **Reviews and Inventory are hidden, not deleted**, at Bradley's
+            request — both are still written in my voice rather than his, and
+            hiding them is what let the nav item come out of grey. The
+            components, their data and the Steam playtime this page fetches for
+            the CS2 review are all still here; uncomment the two lines and
+            they're back exactly as they were.
+
+            Portfolio leads now. It was under Reviews because it's the one
+            panel here that would also be on a CV, and the page opened with
+            the parts of him that aren't — with those gone there's nothing for
+            it to sit under.
           */}
-          <Reviews playtime={playtime} />
-          {/*
-            Portfolio came over from `/`, where it was the second half of
-            "Experience & Projects". It sits under Reviews rather than above
-            them because it's the one panel here that is also on a CV — the
-            page opens with the parts of him that aren't.
-          */}
+          {/* <Reviews playtime={playtime} /> */}
           <Portfolio featured={featured} />
-          <Inventory />
+          {/* <Inventory /> */}
           <Achievements />
         </div>
 
