@@ -27,6 +27,7 @@ export function Row({
   tags,
   href,
   isPrivate = false,
+  award,
 }: {
   title: string;
   meta: string;
@@ -36,6 +37,8 @@ export function Row({
   href?: string;
   /** Shows a Private tag. Set when the backing repo isn't publicly visible. */
   isPrivate?: boolean;
+  /** Short award chip beside the title, e.g. a hackathon win. */
+  award?: string;
 }) {
   return (
     <li className="flex flex-col gap-x-6 gap-y-1 border-t border-line/50 py-3 sm:flex-row">
@@ -62,7 +65,22 @@ export function Row({
             Private
           </span>
         )}
-        {subtitle && <p className="t-meta leading-snug">{subtitle}</p>}
+        {/*
+          Accent gold, and the only chip on either page that is. Private is
+          `line`/`muted` because it marks an absence — nothing to click — and
+          this marks the opposite, so borrowing that styling would have made a
+          prize look like a restriction.
+
+          On its own line under the title rather than beside it, at Bradley's
+          request: the title column is only 190px, so inline it either wrapped
+          the title or pushed itself onto a second line anyway.
+        */}
+        {award && (
+          <span className="mt-1 inline-block whitespace-nowrap border border-accent/60 px-1.5 py-px text-[10px] uppercase tracking-wider text-accent">
+            {award}
+          </span>
+        )}
+        {subtitle && <p className="t-meta mt-0.5 leading-snug">{subtitle}</p>}
       </div>
 
       <div className="min-w-0 flex-1">

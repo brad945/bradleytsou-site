@@ -53,6 +53,7 @@ function projectRow(project: Project, repo?: FeaturedRepo) {
       title={project.name}
       href={href}
       isPrivate={isPrivate}
+      award={project.award}
       subtitle={project.kind}
       blurb={project.blurb}
       tags={project.tags}
