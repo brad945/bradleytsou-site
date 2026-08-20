@@ -259,9 +259,23 @@ export default function ProfileHeader({ stats }: ProfileHeaderProps) {
               77x86 is the tail asset at its render height; changing
               `TAIL_PX` in Exy.tsx means changing these.
             */}
+            {/*
+              **No transform here, and that is load-bearing.** This used to
+              centre itself with `top-[52%] -translate-y-1/2`. A transform
+              creates a stacking context, which trapped everything inside the
+              den — including the hover note on the tail, whose `z-40` was
+              being resolved against the den instead of against the frame, so
+              the note painted *under* the photo.
+
+              `calc(52% - 43px)` is the same position with no transform: half
+              of the den's own 86px height. Without a stacking context the tail
+              still paints under the frame, because it has no z-index and comes
+              first in DOM order, while the note's z-40 now lifts it clear.
+              Change the height and change the 43.
+            */}
             <div
               id="exy-den"
-              className="absolute left-[-32px] top-[52%] h-[86px] w-[77px] -translate-y-1/2"
+              className="absolute left-[-32px] top-[calc(52%-43px)] h-[86px] w-[77px]"
             />
 
             {/*
