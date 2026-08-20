@@ -229,6 +229,7 @@ export const achievements: Achievement[] = [
   {
     // A fact rather than an achievement, which is what the panel is called now.
     name: "Perfect pitch",
+    detail: "Helps with all things music; comp, prod, improv, etc",
     date: null,
     unlocked: true,
   },
