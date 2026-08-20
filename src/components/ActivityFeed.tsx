@@ -72,7 +72,14 @@ function SourceBlock({
   note?: string;
   /** Vertical padding, so each block sits off its dividing rules. */
   className?: string;
-  /** Draws the rule above this block. Omit on the first one. */
+  /**
+   * Draws the rule above this block.
+   *
+   * All three carry it, including the first. It was skipped there at first
+   * because a rule directly under the panel bar looked redundant — but that
+   * made GitHub the one source that didn't light up when you pointed at it,
+   * which is worse than a line nobody notices.
+   */
   rule?: boolean;
   children: React.ReactNode;
 }) {
@@ -274,6 +281,7 @@ export default function ActivityFeed({
           name="GitHub"
           icon={<GitHubIcon className="h-4 w-4 text-muted" />}
           className="pb-5"
+          rule
         >
           {hasRows ? (
             <ul className="flex flex-col">
