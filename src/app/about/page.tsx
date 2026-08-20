@@ -122,7 +122,7 @@ export default async function About() {
           <section aria-labelledby="about-panel-heading" className="panel">
             <div className="panel-bar">
               <h2 id="about-panel-heading" className="panel-bar-title">
-                About
+                About me
               </h2>
             </div>
             <div className="flex flex-col gap-3 p-5">

@@ -71,12 +71,15 @@ export function Row({
           this marks the opposite, so borrowing that styling would have made a
           prize look like a restriction.
 
-          On its own line under the title rather than beside it, at Bradley's
-          request: the title column is only 190px, so inline it either wrapped
-          the title or pushed itself onto a second line anyway.
+          On its own line under the title, at Bradley's request. `flex w-fit`
+          rather than `inline-block`, and that's the part that matters: the
+          title is an `<a>`, so an inline-block chip after it simply shares its
+          line whenever there's room. It needs to be block-level to sit under
+          anything, and `w-fit` keeps it hugging its text instead of spanning
+          the 190px column.
         */}
         {award && (
-          <span className="mt-1 inline-block whitespace-nowrap border border-accent/60 px-1.5 py-px text-[10px] uppercase tracking-wider text-accent">
+          <span className="mt-1 flex w-fit whitespace-nowrap border border-accent/60 px-1.5 py-px text-[10px] uppercase tracking-wider text-accent">
             {award}
           </span>
         )}
