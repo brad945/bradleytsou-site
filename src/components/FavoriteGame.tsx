@@ -36,7 +36,7 @@ export default function FavoriteGame({
   /** Null when STEAM_API_KEY is unset or the lookup failed. */
   playtime: SteamPlaytime | null;
 }) {
-  const { name, blurb } = favoriteGame;
+  const { name, blurb, url } = favoriteGame;
 
   return (
     <section aria-labelledby="favorite-game-heading" className="panel">
@@ -59,18 +59,41 @@ export default function FavoriteGame({
           frame is needed to tie it to the page — a border here just fought
           the artwork. `shrink-0` so it can't be squeezed when the name wraps.
         */}
-        <Image
-          src="/cs2-logo.png"
-          alt=""
+        {/*
+          The logo links too, and is hidden from assistive tech rather than
+          given its own label. It points at the same place as the name right
+          beside it, so a second announced link would just be the same
+          destination read twice — `aria-hidden` plus `tabIndex={-1}` keeps it
+          out of the tab order and out of the accessibility tree while leaving
+          it clickable, which is what a duplicated image link should do.
+        */}
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
           aria-hidden
-          width={84}
-          height={84}
-          className="h-[84px] w-[84px] shrink-0 rounded-[2px]"
-        />
+          tabIndex={-1}
+          className="shrink-0"
+        >
+          <Image
+            src="/cs2-logo.png"
+            alt=""
+            width={84}
+            height={84}
+            className="h-[84px] w-[84px] rounded-[2px] transition-opacity hover:opacity-90"
+          />
+        </a>
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-[19px] font-light leading-tight text-bright">
-            {name}
+          <h3 className="text-[19px] font-light leading-tight">
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="steam-link text-bright"
+            >
+              {name}
+            </a>
           </h3>
 
           <p className="t-body mt-1.5">{blurb}</p>

@@ -431,6 +431,12 @@ export const steamId64 = "76561198438468192";
 export const favoriteGame = {
   appId: 730,
   name: "Counter-Strike 2",
+  /*
+   * Where the logo and the name point, from Bradley — a Steam Workshop item
+   * rather than the store page, which is the more particular link of the two
+   * and the reason the panel is worth clicking at all.
+   */
+  url: "https://steamcommunity.com/workshop/filedetails/?id=3477187482",
   blurb: "I really like this game.",
 } as const;
 
