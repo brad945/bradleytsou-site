@@ -235,7 +235,16 @@ export default function Sidebar({
           value={commentCount ?? "—"}
           href="#comments-heading"
         />
-        <Stat label="Artwork / Portfolio" value="—" />
+        {/*
+          Links to Portfolio on /about, like Hackathon Wins above it. The value
+          stays an em-dash: the link is to the work, not to a count of it, and
+          nothing here counts artwork.
+        */}
+        <Stat
+          label="Artwork / Portfolio"
+          value="—"
+          href="/about#portfolio-heading"
+        />
       </section>
 
       {/*
