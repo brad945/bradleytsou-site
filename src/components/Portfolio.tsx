@@ -86,7 +86,16 @@ export default function Portfolio({ featured }: { featured: FeaturedRepo[] }) {
           );
           return (
             <div key={cat.id}>
-              <h3 className="label">{cat.label}</h3>
+              {/*
+                `t-label`, not `.label`. The two are easy to confuse and look
+                nothing alike: `.label` is 10px uppercase mono with 0.18em
+                tracking, which this file's own notes call the single most
+                un-Steam thing you can add, and it's scoped to tiny chrome
+                labels for that reason. A group heading is page text, so it
+                takes the page's own 14px — the same class the source names in
+                Recent Activity use.
+              */}
+              <h3 className="t-label text-copy">{cat.label}</h3>
               {rows.length > 0 ? (
                 <ul className="mt-1 flex flex-col">
                   {rows.map((project) =>
