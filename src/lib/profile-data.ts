@@ -564,17 +564,6 @@ export const roles: Role[] = [
     url: "https://www.medimpact.com",
   },
   {
-    org: "DevEval",
-    tags: ["Next.js", "TypeScript", "Postgres", "Docker", "Forward-Deployed"],
-    ghRepo: "sennaicodes/codearenamvp",
-    title: "Founding Engineer",
-    start: "Jan 2026",
-    location: "San Francisco, CA",
-    blurb:
-      "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed on customer implementations alongside core product engineering.",
-    url: "https://deveval.com",
-  },
-  {
     /*
      * Back on the page at Bradley's request, and named "Various companies"
      * rather than micro1 — the work is contract, so the org line is now a
@@ -587,10 +576,21 @@ export const roles: Role[] = [
      */
     org: "Various companies",
     tags: ["Vocal Synthesis", "Data Annotation", "Audio Engineering"],
-    title: "Language and Audio Engineer",
+    title: "Language and Audio Specialist",
     start: "Jun 2026",
     blurb:
       "Producing training data for generative-music frontier AI labs including Spotify Labs, xAI and Mercor.",
+  },
+  {
+    org: "DevEval",
+    tags: ["Next.js", "TypeScript", "Postgres", "Docker", "Forward-Deployed"],
+    ghRepo: "sennaicodes/codearenamvp",
+    title: "Founding Engineer",
+    start: "Jan 2026",
+    location: "San Francisco, CA",
+    blurb:
+      "Evidence-first technical interviews for AI-era hiring — executable tasks, AI critique, scorecards, replay and live validation. Forward-deployed on customer implementations alongside core product engineering.",
+    url: "https://deveval.com",
   },
   {
     org: "Web Development at Berkeley",

@@ -803,12 +803,18 @@ export default function Bookshelf() {
         </div>
       </div>
       {/*
-        No `min-h` here. It reserved 100px so the block wouldn't resize when a
-        book is picked, and what that bought at rest was a paragraph of dead
-        space under the caption. The resize now happens on a click, which is
-        the reader's own action rather than a permanent cost paid to avoid it.
+        Nothing at all until a book is picked — no `min-h`, and no element.
+        There was a "Recent reads" caption here and it's gone at Bradley's
+        request; removing only the text would have left this div in place with
+        its own `mt-6`, so the gap would have stayed while the reason for it
+        left. Rendering the whole wrapper conditionally is what actually
+        recovers the space.
+
+        The block therefore resizes when a book is clicked, which is the
+        reader's own action rather than a cost paid on every page load to
+        avoid it — the same reasoning that removed the 100px `min-h` before.
       */}
-      <div className="mt-6">
+      <div className={selected ? "mt-6" : undefined}>
         {selected ? (
           <div className="flex gap-4">
             {/*
@@ -844,9 +850,7 @@ export default function Bookshelf() {
               )}
             </div>
           </div>
-        ) : (
-          <p className="t-meta text-center">Recent reads</p>
-        )}
+        ) : null}
       </div>
     </div>
   );
