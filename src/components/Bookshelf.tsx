@@ -399,9 +399,19 @@ export default function Bookshelf() {
                       transformOrigin: "center bottom",
                       transform: "rotateX(90deg) scaleY(var(--sh))",
                       background:
-                        "linear-gradient(to top right, rgba(0,0,0,0.68), rgba(0,0,0,0.26) 48%, rgba(0,0,0,0) 84%)",
+                        "linear-gradient(to top right, rgba(0,0,0,0.6), rgba(0,0,0,0.22) 48%, rgba(0,0,0,0) 86%)",
+                      /*
+                       * Sides faded for the same reason as the wall shadow —
+                       * a shadow's edge is a penumbra, not a cut. The near end
+                       * is left alone: that end is where the book touches the
+                       * floor, and contact edges genuinely are sharp.
+                       */
+                      maskImage:
+                        "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                      WebkitMaskImage:
+                        "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
                     }}
-                    className="absolute bottom-0 left-[3px] right-[-20px] rounded-b-[2px] blur-[4px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.5]"
+                    className="absolute bottom-0 left-[3px] right-[-20px] rounded-b-[2px] blur-[7px] [--sh:1] transition-transform duration-300 ease-out motion-safe:group-hover/book:[--sh:1.5]"
                   />
                   {/*
                     Contact shadow. The long one above falls away too gradually
@@ -418,9 +428,9 @@ export default function Bookshelf() {
                       transformOrigin: "center bottom",
                       transform: "rotateX(90deg) scaleY(var(--sh))",
                       background:
-                        "linear-gradient(to top right, rgba(0,0,0,0.72), rgba(0,0,0,0) 76%)",
+                        "linear-gradient(to top right, rgba(0,0,0,0.66), rgba(0,0,0,0) 78%)",
                     }}
-                    className="absolute bottom-0 left-[1px] right-[-7px] blur-[1.5px] transition-transform duration-300 ease-out"
+                    className="absolute bottom-0 left-[1px] right-[-7px] blur-[2.5px] transition-transform duration-300 ease-out"
                   />
 
                   {/*
@@ -450,9 +460,21 @@ export default function Bookshelf() {
                     style={{
                       transform: `translateZ(-${SHELF_DEPTH - BOOK_INSET - 1}px) translate(${Math.round((SHELF_DEPTH - BOOK_INSET - depth) * 0.42) + 2}px, ${Math.round((SHELF_DEPTH - BOOK_INSET - depth) * 0.44) + 3}px)`,
                       background:
-                        "linear-gradient(to right, rgba(0,0,0,0.58), rgba(0,0,0,0.4) 62%, rgba(0,0,0,0.14))",
+                        "linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.34) 62%, rgba(0,0,0,0.1))",
+                      /*
+                       * The shadow is the book's rectangle, so without this it
+                       * ends in two horizontal cuts across the wall — the one
+                       * shape a cast shadow never has. The mask fades both,
+                       * which is what a penumbra does at the top and bottom of
+                       * a real one. Safe on this element: `mask` forces
+                       * `transform-style: flat` and it has no 3D children.
+                       */
+                      maskImage:
+                        "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent)",
+                      WebkitMaskImage:
+                        "linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent)",
                     }}
-                    className="absolute inset-0 blur-[5px] transition-opacity duration-300 motion-safe:group-hover/book:opacity-35"
+                    className="absolute inset-0 blur-[9px] transition-opacity duration-300 motion-safe:group-hover/book:opacity-35"
                   />
 
                   <button
