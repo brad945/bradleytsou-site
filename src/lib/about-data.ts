@@ -242,7 +242,13 @@ export const achievements: Achievement[] = [
      */
     name: "1,421% returns",
     detail: "Personal investment portfolio and Roth IRA",
-    date: "2024",
+    /*
+     * No date, at Bradley's request. It's a running total rather than
+     * something that happened in a year, so a single year would have said
+     * the wrong thing — and `sortYear` treats an undated entry as unplaced,
+     * which sends it to the bottom rather than pretending it's the oldest.
+     */
+    date: null,
     unlocked: true,
   },
 ];
