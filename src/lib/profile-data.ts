@@ -762,6 +762,43 @@ export const portfolioCategories: {
 
 export const projects: Project[] = [
   {
+    /*
+     * Client work through Web Development at Berkeley, where Bradley is an
+     * Industry Developer — see `roles`. The blurb is his, verbatim.
+     */
+    id: "feelwise",
+    name: "FeelWise",
+    kind: "Design",
+    category: "wdb",
+    blurb:
+      "Designing low to high fidelity mockups in Figma, revamping their website and mobile app product UI/UX.",
+    rarity: "major",
+    // Both named in the blurb above, so neither is inferred.
+    tags: ["Figma", "UI/UX"],
+    href: undefined,
+    repo: undefined,
+  },
+  {
+    /*
+     * Client work through Dana Street Consulting. Blurb his, verbatim.
+     *
+     * No tags: Kiro, Codex and Cursor are what he *evaluated*, not what he
+     * builds with, and tags here feed the sidebar's Tech Stack. Listing a tool
+     * because it was the subject of a benchmark would put it on the page as
+     * something he uses.
+     */
+    id: "amazon-kiro",
+    name: "Amazon",
+    kind: "Research",
+    category: "dana",
+    blurb:
+      "Developed evaluation criteria and test methodology for technical benchmarking of Amazon Kiro against Codex and Cursor.",
+    rarity: "major",
+    tags: [],
+    href: undefined,
+    repo: undefined,
+  },
+  {
     id: "visionotes",
     ghRepo: "brad945/visionotes",
     name: "VisionNotes",
@@ -823,7 +860,9 @@ export const projects: Project[] = [
     kind: "Software",
     rarity: "side",
     tags: [],
-    href: undefined,
+    // Devpost, from Bradley — there's no repo this account can see, so this is
+    // the only place the project can be looked at.
+    href: "https://devpost.com/software/t-ether",
     repo: undefined,
   },
   {
