@@ -88,10 +88,15 @@ export default async function About() {
           indication of whose reviews they are or why they're here.
         */}
         <header className="px-1 pb-1 pt-3">
+          {/*
+            Heading only. The tagline under it — "The profile is the formal
+            half. This is the rest of it." — is gone at Bradley's request. It
+            was written when this page was Reviews, Inventory and Achievements
+            and needed to explain why those belonged together; with an About me
+            panel directly beneath it, it was introducing something that now
+            introduces itself.
+          */}
           <h1 className="t-display">About</h1>
-          <p className="mt-1 max-w-[52ch] text-[16px] font-medium leading-snug text-copy">
-            The profile is the formal half. This is the rest of it.
-          </p>
         </header>
 
         <div className="mt-3 flex flex-col gap-3">
