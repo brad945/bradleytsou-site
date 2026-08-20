@@ -10,8 +10,31 @@ import { achievements } from "@/lib/about-data";
  * The locked row is the point of the panel, not a gap in it — a full sheet
  * says nothing about what happens next.
  */
+/**
+ * The year an achievement sorts by: the LAST one named in its free-text date.
+ *
+ * "2020 – 2024" sorts as 2024, because a run of years is placed by when it
+ * ended rather than when it started. An entry with no date sorts last — it is
+ * unplaced, not oldest, and putting it at the top would be a guess.
+ *
+ * Note this is the opposite call from Experience and Portfolio, which are
+ * ordered by hand and where a date sort was tried and reverted. Those lists
+ * carry an argument about what matters most; this one is a record, and a
+ * record reads by date.
+ */
+function sortYear(date: string | null): number {
+  if (!date) return -Infinity;
+  const years = date.match(/\d{4}/g);
+  return years ? Number(years[years.length - 1]) : -Infinity;
+}
+
 export default function Achievements() {
   const unlocked = achievements.filter((a) => a.unlocked).length;
+  // Newest first. `sort` mutates, so copy — `achievements` is a module-level
+  // array and re-ordering it in place would leak into anything else importing it.
+  const ordered = [...achievements].sort(
+    (a, b) => sortYear(b.date) - sortYear(a.date),
+  );
 
   return (
     <section aria-labelledby="achievements-heading" className="panel">
@@ -25,7 +48,7 @@ export default function Achievements() {
       </div>
 
       <ul className="flex flex-col px-5">
-        {achievements.map((a) => (
+        {ordered.map((a) => (
           <li
             key={a.name}
             className="flex items-start gap-4 border-t border-line/50 py-2.5 first:border-t-0"

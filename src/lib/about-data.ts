@@ -231,7 +231,7 @@ export const achievements: Achievement[] = [
   {
     name: "Invited to AIME",
     detail: "The American Invitational Mathematics Examination",
-    date: null, // TODO(bradley): the year
+    date: "2024",
     unlocked: true,
   },
   {
@@ -243,7 +243,7 @@ export const achievements: Achievement[] = [
      */
     name: "1,400% returns",
     detail: "Personal investment portfolio and Roth IRA",
-    date: null, // TODO(bradley): over what period
+    date: "2024",
     unlocked: true,
   },
 ];
