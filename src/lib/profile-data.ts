@@ -877,6 +877,7 @@ export const projects: Project[] = [
     id: "t-ether",
     // Set as the team writes it on Devpost. The repo/id stays lowercase.
     name: "T-ETHER",
+    period: "2026",
     award: "Hackathon winner",
     kind: "Software",
     /*
