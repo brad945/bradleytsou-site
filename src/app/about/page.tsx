@@ -129,7 +129,16 @@ export default async function About() {
             </div>
             <div className="flex flex-col gap-3 p-5">
               {aboutText.map((para) => (
-                <p key={para} className="t-body max-w-[68ch]">
+                /*
+                  Full width, at Bradley's request. It carried `max-w-[68ch]`,
+                  which is the usual measure for readable prose and is why
+                  the paragraph stopped short of the panel edge. The panel is
+                  ~590px wide, so at this size the cap was costing about a
+                  quarter of the line and buying very little — every other
+                  block on the page runs the full width, and one that didn't
+                  read as a mistake rather than as typography.
+                */
+                <p key={para} className="t-body">
                   {para}
                 </p>
               ))}
