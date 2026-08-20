@@ -190,6 +190,10 @@ export interface Achievement {
  * out at Bradley's request, so the sheet reads 7 of 7 — which is worth knowing
  * if a locked row goes back in, because the "N of M unlocked" count in the
  * panel bar is derived and will start distinguishing them again on its own.
+ *
+ * Every row is dated now too, so nothing sorts to the bottom for want of a
+ * year. `sortYear` still handles a null, and should stay that way — the next
+ * entry added won't necessarily arrive with one.
  */
 export const achievements: Achievement[] = [
   {
@@ -225,7 +229,7 @@ export const achievements: Achievement[] = [
      */
     name: "AMC 12 Certificate of Distinction",
     detail: "Top 1.5% nationally",
-    date: null, // TODO(bradley): the year
+    date: "2024",
     unlocked: true,
   },
   {
@@ -241,7 +245,7 @@ export const achievements: Achievement[] = [
      * with `profileLevel`, `hackathonWins` and `accountBalance` on the list of
      * numbers that are true because he says so.
      */
-    name: "1,400% returns",
+    name: "1,421% returns",
     detail: "Personal investment portfolio and Roth IRA",
     date: "2024",
     unlocked: true,
