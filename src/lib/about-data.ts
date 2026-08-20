@@ -172,15 +172,22 @@ export const inventory: InventoryItem[] = [
 
 export interface Achievement {
   name: string;
-  detail: string;
+  /**
+   * A line under the name. Optional — some of these are plain facts, and a
+   * second sentence would only pad them out. "Perfect pitch" is the whole
+   * claim; explaining what perfect pitch is would be filling a slot.
+   */
+  detail?: string;
   /** Free text, or null when it isn't unlocked. */
   date: string | null;
   unlocked: boolean;
 }
 
 /**
- * **These are real** — each one is drawn from something already stated in
- * `profile-data`, so they can be checked against the rest of the site.
+ * **These are real.** Most are drawn from something already stated in
+ * `profile-data` so they can be checked against the rest of the site; the
+ * panel is "Achievements / Fun facts" now because not all of them are
+ * achievements — perfect pitch is just true of him.
  *
  * Deliberately **no rarity percentages.** Steam shows "12.4% of players have
  * this", and that number is measured; here it could only ever be invented, and
@@ -197,21 +204,8 @@ export interface Achievement {
  */
 export const achievements: Achievement[] = [
   {
-    name: "Won a hackathon",
-    detail:
-      "Cal Hacks 12.0 — 1st on the Bright Data track, out of 700 projects",
-    date: "2025",
-    unlocked: true,
-  },
-  {
     name: "Tutor of the Month, three times",
     detail: "BRI Youth — 175+ hours logged",
-    date: "2020 – 2024",
-    unlocked: true,
-  },
-  {
-    name: "Played a recital in a public library",
-    detail: "Violin and piano, BRI Youth",
     date: "2020 – 2024",
     unlocked: true,
   },
@@ -228,14 +222,14 @@ export const achievements: Achievement[] = [
      * the claim is checkable even though nothing here fetches it.
      */
     name: "AMC 12 Certificate of Distinction",
-    detail: "Top 1.5% nationally",
+    detail: "Top 1.5% nationally, invited to AIME",
     date: "2024",
     unlocked: true,
   },
   {
-    name: "Invited to AIME",
-    detail: "The American Invitational Mathematics Examination",
-    date: "2024",
+    // A fact rather than an achievement, which is what the panel is called now.
+    name: "Perfect pitch",
+    date: null,
     unlocked: true,
   },
   {

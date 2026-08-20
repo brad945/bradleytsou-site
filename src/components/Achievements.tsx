@@ -40,7 +40,7 @@ export default function Achievements() {
     <section aria-labelledby="achievements-heading" className="panel">
       <div className="panel-bar">
         <h2 id="achievements-heading" className="panel-bar-title">
-          Achievements
+          Achievements / Fun facts
         </h2>
         <span className="panel-bar-meta">
           {unlocked} of {achievements.length} unlocked
@@ -68,9 +68,11 @@ export default function Achievements() {
               >
                 {a.name}
               </span>
-              <span className="t-meta mt-0.5 block leading-snug">
-                {a.detail}
-              </span>
+              {a.detail && (
+                <span className="t-meta mt-0.5 block leading-snug">
+                  {a.detail}
+                </span>
+              )}
             </div>
 
             {/* Nothing rather than a dash when it isn't unlocked — the row
