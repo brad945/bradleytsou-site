@@ -637,16 +637,24 @@ export default function Bookshelf() {
           */}
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 w-[16px] bg-shelf-board-left"
+            className="absolute bottom-[-14px] left-0 top-0 w-[16px] rounded-b-[2px] bg-shelf-board-left"
           />
           <span
             aria-hidden
-            className="absolute inset-y-0 right-0 w-[16px] bg-shelf-board-right"
+            className="absolute bottom-[-14px] right-0 top-0 w-[16px] rounded-b-[2px] bg-shelf-board-right"
           />
           {/*
             Inset between the uprights, the way a real carcass is built: the
             sides run the full height and the boards sit between them. Butting
             it over them instead reads as a picture frame rather than a shelf.
+
+            **The lip is built the same way now, and wasn't.** It spanned the
+            full width and painted over both uprights, so the carcass argued
+            with itself — a board slotted between the sides at the top, and a
+            strip laid across them at the bottom. At the bottom corner that
+            read as the upright being cut off by something in front of it,
+            which nothing at z = 0 can be. The uprights run 14px past the box
+            to carry the plinth, and the lip is inset by their width.
 
             The inset shadows on its two ends draw the joint. Two boards
             meeting at right angles have gradients running at right angles too,
@@ -660,7 +668,7 @@ export default function Bookshelf() {
           />
           <span
             aria-hidden
-            className="absolute inset-x-0 top-full h-[14px] rounded-b-[2px] bg-shelf-lip"
+            className="absolute left-[16px] right-[16px] top-full h-[14px] bg-shelf-lip shadow-[inset_1px_0_0_rgba(21,29,40,0.55),inset_-1px_0_0_rgba(21,29,40,0.55)]"
           />
 
           {/*
