@@ -186,8 +186,10 @@ export interface Achievement {
  * this", and that number is measured; here it could only ever be invented, and
  * an invented percentage next to real dates would poison both.
  *
- * Keep at least one locked. It's funnier than a full sheet, and it's the only
- * row that says anything about what he's doing next.
+ * There is no longer a locked one. "Bhop consistently" held that slot and came
+ * out at Bradley's request, so the sheet reads 7 of 7 — which is worth knowing
+ * if a locked row goes back in, because the "N of M unlocked" count in the
+ * panel bar is derived and will start distinguishing them again on its own.
  */
 export const achievements: Achievement[] = [
   {
@@ -243,12 +245,6 @@ export const achievements: Achievement[] = [
     detail: "Personal investment portfolio and Roth IRA",
     date: null, // TODO(bradley): over what period
     unlocked: true,
-  },
-  {
-    name: "Bhop consistently",
-    detail: "Still locked. The /play page is the plan.",
-    date: null,
-    unlocked: false,
   },
 ];
 
