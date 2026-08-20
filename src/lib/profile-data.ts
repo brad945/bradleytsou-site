@@ -801,7 +801,9 @@ export const projects: Project[] = [
   {
     id: "visionotes",
     ghRepo: "brad945/visionotes",
-    name: "VisionNotes",
+    // "VisioNotes" — Visio + Notes, from Bradley. The repo is lowercase
+    // `visionotes`; this is the display name and they differ on purpose.
+    name: "VisioNotes",
     kind: "Software",
     /*
      * From Bradley directly, not the repo description — that reads "Piano
@@ -810,10 +812,12 @@ export const projects: Project[] = [
      * copied verbatim from GitHub; update the repo description and this can
      * go back to matching it.
      */
-    blurb: "Real-time piano posture corrector.",
+    blurb:
+      "Real-time piano posture corrector, built on a fine-tuned MediaPipe pose model.",
     rarity: "major",
     // "Computer Vision" confirmed by Bradley — it was inferred before.
-    tags: ["JavaScript", "Computer Vision", "Real-time"],
+    // MediaPipe added with the blurb, so it's named on the page too.
+    tags: ["JavaScript", "Computer Vision", "MediaPipe", "Real-time"],
     href: undefined,
     repo: "https://github.com/brad945/visionotes",
     period: "2026",
@@ -832,18 +836,19 @@ export const projects: Project[] = [
     name: "frankenstein-queue",
     kind: "Software",
     /*
-     * No blurb and no tags, on purpose. The repo has no description on GitHub
-     * to copy, and every other blurb here is copied verbatim so it can be
-     * checked — so this row shows its name, its link, and the language and
-     * push date the API reports, and nothing anyone made up. TODO(bradley):
-     * describe the repo on GitHub and paste that line here.
+     * Condensed from the repo's own README, not invented — GitHub's
+     * description field is still empty, which is why this row had no blurb for
+     * a while. The README is Bradley's writing, so the words are his and the
+     * only editing is which two things to keep: what it is, and the claim
+     * that makes it interesting (it implements its own storage).
      *
-     * Tags are hand-curated and feed the sidebar's Tech Stack, which is built
-     * only from work visible elsewhere on the page. Guessing them would put
-     * unearned entries in that panel.
+     * Setting the description on GitHub is still worth doing — it's what the
+     * Recent Activity rows and any other consumer read.
      */
+    blurb:
+      "A persistent HTTP queue in Go where FIFO, LIFO, priority and delay compose freely — a delayed priority-LIFO queue is a configuration rather than a feature. No database, no broker and no embedded KV: storage is an append-only log implemented in the repo, with group-commit fsync, crash recovery and compaction, and the Go standard library as its only dependency.",
     rarity: "side",
-    tags: [],
+    tags: ["Go"],
     href: undefined,
     repo: "https://github.com/brad945/frankenstein-queue",
   },
@@ -861,7 +866,7 @@ export const projects: Project[] = [
     /*
      * Condensed by me from Bradley's own Devpost write-up, and one of only two
      * blurbs on the site that isn't a repo description copied verbatim — the
-     * other is VisionNotes. Every claim in it is his; the editing is the
+     * other is VisioNotes. Every claim in it is his; the editing is the
      * choice of which two things to keep, and the two-model pipeline is the
      * part nothing else here does.
      */
