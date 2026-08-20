@@ -48,13 +48,16 @@ export default function NameHistory({ name, aliases }: NameHistoryProps) {
         changing it there would have bolted this decision onto a heading
         nobody asked about.
 
-        It is the one large element on the page not at weight 300. Light
-        weights on anything big are the trait that carries most of the Steam
-        resemblance, so this is a deliberate exception, not a drift: the three
-        bio lines under it dropped to `font-normal` in the same change, which
-        leaves the header with exactly one thing shouting instead of two.
+        `font-medium` (500), not bold — 700 was tried and read as shouting.
+        500 is the weight the three bio lines carried before this change, so
+        the header keeps the same heaviest note it always had; it has just
+        moved up to the name, and the lines under it dropped to `font-normal`.
+
+        It is still the one large element on the page not at weight 300. Light
+        weights on anything big are the trait carrying most of the Steam
+        resemblance, so this is a deliberate exception rather than a drift.
       */}
-      <h1 className="t-display font-bold">{name}</h1>
+      <h1 className="t-display font-medium">{name}</h1>
 
       {/*
         The dropdown anchors to the caret, not to the name: in the reference

@@ -329,12 +329,12 @@ export default function Bookshelf() {
                 SHELF_DEPTH - BOOK_INSET - 12,
               );
               /*
-               * Gap to the book on its left, 15-30px, hashed off this book's
+               * Gap to the book on its left, 10-25px, hashed off this book's
                * own title so it never changes between renders. `justify-center`
                * still centres the row; the first book takes no margin, so the
                * gaps sit only between books and never against the uprights.
                */
-              const gap = i === 0 ? 0 : 15 + (hash(book.title) % 16);
+              const gap = i === 0 ? 0 : 10 + (hash(book.title) % 16);
 
               /*
                * Wrapper, and it does not rotate. The shadow below lies in the
