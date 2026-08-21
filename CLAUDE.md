@@ -825,18 +825,40 @@ has happened twice.
    wrong placeholder for a page about this one. The removed markup and its
    reasoning are in `ActivityFeed.tsx` where the footer used to be.
 
-2. **Wire up Comments.tsx.** *(Historical note: this used to say the
+2. **Spotify "now playing".** Show the track currently playing when there
+   is one, falling back to recently-played when there isn't — labelled
+   distinctly, because "playing now" and "played 20m ago" are different
+   claims and this site doesn't blur those.
+
+   **The blocker is a scope, not code.** The refresh token in
+   `SPOTIFY_REFRESH_TOKEN` was minted with `user-read-recently-played`
+   alone, and Spotify issues scopes at authorization time — so
+   `/me/player/currently-playing` and `/me/player` both return
+   `401 "Permissions missing"` and no code change can fix that. Verified
+   directly, not inferred from docs.
+
+   Bradley has to re-authorize once, adding
+   `user-read-currently-playing` (and `user-read-playback-state` if the
+   device/volume detail is ever wanted). The new refresh token then goes
+   in `.env.local` **and in Vercel** — the old one keeps working for
+   recently-played either way, so nothing breaks while this waits.
+
+   Note the polling cost before building it: `revalidate` on the page is
+   60s, and a "now playing" row is only honest if it's at least that
+   fresh.
+
+3. **Wire up Comments.tsx.** *(Historical note: this used to say the
    blocker was that giscus needs a public repo. The repo is public now,
    Discussions are on, the app is installed and it's pinned to discussion
    1 — the code is finished and configured.)* It's **parked**, because
    commenting needs a GitHub sign-in and Reactions is the sign-in-free
    version of the same idea. Uncomment two lines in `page.tsx` to bring it
    back; nothing else needs changing.
-3. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
+4. **Bhop/strafe-timing canvas** as an entry gate before the page reveals.
    Real skill-based mechanic (WASD + jump timing / simple physics), not a
    decorative loading animation. Should have a skip option — don't hard-gate
    the site behind it. `/play` exists and is empty, so it has a home now.
-4. **Radar-style "about me" map** — a custom map-like layout (doesn't need
+5. **Radar-style "about me" map** — a custom map-like layout (doesn't need
    to be a literal CS2 map, can be styled abstractly) where pins are skill
    categories. Clicking a pin opens a loadout-card style panel. Note it was
    going to reuse the Item Showcase's rarity visual language, and that is
