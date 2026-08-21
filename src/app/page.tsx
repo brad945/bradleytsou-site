@@ -26,7 +26,6 @@ import {
   getLanguages,
   getLastPush,
   getDiscussionComments,
-  REVALIDATE_SECONDS,
 } from "@/lib/github";
 import {
   githubUsername,
@@ -38,8 +37,21 @@ import {
   steamId64,
 } from "@/lib/profile-data";
 
-/** ISR window for the whole page — matches the feed's fetch revalidate. */
-export const revalidate = 300;
+/**
+ * ISR window for the whole page.
+ *
+ * 60, down from 300, because two 300s windows stack: a fetch result can
+ * already be five minutes old when the page rebuilds, and the HTML is then
+ * served for another five. Measured against Spotify directly, that put a track
+ * on the page roughly ten minutes after it played — and worse, the "9m ago"
+ * beside it was computed at render, so the label understated the gap by
+ * exactly the amount the page was stale. It read fresher than it was.
+ *
+ * The GitHub fetches keep their own 300 (`REVALIDATE_SECONDS`), so rebuilding
+ * more often costs nothing there — a push is not time-sensitive the way a song
+ * is. Only Spotify's fetches came down with this.
+ */
+export const revalidate = 60;
 
 export default async function Home() {
   const [owner, repo] = siteRepoSlug.split("/");
@@ -106,7 +118,11 @@ export default async function Home() {
               and Favorite Project sits last as the closing note rather than
               the opening one.
             */}
-              <ActivityFeed snapshot={snapshot} featured={featured} tracks={tracks} />
+              <ActivityFeed
+                snapshot={snapshot}
+                featured={featured}
+                tracks={tracks}
+              />
               <Experience featured={featured} />
               <FavoriteGame playtime={playtime} />
               {/* The panel a visitor contributes to, last in the column so it
@@ -133,7 +149,12 @@ export default async function Home() {
           </span>
         </footer>
 
-        <AutoRefresh intervalSeconds={REVALIDATE_SECONDS} />
+        {/*
+          Matches the page's own ISR window, not GitHub's — this is what makes
+          a tab left open actually pick the new page up, so it has to fire as
+          often as the page can change.
+        */}
+        <AutoRefresh intervalSeconds={revalidate} />
 
         {/* Sits outside the column on purpose — he walks the whole viewport,
             not just the centred block. */}

@@ -71,7 +71,7 @@ async function accessToken(): Promise<string | null> {
       }),
       // Access tokens last an hour; caching one for the page's window is safe
       // and saves a round trip on every render.
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     });
     if (!res.ok) return null;
     const body = (await res.json()) as { access_token?: string };
@@ -100,7 +100,7 @@ export async function getRecentTracks(limit = 3): Promise<Track[]> {
   try {
     const res = await fetch(RECENT_URL, {
       headers: { Authorization: `Bearer ${token}` },
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
     });
     if (!res.ok) return [];
 
