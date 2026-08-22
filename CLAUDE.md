@@ -568,7 +568,7 @@ class would stop emitting.
   lines in `page.tsx` to bring it back; nothing else needs changing.
   Uses giscus (GitHub Discussions-backed, not a fake widget). **Blocked on
   the repo being public** — giscus requires it, and as of now
-  `brad945/bradleytsou-site` is private with Discussions disabled. Then:
+  `brad945/bradleytsou.com` is private with Discussions disabled. Then:
   enable Discussions, install the giscus app, paste `data-repo-id` and
   `data-category-id` into `GISCUS`, uncomment two lines in `page.tsx`.
   Making the repo public also lights up "View source" in the ⋯ menu by
@@ -876,7 +876,10 @@ has happened twice.
 ## Deployment — already done
 
 **Live at https://www.bradleytsou.com**, on Vercel, from
-`brad945/bradleytsou-site` (private). `www` is Primary and the apex
+`brad945/bradleytsou.com` — **public**, and note the repo was renamed from
+`bradleytsou-site`. GitHub 301s the old name so git and the API never
+noticed; giscus did, because it resolves `data-repo` literally. If it's
+renamed again, `SITE_REPO_NAME` in `profile-data` is the fix. `www` is Primary and the apex
 308-redirects to it; `siteOrigin` in `profile-data` is hardcoded to match
 and **must be changed if that's ever flipped**, or every canonical points
 at a URL that redirects.
