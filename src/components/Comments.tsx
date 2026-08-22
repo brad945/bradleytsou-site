@@ -7,7 +7,7 @@ import { giscus, siteRepoSlug } from "@/lib/profile-data";
 /**
  * giscus-backed comments — real GitHub Discussions, not a fake widget.
  *
- * The whole thread lives on `brad945/bradleytsou-site`; visitors sign in with
+ * The whole thread lives on `brad945/bradleytsou.com`; visitors sign in with
  * their own GitHub account and their comments are real discussion replies.
  * Nothing is stored here, which is the point — the site has no backend, and a
  * comment box that pretended to work would be exactly the fake chrome this
@@ -29,7 +29,7 @@ import { giscus, siteRepoSlug } from "@/lib/profile-data";
  * ## Pinned to one discussion by number, not found by search
  *
  * `data-mapping="number"` with term `1` loads
- * github.com/brad945/bradleytsou-site/discussions/1 directly.
+ * github.com/brad945/bradleytsou.com/discussions/1 directly.
  *
  * **This replaced `pathname` mapping, which was broken in practice.** Pathname
  * mapping makes giscus *search* GitHub for a discussion whose title matches

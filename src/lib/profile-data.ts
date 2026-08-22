@@ -697,8 +697,21 @@ export const giscus = {
   discussion: 1,
 } as const;
 
-/** This site's own repo. Used by the header ⋯ menu and the showcase entry. */
-export const SITE_REPO_NAME = "bradleytsou-site";
+/**
+ * This site's own repo. Used by the header ⋯ menu and by giscus.
+ *
+ * **Renamed from `bradleytsou-site` to `bradleytsou.com`, and giscus is the
+ * one consumer that noticed.** GitHub 301s a renamed repo, so git pushes and
+ * every API call here kept working and nothing looked wrong — but giscus
+ * resolves the literal `data-repo` slug and does not follow the redirect, so
+ * it reported "giscus is not installed on this repository" when the app was
+ * installed and the repo simply wasn't there under that name.
+ *
+ * If it's renamed again, this line is the fix. The repo's node id is unchanged
+ * (`R_kgDOTirmOQ`), which is why `giscus.repoId` above still matched and made
+ * the failure look like an app problem rather than a naming one.
+ */
+export const SITE_REPO_NAME = "bradleytsou.com";
 export const siteRepoUrl = `https://github.com/${githubUsername}/${SITE_REPO_NAME}`;
 /** "owner/name", the form giscus and the GraphQL API both want. */
 export const siteRepoSlug = `${githubUsername}/${SITE_REPO_NAME}`;
